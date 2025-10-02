@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<!-- saved from url=(0022)https://wikdwraps.com/ -->
+<html class="js" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="">
+    <link rel="canonical" href="https://wikdwraps.com/">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+    <script src="https://animatedicons.co/scripts/embed-animated-icons.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
+
+    <title>
+      WIKDWRAPS
+    </title>
+
+    <style>
+      :root {
+            --color-background: #0A0A0A;
+            --color-text: #EAEAEA;
+            --color-text-muted: #888888;
+            --color-primary: #FF3B30;
+            --color-surface: #141414;
+            --color-border: #2A2A2A;
+            --font-heading: 'Rajdhani', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        /* Base styles for preview components */
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            background-color: var(--color-background) !important;
+            color: var(--color-text) !important;
+            font-family: var(--font-body) !important;
+        }
+        .font-heading { font-family: var(--font-heading); }
+        .font-body { font-family: var(--font-body); }
+        h1, h2, h3, .h1, .h2, .h3 {
+            font-family: var(--font-heading) !important;
+            font-weight: 700 !important;
+            line-height: 1.2 !important;
+            text-transform: uppercase !important;
+            color: white !important;
+        }
+        .h1 { font-size: clamp(2.5rem, 6vw, 4rem); }
+        .h2 { font-size: clamp(2rem, 5vw, 3rem); }
+        .h3 { font-size: clamp(1.5rem, 4vw, 2.25rem); }
+        p, .p, .rte, .rte p { 
+          font-family: var(--font-body) !important; 
+          color: var(--color-text) !important; 
+          line-height: 1.6 !important;
+        }
+        .p-muted { font-family: var(--font-body); color: var(--color-text-muted) !important; line-height: 1.6;}
+        a.link {
+            color: var(--color-primary) !important;
+            text-decoration: none;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        a.link:hover {
+            text-decoration: underline !important;
+        }
+        .button.button--primary {
+            background: transparent !important;
+            color: white !important;
+            border: 2px solid var(--color-primary) !important;
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 10px 100%, 0 85%) !important;
+            transition: all 0.3s ease !important;
+            font-family: var(--font-heading) !important;
+            text-transform: uppercase !important;
+            position: relative;
+            z-index: 1;
+            padding: 14px 32px;
+        }
+        .button.button--primary:hover {
+            color: white !important;
+            background: var(--color-primary) !important;
+        }
+
+
+        /* --- BUTTON STYLES --- */
+        .btn {
+            display: inline-block;
+            padding: 14px 32px;
+            font-family: var(--font-heading) !important;
+            font-size: 18px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--color-text) !important;
+            background-color: transparent;
+            border: 2px solid var(--color-border);
+            position: relative;
+            overflow: hidden;
+            transition: color 0.4s ease-in-out, border-color 0.4s ease-in-out, transform 0.3s ease;
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 10px 100%, 0 85%);
+            text-decoration: none;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        .btn span { position: relative; z-index: 2; }
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1;
+            transform: translateX(-101%);
+            transition: transform 0.5s cubic-bezier(0.7, 0, 0.3, 1);
+        }
+        .btn:hover { color: white !important; transform: translateY(-3px); }
+        .btn:hover::before { transform: translateX(0); }
+        
+        .btn.btn-primary { 
+            border-color: var(--color-primary); 
+            background-color: var(--color-primary);
+        }
+        .btn.btn-primary:hover { border-color: var(--color-primary); }
+
+        .btn.btn-secondary {
+            border-color: var(--color-text);
+            background-color: var(--color-text);
+            color: var(--color-background) !important;
+        }
+         .btn.btn-secondary:hover {
+            border-color: var(--color-primary);
+            color: white !important;
+        }
+        .btn.btn-secondary::before {
+            background-color: var(--color-primary);
+        }
+        
+        .btn.btn-tertiary {
+             border-color: white;
+        }
+        .btn.btn-tertiary:hover {
+             border-color: var(--color-primary);
+        }
+        .btn.btn-tertiary::before {
+             background-color: var(--color-primary);
+        }
+
+        /* --- CARD STYLES --- */
+        .package-card {
+            position: relative;
+            aspect-ratio: 4 / 5;
+            overflow: hidden;
+            border-radius: 8px;
+            border: 1px solid var(--color-border);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            display: block;
+        }
+        .package-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3), 0 0 15px rgba(255, 59, 48, 0.3);
+            border-color: var(--color-primary);
+        }
+        .package-card-bg {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .package-card:hover .package-card-bg { transform: scale(1.05); }
+        .package-card-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, transparent 60%);
+            display: flex; flex-direction: column; justify-content: flex-end;
+            padding: 25px;
+        }
+        .package-card-content {
+             transform: translateY(20px); opacity: 0;
+            transition: transform 0.4s ease 0.1s, opacity 0.4s ease 0.1s;
+        }
+        .package-card:hover .package-card-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .package-card-title {
+            font-family: var(--font-heading);
+            font-size: 2rem; color: white;
+            text-transform: uppercase;
+        }
+        .package-card-description {
+            color: var(--color-text-muted);
+            margin-bottom: 1rem;
+        }
+        .package-card-link {
+            font-size: 1rem; color: var(--color-primary);
+            text-transform: uppercase; font-weight: 600;
+            text-decoration: none;
+        }
+
+        /* --- WIKD GALLERY CARD --- */
+        @keyframes lavaFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .gallery-card-wrapper { max-width: 380px; width: 100%; perspective: 1000px; }
+        .gallery-card {
+            display: block; position: relative; aspect-ratio: 1 / 1;
+            border-radius: 8px; border: 1px solid var(--color-border);
+            text-decoration: none; isolation: isolate;
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+            transform-style: preserve-3d;
+        }
+        .gallery-card-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover; filter: grayscale(100%);
+            transition: transform 0.6s cubic-bezier(0.3, 1, 0.4, 1), filter 0.6s ease;
+        }
+        .gallery-card:hover .gallery-card-bg {
+            filter: grayscale(100%) brightness(0.3);
+        }
+        .gallery-card-overlay {
+            height: 100%; display: flex; flex-direction: column; justify-content: space-between;
+            background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 60%);
+            position: relative; z-index: 5; transform: translateZ(100px);
+            transform-style: preserve-3d; padding: 15px;
+        }
+        .gallery-card-title {
+            font-family: var(--font-heading);
+            font-size: 1.75rem; color: white; margin: 0; line-height: 1.2;
+            text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.8); transition: color 0.3s ease;
+            text-transform: uppercase;
+        }
+        .gallery-card:hover .gallery-card-title {
+            background: linear-gradient(90deg, #b30000, #ff1a00, #ffaa00, #ff1a00, #b30000);
+            background-size: 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: lavaFlow 4s ease-in-out infinite; text-shadow: none;
+            filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.7));
+        }
+        .card-badge-container { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+        .wikd-sub-badge {
+            display: inline-block; background-color: rgba(255, 59, 48, 0.7);
+            color: white; padding: 6px 18px 8px; font-size: 12px;
+            font-weight: 600; font-style: italic;
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 8px 100%, 0 80%);
+        }
+        .gallery-card::before {
+            content: ""; position: absolute; inset: 0; border-radius: 8px;
+            padding: 2px;
+            background: linear-gradient(90deg, #b30000, #ff1a00, #ffaa00, #ff1a00, #b30000);
+            background-size: 300%; animation: lavaFlow 4s ease-in-out infinite;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            z-index: 6; pointer-events: none; opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .gallery-card:hover::before { opacity: 1; }
+        .gallery-card:hover { box-shadow: 0 0 25px rgba(255, 59, 48, 0.5); }
+        
+      img {
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .image-wrapper {
+        border: none !important;
+      }
+
+      /* Applied Styles to Hero */
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem) !important;
+        }
+        .hero .badge {
+            background-color: var(--color-primary) !important;
+            font-family: var(--font-body) !important;
+        }
+      /* Applied to Multicolumn Section */
+      .multicolumn {
+          background-color: var(--color-background) !important;
+      }
+      .multicolumn.background-primary {
+           background-color: var(--color-surface) !important;
+           padding-top: 5rem;
+           padding-bottom: 5rem;
+      }
+      .multicolumn .title {
+          font-size: clamp(2rem, 5vw, 3rem) !important;
+      }
+       .multicolumn-card h3 {
+           font-size: clamp(1.5rem, 4vw, 2.25rem) !important;
+       }
+        
+        /* --- STAR RATING --- */
+        .star-container-fade-in {
+            opacity: 0;
+            animation: fadeIn 0.5s cubic-bezier(0.1, 1.2, 0, 1) forwards; /* Aggressive easing */
+        }
+        .star-glow-pulse {
+            animation: pulseGlow 3s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite; /* Aggressive easing */
+        }
+        .star-gradient-pulse {
+            --center-opacity: 0.7; /* Set initial state */
+            animation: pulseGradient 3s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite; /* Aggressive easing */
+        }
+        .glint-wrapper {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>');
+            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>');
+            -webkit-mask-size: contain; mask-size: contain;
+            -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+            -webkit-mask-position: center; mask-position: center;
+        }
+        .glint-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.6) 50%, transparent 60%);
+            background-size: 200% 100%;
+            background-position: 200% 0;
+            animation: glintWipe 5s infinite;
+            animation-delay: var(--glint-delay, 0s);
+        }
+        
+        .lava-text {
+            background: linear-gradient(90deg, #ff7f00, #ff4500, #ff3b30, #ff4500, #ff7f00); 
+            background-size: 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: lavaFlow 4s ease-in-out infinite;
+            font-weight: 600; 
+        }
+
+        .dropdown-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown-icon.active {
+            transform: rotate(180deg);
+        }
+
+        .qr-tooltip-down::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-style: solid;
+            border-width: 7px;
+            border-color: transparent transparent var(--color-primary) transparent;
+            z-index: 2006;
+        }
+        .qr-tooltip-down::after {
+            content: '';
+            position: absolute;
+            top: -7px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-style: solid;
+            border-width: 7px;
+            border-color: transparent transparent rgba(0, 0, 0, 0.95) transparent;
+            z-index: 2007; /* Above ::before border, below tooltip content */
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+        @keyframes pulseGlow {
+            0%, 100% { filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.7)); }
+            50% { filter: drop-shadow(0 0 8px rgba(251, 191, 36, 1)); }
+        }
+        @keyframes pulseGradient {
+            0%, 100% { --center-opacity: 0.7; }
+            50% { --center-opacity: 1; }
+        }
+        @keyframes glintWipe {
+            0%   { background-position: 200% 0; }
+            5%   { background-position: 200% 0; }
+            25%  { background-position: -200% 0; } /* Slowed down wipe */
+            100% { background-position: -200% 0; }
+        }
+
+    </style>
+
+</head><body class="gradient">
+    
+    <!-- SVG Definitions for reuse -->
+    <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
+        <defs>
+            <radialGradient id="starGradient3D">
+                <stop offset="0%" stop-color="white" stop-opacity="var(--center-opacity, 0.7)"></stop>
+                <stop offset="20%" stop-color="#FDE047"></stop>
+                <stop offset="90%" stop-color="#F59E0B"></stop>
+            </radialGradient>
+        </defs>
+    </svg>
+
+    <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
+      <section id="shopify-section-template--20779275780301__custom_liquid_TPCGPH" class="shopify-section section"><style data-shopify="">.section-template--20779275780301__custom_liquid_TPCGPH-padding {
+    padding-top: calc(0px * 0.75);
+    padding-bottom: calc(0px  * 0.75);
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-template--20779275780301__custom_liquid_TPCGPH-padding {
+      padding-top: 0px;
+      padding-bottom: 0px;
+    }
+  }</style><div class="color-background-1 gradient">
+  <div class="section-template--20779275780301__custom_liquid_TPCGPH-padding">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WIKD Wraps - Paint Protection Specialists</title>
+    <style>
+        .hero * {
+            box-sizing: border-box;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            min-height: 100vh;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+                              url('https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Freshly_Detailed_Ryft_McLaren_720s_on_HRE_Wheels_with_WIKD_Exhaust.jpg?v=1744062350');
+            background-size: cover;
+            background-position: center bottom;
+            background-repeat: no-repeat;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Hero Content */
+        .hero-content {
+            padding: 3rem 5%;
+            width: 50%;
+        }
+
+        .badge {
+            background: #c62828;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+        }
+
+        .hero h1 {
+            color: white;
+            font-size: 4rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 3rem;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+        }
+
+        .cta-buttons {
+            display: grid;
+            grid-template-columns: auto auto;
+            grid-template-rows: auto auto;
+            gap: 1.5rem;
+            width: fit-content;
+        }
+
+        .hero .btn:nth-child(3) {
+            grid-column: 1 / -1;
+        }
+
+        .arrow {
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .hero .btn:hover .arrow {
+            transform: translateX(5px);
+        }
+
+        @media (max-width: 1200px) {
+            .hero-content {
+                width: 60%;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .hero-content {
+                width: 70%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                height: 85vh;
+                min-height: 85vh;
+            }
+
+            .hero-content {
+                padding: 2rem 5%;
+                width: 100%;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .cta-buttons {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto;
+            }
+
+            .hero .btn:nth-child(3) {
+                grid-column: 1;
+            }
+        }
+    </style>
+
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="badge">TOP PPF &amp; COATING SPECIALISTS IN MCKINNEY TX</div>
+            <h1>Paint Protection Solutions From The Best Name In Custom Performance</h1>
+            
+            <div class="cta-buttons">
+                <a href="#services-section" class="btn btn-primary">
+                    <span>Explore Services</span>
+                </a>
+                <a href="https://wikdwraps.com/pages/estimate-configurator" class="btn btn-secondary">
+                    <span>Instant Quote Tool</span>
+                </a>
+                <a href="https://wikdwraps.com/pages/contact" class="btn btn-tertiary">
+                   <span>Reserve Your Spot</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+
+  </div>
+</div>
+</section>
+
+<!-- PREMIER SERVICES SECTION -->
+<section id="services-section" class="py-20" style="background-color: var(--color-background);">
+    <div class="page-width px-6 mx-auto">
+        <div class="text-center mb-12">
+            <h2 class="h2">Our Premier Services</h2>
+            <p class="p-muted max-w-3xl mx-auto">Your car deserves elite protection and precision styling. Our industry-leading films and coatings deliver unmatched durability, striking visuals, and a finish tailored to your vision.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- PPF Card -->
+            <a href="https://wikdwraps.com/pages/paint-protection-film" class="package-card">
+                <img src="https://wikdwraps.com/cdn/shop/files/Satin_PPF_Wrapped_Black_and_Green_Lamborghini_Huracan_STO_Freshly_Detailed.jpg?v=1743435243" alt="Lamborghini Huracan STO with Satin PPF" class="package-card-bg">
+                <div class="package-card-overlay">
+                    <div class="package-card-content">
+                        <h3 class="package-card-title">Paint Protection Film</h3>
+                        <p class="package-card-description">Absorb impacts and resist rock chips with invisible, self-healing defense.</p>
+                        <span class="package-card-link">Learn More &rarr;</span>
+                    </div>
+                </div>
+            </a>
+            <!-- Ceramic Coatings Card -->
+            <a href="https://wikdwraps.com/pages/ceramic-coatings" class="package-card">
+                 <img src="https://wikdwraps.com/cdn/shop/files/Blue_and_White_Stripe_2006_Ford_GT_Ford_GT40_Detailed_and_Ceramic_Coated.jpg?v=1743434907" alt="Ford GT with Ceramic Coating" class="package-card-bg">
+                <div class="package-card-overlay">
+                    <div class="package-card-content">
+                        <h3 class="package-card-title">Ceramic Coatings</h3>
+                        <p class="package-card-description">Ultra-durable protection for a deep, mirror-like, hydrophobic gloss.</p>
+                        <span class="package-card-link">Learn More &rarr;</span>
+                    </div>
+                </div>
+            </a>
+            <!-- Vinyl Wraps Card -->
+            <a href="https://wikdwraps.com/pages/vinyl-wraps" class="package-card">
+                <img src="https://wikdwraps.com/cdn/shop/files/Black_Ford_F450_Platinum_Powerstroke_Dually_Chrome_Delete.jpg?v=1744062595" alt="Ford F450 with a custom vinyl wrap" class="package-card-bg">
+                <div class="package-card-overlay">
+                    <div class="package-card-content">
+                        <h3 class="package-card-title">Vinyl Wraps</h3>
+                         <p class="package-card-description">Transform your vehicle with endless customization and paint protection.</p>
+                        <span class="package-card-link">Learn More &rarr;</span>
+                    </div>
+                </div>
+            </a>
+             <!-- Detailing Card -->
+            <a href="https://wikdwraps.com/pages/detailing" class="package-card">
+                <img src="https://wikdwraps.com/cdn/shop/files/IMG_5156_f16f1bb4-c32d-4e4a-89d3-47cd61d28c72.jpg?v=1742478458" alt="Professional auto detailing" class="package-card-bg">
+                <div class="package-card-overlay">
+                    <div class="package-card-content">
+                        <h3 class="package-card-title">Automotive Detailing</h3>
+                        <p class="package-card-description">Meticulous interior and exterior restoration for a showroom finish.</p>
+                        <span class="package-card-link">Learn More &rarr;</span>
+                    </div>
+                </div>
+            </a>
+            <!-- Nano-Ceramic Tint Card -->
+            <a href="https://wikdwraps.com/pages/window-tint" class="package-card">
+                 <img src="https://wikdwraps.com/cdn/shop/files/Clean_Ryft_Black_McLaren_720s_HRE_Wheels_WIKD_Exhaust.jpg?v=1744062478" alt="McLaren 720s with Nano-Ceramic Tint" class="package-card-bg">
+                <div class="package-card-overlay">
+                     <div class="package-card-content">
+                        <h3 class="package-card-title">Nano-Ceramic Tint</h3>
+                        <p class="package-card-description">Industry-leading heat rejection, UV protection, and privacy.</p>
+                        <span class="package-card-link">Learn More &rarr;</span>
+                    </div>
+                </div>
+            </a>
+            <!-- Maintenance Card -->
+            <a href="https://wikdwraps.com/pages/maintenance-plans" class="package-card">
+                 <img src="https://wikdwraps.com/cdn/shop/files/Black_Lamborghini_Urus_Interior_Detail.jpg?v=1744062916" alt="Interior of a Lamborghini Urus after detailing" class="package-card-bg">
+                <div class="package-card-overlay">
+                     <div class="package-card-content">
+                        <h3 class="package-card-title">Maintenance Plans</h3>
+                        <p class="package-card-description">Keep your vehicle flawless year-round with our exclusive member plans.</p>
+                        <span class="package-card-link">Learn More &rarr;</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- THE WIKD DIFFERENCE SECTION -->
+<section id="difference-section" class="py-20" style="background-color: var(--color-surface);">
+    <div class="page-width px-6 mx-auto">
+        <div class="text-center mb-12">
+            <h2 class="h2">The WIKD Difference</h2>
+             <p class="p-muted max-w-2xl mx-auto">We combine world-class craftsmanship with industry-leading materials to deliver results that speak for themselves.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <div>
+                 <div id="icon-craftsmanship" class="mx-auto mb-4" style="width: 128px; height: 128px;"></div>
+                <h3 class="h3 mb-2">Craftsmanship You Can Trust</h3>
+                <p class="p-muted">Our expert technicians are factory-certified installers known for their precision and attention to detail. We treat every vehicle as if it were our own, ensuring flawless results every time.</p>
+            </div>
+            <div>
+                <div id="icon-materials" class="mx-auto mb-4" style="width: 128px; height: 128px;"></div>
+                <h3 class="h3 mb-2">Industry Leading Materials</h3>
+                <p class="p-muted">We’ve partnered with top-tier brands like STEK to provide the best durability, clarity, and performance for your vehicle. We don't compromise on quality.</p>
+            </div>
+            <div>
+                <div id="icon-solutions" class="mx-auto mb-4" style="width: 128px; height: 128px;"></div>
+                <h3 class="h3 mb-2">Bespoke Solutions</h3>
+                <p class="p-muted">From exotics to daily drivers, we offer customized protection plans to fit your needs and budget. Your vision is our blueprint for a perfect finish.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- GALLERY SECTION -->
+<section id="gallery-section" class="py-20" style="background-color: var(--color-background);">
+    <div class="page-width px-6 mx-auto">
+        <div class="text-center mb-12">
+            <h2 class="h2">From Showroom to Showstopper</h2>
+            <p class="p-muted max-w-2xl mx-auto">Explore our gallery of recent projects and see the WIKD difference for yourself. Your vision is our mission.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
+             <div class="gallery-card-wrapper">
+                 <a href="https://wikdwraps.com/pages/gallery" class="gallery-card">
+                     <img src="https://wikdwraps.com/cdn/shop/files/Black_Lamborghini_Urus_Paint_Correction_and_Rock_Chip_Repair.jpg?v=1744062951" class="gallery-card-bg" alt="Lamborghini Urus">
+                     <div class="gallery-card-overlay">
+                         <div class="card-badge-container">
+                             <div class="wikd-sub-badge">PPF Repair &amp; Detail</div>
+                         </div>
+                         <div class="gallery-card-title-block">
+                             <h3 class="gallery-card-title">2018 Lamborghini Urus</h3>
+                         </div>
+                     </div>
+                 </a>
+             </div>
+             <div class="gallery-card-wrapper">
+                 <a href="https://wikdwraps.com/pages/gallery" class="gallery-card">
+                     <img src="https://wikdwraps.com/cdn/shop/files/IMG_1919.jpg?v=1741643606" class="gallery-card-bg" alt="Cadillac CT5 V Blackwing">
+                     <div class="gallery-card-overlay">
+                         <div class="card-badge-container">
+                             <div class="wikd-sub-badge">Exterior Detail</div>
+                         </div>
+                         <div class="gallery-card-title-block">
+                             <h3 class="gallery-card-title">2024 Cadillac CT5 V Blackwing</h3>
+                         </div>
+                     </div>
+                 </a>
+             </div>
+              <div class="gallery-card-wrapper">
+                 <a href="https://wikdwraps.com/pages/gallery" class="gallery-card">
+                     <img src="https://wikdwraps.com/cdn/shop/files/Black_Ford_F450_Platinum_Powerstroke_Dually_Chrome_Delete.jpg?v=1744062595" class="gallery-card-bg" alt="Ford F450 Platinum">
+                     <div class="gallery-card-overlay">
+                         <div class="card-badge-container">
+                            <div class="wikd-sub-badge">Chrome Delete</div>
+                         </div>
+                         <div class="gallery-card-title-block">
+                             <h3 class="gallery-card-title">2024 Ford F450 Platinum</h3>
+                         </div>
+                     </div>
+                 </a>
+             </div>
+        </div>
+        <div class="text-center mt-12">
+            <a class="button button--primary" href="https://wikdwraps.com/pages/gallery">
+              Explore Full Gallery
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- LOCATIONS SECTION -->
+<section id="locations-section" class="py-20" style="background-color: var(--color-surface);">
+    <div class="page-width px-6 mx-auto">
+        <div class="text-center mb-12">
+            <h2 class="h2">Your Nearest WIKD Locations</h2>
+        </div>
+         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="border border-[var(--color-border)] p-6 rounded-lg flex flex-col h-full">
+                <h3 class="h3 text-center md:text-left">WIKD PBW</h3>
+                <div class="flex items-center gap-3 my-4 justify-center md:justify-start min-h-[56px]">
+                    <span id="status-line-pbw" class="text-sm font-semibold"></span>
+                    <div id="hours-toggle-wrapper-pbw" class="relative">
+                         <div id="hours-dropdown-toggle-pbw" class="cursor-pointer text-sm font-semibold text-gray-400 hover:text-white transition duration-200 flex items-center gap-1">
+                            <span class="uppercase">All Hours</span>
+                            <svg class="dropdown-icon w-3 h-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor"><path d="M7 10L12 15L17 10" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                        </div>
+                        <div id="full-hours-dropdown-pbw" class="absolute top-full left-0 z-[2005] p-3 bg-black/95 border border-primary-red border-t-0 rounded-b-lg w-48 text-gray-300 text-xs overflow-hidden max-h-0 opacity-0 transition-all duration-300 ease-out"></div>
+                    </div>
+                </div>
+
+                <div class="flex-grow">
+                    <p class="p-muted text-center md:text-left">Wraps, Tint, Coatings, & Detailing</p>
+                    <p class="p-muted text-center md:text-left">Automotive Film & Coating Specialists</p>
+                </div>
+                
+                <div class="mt-auto pt-6 flex flex-col items-center md:items-start gap-4">
+                    <div class="flex items-center gap-4">
+                        <a id="directions-link-pbw" href="#" target="_blank" class="text-sm font-semibold uppercase tracking-wider text-primary-red hover:text-white transition">Directions</a>
+                        <div id="copy-controls-wrapper-pbw" class="relative flex items-center">
+                            <button id="copy-address-button-pbw" class="text-sm font-semibold uppercase tracking-wider text-gray-400 hover:text-white transition">Copy Address</button>
+                            <span id="copy-confirmation-pbw" class="text-green-400 absolute right-0 top-1/2 -translate-y-1/2 ml-2 text-xs font-semibold opacity-0 transition pointer-events-none">Copied!</span>
+                        </div>
+                    </div>
+                    <div id="phone-container-pbw" class="relative"></div>
+                </div>
+            </div>
+             <div class="border border-[var(--color-border)] p-6 rounded-lg flex flex-col h-full">
+                <h3 class="h3 text-center md:text-left">WIKD Motorsports</h3>
+                <div class="flex items-center my-4 justify-center md:justify-start min-h-[56px]">
+                    <div class="flex items-center space-x-1">
+                        <a href="https://share.google/7vAZnoZqZSVFpq84p" target="_blank" rel="noopener noreferrer" class="relative block w-4 h-4 star-container-fade-in"><svg class="absolute top-0 left-0 w-full h-full text-yellow-400 star-glow-pulse" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><svg class="absolute top-0 left-0 w-full h-full star-gradient-pulse" fill="url(#starGradient3D)" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><div class="glint-wrapper"></div></a>
+                        <a href="https://share.google/7vAZnoZqZSVFpq84p" target="_blank" rel="noopener noreferrer" class="relative block w-4 h-4 star-container-fade-in"><svg class="absolute top-0 left-0 w-full h-full text-yellow-400 star-glow-pulse" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><svg class="absolute top-0 left-0 w-full h-full star-gradient-pulse" fill="url(#starGradient3D)" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><div class="glint-wrapper"></div></a>
+                        <a href="https://share.google/7vAZnoZqZSVFpq84p" target="_blank" rel="noopener noreferrer" class="relative block w-4 h-4 star-container-fade-in"><svg class="absolute top-0 left-0 w-full h-full text-yellow-400 star-glow-pulse" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><svg class="absolute top-0 left-0 w-full h-full star-gradient-pulse" fill="url(#starGradient3D)" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><div class="glint-wrapper"></div></a>
+                        <a href="https://share.google/7vAZnoZqZSVFpq84p" target="_blank" rel="noopener noreferrer" class="relative block w-4 h-4 star-container-fade-in"><svg class="absolute top-0 left-0 w-full h-full text-yellow-400 star-glow-pulse" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><svg class="absolute top-0 left-0 w-full h-full star-gradient-pulse" fill="url(#starGradient3D)" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><div class="glint-wrapper"></div></a>
+                        <a href="https://share.google/7vAZnoZqZSVFpq84p" target="_blank" rel="noopener noreferrer" class="relative block w-4 h-4 star-container-fade-in"><svg class="absolute top-0 left-0 w-full h-full text-yellow-400 star-glow-pulse" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><svg class="absolute top-0 left-0 w-full h-full text-zinc-700" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><div class="absolute top-0 left-0 w-full h-full" style="clip-path: inset(0 40% 0 0);"><svg class="w-full h-full star-gradient-pulse" fill="url(#starGradient3D)" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><div class="glint-wrapper"></div></div></a>
+                    </div>
+                    <div class="text-zinc-300 font-bold text-lg star-container-fade-in">
+                        4.6 / 5
+                    </div>
+                </div>
+                 <div id="status-info-group-ms" class="flex items-center gap-3 mb-4 justify-center md:justify-start">
+                    <span id="status-line-ms" class="text-sm font-semibold"></span>
+                 </div>
+                <div class="flex-grow">
+                    <p class="p-muted text-center md:text-left">Tuning, Fabrication, & Custom Builds</p>
+                    <p class="p-muted text-center md:text-left">Forced Induction Systems Specialists</p>
+                </div>
+                <div class="mt-auto pt-6 flex flex-col items-center md:items-start gap-4">
+                     <div class="flex items-center gap-4">
+                         <a id="directions-link-ms" href="#" target="_blank" class="text-sm font-semibold uppercase tracking-wider text-primary-red hover:text-white transition">Directions</a>
+                         <div id="copy-controls-wrapper-ms" class="relative flex items-center">
+                             <button id="copy-address-button-ms" class="text-sm font-semibold uppercase tracking-wider text-gray-400 hover:text-white transition">Copy Address</button>
+                             <span id="copy-confirmation-ms" class="text-green-400 absolute right-0 top-1/2 -translate-y-1/2 ml-2 text-xs font-semibold opacity-0 transition pointer-events-none">Copied!</span>
+                         </div>
+                     </div>
+                     <div id="phone-container-ms" class="relative"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FINAL CTA -->
+<section id="final-cta-section" class="py-20" style="background-color: var(--color-background);">
+    <div class="page-width px-6 mx-auto text-center">
+         <h2 class="h1">
+                Your car deserves nothing less than perfection.
+              </h2>
+              <p class="p-muted max-w-2xl mx-auto mt-4 mb-8">
+                Trust a shop that shares your passion and refuses to cut corners. Experience precision, craftsmanship, and care as if your vehicle were our own.
+              </p>
+             <a href="https://wikdwraps.com/pages/contact" class="button button--primary">Get Started</a>
+    </div>
+</section>
+ <textarea id="address-clipboard-helper" style="position: absolute; left: -9999px;"></textarea>
+</main>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        
+        function initializeLocationCard(config) {
+            const { idPrefix, phone, address, directionsLink, hours, showOpenStatus } = config;
+
+            const UI = {
+                statusLine: document.getElementById(`status-line-${idPrefix}`),
+                phoneContainer: document.getElementById(`phone-container-${idPrefix}`),
+                hoursToggle: document.getElementById(`hours-dropdown-toggle-${idPrefix}`),
+                hoursDropdown: document.getElementById(`full-hours-dropdown-${idPrefix}`),
+                copyButton: document.getElementById(`copy-address-button-${idPrefix}`),
+                copyConfirmation: document.getElementById(`copy-confirmation-${idPrefix}`),
+                directionsLink: document.getElementById(`directions-link-${idPrefix}`),
+                clipboardHelper: document.getElementById('address-clipboard-helper')
+            };
+
+            const normalizedPhone = phone.replace(/\D/g, '');
+            const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+            function formatTime(hourFloat) {
+                if (hourFloat === null) return 'Closed';
+                const hours = Math.floor(hourFloat);
+                const minutes = Math.round((hourFloat - hours) * 60);
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                const displayHours = hours % 12 || 12;
+                const displayMinutes = minutes < 10 ? '0' + minutes : minutes;
+                return `${displayHours}:${displayMinutes} ${ampm}`;
+            }
+
+            function getBusinessStatus() {
+                const now = new Date();
+                const dayIndex = now.getDay();
+                const currentDay = DAYS[dayIndex];
+                const currentHourFloat = now.getHours() + now.getMinutes() / 60;
+                
+                const todayHours = hours[currentDay];
+                const isOpen = todayHours.open !== null && 
+                               currentHourFloat >= todayHours.open && 
+                               currentHourFloat < todayHours.close;
+
+                if (isOpen) {
+                    return { isOpen: true, statusText: 'OPEN' };
+                }
+
+                for (let i = 0; i < 7; i++) {
+                    const checkDayIndex = (dayIndex + i) % 7;
+                    const checkDay = DAYS[checkDayIndex];
+                    const dayHoursData = hours[checkDay];
+
+                    if (dayHoursData.open !== null) {
+                        if (i === 0) {
+                            if (currentHourFloat < dayHoursData.open) {
+                                return { isOpen: false, nextOpenTime: formatTime(dayHoursData.open), nextOpenDay: 'TODAY' };
+                            }
+                        } else {
+                            return { isOpen: false, nextOpenTime: formatTime(dayHoursData.open), nextOpenDay: checkDay.toUpperCase() };
+                        }
+                    }
+                }
+                
+                return { isOpen: false, statusText: 'CLOSED FOR WEEK' };
+            }
+            
+            function isMobileDevice() {
+                return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+            }
+
+            function toggleHoursDropdown() {
+                if(!UI.hoursDropdown) return;
+                UI.hoursDropdown.classList.toggle('max-h-0');
+                UI.hoursDropdown.classList.toggle('max-h-64'); 
+                UI.hoursDropdown.classList.toggle('opacity-0'); 
+                UI.hoursToggle.querySelector('svg').classList.toggle('active');
+            }
+
+            function toggleQrTooltip(qrTooltip, canvas) {
+                const isActive = qrTooltip.classList.contains('active');
+                
+                if (isActive && typeof QRCode !== 'undefined' && !canvas.dataset.rendered) {
+                    QRCode.toCanvas(canvas, `tel:${normalizedPhone}`, {
+                        width: 150,
+                        margin: 1,
+                        color: { dark: '#FF3B30', light: '#000000' }
+                    }, function (error) {
+                        if (error) console.error("QR Code Error:", error);
+                        canvas.dataset.rendered = 'true';
+                    });
+                }
+            }
+
+            function renderDynamicContent() {
+                const status = getBusinessStatus();
+                
+                if (UI.statusLine) {
+                    UI.statusLine.className = 'text-sm font-semibold transition duration-300';
+                    if (status.isOpen) {
+                        if (showOpenStatus) {
+                            UI.statusLine.classList.add('text-green-400'); // success-green
+                            UI.statusLine.textContent = status.statusText;
+                        } else {
+                             UI.statusLine.textContent = '';
+                        }
+                    } else {
+                        UI.statusLine.classList.add('text-primary-red');
+                        if (status.nextOpenDay) {
+                            UI.statusLine.textContent = `OPENS ${status.nextOpenDay} at ${status.nextOpenTime}`;
+                        } else {
+                            UI.statusLine.textContent = status.statusText;
+                        }
+                    }
+                }
+
+                if (UI.phoneContainer) {
+                    if (status.isOpen) {
+                        UI.phoneContainer.innerHTML = `
+                            <a href="tel:${normalizedPhone}" id="call-link-${idPrefix}" class="push-to-call inline-flex items-center p-0 border-none bg-none cursor-pointer text-decoration-none gap-1" title="Click to call or scan QR code on desktop">
+                                <animated-icons
+                                    src="https://animatedicons.co/get-icon?name=Calling%20V3&style=minimalistic&token=66ff3706-138c-41fa-a993-dee03566e48c"
+                                    trigger="loop"
+                                    attributes='{"variationThumbColour":"#ff3b30","variationName":"Dark","variationNumber":4,"numberOfGroups":2,"strokeWidth":1.5,"background":"#000000","defaultColours":{"group-1":"#ff3b30","group-2":"#eaeaea","background":"#000000"}}'
+                                    height="16" width="16">
+                                </animated-icons>
+                                <span class="lava-text text-sm uppercase leading-none">GIVE US A RING</span>
+                            </a>
+                            <div id="qr-tooltip-${idPrefix}" class="qr-tooltip-down absolute bottom-full left-1/2 -translate-x-1/2 mb-3 bg-black/95 border border-primary-red rounded-lg p-3 text-center shadow-lg opacity-0 invisible transition-all duration-300 ease-in-out pointer-events-none">
+                                <canvas width="150" height="150"></canvas>
+                                <p class="mt-1 text-xs text-gray-300">Scan to call us!</p>
+                            </div>`;
+
+                        const callLink = document.getElementById(`call-link-${idPrefix}`);
+                        const qrTooltip = document.getElementById(`qr-tooltip-${idPrefix}`);
+                        const canvas = qrTooltip ? qrTooltip.querySelector('canvas') : null;
+
+                        if (callLink && qrTooltip && canvas) {
+                            callLink.addEventListener('click', function(e) {
+                                if (!isMobileDevice()) {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    qrTooltip.classList.toggle('opacity-0');
+                                    qrTooltip.classList.toggle('invisible');
+                                    qrTooltip.classList.toggle('active');
+                                    toggleQrTooltip(qrTooltip, canvas);
+                                }
+                            });
+                        }
+                    } else {
+                        UI.phoneContainer.innerHTML = `<span class="text-gray-400 text-sm font-semibold m-0 p-0 block leading-none">${phone}</span>`;
+                    }
+                }
+                
+                if (UI.hoursDropdown) {
+                    let hoursHtml = '';
+                    for (const day of DAYS) {
+                        const dayHours = hours[day];
+                        const time = dayHours.closedText || `${formatTime(dayHours.open)} - ${formatTime(dayHours.close)}`;
+                        const isCurrentDay = (new Date()).getDay() === DAYS.indexOf(day);
+                        const dayClass = isCurrentDay ? 'text-primary-red font-bold' : 'text-gray-300';
+                        hoursHtml += `<div class="flex justify-between items-center py-0.5"><span class="${dayClass}">${day}:</span><span class="${dayClass}">${time}</span></div>`;
+                    }
+                    UI.hoursDropdown.innerHTML = hoursHtml;
+                }
+            }
+
+            function copyAddress() {
+                UI.clipboardHelper.value = address;
+                UI.clipboardHelper.select();
+                UI.clipboardHelper.setSelectionRange(0, 99999);
+                
+                try {
+                    const success = document.execCommand('copy');
+                    if (success) {
+                        UI.copyConfirmation.style.opacity = '1';
+                        setTimeout(() => { UI.copyConfirmation.style.opacity = '0'; }, 1500);
+                    }
+                } catch (err) {
+                    console.error('Failed to copy address:', err);
+                } finally {
+                    UI.clipboardHelper.value = '';
+                    if (window.getSelection) { window.getSelection().removeAllRanges(); }
+                }
+            }
+            
+            renderDynamicContent();
+            
+            if (UI.hoursToggle) UI.hoursToggle.addEventListener('click', toggleHoursDropdown);
+            if (UI.copyButton) UI.copyButton.addEventListener('click', copyAddress);
+            if (UI.directionsLink) UI.directionsLink.href = directionsLink;
+
+            setInterval(renderDynamicContent, 60000);
+        }
+
+        // --- CONFIGURATIONS ---
+        const pbwHours = { 'Sun': { open: null, close: null, closedText: 'Closed' }, 'Mon': { open: 8.5, close: 17 }, 'Tue': { open: 8.5, close: 17 }, 'Wed': { open: 8.5, close: 17 }, 'Thu': { open: 8.5, close: 17 }, 'Fri': { open: 8.5, close: 17 }, 'Sat': { open: null, close: null, closedText: 'Closed' } };
+        const msHours = { 'Sun': { open: null, close: null, closedText: 'Closed' }, 'Mon': { open: 8.5, close: 16.5 }, 'Tue': { open: 8.5, close: 16.5 }, 'Wed': { open: 8.5, close: 16.5 }, 'Thu': { open: 8.5, close: 16.5 }, 'Fri': { open: 8.5, close: 16.5 }, 'Sat': { open: null, close: null, closedText: 'Closed' } };
+
+        initializeLocationCard({
+            idPrefix: 'pbw', phone: '469-625-1127', address: '501 E Lamar St, McKinney, TX 75069',
+            directionsLink: 'https://maps.google.com/?daddr=501%20E%20Lamar%20St%2C%20McKinney%2C%20TX%2075069', hours: pbwHours,
+            showOpenStatus: true
+        });
+        initializeLocationCard({
+            idPrefix: 'ms', phone: '844-232-9453', address: '417 Metro Park Dr, McKinney, TX 75071',
+            directionsLink: 'https://maps.google.com/?daddr=417%20Metro%20Park%20Dr%2C%20McKinney%2C%20TX%2075071', hours: msHours,
+            showOpenStatus: false
+        });
+        
+        document.addEventListener('click', (e) => {
+             ['pbw', 'ms'].forEach(idPrefix => {
+                const qrTooltip = document.getElementById(`qr-tooltip-${idPrefix}`);
+                const callLink = document.getElementById(`call-link-${idPrefix}`);
+                if (qrTooltip && qrTooltip.classList.contains('active') && !qrTooltip.contains(e.target) && callLink && !callLink.contains(e.target)) {
+                    qrTooltip.classList.remove('opacity-0', 'active');
+                    qrTooltip.classList.add('invisible');
+                }
+             });
+        });
+        
+        // --- LOTTIE ICON SETUP ---
+        function getThemedAnimationData(animationData) {
+            const dataStr = JSON.stringify(animationData);
+            let themedStr = dataStr.replace(/"k":\[0,0,0,1\]/g, '"k":[0.918,0.918,0.918,1]');
+            themedStr = themedStr.replace(/"k":\[0.325,0.427,0.996,1\]/g, '"k":[1,0.231,0.188,1]');
+            return JSON.parse(themedStr);
+        }
+        
+        const craftsmanshipIconData = {"v":"5.5.7","fr":30,"ip":0,"op":60,"w":100,"h":100,"nm":"Badge","ddd":0,"assets":[],"layers":[{"ddd":0,"ind":1,"ty":4,"nm":"Star","sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[50,50,0],"ix":2},"a":{"a":0,"k":[50,50,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],"v":[[50,23.3],[55.8,39.15],[72.4,39.15],[59.2,49.85],[65,65.7],[50,56.55],[35,65.7],[40.8,49.85],[27.6,39.15],[44.2,39.15]],"c":true},"ix":2},"nm":"Path 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"fl","c":{"a":0,"k":[0,0,0,1],"ix":4},"o":{"a":0,"k":100,"ix":8},"r":1,"bm":0,"nm":"Fill 1","mn":"ADBE Vector Graphic - Fill","hd":false}],"nm":"Shape 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":60,"st":0,"bm":0},{"ddd":0,"ind":2,"ty":4,"nm":"Circle","sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[50,50,0],"ix":2},"a":{"a":0,"k":[50,50,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ty":"el","d":1,"s":{"a":0,"k":[90,90],"ix":2},"p":{"a":0,"k":[50,50],"ix":3},"nm":"Ellipse Path 1","mn":"ADBE Vector Shape - Ellipse","hd":false},{"ty":"st","c":{"a":0,"k":[0.325,0.427,0.996,1],"ix":3},"o":{"a":0,"k":100,"ix":7},"w":{"a":0,"k":2,"ix":4},"lc":1,"lj":1,"ml":4,"bm":0,"nm":"Stroke 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[50,50],"ix":3},"a":{"a":0,"k":[50,50],"ix":1},"s":{"a":0,"k":[100,100],"ix":2},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Ellipse 1","np":3,"cix":2,"bm":0,"ix":2,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":60,"st":0,"bm":0}]};
+        const materialsIconData = {"v":"5.5.7","fr":30,"ip":0,"op":60,"w":100,"h":100,"nm":"Chemist","ddd":0,"assets":[],"layers":[{"ddd":0,"ind":1,"ty":4,"nm":"Bucket","sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[50,50,0],"ix":2},"a":{"a":0,"k":[50,50,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],"v":[[34.1,23.3],[65.9,23.3],[65.9,23.3],[65.9,32.45],[65.9,64.2],[65.9,76.7],[54.2,76.7],[45.8,76.7],[34.1,76.7],[34.1,64.2],[34.1,32.45],[34.1,23.3]],"c":true},"ix":2},"nm":"Path 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0,0,0,1],"ix":3},"o":{"a":0,"k":100,"ix":7},"w":{"a":0,"k":2,"ix":4},"lc":1,"lj":1,"ml":4,"bm":0,"nm":"Stroke 1","mn":"ADBE Vector Graphic - Stroke","hd":false}],"nm":"Shape 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false},{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0],[0,0]],"v":[[34.1,32.45],[65.9,32.45],[65.9,76.7],[34.1,76.7]],"c":true},"ix":2},"nm":"Path 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"fl","c":{"a":0,"k":[0.325,0.427,0.996,1],"ix":4},"o":{"a":0,"k":100,"ix":8},"r":1,"bm":0,"nm":"Fill 1","mn":"ADBE Vector Graphic - Fill","hd":false}],"nm":"Shape 2","np":3,"cix":2,"bm":0,"ix":2,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":60,"st":0,"bm":0}]};
+        const solutionsIconData = {"v":"5.5.7","fr":30,"ip":0,"op":60,"w":100,"h":100,"nm":"Competitiveness","ddd":0,"assets":[],"layers":[{"ddd":0,"ind":1,"ty":4,"nm":"Arrow","sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":1,"k":[{"t":0,"s":[8.3,50,0],"e":[50,50,0],"h":0,"i":{"x":[0.667],"y":[1]},"o":{"x":[0.333],"y":[0]}},{"t":30,"s":[50,50,0]}],"ix":2},"a":{"a":0,"k":[50,50,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0]],"v":[[50,50],[83.3,50],[72.4,39.15]],"c":false},"ix":2},"nm":"Path 1","mn":"ADBE Vector Shape - Group","hd":false},{"ind":1,"ty":"sh","ix":2,"ks":{"a":0,"k":{"i":[[0,0],[0,0]],"o":[[0,0],[0,0]],"v":[[83.3,50],[72.4,60.85]],"c":false},"ix":2},"nm":"Path 2","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0,0,0,1],"ix":3},"o":{"a":0,"k":100,"ix":7},"w":{"a":0,"k":2,"ix":4},"lc":1,"lj":1,"ml":4,"bm":0,"nm":"Stroke 1","mn":"ADBE Vector Graphic - Stroke","hd":false}],"nm":"Shape 1","np":4,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":60,"st":0,"bm":0},{"ddd":0,"ind":2,"ty":4,"nm":"Circles","sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[50,50,0],"ix":2},"a":{"a":0,"k":[50,50,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ty":"el","d":1,"s":{"a":0,"k":[90,90],"ix":2},"p":{"a":0,"k":[50,50],"ix":3},"nm":"Ellipse Path 1","mn":"ADBE Vector Shape - Ellipse","hd":false},{"ty":"st","c":{"a":0,"k":[0.325,0.427,0.996,1],"ix":3},"o":{"a":0,"k":100,"ix":7},"w":{"a":0,"k":2,"ix":4},"lc":1,"lj":1,"ml":4,"bm":0,"nm":"Stroke 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[50,50],"ix":3},"a":{"a":0,"k":[50,50],"ix":1},"s":{"a":0,"k":[100,100],"ix":2},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Ellipse 1","np":3,"cix":2,"bm":0,"ix":2,"mn":"ADBE Vector Group","hd":false},{"ty":"gr","it":[{"ty":"el","d":1,"s":{"a":0,"k":[60,60],"ix":2},"p":{"a":0,"k":[50,50],"ix":3},"nm":"Ellipse Path 1","mn":"ADBE Vector Shape - Ellipse","hd":false},{"ty":"st","c":{"a":0,"k":[0.325,0.427,0.996,1],"ix":3},"o":{"a":0,"k":100,"ix":7},"w":{"a":0,"k":2,"ix":4},"lc":1,"lj":1,"ml":4,"bm":0,"nm":"Stroke 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[50,50],"ix":3},"a":{"a":0,"k":[30,30],"ix":1},"s":{"a":0,"k":[100,100],"ix":2},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Ellipse 2","np":3,"cix":2,"bm":0,"ix":3,"mn":"ADBE Vector Group","hd":false},{"ty":"gr","it":[{"ty":"el","d":1,"s":{"a":0,"k":[30,30],"ix":2},"p":{"a":0,"k":[50,50],"ix":3},"nm":"Ellipse Path 1","mn":"ADBE Vector Shape - Ellipse","hd":false},{"ty":"fl","c":{"a":0,"k":[0,0,0,1],"ix":4},"o":{"a":0,"k":100,"ix":8},"r":1,"bm":0,"nm":"Fill 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[50,50],"ix":3},"a":{"a":0,"k":[15,15],"ix":1},"s":{"a":0,"k":[100,100],"ix":2},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Ellipse 3","np":3,"cix":2,"bm":0,"ix":4,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":60,"st":0,"bm":0}]};
+
+        // --- RENDER ICONS ---
+        lottie.loadAnimation({
+            container: document.getElementById('icon-craftsmanship'),
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            animationData: getThemedAnimationData(craftsmanshipIconData)
+        });
+
+        lottie.loadAnimation({
+            container: document.getElementById('icon-materials'),
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            animationData: getThemedAnimationData(materialsIconData)
+        });
+        
+        lottie.loadAnimation({
+            container: document.getElementById('icon-solutions'),
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            animationData: getThemedAnimationData(solutionsIconData)
+        });
+    });
+</script>
+</body></html>
+
