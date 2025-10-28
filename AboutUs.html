@@ -1,0 +1,1628 @@
+<!DOCTYPE html>
+<html class="js scroll-smooth" lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="">
+  <link rel="canonical" href="https://wikdwraps.com/pages/about-us-1">
+  <title>About Us – WIKDWRAPS</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Tailwind Config (from MapsWidget.html) -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+          },
+          colors: {
+            'primary-red': '#ff3b30',
+            'success-green': '#4cd964',
+            'bg-dark': '#1a1a1a',
+          },
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Font Awesome (for hero example styles) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Leaflet CSS (from MapsWidget.html) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+  <!-- Map Widget JS Libraries (from MapsWidget.html) -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
+  <script src="https://animatedicons.co/scripts/embed-animated-icons.js"></script>
+
+
+  <!-- Core Site Styles (from StyleGuide & index.html) -->
+  <style>
+    :root {
+      --color-background: #0A0A0A;
+      --color-text: #EAEAEA;
+      --color-text-muted: #888888;
+      --color-primary: #FF3B30;
+      --color-surface: #141414;
+      --color-border: #2A2A2A;
+      --font-heading: 'Rajdhani', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --motion-duration-default: 0.3s; /* Added from hero example */
+      --motion-easing-fluid: cubic-bezier(0.7, 0, 0.3, 1); /* Added from hero example */
+    }
+
+    /* Base styles */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--color-background) !important;
+      color: var(--color-text) !important;
+      font-family: var(--font-body) !important;
+    }
+
+    .font-heading {
+      font-family: var(--font-heading);
+    }
+
+    .font-body {
+      font-family: var(--font-body);
+    }
+
+    h1,
+    h2,
+    h3,
+    .h1,
+    .h2,
+    .h3 {
+      font-family: var(--font-heading) !important;
+      font-weight: 700 !important;
+      line-height: 1.2 !important;
+      text-transform: uppercase !important;
+      color: white !important;
+    }
+
+    .h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+    }
+
+    .h2 {
+      font-size: clamp(2rem, 5vw, 3rem);
+    }
+
+    .h3 {
+      font-size: clamp(1.5rem, 4vw, 2.25rem);
+    }
+
+    p,
+    .p,
+    .rte,
+    .rte p {
+      font-family: var(--font-body) !important;
+      color: var(--color-text) !important;
+      line-height: 1.6 !important;
+    }
+
+    .p-muted {
+      font-family: var(--font-body);
+      color: var(--color-text-muted) !important;
+      line-height: 1.6;
+    }
+
+    a.link {
+      color: var(--color-primary) !important;
+      text-decoration: none;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    a.link:hover {
+      text-decoration: underline !important;
+    }
+
+    /* Base image styles */
+    img {
+      border: none !important;
+      box-shadow: none !important;
+      background: transparent !important;
+    }
+
+    .image-wrapper {
+      border: none !important;
+    }
+
+    /* --- Combined BUTTON STYLES (Original .btn + Hero Example .btn) --- */
+    .btn {
+      display: inline-flex; /* Changed from inline-block */
+      align-items: center; /* Added */
+      justify-content: center; /* Added */
+      padding: 12px 28px; /* Adjusted padding */
+      font-family: var(--font-heading) !important;
+      font-size: 1.1rem; /* Adjusted font size */
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--color-text) !important;
+      background-color: transparent;
+      border: 2px solid var(--color-border);
+      position: relative;
+      overflow: hidden;
+      transition: color var(--motion-duration-default) ease-in-out,
+                  border-color var(--motion-duration-default) ease-in-out,
+                  transform var(--motion-duration-default) var(--motion-easing-fluid); /* Combined transitions */
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 10px 100%, 0 85%);
+      text-decoration: none;
+      flex-shrink: 0;
+      cursor: pointer;
+      min-width: 150px; /* Added */
+    }
+
+    .btn span {
+      position: relative;
+      z-index: 2;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      background-color: var(--color-primary); /* Default background for hover effect */
+      transform: translateX(-101%);
+      transition: transform 0.5s var(--motion-easing-fluid); /* Adjusted transition */
+    }
+
+    .btn:hover {
+      color: white !important;
+      transform: translateY(-3px);
+      border-color: var(--color-primary); /* Ensure border turns red on hover */
+    }
+
+    .btn:hover::before {
+      transform: translateX(0);
+    }
+
+    .btn.btn-primary {
+      border-color: var(--color-primary);
+      background-color: var(--color-primary);
+      color: white !important; /* Ensure text is white */
+    }
+
+    .btn.btn-primary:hover {
+      border-color: var(--color-primary); /* Keep border red */
+      /* Background is handled by ::before */
+    }
+     /* Removed ::before override for btn-primary to keep standard hover */
+
+    .btn.btn-secondary {
+      border-color: var(--color-text);
+      background-color: var(--color-text);
+      color: var(--color-background) !important;
+    }
+
+    .btn.btn-secondary:hover {
+      border-color: var(--color-primary);
+      color: white !important;
+    }
+
+    .btn.btn-secondary::before {
+      background-color: var(--color-primary);
+    }
+
+    .btn.btn-tertiary {
+      border-color: var(--color-primary); /* Changed from white to primary */
+			color: var(--color-primary) !important; /* Added color */
+    }
+
+    .btn.btn-tertiary:hover {
+       border-color: var(--color-primary);
+       color: white !important; /* Change text color on hover */
+    }
+
+    .btn.btn-tertiary::before {
+      background-color: var(--color-primary);
+    }
+
+    /* Filter Button (From StyleGuide) - Keep original styles if needed elsewhere */
+    .filter-btn {
+      padding: 10px 24px;
+      font-size: 16px;
+      color: var(--color-text-muted);
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 8px 100%, 0 88%);
+       /* Inherits base .btn styles, override if needed */
+       min-width: auto; /* Override min-width if necessary */
+    }
+     /* Removed .btn class prefix for filter button styles for simplicity */
+    .filter-btn:hover {
+      color: white;
+      border-color: var(--color-primary);
+    }
+
+    .filter-btn.active {
+      color: white;
+      border-color: var(--color-primary);
+    }
+
+    .filter-btn.active::before {
+      transform: translateX(0);
+      background-color: var(--color-primary);
+    }
+
+
+    /* --- CARD STYLES --- */
+    .package-card {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      overflow: hidden;
+      border-radius: 8px;
+      border: 1px solid var(--color-border);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      display: block;
+    }
+
+    .package-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(255, 59, 48, 0.3);
+      border-color: var(--color-primary);
+    }
+
+    .package-card-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .package-card:hover .package-card-bg {
+      transform: scale(1.05);
+    }
+
+    .package-card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, transparent 60%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 25px;
+    }
+
+    .package-card-content {
+      transform: translateY(20px);
+      opacity: 0;
+      transition: transform 0.4s ease 0.1s, opacity 0.4s ease 0.1s;
+    }
+
+    .package-card:hover .package-card-content {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .package-card-title {
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      color: white;
+      text-transform: uppercase;
+    }
+
+    .package-card-description {
+      color: var(--color-text-muted);
+      margin-bottom: 1rem;
+    }
+
+    .package-card-link {
+      font-size: 1rem;
+      color: var(--color-primary);
+      text-transform: uppercase;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    /* --- WIKD GALLERY CARD --- */
+    @keyframes lavaFlow {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .lava-gradient-text { /* Added from hero example */
+      background: linear-gradient(90deg, #b30000, #ff1a00, #ffaa00, #ff1a00, #b30000);
+      background-size: 300%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: lavaFlow 4s ease-in-out infinite;
+    }
+
+    .gallery-card-wrapper {
+      max-width: 380px;
+      width: 100%;
+      perspective: 1000px;
+    }
+
+    .gallery-card {
+      display: block;
+      position: relative;
+      aspect-ratio: 1 / 1;
+      border-radius: 8px;
+      border: 1px solid var(--color-border);
+      text-decoration: none;
+      isolation: isolate;
+      transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+      transform-style: preserve-3d;
+    }
+
+    .gallery-card-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(100%);
+      transition: transform 0.6s cubic-bezier(0.3, 1, 0.4, 1), filter 0.6s ease;
+    }
+
+    .gallery-card:hover .gallery-card-bg {
+      filter: grayscale(100%) brightness(0.3);
+    }
+
+    .gallery-card-overlay {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, transparent 60%);
+      position: relative;
+      z-index: 5;
+      transform: translateZ(100px);
+      transform-style: preserve-3d;
+      padding: 15px;
+    }
+
+    .gallery-card-title {
+      font-family: var(--font-heading);
+      font-size: 1.75rem;
+      color: white;
+      margin: 0;
+      line-height: 1.2;
+      text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.8);
+      transition: color 0.3s ease;
+      text-transform: uppercase;
+    }
+
+    .gallery-card:hover .gallery-card-title {
+      background: linear-gradient(90deg, #b30000, #ff1a00, #ffaa00, #ff1a00, #b30000);
+      background-size: 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: lavaFlow 4s ease-in-out infinite;
+      text-shadow: none;
+      filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.7));
+    }
+
+    .card-badge-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    .wikd-sub-badge {
+      display: inline-block;
+      background-color: rgba(255, 59, 48, 0.7);
+      color: white;
+      padding: 6px 18px 8px;
+      font-size: 12px;
+      font-weight: 600;
+      font-style: italic;
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 8px 100%, 0 80%);
+    }
+
+    .gallery-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 8px;
+      padding: 2px;
+      background: linear-gradient(90deg, #b30000, #ff1a00, #ffaa00, #ff1a00, #b30000);
+      background-size: 300%;
+      animation: lavaFlow 4s ease-in-out infinite;
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      z-index: 6;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .gallery-card:hover::before {
+      opacity: 1;
+    }
+
+    .gallery-card:hover {
+      box-shadow: 0 0 25px rgba(255, 59, 48, 0.5);
+    }
+
+    /* Shopify Overrides & General Layout */
+    .shopify-section {
+      background-color: var(--color-background);
+    }
+
+    .page-width {
+      max-width: 1400px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+
+    @media (min-width: 750px) {
+      .page-width {
+        padding-left: 2.5rem;
+        padding-right: 2.5rem;
+      }
+    }
+
+    /* Hero Specific Styles from Example */
+     .hero-section {
+        background-image:
+            radial-gradient(ellipse 50% 50% at 20% 30%, rgba(255, 59, 48, 0.1), transparent 70%),
+            linear-gradient(to top, rgba(10, 10, 10, 1) 5%, rgba(10, 10, 10, 0.7) 40%, transparent 70%),
+            url('https://cdn.shopify.com/s/files/1/0671/4635/0805/files/WIKD_cinematic.webp?v=1737499332'); /* Using existing banner image */
+        background-size: cover;
+        background-position: center;
+    }
+
+    .image-with-text__media {
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--color-border);
+    }
+
+    .image-with-text__media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .image-with-text__content {
+      padding: 0; /* Remove padding if text aligns directly */
+       display: flex; /* Use flexbox for vertical alignment */
+      flex-direction: column; /* Stack elements vertically */
+      justify-content: center; /* Center content vertically */
+    }
+
+     @media (min-width: 750px) {
+        .image-with-text__content {
+            padding: 2rem; /* Add padding back on larger screens */
+        }
+     }
+
+
+    .image-with-text__text--caption {
+      color: var(--color-primary);
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .image-with-text__heading {
+      margin-bottom: 1rem;
+    }
+
+    .image-with-text__text.rte {
+      margin-bottom: 1.5rem;
+    }
+
+    .image-with-text__text.rte ul {
+      list-style-type: disc;
+      padding-left: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .image-with-text__text.rte li {
+      margin-bottom: 0.5rem;
+    }
+
+    /* Fallback Shopify classes */
+    .button {
+      text-decoration: none;
+    }
+
+    .button--secondary {
+      /* This will now use the .btn.btn-secondary styles */
+    }
+  </style>
+
+  <!-- Styles for Incorporated Map (from MapsWidget.html) -->
+  <style>
+    /* --- CORE PAGE LAYOUT STYLES --- */
+    #map-wrapper {
+      position: relative;
+      width: 100%;
+      flex-grow: 1;
+      /* Make it fill remaining space */
+      background-color: #000000;
+    }
+
+    #map {
+      width: 100%;
+      height: 100%;
+      background-color: #1a1a1a;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+    }
+
+    /* Border Overlay - Adjusted to start 0px down (was 60px) */
+    #map-border-overlay {
+      position: absolute;
+      top: 0;
+      /* Offset by bar height */
+      left: 0;
+      right: 0;
+      bottom: 0;
+      /* UPDATED: Using multiple inset shadows to only draw the left, right, and bottom frame */
+      box-shadow:
+        inset 20px 0 0 0 rgba(0, 0, 0, 1),
+        /* Left side */
+        inset -20px 0 0 0 rgba(0, 0, 0, 1),
+        /* Right side */
+        inset 0 -20px 0 0 rgba(0, 0, 0, 1);
+      /* Bottom side */
+      pointer-events: none;
+      z-index: 1001;
+    }
+
+    /* --- END CORE PAGE LAYOUT STYLES --- */
+
+    /* --- NEW TOP BAR CUSTOM STYLES --- */
+
+    /* Dropdown Icon Rotation */
+    .dropdown-icon {
+      transition: transform 0.3s ease;
+    }
+
+    .dropdown-icon.active {
+      transform: rotate(180deg);
+    }
+
+    /* Tooltip Body: Increased Z-index to ensure it is above the map border overlay (1001) */
+    .qr-tooltip-down {
+      z-index: 3000;
+    }
+
+    /* Tooltip Arrow */
+    .qr-tooltip-down::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-style: solid;
+      border-width: 7px;
+      border-color: transparent transparent #ff3b30 transparent;
+      z-index: 3001;
+      /* Must be > Tooltip body z-index */
+    }
+
+    .qr-tooltip-down::after {
+      content: '';
+      position: absolute;
+      top: -7px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-style: solid;
+      border-width: 7px;
+      border-color: transparent transparent rgba(0, 0, 0, 0.95) transparent;
+      z-index: 3002;
+      /* Must be > ::before z-index */
+    }
+
+    /* --- MAP MARKER STYLES (Kept existing for functionality) --- */
+
+    /* Ping Styles */
+    @keyframes ping-animation {
+      0% {
+        transform: scale(0);
+        opacity: 0.8;
+      }
+
+      80% {
+        transform: scale(1);
+        opacity: 0.8;
+      }
+
+      100% {
+        transform: scale(1.25);
+        opacity: 0;
+      }
+    }
+
+    .ping-container {
+      width: 600px;
+      height: 600px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .ping-circle {
+      width: 40px;
+      height: 40px;
+      border: 1px solid #ff3b30;
+      border-radius: 50%;
+      box-shadow: 0 6px 12px -2px rgba(0, 0, 0, 0.75);
+      position: absolute;
+      animation: ping-animation var(--ping-duration) infinite cubic-bezier(0.4, 0, 0.2, 1);
+      transition: opacity 0.3s ease;
+    }
+
+    .ping-dot {
+      width: 10px;
+      height: 10px;
+      background-color: #ff3b30;
+      border-radius: 50%;
+      box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.8);
+      position: absolute;
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    .ping-small-visual {
+      filter: saturate(70%);
+    }
+
+    .ping-small-visual .ping-dot {
+      transform: scale(0.5);
+    }
+
+    .ping-small-visual .ping-circle {
+      width: 20px;
+      height: 20px;
+      transform: scale(0.5);
+    }
+
+    .ping-small-visual .crosshair-wrapper {
+      transform: scale(0.5);
+    }
+
+    .crosshair-active .ping-circle {
+      opacity: 0 !important;
+    }
+
+    .crosshair-active .ping-dot {
+      transform: scale(0.5);
+    }
+
+    .crosshair-active .crosshair-dot {
+      opacity: 1 !important;
+    }
+
+    /* Tooltip Styles */
+    .custom-tooltip {
+      position: absolute;
+      left: 50%;
+      bottom: 310px;
+      padding: 6px 10px;
+      background-color: rgba(0, 0, 0, 0.9);
+      color: #ff3b30;
+      border: 1px solid #ff3b30;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(-50%) translateY(10px);
+      transition: opacity 0.2s, transform 0.2s, visibility 0s 0.2s;
+      text-decoration: none;
+      z-index: 1004;
+      font-family: 'Rajdhani', sans-serif;
+    }
+
+    .custom-tooltip:link,
+    .custom-tooltip:visited,
+    .custom-tooltip:hover,
+    .custom-tooltip:active {
+      color: #ff3b30;
+    }
+
+    .custom-tooltip::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: -6px;
+      transform: translateX(-50%);
+      border: 3px solid transparent;
+      border-top-color: #ff3b30;
+    }
+
+    .ping-container:hover .custom-tooltip {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    /* --- END MAP MARKER STYLES --- */
+  </style>
+</head>
+
+<body class="gradient antialiased"> <!-- Added antialiased from hero example -->
+
+  <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
+
+     <!-- ========== NEW Hero Section ========== -->
+     <section class="hero-section relative pt-24 sm:pt-32 lg:pt-48 pb-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-left">
+            <div class="max-w-3xl">
+                <h1 class="font-heading text-5xl sm:text-6xl md:text-7xl font-bold uppercase tracking-wider lava-gradient-text">
+                    About WIKD Wraps
+                </h1>
+                <p class="mt-6 text-lg sm:text-xl text-gray-300">
+                    Discover the fusion of high-performance automotive expertise and world-class vehicle protection. WIKD Wraps brings precision, passion, and perfection to paint protection film, ceramic coatings, and custom vinyl wraps.
+                </p>
+                <div class="mt-10 flex flex-wrap gap-4">
+                    <a href="#services" class="btn btn-primary"> <!-- Changed href to target services section -->
+                        <span>Explore Services</span>
+                    </a>
+                    <a href="https://wikdwraps.com/pages/contact" class="btn btn-tertiary"> <!-- Changed href and text -->
+                        <span>Get a Quote</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== Text Section (Restructured with Image) ========== -->
+    <section class="shopify-section section text-section py-20">
+      <div class="page-width px-6 mx-auto">
+        <!-- Changed to two-column grid -->
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+             <!-- Image Column -->
+             <div class="image-with-text__media">
+                <img src="https://wikdwraps.com/cdn/shop/files/Satin_PPF_Wrapped_Black_and_Green_Lamborghini_Huracan_STO_Freshly_Detailed.jpg?v=1743435243&width=750"
+                     alt="Satin PPF Wrapped Lamborghini Huracan STO"
+                     width="750" height="1000" class="rounded-lg border border-[var(--color-border)] object-cover w-full h-full">
+            </div>
+            <!-- Text Column -->
+            <div class="text-container image-with-text__content w-full md:text-left">
+                <h2 class="h2 mb-4">Elevating Performance &amp; Customization</h2>
+                <p class="p-muted mb-6">WIKD Motorsports was founded by passionate entrepreneurs who live and breathe
+                high-performance cars. After encountering less-than-ideal experiences with other performance shops, they
+                set out to create their own—one that prioritizes quality, precision, and customer satisfaction.
+                Today, WIKD Motorsports and BOLT Motorsports are industry leaders in custom performance component
+                development, fabrication, and manufacturing; and aftermarket performance modification sales, installation,
+                and tuning. Our team specializes in crafting high-performance solutions for enthusiasts who demand the
+                best, including 1200+ HP relaible and daily drivable cars.
+                Now, we're expanding our expertise and demand for perfection to deliver next level craftsmanship and
+                innovation to the car care, protection, and customization industries.</p>
+                <a href="https://wikdwraps.com/pages/contact" class="btn btn-primary">
+                <span>Protect your vehicle with WIKD Wraps</span>
+                </a>
+            </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ========== Multirow Section ========== -->
+    <div id="shopify-section-template--20779435327693__multirow_J9nGx4" class="shopify-section section">
+      <div class="multirow py-12 md:py-20 color-background-1">
+        <div class="page-width px-6 mx-auto space-y-12 md:space-y-20">
+
+          <!-- Row 1: WIKD WRAPS -->
+          <div class="image-with-text">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+              <div class="image-with-text__media image-with-text__media--medium">
+                 <img
+                 src="https://wikdwraps.com/cdn/shop/files/Satin_Black_and_Green_Lamborghini_Huracan_STO.jpg?v=1744144821&width=750"
+                 alt="Satin Black and Green Lamborghini Huracan STO" width="750" height="1000"
+                 sizes="(min-width: 750px) 50vw, 100vw">
+              </div>
+              <div class="image-with-text__content">
+                <p class="image-with-text__text image-with-text__text--caption">
+                  A New Era
+                </p>
+                <h2 class="image-with-text__heading h1">
+                  WIKD WRAPS
+                </h2>
+                <div class="image-with-text__text rte body p-muted">
+                  <p>WIKD has formed strategic partnerships with film manufacturers and professional car care product
+                    distributors, and hired world-class installers to provide the best products and service delivery
+                    for cosmetic vehicle protection, maintenance, and customization. </p>
+                </div>
+                <a href="https://wikdwraps.com/pages/paint-protection-film" class="btn btn-secondary">
+                  <span>Reserve your Spot</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- MOVED Partners Section -->
+          <div id="shopify-section-template--20779435327693__partners_bANp3k" class="shopify-section">
+            <section class="partners-section bg-[var(--color-surface)] py-20 rounded-lg border border-[var(--color-border)]">
+              <div class="partners-container page-width px-6 mx-auto">
+                <h2 class="h2 text-center">Our Product Selection</h2>
+                <p class="p-muted text-center max-w-lg mx-auto mb-12">Because the best demand the best.</p>
+                <div class="partners-grid">
+
+                  <div class="partner-logo">
+                    <img src="https://wikdwraps.com/cdn/shop/files/Stek-USA-White_300x300.png?v=1680546639"
+                      alt="STEK USA Logo">
+                  </div>
+
+                  <div class="partner-logo">
+                    <!-- UPDATED LOGO -->
+                    <img src="https://www.flect.com/cdn/shop/files/White_Logo_f5429745-1903-4d61-8842-8631b717d587.png?v=1754450726&width=5760" alt="Flect Logo">
+                  </div>
+
+                  <div class="partner-logo">
+                    <img src="https://wikdwraps.com/cdn/shop/files/Carpro_Logo_300x300.png?v=1680546639" alt="Carpro Logo">
+                  </div>
+
+                  <div class="partner-logo">
+                    <img
+                      src="https://wikdwraps.com/cdn/shop/files/koch-chemie-logo-8BCDB7E002-seeklogo.com_300x300.png?v=1680546639"
+                      alt="Koch Chemie Logo">
+                  </div>
+
+                  <div class="partner-logo">
+                    <img
+                      src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/GYEON-cerifiled-detailer-rgb.png?v=1761676404"
+                      alt="GYEON Certified Detailer Logo">
+                  </div>
+
+                </div>
+              </div>
+            </section>
+
+            <style>
+              .partners-section {
+                text-align: center;
+              }
+
+              .partners-grid {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: center;
+                gap: 2.5rem; /* 40px */
+              }
+
+              .partner-logo {
+                flex-basis: 150px;
+              }
+
+              .partner-logo img {
+                max-width: 100%;
+                width: 100%;
+                height: auto;
+                max-height: 100px; /* Increased max-height slightly */
+                object-fit: contain;
+                filter: brightness(0) invert(1);
+                opacity: 0.7;
+                transition: opacity 0.3s ease;
+              }
+
+              .partner-logo img:hover {
+                opacity: 1;
+              }
+            </style>
+          </div>
+          <!-- END MOVED Partners Section -->
+
+
+          <!-- Row 2: FACILITIES -->
+          <div class="image-with-text">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+              <div class="image-with-text__media image-with-text__media--medium md:order-last">
+                 <img
+                 src="https://wikdwraps.com/cdn/shop/files/wikd417.webp?v=1741981024&width=750"
+                 alt="WIKD Motorsports Facility" width="750" height="750"
+                 sizes="(min-width: 750px) 50vw, 100vw">
+              </div>
+              <div class="image-with-text__content md:order-first">
+                <p class="image-with-text__text image-with-text__text--caption">
+                  State of the art
+                </p>
+                <h2 class="image-with-text__heading h1">
+                  FACILITIES
+                </h2>
+                <div class="image-with-text__text rte body p-muted">
+                  <p>WIKD Wraps operates from a 15,000 SF facility in the heart of historic downtown McKinney, Texas.
+                    Originally built in 1929, our renovated warehouse seamlessly blends classic charm with
+                    cutting-edge vehicle care. Inside, you'll find a purpose designed and secured premium car care
+                    and storage facility.</p>
+                </div>
+                <a href="https://wikdwraps.com/pages/paint-protection-film" class="btn btn-secondary">
+                  <span>Explore PPF</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 3: WARRANTIES -->
+          <div class="image-with-text">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+              <div class="image-with-text__media image-with-text__media--medium">
+                <img
+                 src="https://wikdwraps.com/cdn/shop/files/Dodge_Viper_Carbon_Wheel_Brake_Calipers_Ceramic_Coated.jpg?v=1744144862&width=750"
+                 alt="Dodge Viper wheel with ceramic coating" width="750" height="1125"
+                 sizes="(min-width: 750px) 50vw, 100vw">
+              </div>
+              <div class="image-with-text__content">
+                <p class="image-with-text__text image-with-text__text--caption">
+                  Industry leading
+                </p>
+                <h2 class="image-with-text__heading h1">
+                  WARRANTIES
+                </h2>
+                <div class="image-with-text__text rte body p-muted">
+                  <p>At WIKD Wraps, we stand behind every product we install. Enjoy unmatched protection with:</p>
+                  <ul>
+                    <li>12-year warranty on Paint Protection Film</li>
+                    <li>5-year warranty on Ceramic Coatings</li>
+                    <li>Lifetime warranty on Nanoceramic Window Tint</li>
+                  </ul>
+                  <p>Plus, our exclusive maintenance plans ensure your investment stays show-ready for years to come.</p>
+                </div>
+                <a href="https://wikdwraps.com/pages/maintenance-plans" class="btn btn-secondary">
+                  <span>Explore Maintenance Plans</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+     <!-- ========== MOVED Full Width Map Section ========== -->
+     <section class="shopify-section section map-full-width-section bg-[var(--color-background)] py-20"> <!-- Added padding -->
+        <!-- Map Widget (INCORPORATED) -->
+        <div class="map-container w-full h-[600px] rounded-lg overflow-hidden border border-[var(--color-border)] flex flex-col relative mx-auto" style="max-width: 1600px;"> <!-- Added max-width and centering -->
+
+         <!-- START: TOP BAR (from MapsWidget.html) -->
+         <div id="top-bar-card"
+           class="w-full z-20 p-4 md:px-8 bg-black/95 text-gray-50 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between min-h-[60px] font-rajdhani relative flex-shrink-0">
+
+           <!-- 1. LEFT CONTROLS (Status/Hours & Phone) -->
+           <div id="card-left-controls"
+             class="flex items-center justify-between md:justify-start w-full md:w-auto gap-4 md:gap-6 order-1 flex-shrink-0 pt-1">
+
+             <!-- STATUS AND HOURS GROUP -->
+             <div id="status-info-group" class="flex items-center gap-3">
+               <span id="motorsports-status-line" class="text-sm font-semibold transition duration-300"></span>
+
+               <!-- Hours Dropdown Wrapper -->
+               <div id="hours-toggle-wrapper" class="relative">
+                 <div id="hours-dropdown-toggle"
+                   class="cursor-pointer text-sm font-semibold text-gray-400 hover:text-white transition duration-200 flex items-center gap-1">
+                   <span class="uppercase">All Hours</span>
+                   <svg class="dropdown-icon w-3 h-3" viewBox="0 0 24 24" fill="none"
+                     xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
+                     <path d="M7 10L12 15L17 10" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                   </svg>
+                 </div>
+
+                 <!-- Hours Dropdown Content -->
+                 <div id="full-hours-dropdown"
+                   class="absolute top-full left-0 z-[2005] p-3 bg-black/95 border border-primary-red border-t-0 rounded-b-lg w-48 text-gray-300 text-xs overflow-hidden max-h-0 opacity-0 transition-all duration-300 ease-out">
+                   <!-- Hours populated by JavaScript -->
+                 </div>
+               </div>
+             </div>
+
+             <!-- Phone/Call Container -->
+             <div id="phone-container" class="relative w-auto flex-shrink-0 min-w-[120px]">
+               <!-- Dynamic content rendered here by JS -->
+             </div>
+
+           </div>
+
+           <!-- 2. CENTER TITLE -->
+           <div id="card-center-title"
+             class="order-2 w-full my-2 md:my-0 text-center md:absolute md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-auto">
+             <h2 class="text-xl md:text-2xl font-bold text-white uppercase tracking-wider">THE WIKD GARAGE</h2>
+           </div>
+
+           <!-- 3. RIGHT CONTROLS (Directions & Copy Address) -->
+           <div id="card-right-controls"
+             class="flex items-center gap-3 md:gap-4 flex-wrap justify-center md:justify-end order-3 w-full md:w-auto flex-shrink-0">
+
+             <!-- Directions Link -->
+             <a href="https://maps.google.com/?daddr=417%20Metro%20Park%20Dr,%2C%20McKinney%2C%20TX%2075071"
+               class="flex items-center leading-none text-sm font-semibold uppercase tracking-wider text-primary-red hover:text-white transition duration-200 p-0 m-0"
+               target="_blank">
+               Directions
+             </a>
+
+             <!-- Copy Address Link -->
+             <div id="copy-controls-wrapper" class="relative flex items-center">
+               <button id="copy-address-button"
+                 class="flex items-center leading-none text-sm font-semibold uppercase tracking-wider text-gray-400 hover:text-white transition duration-200 bg-transparent border-none p-0 m-0">
+                 Copy Address
+               </button>
+               <!-- Copy Confirmation -->
+               <span id="copy-confirmation"
+                 class="text-success-green absolute right-0 top-1/2 -translate-y-1.5/2 ml-2 text-xs font-semibold opacity-0 transition duration-300 pointer-events-none"
+                 aria-live="polite">Copied!</span>
+             </div>
+           </div>
+         </div>
+         <!-- END: TOP BAR -->
+
+         <!-- START: MAP CONTAINER (from MapsWidget.html) -->
+         <div id="map-wrapper">
+           <div id="map"></div>
+           <div id="map-border-overlay"></div>
+         </div>
+         <!-- END: MAP CONTAINER -->
+
+         <!-- Hidden textarea (from MapsWidget.html) -->
+         <textarea id="address-clipboard-helper" style="position: absolute; left: -9999px;"></textarea>
+       </div>
+       <!-- End Map Widget -->
+     </section>
+
+
+  </main>
+
+  <!-- Leaflet JS (from MapsWidget.html) -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <!-- Map Widget Logic (from MapsWidget.html) -->
+  <script>
+    // --- LOCATION DATA (Map Specific) ---
+    const locations = {
+      motorsports: {
+        latlng: [33.21339760266058, -96.61098700657736],
+        name: "WIKD Motorsports",
+        address: "417 Metro Park Dr, McKinney, TX 75071",
+        frequency: 0.5,
+        isMain: true,
+      },
+      wraps: {
+        latlng: [33.200970, -96.609262],
+        name: "WIKD Wraps",
+        address: "501 E Lamar St, McKinney, TX 75069",
+        frequency: 0.75,
+        isMain: false,
+      }
+    };
+
+    // --- CONSTANTS & CONFIGURATION (Used by the New Top Bar Logic) ---
+    const CONFIG = {
+      BUSINESS_HOURS: {
+        'Sun': { open: null, close: null, closedText: 'Closed' },
+        'Mon': { open: 8.5, close: 16.5 },
+        'Tue': { open: 8.5, close: 16.5 },
+        'Wed': { open: 8.5, close: 16.5 },
+        'Thu': { open: 8.5, close: 16.5 },
+        'Fri': { open: 8.5, close: 16.5 },
+        'Sat': { open: null, close: null, closedText: 'Closed' },
+      },
+      DAYS: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+      motorsportsPhone: '844-232-9453',
+      // Use the address from the map config
+      addressToCopy: locations.motorsports.address
+    };
+
+    const normalizedPhone = CONFIG.motorsportsPhone.replace(/\D/g, '');
+
+    // --- DOM REFERENCES (Centralized for better performance) ---
+    // We must wait for DOMContentLoaded to query for these
+    let UI = {};
+
+    // --- UTILITY FUNCTIONS (For Status and Time) ---
+
+    /**
+     * Converts float time (e.g., 8.5) to "9:00 AM" format.
+     */
+    function formatTime(hourFloat) {
+      if (hourFloat === null) return 'Closed';
+      const hours = Math.floor(hourFloat);
+      const minutes = Math.round((hourFloat - hours) * 60);
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const displayHours = hours % 12 || 12;
+      const displayMinutes = minutes < 10 ? '0' + minutes : minutes;
+      return `${displayHours}:${displayMinutes} ${ampm}`;
+    }
+
+    /**
+     * Checks if the device is likely mobile for the QR code logic.
+     */
+    function isMobileDevice() {
+      return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    }
+
+    /**
+     * Determines the current open/closed status and next open time.
+     */
+    function getBusinessStatus() {
+      const now = new Date();
+      const dayIndex = now.getDay();
+      const currentDay = CONFIG.DAYS[dayIndex];
+      const currentHourFloat = now.getHours() + now.getMinutes() / 60;
+
+      const todayHours = CONFIG.BUSINESS_HOURS[currentDay];
+      const isOpen = todayHours.open !== null &&
+        currentHourFloat >= todayHours.open &&
+        currentHourFloat < todayHours.close;
+
+      if (isOpen) {
+        return { isOpen: true, statusText: 'OPEN' };
+      }
+
+      // Find next open time
+      for (let i = 0; i < 7; i++) {
+        const checkDayIndex = (dayIndex + i) % 7;
+        const checkDay = CONFIG.DAYS[checkDayIndex];
+        const hours = CONFIG.BUSINESS_HOURS[checkDay];
+
+        if (hours.open !== null) {
+          if (i === 0) {
+            // Check later today
+            if (currentHourFloat < hours.open) {
+              return { isOpen: false, nextOpenTime: formatTime(hours.open), nextOpenDay: 'TODAY' };
+            }
+          } else {
+            // Check next day (i > 0)
+            return { isOpen: false, nextOpenTime: formatTime(hours.open), nextOpenDay: checkDay.toUpperCase() };
+          }
+        }
+      }
+
+      return { isOpen: false, statusText: 'CLOSED FOR WEEK' };
+    }
+
+    // --- TOP BAR LOGIC ---
+
+    /**
+     * Toggles the visibility of the hours dropdown menu.
+     */
+    function toggleHoursDropdown() {
+      if (!UI.hoursDropdown) return;
+      // Toggle max-height for the smooth transition effect
+      UI.hoursDropdown.classList.toggle('max-h-0');
+      UI.hoursDropdown.classList.toggle('max-h-64');
+
+      // Toggle opacity to ensure the border/content is completely invisible when collapsed
+      UI.hoursDropdown.classList.toggle('opacity-0');
+
+      // Rotate the arrow icon
+      UI.hoursToggle.querySelector('svg').classList.toggle('active');
+    }
+
+    /**
+     * Manages the visibility and rendering of the QR code tooltip.
+     */
+    function toggleQrTooltip(qrTooltip, canvas) {
+      if (!qrTooltip || !canvas) return;
+      // Toggles 'active' and 'opacity-0'
+      const isActive = qrTooltip.classList.toggle('active');
+      qrTooltip.classList.toggle('opacity-0');
+
+      if (isActive && typeof QRCode !== 'undefined' && !canvas.dataset.rendered) {
+        // Generate QR code only on first activation
+        QRCode.toCanvas(canvas, `tel:${normalizedPhone}`, {
+          width: 150,
+          margin: 1,
+          // Note: light color is the background of the QR code area
+          color: { dark: '#FF3B30', light: '#000000' }
+        }, function (error) {
+          if (error) console.error("QR Code Error:", error);
+          canvas.dataset.rendered = 'true';
+        });
+      }
+    }
+
+    /**
+     * Copies the business address to the clipboard using document.execCommand as primary,
+     * falling back to navigator.clipboard.writeText if needed.
+     */
+    function copyAddress() {
+        if (!UI.clipboardHelper) return;
+        UI.clipboardHelper.value = CONFIG.addressToCopy;
+        UI.clipboardHelper.select();
+        UI.clipboardHelper.setSelectionRange(0, 99999); // For mobile devices
+
+        let success = false;
+        try {
+            // Try the older execCommand first for broader compatibility
+            success = document.execCommand('copy');
+            if (success) {
+                UI.copyConfirmation.style.opacity = '1';
+                setTimeout(() => { UI.copyConfirmation.style.opacity = '0'; }, 1500);
+            } else {
+                console.warn('document.execCommand("copy") failed or returned false.');
+                // If execCommand failed, try the Clipboard API
+                tryClipboardApiFallback();
+            }
+        } catch (err) {
+            console.error('Failed to copy address using execCommand:', err);
+            // If execCommand threw an error, try the Clipboard API
+            tryClipboardApiFallback();
+        } finally {
+            UI.clipboardHelper.value = ''; // Clear helper textarea
+            // Deselect text to avoid visual disruption
+            if (window.getSelection) {
+                const selection = window.getSelection();
+                if (selection.rangeCount > 0) {
+                    selection.removeAllRanges();
+                }
+            }
+             // Ensure focus is removed from the helper textarea, especially on mobile
+            UI.clipboardHelper.blur();
+             // Refocus the button that triggered the copy, if possible and desirable
+            if (UI.copyButton) {
+                // UI.copyButton.focus(); // You might want this, or might not, depending on UX preference
+            }
+        }
+    }
+
+    /**
+     * Attempts to copy using the navigator.clipboard API as a fallback.
+     */
+    function tryClipboardApiFallback() {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(CONFIG.addressToCopy)
+                .then(() => {
+                    console.log('Clipboard API fallback successful.');
+                    UI.copyConfirmation.style.opacity = '1';
+                    setTimeout(() => { UI.copyConfirmation.style.opacity = '0'; }, 1500);
+                })
+                .catch(e => {
+                    console.error("Clipboard API fallback copy failed:", e);
+                    // Optionally alert the user that copy failed completely
+                    // alert('Could not copy address to clipboard.');
+                });
+        } else {
+            console.warn('Clipboard API not available as a fallback.');
+            // Optionally alert the user
+            // alert('Could not copy address to clipboard.');
+        }
+    }
+
+
+    /**
+     * Renders the dynamic status, phone link, and QR tooltip based on business hours.
+     */
+    function renderDynamicContent() {
+      if (!UI.statusLine || !UI.phoneContainer || !UI.hoursDropdown) return;
+
+      const status = getBusinessStatus();
+
+      // 1. Update Status Line
+      UI.statusLine.className = 'text-sm font-semibold transition duration-300';
+      if (status.isOpen) {
+        UI.statusLine.classList.add('text-success-green');
+        UI.statusLine.textContent = status.statusText; // 'OPEN'
+      } else {
+        UI.statusLine.classList.add('text-primary-red');
+        if (status.nextOpenDay && status.nextOpenTime) {
+          // Use a full-day name if it's not today (e.g., OPENS TUE at 8:30 AM)
+          const dayDisplay = status.nextOpenDay === 'TODAY' ? 'TODAY' : status.nextOpenDay;
+          UI.statusLine.textContent = `OPENS ${dayDisplay} at ${status.nextOpenTime}`;
+        } else {
+          UI.statusLine.textContent = status.statusText; // 'CLOSED FOR WEEK'
+        }
+      }
+
+      // 2. Update Phone Container
+      if (status.isOpen) {
+        // Inject HTML for the animated call button and QR tooltip
+        UI.phoneContainer.innerHTML = `
+            <a href="tel:${normalizedPhone}" id="call-link" class="push-to-call inline-flex items-center p-0 border-none bg-none cursor-pointer text-decoration-none gap-1" style="transform: translateY(3.5px);" title="Click to call or scan QR code on desktop">
+                <animated-icons
+                    src="https://animatedicons.co/get-icon?name=Calling%20V3&style=minimalistic&token=66ff3706-138c-41fa-a993-dee03566e48c"
+                    trigger="loop"
+                    attributes='{"variationThumbColour":"#ff3b30","variationName":"Dark","variationNumber":4,"numberOfGroups":2,"strokeWidth":1.5,"background":"#000000","defaultColours":{"group-1":"#ff3b30","group-2":"#eaeaea","background":"#000000"}}'
+                    height="16" width="16">
+                </animated-icons>
+                <span class="lava-text text-sm uppercase leading-none">GIVE US A RING</span>
+            </a>
+            <div id="qr-tooltip" class="qr-tooltip-down absolute top-full left-1/2 -translate-x-1/2 mt-3 bg-black/95 border border-primary-red rounded-lg p-3 text-center shadow-lg opacity-0 transition-all duration-300 ease-in-out pointer-events-none">
+                <canvas width="150" height="150"></canvas>
+                <p class="mt-1 text-xs text-gray-300">Scan to call us!</p>
+            </div>
+        `;
+
+        const callLink = document.getElementById('call-link');
+        const qrTooltip = document.getElementById('qr-tooltip');
+        const canvas = qrTooltip ? qrTooltip.querySelector('canvas') : null;
+
+        if (callLink && qrTooltip && canvas) {
+          // Desktop interaction: clicking the link prevents call and shows QR
+          callLink.addEventListener('click', function (e) {
+            if (!isMobileDevice()) {
+              e.preventDefault();
+              e.stopPropagation();
+              toggleQrTooltip(qrTooltip, canvas);
+            }
+          });
+
+          // Global listener to close tooltip when clicking outside
+          document.addEventListener('click', (e) => {
+            // Check if the tooltip is active, and the click is outside both the tooltip and the button
+             if (qrTooltip.classList.contains('active')) {
+                const isOutside = !qrTooltip.contains(e.target) && !callLink.contains(e.target);
+                if (isOutside) {
+                    qrTooltip.classList.add('opacity-0');
+                    qrTooltip.classList.remove('active');
+                }
+             }
+          });
+        }
+
+      } else {
+        // Render simple phone number when closed
+        UI.phoneContainer.innerHTML = `
+            <span class="text-gray-400 text-sm font-semibold m-0 p-0 block leading-none" style="transform: translateY(3.5px);">${CONFIG.motorsportsPhone}</span>
+        `;
+      }
+
+      // 3. Populate Full Hours Dropdown (always run)
+      let hoursHtml = '';
+      for (const day of CONFIG.DAYS) {
+        const dayHours = CONFIG.BUSINESS_HOURS[day];
+        const time = dayHours.closedText || `${formatTime(dayHours.open)} - ${formatTime(dayHours.close)}`;
+        const isCurrentDay = (new Date()).getDay() === CONFIG.DAYS.indexOf(day);
+        const dayClass = isCurrentDay ? 'text-primary-red font-bold' : 'text-gray-300';
+        hoursHtml += `<div class="flex justify-between items-center py-0.5"><span class="${dayClass}">${day}:</span><span class="${dayClass}">${time}</span></div>`;
+      }
+      UI.hoursDropdown.innerHTML = hoursHtml;
+    }
+
+
+    // --- MAP AND MARKER SETUP (Existing logic) ---
+    function initializeMap() {
+        // Ensure map container exists before initializing
+        const mapElement = document.getElementById('map');
+        if (!mapElement) {
+            console.error("Map container element (#map) not found.");
+            return; // Exit if map container isn't found
+        }
+
+      // Calculate center point and bounds to include both locations
+      const latBounds = [locations.motorsports.latlng[0], locations.wraps.latlng[0]];
+      const lngBounds = [locations.motorsports.latlng[1], locations.wraps.latlng[1]];
+      const centerLat = (Math.min(...latBounds) + Math.max(...latBounds)) / 2;
+      const centerLng = (Math.min(...lngBounds) + Math.max(...lngBounds)) / 2;
+
+      const targetLocation = [centerLat, centerLng];
+      const defaultZoom = 15;
+      const hoverZoom = 17;
+      const punchInZoom = 18;
+
+      // 3. Initialize the map
+      const map = L.map('map', {
+        zoomControl: false,
+        scrollWheelZoom: false,
+        doubleClickZoom: false,
+        dragging: false
+      }).setView(targetLocation, defaultZoom);
+
+      // Fit bounds to ensure both are in view initially
+      map.fitBounds([
+        locations.motorsports.latlng,
+        locations.wraps.latlng
+      ], { padding: [100, 100], maxZoom: defaultZoom });
+
+      // 4. Add the tile layer from CARTO (Dark Matter style)
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        maxZoom: 20,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+      }).addTo(map);
+
+      // --- MARKER GENERATION AND ANIMATION SETUP ---
+
+      const mapWrapper = document.getElementById('map-wrapper');
+      let isMapHovered = false;
+      let punchInTimeout;
+      let activeMarker = null;
+
+      /**
+       * Creates a custom ping marker icon with dynamic animation duration and size class.
+       */
+      function createPingIcon(config) {
+        const iconSize = 600;
+        const visualClass = config.isMain ? '' : 'ping-small-visual';
+        const pingStyle = `--ping-duration: ${config.frequency}s;`;
+        let mapsUrl = `https://maps.google.com/?daddr=${encodeURIComponent(config.address)}`;
+        if (config.name === "WIKD Wraps") {
+          mapsUrl = "http://www.wikdwraps.com"; // Consider linking to the wraps website/contact page?
+        }
+
+        return L.divIcon({
+          className: '',
+          html: `
+              <div class="ping-container ${visualClass}" style="${pingStyle}" data-location-key="${config.name.replace(/\s+/g, '-').toLowerCase()}">
+                  <!-- CUSTOM TOOLTIP (clickable link, appears on hover of the container) -->
+                  <a href="${mapsUrl}" target="_blank" class="custom-tooltip">
+                      ${config.name}
+                  </a>
+                  <div class="ping-circle"></div>
+                  <div class="ping-dot"></div>
+              </div>`,
+          iconSize: [iconSize, iconSize],
+          iconAnchor: [iconSize / 2, iconSize / 2] // Center the icon
+        });
+      }
+
+      /**
+       * Helper function to handle marker creation and click navigation.
+       */
+      function initializeMarker(config) {
+        let mapsUrl = `https://maps.google.com/?daddr=${encodeURIComponent(config.address)}`;
+         if (config.name === "WIKD Wraps") {
+          mapsUrl = "https://wikdwraps.com/pages/contact"; // Link to contact page for Wraps
+        }
+
+        const marker = L.marker(config.latlng, {
+          icon: createPingIcon(config)
+        }).addTo(map)
+          .on('click', () => {
+             // Open specific links based on name
+            if (config.name === "WIKD Wraps") {
+              window.open("https://wikdwraps.com/pages/contact", '_blank');
+            } else {
+              window.open(`https://maps.google.com/?daddr=${encodeURIComponent(config.address)}`, '_blank');
+            }
+          });
+
+        return marker;
+      }
+
+      // 5. Create Markers
+      const markerMotorsports = initializeMarker(locations.motorsports);
+      const markerWraps = initializeMarker(locations.wraps);
+
+      // --- HOVER LOGIC (Fixed Location Centering Implemented) ---
+
+      function handleHoverState(targetMarker, enter) {
+        if (!targetMarker || !targetMarker.getElement()) return;
+        const pingContainer = targetMarker.getElement().querySelector('.ping-container');
+        if (!pingContainer) return;
+        const targetLatLng = targetMarker.getLatLng();
+
+        if (enter) {
+          activeMarker = targetMarker;
+          isMapHovered = true;
+
+          document.querySelectorAll('.ping-circle').forEach(c => c.style.animationPlayState = 'paused');
+
+          pingContainer.classList.add('crosshair-active');
+          map.flyTo(targetLatLng, hoverZoom, { animate: true, duration: 0.25 });
+
+          punchInTimeout = setTimeout(() => {
+            if (isMapHovered && activeMarker === targetMarker) {
+              pingContainer.classList.add('punch-in-active');
+              map.flyTo(targetLatLng, punchInZoom, { animate: true, duration: 0.4 });
+            }
+          }, 600);
+
+        } else {
+          if (activeMarker === targetMarker) {
+            isMapHovered = false;
+            activeMarker = null;
+            clearTimeout(punchInTimeout);
+            pingContainer.classList.remove('crosshair-active', 'punch-in-active');
+
+            document.querySelectorAll('.ping-circle').forEach(c => c.style.animationPlayState = 'running');
+
+            map.flyTo(targetLocation, defaultZoom, { animate: true, duration: 0.25 });
+          }
+        }
+      }
+
+      // Attach event listeners to the markers' DOM elements
+      if (markerMotorsports.getElement()) {
+        markerMotorsports.getElement().addEventListener('mouseenter', () => handleHoverState(markerMotorsports, true));
+        markerMotorsports.getElement().addEventListener('mouseleave', () => handleHoverState(markerMotorsports, false));
+      }
+      if (markerWraps.getElement()) {
+        markerWraps.getElement().addEventListener('mouseenter', () => handleHoverState(markerWraps, true));
+        markerWraps.getElement().addEventListener('mouseleave', () => handleHoverState(markerWraps, false));
+      }
+
+      if (mapWrapper) {
+        mapWrapper.addEventListener('mouseleave', () => {
+          // Only revert if no marker is actively being hovered
+          if (!activeMarker) {
+            isMapHovered = false;
+            clearTimeout(punchInTimeout);
+            document.querySelectorAll('.ping-container').forEach(c => c.classList.remove('crosshair-active', 'punch-in-active'));
+            document.querySelectorAll('.ping-circle').forEach(c => c.style.animationPlayState = 'running');
+            map.flyTo(targetLocation, defaultZoom, { animate: true, duration: 0.25 });
+          }
+        });
+      }
+
+      // Ensure the map renders correctly
+      // Use requestAnimationFrame for smoother rendering after DOM manipulation
+       requestAnimationFrame(() => {
+           map.invalidateSize();
+        });
+    }
+
+    // --- INITIALIZATION ---
+
+    /**
+     * Initialize all app components.
+     */
+    function initializeApp() {
+      // Assign DOM elements to UI object now that DOM is loaded
+      UI = {
+        statusLine: document.getElementById('motorsports-status-line'),
+        phoneContainer: document.getElementById('phone-container'),
+        hoursToggle: document.getElementById('hours-dropdown-toggle'),
+        hoursDropdown: document.getElementById('full-hours-dropdown'),
+        copyButton: document.getElementById('copy-address-button'),
+        copyConfirmation: document.getElementById('copy-confirmation'),
+        clipboardHelper: document.getElementById('address-clipboard-helper')
+      };
+
+      // Initialize Bar Content
+      renderDynamicContent();
+
+      // Setup Bar Listeners
+      if (UI.hoursToggle) {
+        UI.hoursToggle.addEventListener('click', toggleHoursDropdown);
+      }
+      if (UI.copyButton) {
+        UI.copyButton.addEventListener('click', copyAddress);
+      }
+
+      // Optional: Re-render status periodically (e.g., every minute)
+      setInterval(renderDynamicContent, 60000);
+
+      // Initialize the Leaflet Map
+      initializeMap();
+    }
+
+    // Use DOMContentLoaded to ensure all elements are ready before running scripts
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    } else {
+        // DOMContentLoaded has already fired
+        initializeApp();
+    }
+
+
+  </script>
+</body>
+
+</html>
+
