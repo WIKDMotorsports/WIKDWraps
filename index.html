@@ -126,7 +126,7 @@
             background-color: var(--color-text);
             color: var(--color-background) !important;
         }
-         .btn.btn-secondary:hover {
+          .btn.btn-secondary:hover {
             border-color: var(--color-primary);
             color: white !important;
         }
@@ -154,7 +154,9 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
             display: block;
         }
-        .package-card:hover {
+        /* Added .mobile-view selector for scroll trigger */
+        .package-card:hover, 
+        .package-card.mobile-view {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0,0,0,0.3), 0 0 15px rgba(255, 59, 48, 0.3);
             border-color: var(--color-primary);
@@ -164,7 +166,10 @@
             object-fit: cover;
             transition: transform 0.5s ease;
         }
-        .package-card:hover .package-card-bg { transform: scale(1.05); }
+        /* Added .mobile-view selector for scroll trigger */
+        .package-card:hover .package-card-bg,
+        .package-card.mobile-view .package-card-bg { transform: scale(1.05); }
+        
         .package-card-overlay {
             position: absolute; inset: 0;
             background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, transparent 60%);
@@ -175,7 +180,9 @@
              transform: translateY(20px); opacity: 0;
             transition: transform 0.4s ease 0.1s, opacity 0.4s ease 0.1s;
         }
-        .package-card:hover .package-card-content {
+        /* Added .mobile-view selector for scroll trigger */
+        .package-card:hover .package-card-content,
+        .package-card.mobile-view .package-card-content {
             transform: translateY(0);
             opacity: 1;
         }
@@ -213,8 +220,10 @@
             object-fit: cover; filter: grayscale(100%);
             transition: transform 0.6s cubic-bezier(0.3, 1, 0.4, 1), filter 0.6s ease;
         }
-        .gallery-card:hover .gallery-card-bg {
-            filter: grayscale(100%) brightness(0.3);
+        /* Added .mobile-view selector for scroll trigger */
+        .gallery-card:hover .gallery-card-bg,
+        .gallery-card.mobile-view .gallery-card-bg {
+            filter: grayscale(100%);
         }
         .gallery-card-overlay {
             height: 100%; display: flex; flex-direction: column; justify-content: space-between;
@@ -228,7 +237,9 @@
             text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.8); transition: color 0.3s ease;
             text-transform: uppercase;
         }
-        .gallery-card:hover .gallery-card-title {
+        /* Added .mobile-view selector for scroll trigger */
+        .gallery-card:hover .gallery-card-title,
+        .gallery-card.mobile-view .gallery-card-title {
             background: linear-gradient(90deg, #b30000, #ff1a00, #ffaa00, #ff1a00, #b30000);
             background-size: 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             animation: lavaFlow 4s ease-in-out infinite; text-shadow: none;
@@ -251,8 +262,13 @@
             z-index: 6; pointer-events: none; opacity: 0;
             transition: opacity 0.4s ease;
         }
-        .gallery-card:hover::before { opacity: 1; }
-        .gallery-card:hover { box-shadow: 0 0 25px rgba(255, 59, 48, 0.5); }
+        /* Added .mobile-view selector for scroll trigger */
+        .gallery-card:hover::before,
+        .gallery-card.mobile-view::before { opacity: 1; }
+        
+        /* Added .mobile-view selector for scroll trigger */
+        .gallery-card:hover,
+        .gallery-card.mobile-view { box-shadow: 0 0 25px rgba(255, 59, 48, 0.5); }
         
       img {
         border: none !important;
@@ -285,7 +301,7 @@
        .multicolumn-card h3 {
            font-size: clamp(1.5rem, 4vw, 2.25rem) !important;
        }
-        
+       
         /* --- STAR RATING --- */
         .star-container-fade-in {
             opacity: 0;
@@ -337,27 +353,51 @@
             transform: rotate(180deg);
         }
 
-        .qr-tooltip-down::before {
-            content: '';
+        .qr-tooltip {
             position: absolute;
-            top: -8px;
+            bottom: 100%;
             left: 50%;
-            transform: translateX(-50%);
-            border-style: solid;
-            border-width: 7px;
-            border-color: transparent transparent var(--color-primary) transparent;
+            transform: translateX(-50%) translateY(10px);
+            margin-bottom: 12px;
+            background-color: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            padding: 0.75rem;
             z-index: 2006;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+            pointer-events: none;
+            width: max-content;
         }
-        .qr-tooltip-down::after {
+        .qr-tooltip.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+            pointer-events: auto;
+        }
+        .qr-tooltip::before {
             content: '';
             position: absolute;
-            top: -7px;
+            top: 100%;
             left: 50%;
             transform: translateX(-50%);
+            border-width: 8px;
             border-style: solid;
+            border-color: var(--color-border) transparent transparent transparent;
+        }
+        .qr-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-top: -1px;
             border-width: 7px;
-            border-color: transparent transparent rgba(0, 0, 0, 0.95) transparent;
-            z-index: 2007; /* Above ::before border, below tooltip content */
+            border-style: solid;
+            border-color: var(--color-surface) transparent transparent transparent;
         }
         
         @keyframes fadeIn {
@@ -628,17 +668,41 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             <div>
-                 <div id="icon-craftsmanship" class="mx-auto mb-4" style="width: 128px; height: 128px;"></div>
+                <div class="flex justify-center items-center mb-4">
+                    <animated-icons
+                        src="https://animatedicons.co/get-icon?name=Reliable&style=minimalistic&token=27a30965-9fd9-4579-acc0-b9c372561841"
+                        trigger="loop"
+                        attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#EAEAEA","group-2":"#FF3B30","background":"#141414"}}'
+                        height="128"
+                        width="128"
+                    ></animated-icons>
+                </div>
                 <h3 class="h3 mb-2">Craftsmanship You Can Trust</h3>
                 <p class="p-muted">Our expert technicians are factory-certified installers known for their precision and attention to detail. We treat every vehicle as if it were our own, ensuring flawless results every time.</p>
             </div>
             <div>
-                <div id="icon-materials" class="mx-auto mb-4" style="width: 128px; height: 128px;"></div>
+                <div class="flex justify-center items-center mb-4">
+                    <animated-icons
+                        src="https://animatedicons.co/get-icon?name=Chemist&style=minimalistic&token=153ce80d-3f45-4dc6-b13a-40ea011dbbfe"
+                        trigger="loop"
+                        attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#EAEAEA","group-2":"#FF3B30","background":"#141414"}}'
+                        height="128"
+                        width="128"
+                    ></animated-icons>
+                </div>
                 <h3 class="h3 mb-2">Industry Leading Materials</h3>
                 <p class="p-muted">We’ve partnered with top-tier brands like STEK to provide the best durability, clarity, and performance for your vehicle. We don't compromise on quality.</p>
             </div>
             <div>
-                <div id="icon-solutions" class="mx-auto mb-4" style="width: 128px; height: 128px;"></div>
+                <div class="flex justify-center items-center mb-4">
+                    <animated-icons
+                        src="https://animatedicons.co/get-icon?name=edit&style=minimalistic&token=bef79568-d828-4e67-a904-60a1bb446375"
+                        trigger="loop"
+                        attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#EAEAEA","group-2":"#FF3B30","background":"#141414"}}'
+                        height="128"
+                        width="128"
+                    ></animated-icons>
+                </div>
                 <h3 class="h3 mb-2">Bespoke Solutions</h3>
                 <p class="p-muted">From exotics to daily drivers, we offer customized protection plans to fit your needs and budget. Your vision is our blueprint for a perfect finish.</p>
             </div>
@@ -740,9 +804,8 @@
             </div>
              <div class="border border-[var(--color-border)] p-6 rounded-lg flex flex-col h-full">
                 <h3 class="h3 text-center md:text-left">WIKD Motorsports</h3>
-                <div class="flex items-center my-4 justify-center md:justify-start min-h-[56px]">
+                <div class="flex items-center gap-3 my-4 justify-center md:justify-start min-h-[56px]">
                     <div class="flex items-center space-x-1">
-                        <a href="https://share.google/7vAZnoZqZSVFpq84p" target="_blank" rel="noopener noreferrer" class="relative block w-4 h-4 star-container-fade-in"><svg class="absolute top-0 left-0 w-full h-full text-yellow-400 star-glow-pulse" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><svg class="absolute top-0 left-0 w-full h-full star-gradient-pulse" fill="url(#starGradient3D)" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><div class="glint-wrapper"></div></a>
                         <a href="https://share.google/7vAZnoZqZSVFpq84p" target="_blank" rel="noopener noreferrer" class="relative block w-4 h-4 star-container-fade-in"><svg class="absolute top-0 left-0 w-full h-full text-yellow-400 star-glow-pulse" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><svg class="absolute top-0 left-0 w-full h-full star-gradient-pulse" fill="url(#starGradient3D)" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><div class="glint-wrapper"></div></a>
                         <a href="https://share.google/7vAZnoZqZSVFpq84p" target="_blank" rel="noopener noreferrer" class="relative block w-4 h-4 star-container-fade-in"><svg class="absolute top-0 left-0 w-full h-full text-yellow-400 star-glow-pulse" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><svg class="absolute top-0 left-0 w-full h-full star-gradient-pulse" fill="url(#starGradient3D)" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><div class="glint-wrapper"></div></a>
                         <a href="https://share.google/7vAZnoZqZSVFpq84p" target="_blank" rel="noopener noreferrer" class="relative block w-4 h-4 star-container-fade-in"><svg class="absolute top-0 left-0 w-full h-full text-yellow-400 star-glow-pulse" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><svg class="absolute top-0 left-0 w-full h-full star-gradient-pulse" fill="url(#starGradient3D)" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><div class="glint-wrapper"></div></a>
@@ -778,12 +841,12 @@
 <section id="final-cta-section" class="py-20" style="background-color: var(--color-background);">
     <div class="page-width px-6 mx-auto text-center">
          <h2 class="h1">
-                Your car deserves nothing less than perfection.
-              </h2>
-              <p class="p-muted max-w-2xl mx-auto mt-4 mb-8">
-                Trust a shop that shares your passion and refuses to cut corners. Experience precision, craftsmanship, and care as if your vehicle were our own.
-              </p>
-             <a href="https://wikdwraps.com/pages/contact" class="button button--primary">Get Started</a>
+                 Your car deserves nothing less than perfection.
+               </h2>
+               <p class="p-muted max-w-2xl mx-auto mt-4 mb-8">
+                 Trust a shop that shares your passion and refuses to cut corners. Experience precision, craftsmanship, and care as if your vehicle were our own.
+               </p>
+              <a href="https://wikdwraps.com/pages/contact" class="button button--primary">Get Started</a>
     </div>
 </section>
  <textarea id="address-clipboard-helper" style="position: absolute; left: -9999px;"></textarea>
@@ -871,7 +934,7 @@
                     QRCode.toCanvas(canvas, `tel:${normalizedPhone}`, {
                         width: 150,
                         margin: 1,
-                        color: { dark: '#FF3B30', light: '#000000' }
+                        color: { dark: '#FF3B30', light: '#141414' }
                     }, function (error) {
                         if (error) console.error("QR Code Error:", error);
                         canvas.dataset.rendered = 'true';
@@ -904,18 +967,20 @@
                 if (UI.phoneContainer) {
                     if (status.isOpen) {
                         UI.phoneContainer.innerHTML = `
-                            <a href="tel:${normalizedPhone}" id="call-link-${idPrefix}" class="push-to-call inline-flex items-center p-0 border-none bg-none cursor-pointer text-decoration-none gap-1" title="Click to call or scan QR code on desktop">
-                                <animated-icons
-                                    src="https://animatedicons.co/get-icon?name=Calling%20V3&style=minimalistic&token=66ff3706-138c-41fa-a993-dee03566e48c"
-                                    trigger="loop"
-                                    attributes='{"variationThumbColour":"#ff3b30","variationName":"Dark","variationNumber":4,"numberOfGroups":2,"strokeWidth":1.5,"background":"#000000","defaultColours":{"group-1":"#ff3b30","group-2":"#eaeaea","background":"#000000"}}'
-                                    height="16" width="16">
-                                </animated-icons>
-                                <span class="lava-text text-sm uppercase leading-none">GIVE US A RING</span>
-                            </a>
-                            <div id="qr-tooltip-${idPrefix}" class="qr-tooltip-down absolute bottom-full left-1/2 -translate-x-1/2 mb-3 bg-black/95 border border-primary-red rounded-lg p-3 text-center shadow-lg opacity-0 invisible transition-all duration-300 ease-in-out pointer-events-none">
-                                <canvas width="150" height="150"></canvas>
-                                <p class="mt-1 text-xs text-gray-300">Scan to call us!</p>
+                            <div class="call-link-container" style="display: inline-block; position: relative;">
+                                <a href="tel:${normalizedPhone}" id="call-link-${idPrefix}" class="call-link push-to-call inline-flex items-center p-0 border-none bg-none cursor-pointer text-decoration-none gap-1" title="Click to call or scan QR code on desktop">
+                                    <animated-icons
+                                        src="https://animatedicons.co/get-icon?name=Calling%20V3&style=minimalistic&token=66ff3706-138c-41fa-a993-dee03566e48c"
+                                        trigger="loop"
+                                        attributes='{"variationThumbColour":"#ff3b30","variationName":"Dark","variationNumber":4,"numberOfGroups":2,"strokeWidth":1.5,"background":"#000000","defaultColours":{"group-1":"#ff3b30","group-2":"#eaeaea","background":"#000000"}}'
+                                        height="16" width="16">
+                                    </animated-icons>
+                                    <span class="lava-text text-sm uppercase leading-none">GIVE US A RING</span>
+                                </a>
+                                <div id="qr-tooltip-${idPrefix}" class="qr-tooltip">
+                                    <canvas width="150" height="150"></canvas>
+                                    <p class="mt-1 text-xs text-gray-300">Scan to call us!</p>
+                                </div>
                             </div>`;
 
                         const callLink = document.getElementById(`call-link-${idPrefix}`);
@@ -927,8 +992,6 @@
                                 if (!isMobileDevice()) {
                                     e.preventDefault();
                                     e.stopPropagation();
-                                    qrTooltip.classList.toggle('opacity-0');
-                                    qrTooltip.classList.toggle('invisible');
                                     qrTooltip.classList.toggle('active');
                                     toggleQrTooltip(qrTooltip, canvas);
                                 }
@@ -1000,49 +1063,40 @@
                 const qrTooltip = document.getElementById(`qr-tooltip-${idPrefix}`);
                 const callLink = document.getElementById(`call-link-${idPrefix}`);
                 if (qrTooltip && qrTooltip.classList.contains('active') && !qrTooltip.contains(e.target) && callLink && !callLink.contains(e.target)) {
-                    qrTooltip.classList.remove('opacity-0', 'active');
-                    qrTooltip.classList.add('invisible');
+                    qrTooltip.classList.remove('active');
                 }
              });
         });
-        
-        // --- LOTTIE ICON SETUP ---
-        function getThemedAnimationData(animationData) {
-            const dataStr = JSON.stringify(animationData);
-            let themedStr = dataStr.replace(/"k":\[0,0,0,1\]/g, '"k":[0.918,0.918,0.918,1]');
-            themedStr = themedStr.replace(/"k":\[0.325,0.427,0.996,1\]/g, '"k":[1,0.231,0.188,1]');
-            return JSON.parse(themedStr);
+
+        /* --- MOBILE SCROLL TO REVEAL LOGIC --- */
+        // Only run this logic if the window width is less than 768px (typical mobile breakpoint)
+        if (window.matchMedia('(max-width: 768px)').matches) {
+            
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.5 // Trigger when 50% of the card is visible
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Add the class to trigger the "hover" state effects
+                        entry.target.classList.add('mobile-view');
+                    } else {
+                        // Remove it when scrolling away so it can re-trigger
+                        entry.target.classList.remove('mobile-view');
+                    }
+                });
+            }, observerOptions);
+
+            // Observe both Services cards and Gallery cards
+            const cardsToObserve = document.querySelectorAll('.package-card, .gallery-card');
+            cardsToObserve.forEach(card => {
+                observer.observe(card);
+            });
         }
-        
-        const craftsmanshipIconData = {"v":"5.5.7","fr":30,"ip":0,"op":60,"w":100,"h":100,"nm":"Badge","ddd":0,"assets":[],"layers":[{"ddd":0,"ind":1,"ty":4,"nm":"Star","sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[50,50,0],"ix":2},"a":{"a":0,"k":[50,50,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],"v":[[50,23.3],[55.8,39.15],[72.4,39.15],[59.2,49.85],[65,65.7],[50,56.55],[35,65.7],[40.8,49.85],[27.6,39.15],[44.2,39.15]],"c":true},"ix":2},"nm":"Path 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"fl","c":{"a":0,"k":[0,0,0,1],"ix":4},"o":{"a":0,"k":100,"ix":8},"r":1,"bm":0,"nm":"Fill 1","mn":"ADBE Vector Graphic - Fill","hd":false}],"nm":"Shape 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":60,"st":0,"bm":0},{"ddd":0,"ind":2,"ty":4,"nm":"Circle","sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[50,50,0],"ix":2},"a":{"a":0,"k":[50,50,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ty":"el","d":1,"s":{"a":0,"k":[90,90],"ix":2},"p":{"a":0,"k":[50,50],"ix":3},"nm":"Ellipse Path 1","mn":"ADBE Vector Shape - Ellipse","hd":false},{"ty":"st","c":{"a":0,"k":[0.325,0.427,0.996,1],"ix":3},"o":{"a":0,"k":100,"ix":7},"w":{"a":0,"k":2,"ix":4},"lc":1,"lj":1,"ml":4,"bm":0,"nm":"Stroke 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[50,50],"ix":3},"a":{"a":0,"k":[50,50],"ix":1},"s":{"a":0,"k":[100,100],"ix":2},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Ellipse 1","np":3,"cix":2,"bm":0,"ix":2,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":60,"st":0,"bm":0}]};
-        const materialsIconData = {"v":"5.5.7","fr":30,"ip":0,"op":60,"w":100,"h":100,"nm":"Chemist","ddd":0,"assets":[],"layers":[{"ddd":0,"ind":1,"ty":4,"nm":"Bucket","sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[50,50,0],"ix":2},"a":{"a":0,"k":[50,50,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],"v":[[34.1,23.3],[65.9,23.3],[65.9,23.3],[65.9,32.45],[65.9,64.2],[65.9,76.7],[54.2,76.7],[45.8,76.7],[34.1,76.7],[34.1,64.2],[34.1,32.45],[34.1,23.3]],"c":true},"ix":2},"nm":"Path 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0,0,0,1],"ix":3},"o":{"a":0,"k":100,"ix":7},"w":{"a":0,"k":2,"ix":4},"lc":1,"lj":1,"ml":4,"bm":0,"nm":"Stroke 1","mn":"ADBE Vector Graphic - Stroke","hd":false}],"nm":"Shape 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false},{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0],[0,0]],"v":[[34.1,32.45],[65.9,32.45],[65.9,76.7],[34.1,76.7]],"c":true},"ix":2},"nm":"Path 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"fl","c":{"a":0,"k":[0.325,0.427,0.996,1],"ix":4},"o":{"a":0,"k":100,"ix":8},"r":1,"bm":0,"nm":"Fill 1","mn":"ADBE Vector Graphic - Fill","hd":false}],"nm":"Shape 2","np":3,"cix":2,"bm":0,"ix":2,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":60,"st":0,"bm":0}]};
-        const solutionsIconData = {"v":"5.5.7","fr":30,"ip":0,"op":60,"w":100,"h":100,"nm":"Competitiveness","ddd":0,"assets":[],"layers":[{"ddd":0,"ind":1,"ty":4,"nm":"Arrow","sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":1,"k":[{"t":0,"s":[8.3,50,0],"e":[50,50,0],"h":0,"i":{"x":[0.667],"y":[1]},"o":{"x":[0.333],"y":[0]}},{"t":30,"s":[50,50,0]}],"ix":2},"a":{"a":0,"k":[50,50,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0]],"v":[[50,50],[83.3,50],[72.4,39.15]],"c":false},"ix":2},"nm":"Path 1","mn":"ADBE Vector Shape - Group","hd":false},{"ind":1,"ty":"sh","ix":2,"ks":{"a":0,"k":{"i":[[0,0],[0,0]],"o":[[0,0],[0,0]],"v":[[83.3,50],[72.4,60.85]],"c":false},"ix":2},"nm":"Path 2","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0,0,0,1],"ix":3},"o":{"a":0,"k":100,"ix":7},"w":{"a":0,"k":2,"ix":4},"lc":1,"lj":1,"ml":4,"bm":0,"nm":"Stroke 1","mn":"ADBE Vector Graphic - Stroke","hd":false}],"nm":"Shape 1","np":4,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":60,"st":0,"bm":0},{"ddd":0,"ind":2,"ty":4,"nm":"Circles","sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[50,50,0],"ix":2},"a":{"a":0,"k":[50,50,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ty":"el","d":1,"s":{"a":0,"k":[90,90],"ix":2},"p":{"a":0,"k":[50,50],"ix":3},"nm":"Ellipse Path 1","mn":"ADBE Vector Shape - Ellipse","hd":false},{"ty":"st","c":{"a":0,"k":[0.325,0.427,0.996,1],"ix":3},"o":{"a":0,"k":100,"ix":7},"w":{"a":0,"k":2,"ix":4},"lc":1,"lj":1,"ml":4,"bm":0,"nm":"Stroke 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[50,50],"ix":3},"a":{"a":0,"k":[50,50],"ix":1},"s":{"a":0,"k":[100,100],"ix":2},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Ellipse 1","np":3,"cix":2,"bm":0,"ix":2,"mn":"ADBE Vector Group","hd":false},{"ty":"gr","it":[{"ty":"el","d":1,"s":{"a":0,"k":[60,60],"ix":2},"p":{"a":0,"k":[50,50],"ix":3},"nm":"Ellipse Path 1","mn":"ADBE Vector Shape - Ellipse","hd":false},{"ty":"st","c":{"a":0,"k":[0.325,0.427,0.996,1],"ix":3},"o":{"a":0,"k":100,"ix":7},"w":{"a":0,"k":2,"ix":4},"lc":1,"lj":1,"ml":4,"bm":0,"nm":"Stroke 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[50,50],"ix":3},"a":{"a":0,"k":[30,30],"ix":1},"s":{"a":0,"k":[100,100],"ix":2},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Ellipse 2","np":3,"cix":2,"bm":0,"ix":3,"mn":"ADBE Vector Group","hd":false},{"ty":"gr","it":[{"ty":"el","d":1,"s":{"a":0,"k":[30,30],"ix":2},"p":{"a":0,"k":[50,50],"ix":3},"nm":"Ellipse Path 1","mn":"ADBE Vector Shape - Ellipse","hd":false},{"ty":"fl","c":{"a":0,"k":[0,0,0,1],"ix":4},"o":{"a":0,"k":100,"ix":8},"r":1,"bm":0,"nm":"Fill 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[50,50],"ix":3},"a":{"a":0,"k":[15,15],"ix":1},"s":{"a":0,"k":[100,100],"ix":2},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Ellipse 3","np":3,"cix":2,"bm":0,"ix":4,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":60,"st":0,"bm":0}]};
 
-        // --- RENDER ICONS ---
-        lottie.loadAnimation({
-            container: document.getElementById('icon-craftsmanship'),
-            renderer: 'svg',
-            loop: true,
-            autoplay: true,
-            animationData: getThemedAnimationData(craftsmanshipIconData)
-        });
-
-        lottie.loadAnimation({
-            container: document.getElementById('icon-materials'),
-            renderer: 'svg',
-            loop: true,
-            autoplay: true,
-            animationData: getThemedAnimationData(materialsIconData)
-        });
-        
-        lottie.loadAnimation({
-            container: document.getElementById('icon-solutions'),
-            renderer: 'svg',
-            loop: true,
-            autoplay: true,
-            animationData: getThemedAnimationData(solutionsIconData)
-        });
     });
 </script>
 </body></html>
-
