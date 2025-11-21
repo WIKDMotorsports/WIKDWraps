@@ -38,6 +38,7 @@
             background-color: var(--color-background) !important;
             color: var(--color-text) !important;
             font-family: var(--font-body) !important;
+            overflow-x: hidden; /* Prevent horizontal scroll */
         }
         .font-heading { font-family: var(--font-heading); }
         .font-body { font-family: var(--font-body); }
@@ -174,7 +175,7 @@
             position: absolute; inset: 0;
             background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, transparent 60%);
             display: flex; flex-direction: column; justify-content: flex-end;
-            padding: 25px;
+            padding: 20px;
         }
         .package-card-content {
              transform: translateY(20px); opacity: 0;
@@ -188,15 +189,17 @@
         }
         .package-card-title {
             font-family: var(--font-heading);
-            font-size: 2rem; color: white;
+            font-size: 1.5rem; color: white;
             text-transform: uppercase;
         }
         .package-card-description {
             color: var(--color-text-muted);
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+            line-height: 1.4;
         }
         .package-card-link {
-            font-size: 1rem; color: var(--color-primary);
+            font-size: 0.875rem; color: var(--color-primary);
             text-transform: uppercase; font-weight: 600;
             text-decoration: none;
         }
@@ -229,11 +232,11 @@
             height: 100%; display: flex; flex-direction: column; justify-content: space-between;
             background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 60%);
             position: relative; z-index: 5; transform: translateZ(100px);
-            transform-style: preserve-3d; padding: 15px;
+            transform-style: preserve-3d; padding: 20px;
         }
         .gallery-card-title {
             font-family: var(--font-heading);
-            font-size: 1.75rem; color: white; margin: 0; line-height: 1.2;
+            font-size: 1.5rem; color: white; margin: 0; line-height: 1.2;
             text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.8); transition: color 0.3s ease;
             text-transform: uppercase;
         }
@@ -248,7 +251,7 @@
         .card-badge-container { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
         .wikd-sub-badge {
             display: inline-block; background-color: rgba(255, 59, 48, 0.7);
-            color: white; padding: 6px 18px 8px; font-size: 12px;
+            color: white; padding: 6px 18px 8px; font-size: 11px;
             font-weight: 600; font-style: italic;
             clip-path: polygon(0 0, 100% 0, 100% 100%, 8px 100%, 0 80%);
         }
@@ -419,6 +422,14 @@
             100% { background-position: -200% 0; }
         }
 
+        /* MOBILE SCALING ADJUSTMENT: Explicit Container Width */
+        .mobile-scaled-container {
+            width: 92%;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
     </style>
 
 </head><body class="gradient">
@@ -459,6 +470,7 @@
         .hero {
             height: 100vh;
             min-height: 100vh;
+            width: 100vw; /* Full viewport width */
             background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
                               url('https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Freshly_Detailed_Ryft_McLaren_720s_on_HRE_Wheels_with_WIKD_Exhaust.jpg?v=1744062350');
             background-size: cover;
@@ -469,10 +481,22 @@
             align-items: center;
         }
 
-        /* Hero Content */
+        /* Hero Content - Uses mobile scaling container logic */
         .hero-content {
-            padding: 3rem 5%;
-            width: 50%;
+            /* Applied directly via inline class for specificity if needed, but using the class below */
+            padding-top: 3rem;
+            padding-bottom: 3rem;
+            width: 92%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        @media (min-width: 768px) {
+             .hero-content {
+                width: 50%;
+                margin-left: 5%; /* Restore left alignment on desktop */
+                margin-right: auto;
+             }
         }
 
         .badge {
@@ -519,13 +543,15 @@
 
         @media (max-width: 1200px) {
             .hero-content {
-                width: 60%;
+                width: 60%; /* Desktop overrides */
+                margin-left: 5%;
             }
         }
 
         @media (max-width: 992px) {
             .hero-content {
                 width: 70%;
+                margin-left: 5%;
             }
         }
 
@@ -536,8 +562,9 @@
             }
 
             .hero-content {
-                padding: 2rem 5%;
-                width: 100%;
+                width: 92%; /* Mobile Scaling: Explicit width */
+                margin: 0 auto; /* Center content */
+                padding: 2rem 0; /* Remove side padding, handle via width */
             }
 
             .hero h1 {
@@ -583,19 +610,19 @@
 
 <!-- PREMIER SERVICES SECTION -->
 <section id="services-section" class="py-20" style="background-color: var(--color-background);">
-    <div class="page-width px-6 mx-auto">
-        <div class="text-center mb-12">
+    <div class="mobile-scaled-container">
+        <div class="text-center mb-10">
             <h2 class="h2">Our Premier Services</h2>
-            <p class="p-muted max-w-3xl mx-auto">Your car deserves elite protection and precision styling. Our industry-leading films and coatings deliver unmatched durability, striking visuals, and a finish tailored to your vision.</p>
+            <p class="p-muted max-w-3xl mx-auto mt-2">Your car deserves elite protection and precision styling. Our industry-leading films and coatings deliver unmatched durability, striking visuals, and a finish tailored to your vision.</p>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <!-- PPF Card -->
             <a href="https://wikdwraps.com/pages/paint-protection-film" class="package-card">
                 <img src="https://wikdwraps.com/cdn/shop/files/Satin_PPF_Wrapped_Black_and_Green_Lamborghini_Huracan_STO_Freshly_Detailed.jpg?v=1743435243" alt="Lamborghini Huracan STO with Satin PPF" class="package-card-bg">
                 <div class="package-card-overlay">
-                    <div class="package-card-content">
-                        <h3 class="package-card-title">Paint Protection Film</h3>
-                        <p class="package-card-description">Absorb impacts and resist rock chips with invisible, self-healing defense.</p>
+                    <div class="package-card-content flex flex-col gap-1">
+                        <h3 class="package-card-title text-2xl">Paint Protection Film</h3>
+                        <p class="package-card-description text-sm leading-snug">Absorb impacts and resist rock chips with invisible, self-healing defense.</p>
                         <span class="package-card-link">Learn More &rarr;</span>
                     </div>
                 </div>
@@ -604,9 +631,9 @@
             <a href="https://wikdwraps.com/pages/ceramic-coatings" class="package-card">
                  <img src="https://wikdwraps.com/cdn/shop/files/Blue_and_White_Stripe_2006_Ford_GT_Ford_GT40_Detailed_and_Ceramic_Coated.jpg?v=1743434907" alt="Ford GT with Ceramic Coating" class="package-card-bg">
                 <div class="package-card-overlay">
-                    <div class="package-card-content">
-                        <h3 class="package-card-title">Ceramic Coatings</h3>
-                        <p class="package-card-description">Ultra-durable protection for a deep, mirror-like, hydrophobic gloss.</p>
+                    <div class="package-card-content flex flex-col gap-1">
+                        <h3 class="package-card-title text-2xl">Ceramic Coatings</h3>
+                        <p class="package-card-description text-sm leading-snug">Ultra-durable protection for a deep, mirror-like, hydrophobic gloss.</p>
                         <span class="package-card-link">Learn More &rarr;</span>
                     </div>
                 </div>
@@ -615,9 +642,9 @@
             <a href="https://wikdwraps.com/pages/vinyl-wraps" class="package-card">
                 <img src="https://wikdwraps.com/cdn/shop/files/Black_Ford_F450_Platinum_Powerstroke_Dually_Chrome_Delete.jpg?v=1744062595" alt="Ford F450 with a custom vinyl wrap" class="package-card-bg">
                 <div class="package-card-overlay">
-                    <div class="package-card-content">
-                        <h3 class="package-card-title">Vinyl Wraps</h3>
-                         <p class="package-card-description">Transform your vehicle with endless customization and paint protection.</p>
+                    <div class="package-card-content flex flex-col gap-1">
+                        <h3 class="package-card-title text-2xl">Vinyl Wraps</h3>
+                         <p class="package-card-description text-sm leading-snug">Transform your vehicle with endless customization and paint protection.</p>
                         <span class="package-card-link">Learn More &rarr;</span>
                     </div>
                 </div>
@@ -626,9 +653,9 @@
             <a href="https://wikdwraps.com/pages/detailing" class="package-card">
                 <img src="https://wikdwraps.com/cdn/shop/files/IMG_5156_f16f1bb4-c32d-4e4a-89d3-47cd61d28c72.jpg?v=1742478458" alt="Professional auto detailing" class="package-card-bg">
                 <div class="package-card-overlay">
-                    <div class="package-card-content">
-                        <h3 class="package-card-title">Automotive Detailing</h3>
-                        <p class="package-card-description">Meticulous interior and exterior restoration for a showroom finish.</p>
+                    <div class="package-card-content flex flex-col gap-1">
+                        <h3 class="package-card-title text-2xl">Automotive Detailing</h3>
+                        <p class="package-card-description text-sm leading-snug">Meticulous interior and exterior restoration for a showroom finish.</p>
                         <span class="package-card-link">Learn More &rarr;</span>
                     </div>
                 </div>
@@ -637,9 +664,9 @@
             <a href="https://wikdwraps.com/pages/window-tint" class="package-card">
                  <img src="https://wikdwraps.com/cdn/shop/files/Clean_Ryft_Black_McLaren_720s_HRE_Wheels_WIKD_Exhaust.jpg?v=1744062478" alt="McLaren 720s with Nano-Ceramic Tint" class="package-card-bg">
                 <div class="package-card-overlay">
-                     <div class="package-card-content">
-                        <h3 class="package-card-title">Nano-Ceramic Tint</h3>
-                        <p class="package-card-description">Industry-leading heat rejection, UV protection, and privacy.</p>
+                     <div class="package-card-content flex flex-col gap-1">
+                        <h3 class="package-card-title text-2xl">Nano-Ceramic Tint</h3>
+                        <p class="package-card-description text-sm leading-snug">Industry-leading heat rejection, UV protection, and privacy.</p>
                         <span class="package-card-link">Learn More &rarr;</span>
                     </div>
                 </div>
@@ -648,9 +675,9 @@
             <a href="https://wikdwraps.com/pages/maintenance-plans" class="package-card">
                  <img src="https://wikdwraps.com/cdn/shop/files/Black_Lamborghini_Urus_Interior_Detail.jpg?v=1744062916" alt="Interior of a Lamborghini Urus after detailing" class="package-card-bg">
                 <div class="package-card-overlay">
-                     <div class="package-card-content">
-                        <h3 class="package-card-title">Maintenance Plans</h3>
-                        <p class="package-card-description">Keep your vehicle flawless year-round with our exclusive member plans.</p>
+                     <div class="package-card-content flex flex-col gap-1">
+                        <h3 class="package-card-title text-2xl">Maintenance Plans</h3>
+                        <p class="package-card-description text-sm leading-snug">Keep your vehicle flawless year-round with our exclusive member plans.</p>
                         <span class="package-card-link">Learn More &rarr;</span>
                     </div>
                 </div>
@@ -661,50 +688,50 @@
 
 <!-- THE WIKD DIFFERENCE SECTION -->
 <section id="difference-section" class="py-20" style="background-color: var(--color-surface);">
-    <div class="page-width px-6 mx-auto">
-        <div class="text-center mb-12">
+    <div class="mobile-scaled-container">
+        <div class="text-center mb-10">
             <h2 class="h2">The WIKD Difference</h2>
-             <p class="p-muted max-w-2xl mx-auto">We combine world-class craftsmanship with industry-leading materials to deliver results that speak for themselves.</p>
+             <p class="p-muted max-w-2xl mx-auto mt-2">We combine world-class craftsmanship with industry-leading materials to deliver results that speak for themselves.</p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <div>
-                <div class="flex justify-center items-center mb-4">
+            <div class="p-5 border border-[var(--color-border)] rounded-lg flex flex-col gap-3 h-full">
+                <div class="flex justify-center items-center mb-2">
                     <animated-icons
                         src="https://animatedicons.co/get-icon?name=Reliable&style=minimalistic&token=27a30965-9fd9-4579-acc0-b9c372561841"
                         trigger="loop"
                         attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#EAEAEA","group-2":"#FF3B30","background":"#141414"}}'
-                        height="128"
-                        width="128"
+                        height="100"
+                        width="100"
                     ></animated-icons>
                 </div>
-                <h3 class="h3 mb-2">Craftsmanship You Can Trust</h3>
-                <p class="p-muted">Our expert technicians are factory-certified installers known for their precision and attention to detail. We treat every vehicle as if it were our own, ensuring flawless results every time.</p>
+                <h3 class="h3 text-2xl mb-1">Craftsmanship You Can Trust</h3>
+                <p class="p-muted text-sm leading-snug">Our expert technicians are factory-certified installers known for their precision and attention to detail. We treat every vehicle as if it were our own, ensuring flawless results every time.</p>
             </div>
-            <div>
-                <div class="flex justify-center items-center mb-4">
+            <div class="p-5 border border-[var(--color-border)] rounded-lg flex flex-col gap-3 h-full">
+                <div class="flex justify-center items-center mb-2">
                     <animated-icons
                         src="https://animatedicons.co/get-icon?name=Chemist&style=minimalistic&token=153ce80d-3f45-4dc6-b13a-40ea011dbbfe"
                         trigger="loop"
                         attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#EAEAEA","group-2":"#FF3B30","background":"#141414"}}'
-                        height="128"
-                        width="128"
+                        height="100"
+                        width="100"
                     ></animated-icons>
                 </div>
-                <h3 class="h3 mb-2">Industry Leading Materials</h3>
-                <p class="p-muted">We’ve partnered with top-tier brands like STEK to provide the best durability, clarity, and performance for your vehicle. We don't compromise on quality.</p>
+                <h3 class="h3 text-2xl mb-1">Industry Leading Materials</h3>
+                <p class="p-muted text-sm leading-snug">We’ve partnered with top-tier brands like STEK to provide the best durability, clarity, and performance for your vehicle. We don't compromise on quality.</p>
             </div>
-            <div>
-                <div class="flex justify-center items-center mb-4">
+            <div class="p-5 border border-[var(--color-border)] rounded-lg flex flex-col gap-3 h-full">
+                <div class="flex justify-center items-center mb-2">
                     <animated-icons
                         src="https://animatedicons.co/get-icon?name=edit&style=minimalistic&token=bef79568-d828-4e67-a904-60a1bb446375"
                         trigger="loop"
                         attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#EAEAEA","group-2":"#FF3B30","background":"#141414"}}'
-                        height="128"
-                        width="128"
+                        height="100"
+                        width="100"
                     ></animated-icons>
                 </div>
-                <h3 class="h3 mb-2">Bespoke Solutions</h3>
-                <p class="p-muted">From exotics to daily drivers, we offer customized protection plans to fit your needs and budget. Your vision is our blueprint for a perfect finish.</p>
+                <h3 class="h3 text-2xl mb-1">Bespoke Solutions</h3>
+                <p class="p-muted text-sm leading-snug">From exotics to daily drivers, we offer customized protection plans to fit your needs and budget. Your vision is our blueprint for a perfect finish.</p>
             </div>
         </div>
     </div>
@@ -712,12 +739,12 @@
 
 <!-- GALLERY SECTION -->
 <section id="gallery-section" class="py-20" style="background-color: var(--color-background);">
-    <div class="page-width px-6 mx-auto">
-        <div class="text-center mb-12">
+    <div class="mobile-scaled-container">
+        <div class="text-center mb-10">
             <h2 class="h2">From Showroom to Showstopper</h2>
-            <p class="p-muted max-w-2xl mx-auto">Explore our gallery of recent projects and see the WIKD difference for yourself. Your vision is our mission.</p>
+            <p class="p-muted max-w-2xl mx-auto mt-2">Explore our gallery of recent projects and see the WIKD difference for yourself. Your vision is our mission.</p>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
              <div class="gallery-card-wrapper">
                  <a href="https://wikdwraps.com/pages/gallery" class="gallery-card">
                      <img src="https://wikdwraps.com/cdn/shop/files/Black_Lamborghini_Urus_Paint_Correction_and_Rock_Chip_Repair.jpg?v=1744062951" class="gallery-card-bg" alt="Lamborghini Urus">
@@ -726,7 +753,7 @@
                              <div class="wikd-sub-badge">PPF Repair &amp; Detail</div>
                          </div>
                          <div class="gallery-card-title-block">
-                             <h3 class="gallery-card-title">2018 Lamborghini Urus</h3>
+                             <h3 class="gallery-card-title text-2xl">2018 Lamborghini Urus</h3>
                          </div>
                      </div>
                  </a>
@@ -739,7 +766,7 @@
                              <div class="wikd-sub-badge">Exterior Detail</div>
                          </div>
                          <div class="gallery-card-title-block">
-                             <h3 class="gallery-card-title">2024 Cadillac CT5 V Blackwing</h3>
+                             <h3 class="gallery-card-title text-2xl">2024 Cadillac CT5 V Blackwing</h3>
                          </div>
                      </div>
                  </a>
@@ -752,7 +779,7 @@
                             <div class="wikd-sub-badge">Chrome Delete</div>
                          </div>
                          <div class="gallery-card-title-block">
-                             <h3 class="gallery-card-title">2024 Ford F450 Platinum</h3>
+                             <h3 class="gallery-card-title text-2xl">2024 Ford F450 Platinum</h3>
                          </div>
                      </div>
                  </a>
@@ -768,11 +795,11 @@
 
 <!-- LOCATIONS SECTION -->
 <section id="locations-section" class="py-20" style="background-color: var(--color-surface);">
-    <div class="page-width px-6 mx-auto">
-        <div class="text-center mb-12">
+    <div class="mobile-scaled-container">
+        <div class="text-center mb-10">
             <h2 class="h2">Your Nearest WIKD Locations</h2>
         </div>
-         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- WIKD WRAPS CARD -->
             <div class="border border-[var(--color-border)] p-5 rounded-lg flex flex-col h-full">
                 <h3 class="h3 text-2xl text-center md:text-left">WIKD Wraps</h3>
@@ -788,8 +815,8 @@
                 </div>
 
                 <div class="flex-grow flex flex-col gap-0.5">
-                    <p class="p-muted text-center md:text-left leading-snug">Wraps, Tint, Coatings, & Detailing</p>
-                    <p class="p-muted text-center md:text-left leading-snug">Automotive Film & Coating Specialists</p>
+                    <p class="p-muted text-sm leading-snug text-center md:text-left">Wraps, Tint, Coatings, & Detailing</p>
+                    <p class="p-muted text-sm leading-snug text-center md:text-left">Automotive Film & Coating Specialists</p>
                 </div>
                 
                 <div class="mt-auto pt-4 flex flex-col items-center md:items-start gap-4">
@@ -828,8 +855,8 @@
                     <span id="status-line-ms" class="text-sm font-semibold"></span>
                  </div>
                 <div class="flex-grow flex flex-col gap-0.5">
-                    <p class="p-muted text-center md:text-left leading-snug">Tuning, Fabrication, & Custom Builds</p>
-                    <p class="p-muted text-center md:text-left leading-snug">Forced Induction Systems Specialists</p>
+                    <p class="p-muted text-sm leading-snug text-center md:text-left">Tuning, Fabrication, & Custom Builds</p>
+                    <p class="p-muted text-sm leading-snug text-center md:text-left">Forced Induction Systems Specialists</p>
                 </div>
                 <div class="mt-auto pt-4 flex flex-col items-center md:items-start gap-4">
                      <div class="flex items-center gap-4">
