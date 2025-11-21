@@ -200,31 +200,74 @@
             display: flex; flex-direction: column; justify-content: flex-end;
             padding: 20px;
         }
+
+        /* --- UPDATED CONTENT REVEAL LOGIC --- */
         .package-card-content {
-             transform: translateY(20px); opacity: 0;
-            transition: transform 0.4s ease 0.1s, opacity 0.4s ease 0.1s;
+             /* Content container is now visible and manages child visibility */
+             transform: translateY(0); 
+             opacity: 1;
+             transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+             display: flex;
+             flex-direction: column;
+             gap: 0; /* Spacing handled by margins on reveal */
         }
-        /* Added .mobile-view selector for scroll trigger */
-        .package-card:hover .package-card-content,
-        .package-card.mobile-view .package-card-content {
-            transform: translateY(0);
-            opacity: 1;
-        }
+
         .package-card-title {
             font-family: var(--font-heading);
             font-size: 1.5rem; color: white;
             text-transform: uppercase;
+            margin-bottom: 0;
+            transition: margin-bottom 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
+
         .package-card-description {
             color: var(--color-text-muted);
-            margin-bottom: 0.75rem;
             font-size: 0.875rem;
             line-height: 1.4;
+            /* Hidden state */
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transform: translateY(10px);
+            margin-bottom: 0;
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
+
         .package-card-link {
             font-size: 0.875rem; color: var(--color-primary);
             text-transform: uppercase; font-weight: 600;
             text-decoration: none;
+            /* Hidden state */
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transform: translateY(10px);
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* --- REVEAL ON HOVER/MOBILE SCROLL --- */
+        
+        /* Push title up slightly */
+        .package-card:hover .package-card-title,
+        .package-card.mobile-view .package-card-title {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Reveal Description */
+        .package-card:hover .package-card-description,
+        .package-card.mobile-view .package-card-description {
+            max-height: 100px; /* Enough space for content */
+            opacity: 1;
+            transform: translateY(0);
+            margin-bottom: 0.75rem;
+        }
+
+        /* Reveal Link */
+        .package-card:hover .package-card-link,
+        .package-card.mobile-view .package-card-link {
+            max-height: 24px;
+            opacity: 1;
+            transform: translateY(0);
         }
 
         /* --- WIKD GALLERY CARD --- */
@@ -643,7 +686,7 @@
             <a href="https://wikdwraps.com/pages/paint-protection-film" class="package-card">
                 <img src="https://wikdwraps.com/cdn/shop/files/Satin_PPF_Wrapped_Black_and_Green_Lamborghini_Huracan_STO_Freshly_Detailed.jpg?v=1743435243" alt="Lamborghini Huracan STO with Satin PPF" class="package-card-bg">
                 <div class="package-card-overlay">
-                    <div class="package-card-content flex flex-col gap-1">
+                    <div class="package-card-content flex flex-col">
                         <h3 class="package-card-title text-2xl">Paint Protection Film</h3>
                         <p class="package-card-description text-sm leading-snug">Absorb impacts and resist rock chips with invisible, self-healing defense.</p>
                         <span class="package-card-link">Learn More &rarr;</span>
@@ -654,7 +697,7 @@
             <a href="https://wikdwraps.com/pages/ceramic-coatings" class="package-card">
                  <img src="https://wikdwraps.com/cdn/shop/files/Blue_and_White_Stripe_2006_Ford_GT_Ford_GT40_Detailed_and_Ceramic_Coated.jpg?v=1743434907" alt="Ford GT with Ceramic Coating" class="package-card-bg">
                 <div class="package-card-overlay">
-                    <div class="package-card-content flex flex-col gap-1">
+                    <div class="package-card-content flex flex-col">
                         <h3 class="package-card-title text-2xl">Ceramic Coatings</h3>
                         <p class="package-card-description text-sm leading-snug">Ultra-durable protection for a deep, mirror-like, hydrophobic gloss.</p>
                         <span class="package-card-link">Learn More &rarr;</span>
@@ -665,7 +708,7 @@
             <a href="https://wikdwraps.com/pages/vinyl-wraps" class="package-card">
                 <img src="https://wikdwraps.com/cdn/shop/files/Black_Ford_F450_Platinum_Powerstroke_Dually_Chrome_Delete.jpg?v=1744062595" alt="Ford F450 with a custom vinyl wrap" class="package-card-bg">
                 <div class="package-card-overlay">
-                    <div class="package-card-content flex flex-col gap-1">
+                    <div class="package-card-content flex flex-col">
                         <h3 class="package-card-title text-2xl">Vinyl Wraps</h3>
                          <p class="package-card-description text-sm leading-snug">Transform your vehicle with endless customization and paint protection.</p>
                         <span class="package-card-link">Learn More &rarr;</span>
@@ -676,7 +719,7 @@
             <a href="https://wikdwraps.com/pages/detailing" class="package-card">
                 <img src="https://wikdwraps.com/cdn/shop/files/IMG_5156_f16f1bb4-c32d-4e4a-89d3-47cd61d28c72.jpg?v=1742478458" alt="Professional auto detailing" class="package-card-bg">
                 <div class="package-card-overlay">
-                    <div class="package-card-content flex flex-col gap-1">
+                    <div class="package-card-content flex flex-col">
                         <h3 class="package-card-title text-2xl">Automotive Detailing</h3>
                         <p class="package-card-description text-sm leading-snug">Meticulous interior and exterior restoration for a showroom finish.</p>
                         <span class="package-card-link">Learn More &rarr;</span>
@@ -687,7 +730,7 @@
             <a href="https://wikdwraps.com/pages/window-tint" class="package-card">
                  <img src="https://wikdwraps.com/cdn/shop/files/Clean_Ryft_Black_McLaren_720s_HRE_Wheels_WIKD_Exhaust.jpg?v=1744062478" alt="McLaren 720s with Nano-Ceramic Tint" class="package-card-bg">
                 <div class="package-card-overlay">
-                     <div class="package-card-content flex flex-col gap-1">
+                     <div class="package-card-content flex flex-col">
                         <h3 class="package-card-title text-2xl">Nano-Ceramic Tint</h3>
                         <p class="package-card-description text-sm leading-snug">Industry-leading heat rejection, UV protection, and privacy.</p>
                         <span class="package-card-link">Learn More &rarr;</span>
@@ -698,7 +741,7 @@
             <a href="https://wikdwraps.com/pages/maintenance-plans" class="package-card">
                  <img src="https://wikdwraps.com/cdn/shop/files/Black_Lamborghini_Urus_Interior_Detail.jpg?v=1744062916" alt="Interior of a Lamborghini Urus after detailing" class="package-card-bg">
                 <div class="package-card-overlay">
-                     <div class="package-card-content flex flex-col gap-1">
+                     <div class="package-card-content flex flex-col">
                         <h3 class="package-card-title text-2xl">Maintenance Plans</h3>
                         <p class="package-card-description text-sm leading-snug">Keep your vehicle flawless year-round with our exclusive member plans.</p>
                         <span class="package-card-link">Learn More &rarr;</span>
