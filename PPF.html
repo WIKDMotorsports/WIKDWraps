@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html class="js" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Paint Protection Film | WIKD Wraps</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+    <script src="https://animatedicons.co/scripts/embed-animated-icons.js"></script>
+
+    <style>
+      :root {
+            --color-background: #0A0A0A;
+            --color-text: #EAEAEA;
+            --color-text-muted: #888888;
+            --color-primary: #FF3B30;
+            --color-surface: #141414;
+            --color-border: #2A2A2A;
+            --font-heading: 'Rajdhani', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        /* Base styles */
+        html { scroll-behavior: smooth; }
+        body {
+            background-color: var(--color-background) !important;
+            color: var(--color-text) !important;
+            font-family: var(--font-body) !important;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* --- NOISE TEXTURE OVERLAY --- */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9999; opacity: 0.08;
+            background-size: 100px 100px;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        .font-heading { font-family: var(--font-heading); }
+        .font-body { font-family: var(--font-body); }
+        
+        h1, h2, h3, .h1, .h2, .h3 {
+            font-family: var(--font-heading) !important;
+            font-weight: 700 !important;
+            line-height: 1.1 !important;
+            text-transform: uppercase !important;
+            color: white !important;
+        }
+        .h1 { font-size: clamp(2.5rem, 6vw, 4rem); }
+        .h2 { font-size: clamp(2rem, 5vw, 3rem); }
+        .h3 { font-size: clamp(1.5rem, 4vw, 2.25rem); }
+        
+        p, .p, .rte, .rte p { 
+          font-family: var(--font-body) !important; 
+          color: var(--color-text) !important; 
+          line-height: 1.6 !important;
+        }
+        .p-muted { font-family: var(--font-body); color: var(--color-text-muted) !important; line-height: 1.6;}
+        
+        strong { color: white; font-weight: 600; }
+
+        /* --- NAVIGATION --- */
+        .nav-bar {
+            position: absolute;
+            top: 0; left: 0; width: 100%;
+            padding: 2rem 5%;
+            z-index: 50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-logo {
+            font-family: var(--font-heading);
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: white;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+        .nav-back-link {
+            color: var(--color-text);
+            text-decoration: none;
+            font-family: var(--font-heading);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s;
+        }
+        .nav-back-link:hover { color: var(--color-primary); }
+
+        /* --- BUTTON STYLES --- */
+        .btn {
+            display: inline-block;
+            padding: 14px 32px;
+            font-family: var(--font-heading) !important;
+            font-size: 18px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--color-text) !important;
+            background-color: transparent;
+            border: 2px solid var(--color-border);
+            position: relative;
+            overflow: hidden;
+            transition: color 0.4s ease-in-out, border-color 0.4s ease-in-out, transform 0.3s ease;
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 10px 100%, 0 85%);
+            text-decoration: none;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        .btn span { position: relative; z-index: 2; }
+        .btn::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1; transform: translateX(-101%);
+            transition: transform 0.5s cubic-bezier(0.7, 0, 0.3, 1);
+        }
+        .btn:hover { color: white !important; transform: translateY(-3px); }
+        .btn:hover::before { transform: translateX(0); }
+        
+        .btn.btn-primary { border-color: var(--color-primary); }
+        .btn.btn-primary::before { background-color: var(--color-primary); }
+        .btn.btn-primary:hover { border-color: var(--color-primary); }
+        
+        .btn.btn-secondary { border-color: var(--color-text-muted); }
+        .btn.btn-secondary:hover { border-color: white; }
+        .btn.btn-secondary::before { background-color: white; }
+        .btn.btn-secondary:hover span { color: black !important; }
+
+        /* --- HERO --- */
+        .page-hero {
+            height: 60vh;
+            width: 100vw;
+            /* Lizard Green Porsche GT3 RS */
+            background-image: linear-gradient(to bottom, rgba(0,0,0,0.6), var(--color-background)), 
+                              url('https://wikdwraps.com/cdn/shop/files/2019_Lizard_Green_Porsche_911_GT3_RS_Weissach_with_Full_Body_PPF.jpg?v=1744062656&width=1500');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            padding-bottom: 4rem;
+        }
+        .page-hero-content {
+            width: 92%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* --- SECTIONS & GRIDS --- */
+        .content-section { padding: 5rem 0; }
+        .mobile-scaled-container { width: 92%; max-width: 1200px; margin-left: auto; margin-right: auto; }
+        
+        .features-grid-3x1 {
+            display: grid; grid-template-columns: 1fr; gap: 1.5rem;
+        }
+        @media (min-width: 992px) {
+            .features-grid-3x1 { grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+        }
+        
+        .features-grid-4x1 {
+            display: grid; grid-template-columns: 1fr; gap: 1.5rem;
+        }
+        @media (min-width: 768px) {
+            .features-grid-4x1 { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (min-width: 1200px) {
+            .features-grid-4x1 { grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+        }
+
+        .feature-box {
+            border: 1px solid var(--color-border); padding: 2rem; height: 100%;
+            clip-path: polygon(0 0, 100% 0, 100% 90%, 95% 100%, 0 100%);
+            background: rgba(255,255,255,0.02);
+            transition: border-color 0.3s ease, transform 0.3s ease;
+            display: flex; flex-direction: column;
+            justify-content: flex-start; align-items: center; text-align: center;
+        }
+        .feature-box:hover { border-color: var(--color-primary); transform: translateY(-5px); }
+
+        /* --- WHAT IS PPF (Image Right) --- */
+        .split-row {
+            display: grid; grid-template-columns: 1fr; gap: 3rem; align-items: center; margin-bottom: 4rem;
+        }
+        @media (min-width: 992px) {
+            .split-row { grid-template-columns: 1fr 1fr; gap: 5rem; }
+        }
+        
+        /* Clean container for diagram image */
+        .diagram-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* No border, no clip-path */
+        }
+        .diagram-image { 
+            max-width: 100%; 
+            height: auto; 
+            object-fit: contain; /* Ensure it's not cropped */
+        } 
+
+        /* --- IMAGE SEQUENCE CTA SECTION --- */
+        .sequence-cta-section {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+        @media (min-width: 992px) {
+            .sequence-cta-section { grid-template-columns: 1fr 1fr; gap: 5rem; }
+        }
+        
+        /* Container for image sequence */
+        .sequence-container {
+            position: relative;
+            aspect-ratio: 16 / 9;
+            width: 100%;
+            /* Standard sharp corners and border */
+            border: 1px solid var(--color-border);
+            clip-path: polygon(0 0, 100% 0, 100% 90%, 95% 100%, 0 100%);
+            overflow: hidden;
+            background: #000; /* Fallback bg */
+        }
+        .sequence-image {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: contain; /* Keep aspect ratio inside container */
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+        }
+        .sequence-image.active { opacity: 1; }
+
+        /* --- FOOTER STYLES --- */
+        .wikd-footer {
+            background-color: var(--color-surface, #141414);
+            border-top: 1px solid var(--color-border, #2A2A2A);
+            padding: 4rem 0 2rem;
+            font-family: var(--font-body, 'Inter', sans-serif);
+        }
+        .wikd-footer-container { width: 92%; max-width: 1200px; margin: 0 auto; }
+        .wikd-footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem; }
+        .wikd-footer-brand { display: flex; flex-direction: column; gap: 1rem; }
+        .wikd-footer-logo { width: 180px; height: auto; }
+        .wikd-footer-tagline { color: var(--color-text-muted, #888888); font-size: 0.95rem; line-height: 1.6; max-width: 300px; }
+        .wikd-footer-social { display: flex; gap: 1rem; margin-top: 1rem; }
+        .wikd-footer-social-link {
+            width: 40px; height: 40px; border-radius: 50%; background: var(--color-background, #0A0A0A);
+            border: 1px solid var(--color-border, #2A2A2A); display: flex; align-items: center; justify-content: center;
+            color: var(--color-text, #EAEAEA); transition: all 0.3s ease; text-decoration: none;
+        }
+        .wikd-footer-social-link:hover { background: var(--color-primary, #FF3B30); border-color: var(--color-primary, #FF3B30); transform: translateY(-3px); }
+        .wikd-footer-column h3 {
+            font-family: var(--font-heading, 'Rajdhani', sans-serif); font-size: 1.1rem; font-weight: 700; color: white;
+            text-transform: uppercase; margin-bottom: 1.25rem; letter-spacing: 0.5px;
+        }
+        .wikd-footer-links { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+        .wikd-footer-links a {
+            color: var(--color-text-muted, #888888); text-decoration: none; font-size: 0.95rem; transition: all 0.3s ease; display: inline-block;
+        }
+        .wikd-footer-links a:hover { color: var(--color-primary, #FF3B30); transform: translateX(5px); }
+        .wikd-footer-bottom {
+            border-top: 1px solid var(--color-border, #2A2A2A); padding-top: 2rem; display: flex; justify-content: space-between;
+            align-items: center; flex-wrap: wrap; gap: 1rem;
+        }
+        .wikd-footer-copyright { color: var(--color-text-muted, #888888); font-size: 0.875rem; }
+        .wikd-footer-copyright a { color: var(--color-primary, #FF3B30); text-decoration: none; font-weight: 600; }
+        .wikd-footer-legal { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+        .wikd-footer-legal a { color: var(--color-text-muted, #888888); text-decoration: none; font-size: 0.875rem; transition: color 0.3s ease; }
+        .wikd-footer-legal a:hover { color: var(--color-primary, #FF3B30); }
+        .wikd-footer-newsletter { display: flex; flex-direction: column; gap: 0.75rem; }
+        .wikd-footer-newsletter p { color: var(--color-text-muted, #888888); font-size: 0.9rem; line-height: 1.5; margin: 0; }
+        .wikd-footer-email-input {
+            background: var(--color-background, #0A0A0A); border: 1px solid var(--color-border, #2A2A2A);
+            color: white; padding: 0.875rem 1rem; border-radius: 4px; font-size: 0.95rem; width: 100%;
+        }
+        .wikd-footer-subscribe-btn {
+            background: var(--color-primary, #FF3B30); color: white; border: none; padding: 0.875rem 1.5rem;
+            border-radius: 4px; font-family: var(--font-heading, 'Rajdhani', sans-serif); font-size: 0.95rem; font-weight: 700; text-transform: uppercase; cursor: pointer;
+        }
+
+        @media (max-width: 992px) { .wikd-footer-grid { grid-template-columns: 1fr 1fr; } .wikd-footer-brand { grid-column: 1 / -1; } }
+        @media (max-width: 640px) { .wikd-footer-grid { grid-template-columns: 1fr; } .wikd-footer-bottom { flex-direction: column; text-align: center; } }
+    </style>
+</head>
+<body class="gradient">
+
+    <!-- Simple Nav -->
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-logo">WIKD WRAPS</a>
+        <a href="services.html" class="nav-back-link">
+            &larr; Back to Services
+        </a>
+    </nav>
+
+    <!-- Page Hero -->
+    <header class="page-hero">
+        <div class="page-hero-content">
+            <span class="text-red-600 font-bold tracking-widest uppercase text-sm mb-2 block font-heading">Paint Protection Film</span>
+            <h1 class="h1 mb-4">Premium Paint Protection Film</h1>
+            <p class="p-muted max-w-2xl">
+                Invisible Protection. Superior Durability. Swirl-Free Self-Healing. Right in McKinney, TX.
+            </p>
+        </div>
+    </header>
+
+    <main>
+        <!-- SECTION 1: What is PPF? (Image Left/Text Right) -->
+        <section class="content-section">
+            <div class="mobile-scaled-container">
+                <div class="split-row">
+                    <div class="diagram-wrapper">
+                        <!-- UPDATED IMAGE: Track Pack webp used for "What is PPF" - Full Color, Uncropped -->
+                        <img src="https://wikdwraps.com/cdn/shop/files/Track_Pack.webp?v=1738085280&width=750" alt="PPF Coverage Example" class="diagram-image">
+                    </div>
+                    <div>
+                        <h2 class="h2 mb-4">What is PPF?</h2>
+                        <div class="p-muted rte">
+                            <p>Paint Protection Film (PPF), also known as a <strong>clear bra or protective film,</strong> is a <strong>thin, self-healing thermoplastic polyurethane layer</strong> applied to your vehicle’s painted surfaces. With a thickness of <strong>6-8 mils</strong>, it provides <strong>advanced protection against rock chips, scratches, and chemical contaminants.</strong> The <strong>UV-resistant adhesive</strong> ensures a secure bond to your paint, helping preserve your vehicle’s finish for years to come.</p>
+                        </div>
+                        <div class="mt-8">
+                            <a href="https://wikdwraps.com/pages/contact" class="btn btn-primary"><span>Protect Your Car Now</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Why do I need PPF? (3 Columns) -->
+        <section class="content-section bg-[var(--color-surface)]">
+            <div class="mobile-scaled-container">
+                <div class="text-center mb-12">
+                    <h2 class="h2">Why do I need PPF?</h2>
+                </div>
+                
+                <div class="features-grid-3x1">
+                    <!-- 1. Paint Protection (Shield) -->
+                    <div class="feature-box">
+                        <animated-icons
+                            src="https://animatedicons.co/get-icon?name=Security&style=minimalistic&token=af857f3d-6096-42d0-9f04-a9ee72f54aa4"
+                            trigger="loop"
+                            attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","group-3":"transparent","background":"transparent"}}'
+                            height="80" width="80" class="mb-4"
+                        ></animated-icons>
+                        <h3 class="h3 text-2xl mb-3">Paint Protection</h3>
+                        <p class="p-muted text-sm">Shield your vehicle’s exterior from rock chips, scratches, road debris, and environmental contaminants like bird droppings and acid rain.</p>
+                    </div>
+
+                    <!-- 2. Ease of Maintenance (Sync / Self Healing) -->
+                    <div class="feature-box">
+                        <animated-icons
+                          src="https://animatedicons.co/get-icon?name=Sync&style=minimalistic&token=e9dea012-465e-4473-9939-5de89e4a2b52"
+                          trigger="loop"
+                          attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","background":"transparent"}}'
+                          height="80" width="80" class="mb-4"
+                        ></animated-icons>
+                        <h3 class="h3 text-2xl mb-3">Ease of Maintenance</h3>
+                        <p class="p-muted text-sm">Our self-healing, hydrophobic top coats reduce maintenance effort by repelling dirt, water, and stains, keeping your car cleaner for longer. Minor scratches disappear with heat, maintaining a flawless finish.</p>
+                    </div>
+
+                    <!-- 3. Resale Value (Rain / Hydrophobic concept) -->
+                    <div class="feature-box">
+                        <animated-icons
+                            src="https://animatedicons.co/get-icon?name=Rain%20Fall&style=minimalistic&token=bd76bece-b33e-4cb2-b7a8-440145486d58"
+                            trigger="loop"
+                            attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","background":"transparent"}}'
+                            height="80" width="80" class="mb-4"
+                        ></animated-icons>
+                        <h3 class="h3 text-2xl mb-3">Resale Value Preservation</h3>
+                        <p class="p-muted text-sm">A well-maintained exterior boosts resale value by keeping your car’s paint in pristine condition. Buyers are willing to pay more for a vehicle that looks like new.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: NEW IMAGE SEQUENCE CTA (Replaced Coverage Levels) -->
+        <section class="content-section">
+            <div class="mobile-scaled-container">
+                <div class="sequence-cta-section">
+                    <!-- Left: Text Content -->
+                    <div class="service-text">
+                        <span class="text-red-600 font-bold tracking-widest uppercase text-sm mb-2 block font-heading">Custom Coverage</span>
+                        <h3 class="h3">Build Your Protection Package</h3>
+                        <p class="p-muted mb-6">
+                            Every driver's needs are different. From basic protection to full vehicle coverage, use our interactive tool to see exactly what fits your vehicle and budget.
+                        </p>
+                        <a href="https://wikdwraps.com/pages/estimate-configurator" class="btn btn-primary">
+                            <span>Launch Configurator</span>
+                        </a>
+                    </div>
+
+                    <!-- Right: Image Sequence Container -->
+                    <div class="sequence-container" id="cadillac-sequence">
+                        <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/CadillacSUVBase.png?v=1762966194" class="sequence-image active" alt="Base Coverage">
+                        <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/CadillacSUVFront.png?v=1762966187" class="sequence-image" alt="Full Front Coverage">
+                        <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/CadillacSUVTrack.png?v=1762966199" class="sequence-image" alt="Track Pack Coverage">
+                        <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/CadillacSUVFull.png?v=1762966207" class="sequence-image" alt="Full Car Coverage">
+                        <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/CadillacSUVF1.png?v=1762966216" class="sequence-image" alt="Formula 1 Coverage">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: About our Films (4 Columns) -->
+        <section class="content-section bg-[var(--color-surface)]">
+            <div class="mobile-scaled-container">
+                <div class="text-center mb-12">
+                    <h2 class="h2">About our Films</h2>
+                </div>
+
+                <div class="features-grid-4x1">
+                    <!-- Expertly Installed (Chatbot/Precision Icon) -->
+                    <div class="feature-box">
+                        <animated-icons
+                          src="https://animatedicons.co/get-icon?name=Chatbot&style=minimalistic&token=6b3aba1e-cf81-46d6-8923-cca76667c70d"
+                          trigger="loop"
+                          attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","background":"transparent"}}'
+                          height="60" width="60" class="mb-4"
+                        ></animated-icons>
+                        <h3 class="h3 text-xl mb-2">Expertly Installed</h3>
+                        <p class="p-muted text-sm">Trust our factory certified installers to truly deliver exceptional quality precision-cut installations. No cut corners, no misaligned edges, and certainly no damaged paint.</p>
+                    </div>
+
+                    <!-- Warrantied (Warranty Icon) -->
+                    <div class="feature-box">
+                        <animated-icons
+                          src="https://animatedicons.co/get-icon?name=Warranty&style=minimalistic&token=e9dea012-465e-4473-9939-5de89e4a2b52"
+                          trigger="loop"
+                          attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","background":"transparent"}}'
+                          height="60" width="60" class="mb-4"
+                        ></animated-icons>
+                        <h3 class="h3 text-xl mb-2">Warrantied</h3>
+                        <p class="p-muted text-sm">All of our Paint Protection Film installations come with a 10-12 year warranty from the manufacturer. No worries about peeling, lifting, yellowing, cracking, or fading!</p>
+                    </div>
+
+                    <!-- Customize & Protect (Magic Box) -->
+                    <div class="feature-box">
+                        <animated-icons
+                            src="https://animatedicons.co/get-icon?name=Magic%20Box&style=minimalistic&token=bd76bece-b33e-4cb2-b7a8-440145486d58"
+                            trigger="loop"
+                            attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","background":"transparent"}}'
+                            height="60" width="60" class="mb-4"
+                        ></animated-icons>
+                        <h3 class="h3 text-xl mb-2">Customize & Protect</h3>
+                        <p class="p-muted text-sm">Emerging technologies from PPF manufacturers allow the same protective benefits of PPF, with the color and finish change options of a vinyl wrap or matte paint!</p>
+                    </div>
+
+                    <!-- Peace of Mind (STEK Logo) -->
+                    <div class="feature-box">
+                        <div class="mb-4 h-16 flex items-center justify-center">
+                            <img src="https://wikdwraps.com/cdn/shop/files/STEK_USA_V3_white_-_w_logo.png?v=1741272400&width=200" alt="STEK Logo" style="max-height: 100%; width: auto;">
+                        </div>
+                        <h3 class="h3 text-xl mb-2">Peace of Mind</h3>
+                        <p class="p-muted text-sm">Know your car is recieving the quality and care it deserves. WIKD PBW is proud to be an authorized installer for STEK Films.</p>
+                    </div>
+                </div>
+                
+                <div class="mt-10 text-center">
+                    <a href="https://wikdwraps.com/pages/contact" class="btn btn-primary"><span>Get Protected Now</span></a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="wikd-footer">
+        <div class="wikd-footer-container">
+            <div class="wikd-footer-grid">
+                <!-- Brand Column -->
+                <div class="wikd-footer-brand">
+                    <img src="https://wikdwraps.com/cdn/shop/files/output-onlinepngtools_3.png?v=1737407428&width=300" alt="WIKD Wraps" class="wikd-footer-logo">
+                    <p class="wikd-footer-tagline">Uncompromised Protection. WIKD Craftsmanship.</p>
+                    <div class="wikd-footer-social">
+                        <a href="https://www.facebook.com/wikdwraps" target="_blank" rel="noopener" class="wikd-footer-social-link" aria-label="Facebook">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        </a>
+                        <a href="https://www.instagram.com/wikdwraps" target="_blank" rel="noopener" class="wikd-footer-social-link" aria-label="Instagram">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                        </a>
+                        <a href="https://twitter.com/wikdwraps" target="_blank" rel="noopener" class="wikd-footer-social-link" aria-label="X (Twitter)">
+                            <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Services Column -->
+                <div class="wikd-footer-column">
+                    <h3>Services</h3>
+                    <ul class="wikd-footer-links">
+                        <li><a href="https://wikdwraps.com/pages/paint-protection-film">Paint Protection Film</a></li>
+                        <li><a href="https://wikdwraps.com/pages/ceramic-coatings">Ceramic Coatings</a></li>
+                        <li><a href="https://wikdwraps.com/pages/vinyl-wraps">Vinyl Wraps</a></li>
+                        <li><a href="https://wikdwraps.com/pages/window-tint">Window Tint</a></li>
+                        <li><a href="https://wikdwraps.com/pages/detailing">Detailing</a></li>
+                        <li><a href="https://wikdwraps.com/pages/maintenance-plans">Maintenance Plans</a></li>
+                    </ul>
+                </div>
+
+                <!-- Company Column -->
+                <div class="wikd-footer-column">
+                    <h3>Company</h3>
+                    <ul class="wikd-footer-links">
+                        <li><a href="https://wikdwraps.com/pages/about-us-1">About Us</a></li>
+                        <li><a href="https://wikdwraps.com/pages/gallery">Gallery</a></li>
+                        <li><a href="https://wikdwraps.com/pages/contact">Contact</a></li>
+                        <li><a href="https://wikdwraps.com/pages/careers">Careers</a></li>
+                        <li><a href="https://wikdwraps.com/pages/dealers">Dealers</a></li>
+                        <li><a href="https://www.wikdmotorsports.com/" target="_blank">WIKD Motorsports</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="wikd-footer-bottom">
+                <div class="wikd-footer-copyright">
+                    © 2025 <a href="/">WIKD Wraps</a>. All rights reserved.
+                </div>
+                <div class="wikd-footer-legal">
+                    <a href="https://wikdwraps.com/pages/privacy-policy">Privacy Policy</a>
+                    <a href="https://wikdwraps.com/pages/refund-policy">Refund Policy</a>
+                    <a href="https://wikdwraps.com/pages/terms-of-service">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Image Sequence Loop Logic
+            const images = document.querySelectorAll('.sequence-image');
+            let currentIndex = 0;
+            const intervalTime = 3000; // 3 seconds per image
+
+            if(images.length > 0) {
+                setInterval(() => {
+                    // Remove active class from current
+                    images[currentIndex].classList.remove('active');
+                    
+                    // Increment index
+                    currentIndex = (currentIndex + 1) % images.length;
+                    
+                    // Add active class to next
+                    images[currentIndex].classList.add('active');
+                }, intervalTime);
+            }
+        });
+    </script>
+
+</body>
+</html>
