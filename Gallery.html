@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html class="js" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Gallery | WIKD Wraps</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+      :root {
+            --color-background: #0A0A0A;
+            --color-text: #EAEAEA;
+            --color-text-muted: #888888;
+            --color-primary: #FF3B30;
+            --color-surface: #141414;
+            --color-border: #2A2A2A;
+            --font-heading: 'Rajdhani', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        /* Base styles */
+        html { scroll-behavior: smooth; }
+        body {
+            background-color: var(--color-background) !important;
+            color: var(--color-text) !important;
+            font-family: var(--font-body) !important;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* --- NOISE TEXTURE OVERLAY --- */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9999; opacity: 0.08;
+            background-size: 100px 100px;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        .font-heading { font-family: var(--font-heading) !important; }
+        .font-body { font-family: var(--font-body) !important; }
+        
+        h1, h2, h3, .h1, .h2, .h3 {
+            font-family: var(--font-heading) !important;
+            font-weight: 700 !important;
+            line-height: 1.1 !important;
+            text-transform: uppercase !important;
+            color: white !important;
+        }
+        
+        p, .p { 
+          font-family: var(--font-body) !important; 
+          color: var(--color-text) !important; 
+          line-height: 1.6 !important;
+        }
+        .text-muted { color: var(--color-text-muted) !important; }
+
+        /* --- NAVIGATION --- */
+        .nav-bar {
+            position: absolute;
+            top: 0; left: 0; width: 100%;
+            padding: 2rem 5%;
+            z-index: 50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-logo {
+            font-family: var(--font-heading);
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: white;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+        .nav-link {
+            color: var(--color-text);
+            text-decoration: none;
+            font-family: var(--font-heading);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+        .nav-link:hover { color: var(--color-primary); }
+
+        /* --- PAGE HEADER --- */
+        .page-header {
+            padding: 10rem 0 4rem;
+            text-align: center;
+            background: radial-gradient(circle at center top, rgba(255, 59, 48, 0.15), transparent 70%);
+        }
+
+        /* --- PROJECT SECTIONS --- */
+        .project-section {
+            margin-bottom: 6rem;
+            padding-bottom: 4rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+        .project-section:last-child { border-bottom: none; margin-bottom: 0; }
+
+        .project-info {
+            text-align: left; /* Changed to Left */
+            margin-bottom: 2rem;
+            width: 100%;
+            padding: 0 5%; /* Aligns with nav-bar padding */
+        }
+
+        /* --- INFINITE TICKER GALLERY --- */
+        .ticker-view {
+            overflow: hidden;
+            width: 100%;
+            padding: 1rem 0;
+            /* Fade out edges for smoother look */
+            mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+        }
+
+        .ticker-track {
+            display: flex;
+            gap: 1.5rem;
+            width: max-content;
+            /* Animation: Moves left by 50% */
+            animation: scroll 40s linear infinite;
+        }
+        
+        /* Reverse direction class */
+        .ticker-track.reverse {
+            animation-name: scroll-reverse;
+        }
+        
+        /* Pause on hover for usability */
+        .ticker-track:hover {
+            animation-play-state: paused;
+        }
+
+        /* Move Left (Standard) */
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Move Right (Reverse) */
+        @keyframes scroll-reverse {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0); }
+        }
+        
+        .gallery-item {
+            /* Fixed widths relative to viewport to maintain consistent ticker speed appearance */
+            flex: 0 0 80vw; 
+            position: relative;
+            aspect-ratio: 4/3;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid var(--color-border);
+            background: var(--color-surface);
+        }
+        
+        @media (min-width: 768px) {
+            .gallery-item { flex: 0 0 45vw; } 
+        }
+        @media (min-width: 1024px) {
+            .gallery-item { flex: 0 0 30vw; aspect-ratio: 16/9; }
+        }
+
+        .gallery-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .gallery-item:hover .gallery-img { transform: scale(1.05); }
+
+        /* --- FOOTER STYLES --- */
+        .wikd-footer {
+            background-color: var(--color-surface, #141414);
+            border-top: 1px solid var(--color-border, #2A2A2A);
+            padding: 4rem 0 2rem;
+            font-family: var(--font-body, 'Inter', sans-serif);
+        }
+        .wikd-footer-container { width: 92%; max-width: 1200px; margin: 0 auto; }
+        .wikd-footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem; }
+        .wikd-footer-brand { display: flex; flex-direction: column; gap: 1rem; }
+        .wikd-footer-logo { width: 180px; height: auto; }
+        .wikd-footer-tagline { color: var(--color-text-muted, #888888); font-size: 0.95rem; line-height: 1.6; max-width: 300px; }
+        .wikd-footer-social { display: flex; gap: 1rem; margin-top: 1rem; }
+        .wikd-footer-social-link {
+            width: 40px; height: 40px; border-radius: 50%; background: var(--color-background, #0A0A0A);
+            border: 1px solid var(--color-border, #2A2A2A); display: flex; align-items: center; justify-content: center;
+            color: var(--color-text, #EAEAEA); transition: all 0.3s ease; text-decoration: none;
+        }
+        .wikd-footer-social-link:hover { background: var(--color-primary, #FF3B30); border-color: var(--color-primary, #FF3B30); transform: translateY(-3px); }
+        .wikd-footer-column h3 {
+            font-family: var(--font-heading, 'Rajdhani', sans-serif); font-size: 1.1rem; font-weight: 700; color: white;
+            text-transform: uppercase; margin-bottom: 1.25rem; letter-spacing: 0.5px;
+        }
+        .wikd-footer-links { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem;
+        }
+        .wikd-footer-links a {
+            color: var(--color-text-muted, #888888); text-decoration: none; font-size: 0.95rem; transition: all 0.3s ease; display: inline-block; font-family: var(--font-body, 'Inter', sans-serif);
+        }
+        .wikd-footer-links a:hover { color: var(--color-primary, #FF3B30); transform: translateX(5px); }
+        .wikd-footer-bottom {
+            border-top: 1px solid var(--color-border, #2A2A2A); padding-top: 2rem; display: flex; justify-content: space-between;
+            align-items: center; flex-wrap: wrap; gap: 1rem;
+        }
+        .wikd-footer-copyright { color: var(--color-text-muted, #888888); font-size: 0.875rem; }
+        .wikd-footer-copyright a { color: var(--color-primary, #FF3B30); text-decoration: none; font-weight: 600; }
+        .wikd-footer-legal { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+        .wikd-footer-legal a { color: var(--color-text-muted, #888888); text-decoration: none; font-size: 0.875rem; transition: color 0.3s ease; }
+        .wikd-footer-legal a:hover { color: var(--color-primary, #FF3B30); }
+        .wikd-footer-newsletter { display: flex; flex-direction: column; gap: 0.75rem; }
+        .wikd-footer-newsletter p { color: var(--color-text-muted, #888888); font-size: 0.9rem; line-height: 1.5; margin: 0; font-family: var(--font-body, 'Inter', sans-serif); }
+        .wikd-footer-email-input {
+            background: var(--color-background, #0A0A0A); border: 1px solid var(--color-border, #2A2A2A);
+            color: white; padding: 0.875rem 1rem; border-radius: 4px; font-size: 0.95rem; width: 100%; font-family: var(--font-body, 'Inter', sans-serif);
+        }
+        .wikd-footer-subscribe-btn {
+            background: var(--color-primary, #FF3B30); color: white; border: none; padding: 0.875rem 1.5rem;
+            border-radius: 4px; font-family: var(--font-heading, 'Rajdhani', sans-serif); font-size: 0.95rem; font-weight: 700; text-transform: uppercase; cursor: pointer;
+        }
+
+        @media (max-width: 992px) { .wikd-footer-grid { grid-template-columns: 1fr 1fr; } .wikd-footer-brand { grid-column: 1 / -1; } }
+        @media (max-width: 640px) { .wikd-footer-grid { grid-template-columns: 1fr; } .wikd-footer-bottom { flex-direction: column; text-align: center; } }
+    </style>
+</head>
+<body class="gradient">
+
+    <!-- Simple Nav -->
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-logo">WIKD WRAPS</a>
+        <a href="index.html" class="nav-link">
+            Back to Home
+        </a>
+    </nav>
+
+    <!-- Page Title -->
+    <header class="page-header">
+        <h1 class="text-5xl md:text-7xl font-bold uppercase tracking-wide text-white font-heading">Gallery</h1>
+        <p class="mt-4 text-gray-400 font-body max-w-lg mx-auto">Precision. Protection. Perfection. See our latest work.</p>
+    </header>
+
+    <main>
+        <!-- PROJECT 1: Lamborghini Urus (LEFT SCROLL) -->
+        <section class="project-section">
+            <div class="project-info">
+                <h2 class="text-3xl md:text-4xl text-white font-heading mb-2">2018 Lamborghini Urus</h2>
+                <p class="text-muted text-lg">Impact PPF Repair, Paint Correction, and Detail</p>
+            </div>
+            
+            <div class="ticker-view">
+                <div class="ticker-track">
+                    <!-- Original Set (5 Images) -->
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/Black_Lamborghini_Urus_Paint_Correction_and_Rock_Chip_Repair.jpg?v=1744062951&width=1100" alt="Urus Detail" class="gallery-img"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1868.jpg?v=1741698889&width=1100" alt="Urus Detail" class="gallery-img"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1864.jpg?v=1741699154&width=1100" alt="Urus Detail" class="gallery-img"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_2056.jpg?v=1741643606&width=1100" alt="Urus Detail" class="gallery-img"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/Black_Lamborghini_Urus_Interior_Detail.jpg?v=1744062916&width=1100" alt="Urus Detail" class="gallery-img"></div>
+                    
+                    <!-- Duplicated Set for Infinite Loop -->
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/Black_Lamborghini_Urus_Paint_Correction_and_Rock_Chip_Repair.jpg?v=1744062951&width=1100" alt="Urus Detail" class="gallery-img"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1868.jpg?v=1741698889&width=1100" alt="Urus Detail" class="gallery-img"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1864.jpg?v=1741699154&width=1100" alt="Urus Detail" class="gallery-img"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_2056.jpg?v=1741643606&width=1100" alt="Urus Detail" class="gallery-img"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/Black_Lamborghini_Urus_Interior_Detail.jpg?v=1744062916&width=1100" alt="Urus Detail" class="gallery-img"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECT 2: Cadillac CT5 V Blackwing (RIGHT SCROLL) -->
+        <section class="project-section">
+            <div class="project-info">
+                <h2 class="text-3xl md:text-4xl text-white font-heading mb-2">2024 Cadillac CT5 V Blackwing</h2>
+                <p class="text-muted text-lg">Exterior Detail</p>
+            </div>
+            
+            <div class="ticker-view">
+                <div class="ticker-track reverse" style="animation-duration: 30s;"> 
+                    <!-- Original Set (3 Images) -->
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1919.jpg?v=1741643606&width=1100" alt="Blackwing Front" class="gallery-img"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1917.jpg?v=1741643606&width=1100" alt="Blackwing Side" class="gallery-img"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1912.jpg?v=1741643718&width=1100" alt="Blackwing Rear" class="gallery-img"></div>
+
+                    <!-- Duplicated Set -->
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1919.jpg?v=1741643606&width=1100" alt="Blackwing Front" class="gallery-img"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1917.jpg?v=1741643606&width=1100" alt="Blackwing Side" class="gallery-img"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1912.jpg?v=1741643718&width=1100" alt="Blackwing Rear" class="gallery-img"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECT 3: Ford F450 Platinum (LEFT SCROLL) -->
+        <section class="project-section">
+            <div class="project-info">
+                <h2 class="text-3xl md:text-4xl text-white font-heading mb-2">2024 Ford F450 Platinum</h2>
+                <p class="text-muted text-lg">Chrome Delete & Detail</p>
+            </div>
+            
+            <div class="ticker-view">
+                <div class="ticker-track" style="animation-duration: 45s;">
+                    <!-- Original Set (5 Images) -->
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_2350.jpg?v=1741643189&width=1100" alt="Ford F450 Front" class="gallery-img"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/Black_Ford_F450_Platinum_Powerstroke_Dually_Chrome_Delete.jpg?v=1744062595&width=1100" alt="Ford F450 Chrome Delete" class="gallery-img"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_2062.jpg?v=1741643606&width=1100" alt="Ford F450 Side" class="gallery-img"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1614.jpg?v=1741698914&width=1100" alt="Ford F450 Detail" class="gallery-img"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1613.jpg?v=1741698889&width=1100" alt="Ford F450 Rear" class="gallery-img"></div>
+
+                    <!-- Duplicated Set -->
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_2350.jpg?v=1741643189&width=1100" alt="Ford F450 Front" class="gallery-img"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/Black_Ford_F450_Platinum_Powerstroke_Dually_Chrome_Delete.jpg?v=1744062595&width=1100" alt="Ford F450 Chrome Delete" class="gallery-img"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_2062.jpg?v=1741643606&width=1100" alt="Ford F450 Side" class="gallery-img"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1614.jpg?v=1741698914&width=1100" alt="Ford F450 Detail" class="gallery-img"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1613.jpg?v=1741698889&width=1100" alt="Ford F450 Rear" class="gallery-img"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="wikd-footer">
+        <div class="wikd-footer-container">
+            <div class="wikd-footer-grid">
+                <!-- Brand Column -->
+                <div class="wikd-footer-brand">
+                    <img src="https://wikdwraps.com/cdn/shop/files/output-onlinepngtools_3.png?v=1737407428&width=300" alt="WIKD Wraps" class="wikd-footer-logo">
+                    <p class="wikd-footer-tagline">Uncompromised Protection. WIKD Craftsmanship.</p>
+                    <div class="wikd-footer-social">
+                        <a href="https://www.facebook.com/wikdwraps" target="_blank" rel="noopener" class="wikd-footer-social-link" aria-label="Facebook">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        </a>
+                        <a href="https://www.instagram.com/wikdwraps" target="_blank" rel="noopener" class="wikd-footer-social-link" aria-label="Instagram">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                        </a>
+                        <a href="https://twitter.com/wikdwraps" target="_blank" rel="noopener" class="wikd-footer-social-link" aria-label="X (Twitter)">
+                            <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Services Column -->
+                <div class="wikd-footer-column">
+                    <h3>Services</h3>
+                    <ul class="wikd-footer-links">
+                        <li><a href="https://wikdwraps.com/pages/paint-protection-film">Paint Protection Film</a></li>
+                        <li><a href="https://wikdwraps.com/pages/ceramic-coatings">Ceramic Coatings</a></li>
+                        <li><a href="https://wikdwraps.com/pages/vinyl-wraps">Vinyl Wraps</a></li>
+                        <li><a href="https://wikdwraps.com/pages/window-tint">Window Tint</a></li>
+                        <li><a href="https://wikdwraps.com/pages/detailing">Detailing</a></li>
+                        <li><a href="https://wikdwraps.com/pages/maintenance-plans">Maintenance Plans</a></li>
+                    </ul>
+                </div>
+
+                <!-- Company Column -->
+                <div class="wikd-footer-column">
+                    <h3>Company</h3>
+                    <ul class="wikd-footer-links">
+                        <li><a href="https://wikdwraps.com/pages/about-us-1">About Us</a></li>
+                        <li><a href="https://wikdwraps.com/pages/gallery">Gallery</a></li>
+                        <li><a href="https://wikdwraps.com/pages/contact">Contact</a></li>
+                        <li><a href="https://wikdwraps.com/pages/careers">Careers</a></li>
+                        <li><a href="https://wikdwraps.com/pages/dealers">Dealers</a></li>
+                        <li><a href="https://www.wikdmotorsports.com/" target="_blank">WIKD Motorsports</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="wikd-footer-bottom">
+                <div class="wikd-footer-copyright">
+                    © 2025 <a href="/">WIKD Wraps</a>. All rights reserved.
+                </div>
+                <div class="wikd-footer-legal">
+                    <a href="https://wikdwraps.com/pages/privacy-policy">Privacy Policy</a>
+                    <a href="https://wikdwraps.com/pages/refund-policy">Refund Policy</a>
+                    <a href="https://wikdwraps.com/pages/terms-of-service">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
