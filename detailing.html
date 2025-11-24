@@ -64,6 +64,10 @@
           line-height: 1.6 !important;
         }
         .p-muted { font-family: var(--font-body); color: var(--color-text-muted) !important; line-height: 1.6;}
+        
+        /* --- Layout & Sections --- */
+        .content-section { padding: 5rem 0; }
+        .mobile-scaled-container { width: 92%; max-width: 1200px; margin-left: auto; margin-right: auto; }
 
         /* --- NAVIGATION --- */
         .nav-bar {
@@ -103,9 +107,9 @@
             padding: 14px 32px;
             font-family: var(--font-heading) !important;
             font-size: 18px;
-            font-weight: 600;
+            font-weight: 700;
             text-transform: uppercase;
-            color: var(--color-text) !important;
+            color: white !important;
             background-color: transparent;
             border: 2px solid var(--color-border);
             position: relative;
@@ -115,6 +119,8 @@
             text-decoration: none;
             flex-shrink: 0;
             cursor: pointer;
+            margin-right: 1rem;
+            margin-bottom: 1rem;
         }
         .btn span { position: relative; z-index: 2; }
         .btn::before {
@@ -128,14 +134,24 @@
         .btn.btn-primary { border-color: var(--color-primary); }
         .btn.btn-primary::before { background-color: var(--color-primary); }
         .btn.btn-primary:hover { border-color: var(--color-primary); }
+        
+        .btn.btn-secondary { border-color: white; }
+        .btn.btn-secondary:hover { 
+            background-color: white; 
+            color: black !important;
+            transform: translateY(-3px); 
+        }
+        .btn.btn-secondary::before { background-color: white; }
+        .btn.btn-secondary:hover span { color: var(--color-primary) !important; z-index: 2; } 
+        .btn.btn-secondary:hover::before { background-color: var(--color-primary); }
 
         /* --- HERO --- */
         .page-hero {
             height: 60vh;
             width: 100vw;
-            /* UPDATED HERO IMAGE: Satin PPF Lamborghini */
-            background-image: linear-gradient(to bottom, rgba(0,0,0,0.5), var(--color-background)), 
-                              url('https://wikdwraps.com/cdn/shop/files/Satin_PPF_Wrapped_Black_and_Green_Lamborghini_Huracan_STO_Freshly_Detailed.jpg?v=1743435243');
+            /* McLaren 720s Image */
+            background-image: linear-gradient(to bottom, rgba(0,0,0,0.7), var(--color-background)), 
+                              url('https://wikdwraps.com/cdn/shop/files/Black_Nissan_GTR_R35_Freshly_Detailed_and_Paint_Corrected.jpg?v=1743435296&width=750');
             background-size: cover;
             background-position: center;
             position: relative;
@@ -147,162 +163,217 @@
             width: 92%;
             max-width: 1200px;
             margin: 0 auto;
+            text-align: left;
         }
 
-        /* --- SERVICE SECTIONS --- */
-        .service-row {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 3rem;
-            align-items: center;
-            margin-bottom: 6rem;
+        /* --- Feature Grid (3 columns for Why/About) --- */
+        .features-grid-3x1 {
+            display: grid; grid-template-columns: 1fr; gap: 2rem;
+            margin-bottom: 5rem;
         }
-        @media (min-width: 992px) {
-            .service-row {
-                grid-template-columns: 1fr 1fr;
-                gap: 5rem;
-            }
-            .service-row.reverse {
-                direction: rtl; /* Flip grid order */
-            }
-            .service-row.reverse .service-text {
-                direction: ltr; /* Reset text direction */
-            }
+        @media (min-width: 768px) {
+            .features-grid-3x1 { grid-template-columns: repeat(3, 1fr); }
         }
-
-        .service-image-container {
-            position: relative;
-            aspect-ratio: 16 / 10;
-            width: 100%;
+        
+        .feature-card {
+            background: var(--color-surface);
+            padding: 2rem;
             border: 1px solid var(--color-border);
-            /* SHARP GEOMETRY to match new premium standard */
-            clip-path: polygon(0 0, 100% 0, 100% 85%, 95% 100%, 0 100%);
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: border-color 0.3s ease, transform 0.3s ease;
+            clip-path: polygon(0 0, 100% 0, 100% 95%, 95% 100%, 0 100%);
+        }
+        .feature-card:hover { border-color: var(--color-primary); transform: translateY(-5px); }
+
+        .feature-icon-svg {
+            width: 40px;
+            height: 40px;
+            color: var(--color-primary);
+            margin-bottom: 1rem;
         }
         
-        .service-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: grayscale(100%) contrast(110%);
-            transition: filter 0.5s ease;
-        }
-        .service-image-container:hover .service-image {
-            filter: grayscale(0%) contrast(100%);
+        /* Updated Icon Styling for Two-Tone Animated Icons */
+        .animated-icon-svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1rem;
         }
 
-        .service-text h3 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: white;
+        /* --- Package Cards --- */
+        .package-grid {
+            display: grid; grid-template-columns: 1fr; gap: 2rem;
+            margin-bottom: 3rem;
         }
-        
-        .service-feature-list {
+        @media (min-width: 1024px) {
+            .package-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        .package-card {
+            background: var(--color-surface);
+            padding: 2rem;
+            border: 1px solid var(--color-border);
+            min-height: 350px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            clip-path: polygon(0 0, 100% 0, 100% 98%, 98% 100%, 0 100%);
+            transition: border-color 0.3s ease, transform 0.3s ease;
+        }
+        .package-card:hover { border-color: white; }
+
+        .price-title {
+            font-family: var(--font-heading);
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .price-starting {
+            color: var(--color-primary);
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        .package-card p {
+            color: var(--color-text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* --- Paint Correction/CTA Section --- */
+        .paint-correction-box {
+            background: rgba(255, 59, 48, 0.1);
+            border: 2px solid var(--color-primary);
+            padding: 2.5rem;
+            margin: 5rem 0;
+            border-radius: 4px;
+            clip-path: polygon(0 0, 100% 0, 100% 98%, 10px 100%, 0 100%);
+        }
+        .paint-correction-box h3 {
+            color: var(--color-primary);
+        }
+        .correction-list {
             list-style: none;
             padding: 0;
-            margin: 1.5rem 0;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
+            margin-top: 1rem;
         }
-        .service-feature-item {
+        .correction-list li {
+            font-family: var(--font-body);
+            color: var(--color-text);
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+            font-size: 1rem;
+        }
+        /* Styles for Collapsible Details (Consolidated) */
+        .collapsible-container {
+            border: 1px solid var(--color-border);
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+        .collapsible-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 0.75rem;
-            color: var(--color-text-muted);
-            font-family: var(--font-heading);
-            text-transform: uppercase;
-            font-weight: 600;
-            font-size: 0.9rem;
+            cursor: pointer;
+            padding: 10px 0;
+            /* Removed bottom border here */
         }
-        .feature-icon {
+        .collapsible-header:hover .collapsible-arrow {
+            color: white;
+        }
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-in-out;
+            padding-bottom: 0;
+            margin-top: 5px;
+        }
+        .collapsible-content.open {
+            max-height: 350px; /* Increased Max Height to fit content */
+            padding-bottom: 10px;
+        }
+        .collapsible-arrow {
+            transition: transform 0.4s ease;
+            width: 1rem;
+            height: 1rem;
             color: var(--color-primary);
-            width: 16px; height: 16px;
+        }
+        .collapsible-header.open .collapsible-arrow {
+            transform: rotate(180deg);
+            color: white;
+        }
+        .correction-list-item {
+            color: var(--color-text-muted);
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+        }
+        .correction-list-item strong {
+            color: white;
+        }
+        /* New Disclaimer Style */
+        .disclaimer-section {
+            width: 92%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 0;
         }
 
-        /* --- FOOTER STYLES --- */
+
+        /* --- Footer --- */
         .wikd-footer {
             background-color: var(--color-surface, #141414);
             border-top: 1px solid var(--color-border, #2A2A2A);
             padding: 4rem 0 2rem;
             font-family: var(--font-body, 'Inter', sans-serif);
         }
-        .wikd-footer-container {
-            width: 92%; max-width: 1200px; margin: 0 auto;
-        }
-        .wikd-footer-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            gap: 3rem;
-            margin-bottom: 3rem;
-        }
+        .wikd-footer-container { width: 92%; max-width: 1200px; margin: 0 auto; }
+        .wikd-footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem; }
         .wikd-footer-brand { display: flex; flex-direction: column; gap: 1rem; }
         .wikd-footer-logo { width: 180px; height: auto; }
-        .wikd-footer-tagline {
-            color: var(--color-text-muted, #888888);
-            font-size: 0.95rem; line-height: 1.6; max-width: 300px;
-        }
+        .wikd-footer-tagline { color: var(--color-text-muted, #888888); font-size: 0.95rem; line-height: 1.6; max-width: 300px; }
         .wikd-footer-social { display: flex; gap: 1rem; margin-top: 1rem; }
         .wikd-footer-social-link {
-            width: 40px; height: 40px;
-            border-radius: 50%;
-            background: var(--color-background, #0A0A0A);
-            border: 1px solid var(--color-border, #2A2A2A);
-            display: flex; align-items: center; justify-content: center;
-            color: var(--color-text, #EAEAEA);
-            transition: all 0.3s ease;
-            text-decoration: none;
+            width: 40px; height: 40px; border-radius: 50%; background: var(--color-background, #0A0A0A);
+            border: 1px solid var(--color-border, #2A2A2A); display: flex; align-items: center; justify-content: center;
+            color: var(--color-text, #EAEAEA); transition: all 0.3s ease; text-decoration: none;
         }
-        .wikd-footer-social-link:hover {
-            background: var(--color-primary, #FF3B30);
-            border-color: var(--color-primary, #FF3B30);
-            transform: translateY(-3px);
-        }
+        .wikd-footer-social-link:hover { background: var(--color-primary, #FF3B30); border-color: var(--color-primary, #FF3B30); transform: translateY(-3px); }
         .wikd-footer-column h3 {
-            font-family: var(--font-heading, 'Rajdhani', sans-serif);
-            font-size: 1.1rem; font-weight: 700; color: white;
+            font-family: var(--font-heading, 'Rajdhani', sans-serif); font-size: 1.1rem; font-weight: 700; color: white;
             text-transform: uppercase; margin-bottom: 1.25rem; letter-spacing: 0.5px;
         }
-        .wikd-footer-links {
-            list-style: none; padding: 0; margin: 0;
-            display: flex; flex-direction: column; gap: 0.75rem;
+        .wikd-footer-links { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem;
         }
         .wikd-footer-links a {
-            color: var(--color-text-muted, #888888);
-            text-decoration: none; font-size: 0.95rem;
-            transition: all 0.3s ease; display: inline-block;
+            color: var(--color-text-muted, #888888); text-decoration: none; font-size: 0.95rem; transition: all 0.3s ease; display: inline-block; font-family: var(--font-body, 'Inter', sans-serif);
         }
-        .wikd-footer-links a:hover {
-            color: var(--color-primary, #FF3B30); transform: translateX(5px);
-        }
+        .wikd-footer-links a:hover { color: var(--color-primary, #FF3B30); transform: translateX(5px); }
         .wikd-footer-bottom {
-            border-top: 1px solid var(--color-border, #2A2A2A);
-            padding-top: 2rem;
-            display: flex; justify-content: space-between;
+            border-top: 1px solid var(--color-border, #2A2A2A); padding-top: 2rem; display: flex; justify-content: space-between;
             align-items: center; flex-wrap: wrap; gap: 1rem;
         }
         .wikd-footer-copyright { color: var(--color-text-muted, #888888); font-size: 0.875rem; }
         .wikd-footer-copyright a { color: var(--color-primary, #FF3B30); text-decoration: none; font-weight: 600; }
         .wikd-footer-legal { display: flex; gap: 1.5rem; flex-wrap: wrap; }
-        .wikd-footer-legal a {
-            color: var(--color-text-muted, #888888); text-decoration: none;
-            font-size: 0.875rem; transition: color 0.3s ease;
-        }
+        .wikd-footer-legal a { color: var(--color-text-muted, #888888); text-decoration: none; font-size: 0.875rem; transition: color 0.3s ease; }
         .wikd-footer-legal a:hover { color: var(--color-primary, #FF3B30); }
+        .wikd-footer-newsletter { display: flex; flex-direction: column; gap: 0.75rem; }
+        .wikd-footer-newsletter p { color: var(--color-text-muted, #888888); font-size: 0.9rem; line-height: 1.5; margin: 0; font-family: var(--font-body, 'Inter', sans-serif); }
+        .wikd-footer-email-input {
+            background: var(--color-background, #0A0A0A); border: 1px solid var(--color-border, #2A2A2A);
+            color: white; padding: 0.875rem 1rem; border-radius: 4px; font-size: 0.95rem; width: 100%; font-family: var(--font-body, 'Inter', sans-serif);
+        }
+        .wikd-footer-subscribe-btn {
+            background: var(--color-primary, #FF3B30); color: white; border: none; padding: 0.875rem 1.5rem;
+            border-radius: 4px; font-family: var(--font-heading, 'Rajdhani', sans-serif); font-size: 0.95rem; font-weight: 700; text-transform: uppercase; cursor: pointer;
+        }
 
-        /* MOBILE SCALING ADJUSTMENT */
-        .mobile-scaled-container {
-            width: 92%; max-width: 1200px; margin-left: auto; margin-right: auto;
-        }
-        @media (max-width: 992px) {
-            .wikd-footer-grid { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
-            .wikd-footer-brand { grid-column: 1 / -1; }
-        }
-        @media (max-width: 640px) {
-            .wikd-footer { padding: 3rem 0 1.5rem; }
-            .wikd-footer-grid { grid-template-columns: 1fr; gap: 2rem; }
-            .wikd-footer-bottom { flex-direction: column; text-align: center; }
-            .wikd-footer-legal { justify-content: center; }
-        }
+        @media (max-width: 992px) { .wikd-footer-grid { grid-template-columns: 1fr 1fr; } .wikd-footer-brand { grid-column: 1 / -1; } }
+        @media (max-width: 640px) { .wikd-footer-grid { grid-template-columns: 1fr; } .wikd-footer-bottom { flex-direction: column; text-align: center; } }
     </style>
 </head>
 <body class="gradient">
@@ -318,132 +389,224 @@
     <!-- Page Hero -->
     <header class="page-hero">
         <div class="page-hero-content">
-            <span class="text-red-600 font-bold tracking-widest uppercase text-sm mb-2 block font-heading">Precision Care</span>
+            <span class="text-[var(--color-primary)] font-bold tracking-widest uppercase text-sm mb-2 block font-heading">Premium Detailing in McKinney, TX</span>
             <h1 class="h1 mb-4">Automotive Detailing</h1>
-            <p class="p-muted max-w-2xl">
-                Beyond a car wash. We provide meticulous restoration and maintenance services designed to bring your vehicle to a showroom standard and keep it there.
+            <p class="p-muted max-w-2xl text-xl">
+                Make your car feel new again. Trust our expert detailers for deep cleaning, precision paint correction, or a quick pre-show wash. Keep your vehicle pristine year-round with our tailored maintenance plans!
             </p>
+            <div class="mt-8">
+                <a href="https://wikdwraps.com/pages/maintenance-plans" class="btn btn-secondary">
+                    <span>Explore Maintenance Plans</span>
+                </a>
+            </div>
         </div>
     </header>
 
     <main class="py-20">
         <div class="mobile-scaled-container">
             
-            <!-- Service 1: Exterior Detail -->
-            <div class="service-row">
-                <div class="service-image-container">
-                    <!-- Reusing high quality exterior shot -->
-                    <img src="https://wikdwraps.com/cdn/shop/files/Clean_Ryft_Black_McLaren_720s_HRE_Wheels_WIKD_Exhaust.jpg?v=1744062478" alt="Exterior Detailing" class="service-image">
+            <!-- SECTION 1: WHY DETAIL? (3-Column Feature Grid) -->
+            <div class="text-center mb-12">
+                <h2 class="title h1 font-heading">
+                    Why do I need my car Detailed?
+                </h2>
+            </div>
+            
+            <div class="features-grid-3x1 mb-16">
+                <!-- 1. Aesthetic Enhancement -->
+                <div class="feature-card">
+                    <animated-icons
+                        src="https://animatedicons.co/get-icon?name=Advantage&style=minimalistic&token=bbc79435-552e-4da3-894d-89c634dc884b"
+                        trigger="loop"
+                        attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","background":"transparent"}}'
+                        height="80" width="80" class="animated-icon-svg"
+                    ></animated-icons>
+                    <h3 class="h3 text-xl mb-2 font-heading">Aesthetic Enhancement</h3>
+                    <p class="p-muted text-sm">Achieve a spotless, showroom-quality finish by eliminating dirt, stains, and surface imperfections.</p>
                 </div>
-                <div class="service-text">
-                    <h3 class="h3">Exterior Detailing</h3>
-                    <p class="p-muted">
-                        A deep cleanse that goes far beyond the surface. Our exterior detailing process removes embedded contaminants, road tar, and brake dust, leaving your paint smooth and prepared for protection. We use pH-neutral shampoos and soft-touch methods to ensure no scratches are introduced.
-                    </p>
-                    <ul class="service-feature-list">
-                        <li class="service-feature-item">
-                            <svg class="feature-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
-                            Hand Wash & Dry
-                        </li>
-                        <li class="service-feature-item">
-                            <svg class="feature-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
-                            Clay Bar Treatment
-                        </li>
-                        <li class="service-feature-item">
-                            <svg class="feature-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
-                            Wheel & Tire Care
-                        </li>
-                        <li class="service-feature-item">
-                            <svg class="feature-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
-                            Spray Sealant
-                        </li>
-                    </ul>
-                    <a href="https://wikdwraps.com/pages/contact" class="btn btn-primary">
-                        <span>Book Exterior</span>
-                    </a>
+
+                <!-- 2. Preventative Maintenance -->
+                <div class="feature-card">
+                    <animated-icons
+                        src="https://animatedicons.co/get-icon?name=Maintenance&style=minimalistic&token=c427791f-d7f8-4a99-a56b-60ef3373e1f7"
+                        trigger="loop"
+                        attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","background":"transparent"}}'
+                        height="80" width="80" class="animated-icon-svg"
+                    ></animated-icons>
+                    <h3 class="h3 text-xl mb-2 font-heading">Preventative Maintenance</h3>
+                    <p class="p-muted text-sm">Protect against UV damage, oxidation, harmful buildup, and swirls caused by automatic washes.</p>
+                </div>
+
+                <!-- 3. Comfort -->
+                <div class="feature-card">
+                    <animated-icons
+                        src="https://animatedicons.co/get-icon?name=Community&style=minimalistic&token=075eeeff-305f-4d07-b4d1-40a69f25eddc"
+                        trigger="loop"
+                        attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","background":"transparent"}}'
+                        height="80" width="80" class="animated-icon-svg"
+                    ></animated-icons>
+                    <h3 class="h3 text-xl mb-2 font-heading">Comfort</h3>
+                    <p class="p-muted text-sm">Create a healthier, more enjoyable driving experience by reducing interior allergens, bacteria, and odors.</p>
+                </div>
+            </div>
+            
+            <div class="text-center mb-8">
+                <a href="https://wikdwraps.com/pages/contact" class="btn btn-primary">
+                    <span>Book Now</span>
+                </a>
+            </div>
+
+            <!-- SECTION 2: OUR DETAILING PACKAGES -->
+            <div class="text-center mb-12 mt-16">
+                <h2 class="title h1 font-heading">
+                    Our Detailing Packages
+                </h2>
+                <p class="p-muted mt-2 text-sm">Prices May vary by vehicle size and condition.</p>
+            </div>
+
+            <div class="package-grid">
+                <!-- Package 1: Express Clean -->
+                <div class="package-card">
+                    <div>
+                        <div class="price-starting">Starting at $130</div>
+                        <div class="price-title">Express Clean</div>
+                        <p class="p-muted mb-4">A fast yet thorough refresh for your vehicle. Includes exterior foam wash, hand wash, sealant, and air dry. Interior receives full vacuum and light wipe-down to eliminate dust and stains.</p>
+                    </div>
+                    <div class="text-center mt-4">
+                        <a href="https://wikdwraps.com/pages/contact" class="btn btn-primary w-full"><span>Book Now</span></a>
+                    </div>
+                </div>
+
+                <!-- Package 2: Full Detail -->
+                <div class="package-card">
+                    <div>
+                        <div class="price-starting">Starting at $355</div>
+                        <div class="price-title">Full Detail</div>
+                        <!-- Added asterisk to the end of the text -->
+                        <p class="p-muted mb-4">A complete, inside-out transformation. Features a comprehensive 9-stage decontamination wash to clean and protect paint, wheels, and engine bay. Interior surfaces are deep cleaned and protected, restoring a fresh, like-new feel.<sup class="text-[var(--color-primary)] font-bold ml-1">*</sup></p>
+                    </div>
+                    <div class="text-center mt-4">
+                        <a href="https://wikdwraps.com/pages/contact" class="btn btn-primary w-full"><span>Book Now</span></a>
+                    </div>
+                </div>
+
+                <!-- Package 3: Paint Correction (CONSOLIDATED COLLAPSIBLE DETAILS) -->
+                <div class="package-card" id="paint-correction-card">
+                    <div>
+                        <!-- 1. VISIBLE TOP SECTION -->
+                        <div class="price-starting">Starting at $415</div> 
+                        <div class="price-title">Paint Correction</div>
+                        <p class="p-muted mb-4">Tired of swirls, scratches, and rock chips dulling your paint? Our expert detailers specialize in precision paint correction to restore clarity, depth, and shine.</p>
+
+                        
+                        <!-- 2. COLLAPSIBLE SECTION TOGGLE -->
+                        <div class="collapsible-header" onclick="toggleCorrectionDetail('correction-details')">
+                            <span class="text-white font-heading font-bold text-lg uppercase">Stages & Pricing</span>
+                            <svg class="collapsible-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </div>
+                        
+                        <!-- 3. COLLAPSIBLE CONTENT -->
+                        <div class="collapsible-content" id="correction-details">
+                            
+                            <!-- Detailed Steps List -->
+                            <div class="space-y-3 pt-2">
+                                <p class="correction-list-item"><strong class="text-white">1-Step Correction:</strong> Enhances gloss & removes light imperfections (Starting at $415)</p>
+                                <p class="correction-list-item"><strong class="text-white">2-Step Correction:</strong> Eliminates up to 95% of visible swirls for a flawless finish (Starting at $815)</p>
+                                <p class="correction-list-item"><strong class="text-white">3+ Step Correction:</strong> For severe defects, full restorations, and show-quality finishes – <a href="https://wikdwraps.com/pages/contact" class="text-[var(--color-primary)] font-bold">Contact us for a FREE consultation!</a></p>
+                            </div>
+
+                            <!-- Promotions -->
+                            <p class="text-lg font-bold text-white mt-6">Add any interior detail for $20 off!</p>
+                            <p class="text-sm mt-2 text-white">Plus, add a <a href="https://wikdwraps.com/pages/ceramic-coatings" class="text-[var(--color-primary)] font-bold">Ceramic Coating</a> to your newly perfected paint for as low as $580!</p>
+                            
+                        </div>
+                    </div>
+                    <div class="text-center mt-4">
+                         <a href="https://wikdwraps.com/pages/contact" class="btn btn-primary w-full"><span>Book Now</span></a>
+                    </div>
                 </div>
             </div>
 
-            <!-- Service 2: Interior Detail -->
-            <div class="service-row reverse">
-                <div class="service-image-container">
-                    <!-- Reusing Urus interior shot -->
-                    <img src="https://wikdwraps.com/cdn/shop/files/Black_Lamborghini_Urus_Interior_Detail.jpg?v=1744062916" alt="Interior Detailing" class="service-image">
+            <!-- SECTION 4: MIX & MATCH / MAINTENANCE CTAs -->
+            <div class="package-grid lg:grid-cols-2">
+                <!-- CTA 1: Mix & Match -->
+                <div class="paint-correction-box">
+                    <h3 class="h2 font-heading text-3xl mb-4">Don't See Something That Fits You?</h3>
+                    <p class="p-muted text-lg mb-6">Your car, your way. For a custom restoration, premium exterior work, or a quick interior touch-up, we will create the perfect package for you. Let’s talk!</p>
+                    <a href="https://wikdwraps.com/pages/contact" class="btn btn-primary w-full"><span>Book a FREE Consultation</span></a>
                 </div>
-                <div class="service-text">
-                    <h3 class="h3">Interior Restoration</h3>
-                    <p class="p-muted">
-                        We spend most of our time inside the car; it should be a sanctuary. Our interior detailing revitalizes leather, deep cleans carpets, and sanitizes all surfaces. We meticulously clean vents, crevices, and hard-to-reach areas to eliminate odors and dust.
-                    </p>
-                    <ul class="service-feature-list">
-                        <li class="service-feature-item">
-                            <svg class="feature-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
-                            Leather Conditioning
-                        </li>
-                        <li class="service-feature-item">
-                            <svg class="feature-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
-                            Steam Cleaning
-                        </li>
-                        <li class="service-feature-item">
-                            <svg class="feature-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
-                            Stain Extraction
-                        </li>
-                        <li class="service-feature-item">
-                            <svg class="feature-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
-                            UV Protection
-                        </li>
-                    </ul>
-                    <a href="https://wikdwraps.com/pages/contact" class="btn btn-primary">
-                        <span>Book Interior</span>
-                    </a>
+
+                <!-- CTA 2: Maintenance Plans -->
+                <div class="paint-correction-box">
+                    <h3 class="h2 font-heading text-3xl mb-4">Year-Round Refreshment</h3>
+                    <p class="price-starting">As Low as $110 / Month</p>
+                    <p class="p-muted text-lg mb-6">Want to keep your detailed car pristine and maintain your protection investment? Our convenient, hassle-free maintenance plans offer discounted rates and priority scheduling!</p>
+                    <a href="https://wikdwraps.com/pages/maintenance-plans" class="btn btn-primary w-full"><span>Learn More</span></a>
                 </div>
             </div>
 
-            <!-- Service 3: Paint Correction -->
-            <div class="service-row">
-                <div class="service-image-container">
-                    <!-- Reusing Paint Correction shot -->
-                    <img src="https://wikdwraps.com/cdn/shop/files/Black_Lamborghini_Urus_Paint_Correction_and_Rock_Chip_Repair.jpg?v=1744062951" alt="Paint Correction" class="service-image">
+            <!-- SECTION 5: ABOUT OUR DETAILING (3-Column Feature Grid) -->
+            <div class="text-center mb-12 mt-20">
+                <h2 class="title h1 font-heading">
+                    About our Detailing
+                </h2>
+                <p class="text-gray-500 mt-2">Book Your Spot Today</p>
+            </div>
+            
+            <div class="features-grid-3x1">
+                <!-- 1. Quality Ingredients -->
+                <div class="feature-card">
+                    <animated-icons
+                        src="https://animatedicons.co/get-icon?name=Chemical&style=minimalistic&token=a626f957-5f8c-43a9-8567-28addd1490a9"
+                        trigger="loop"
+                        attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","background":"transparent"}}'
+                        height="80" width="80" class="animated-icon-svg"
+                    ></animated-icons>
+                    <h3 class="h3 text-xl mb-2 font-heading">Quality Ingredients</h3>
+                    <p class="p-muted text-sm">We believe in results, not gimmicks. We use only professional-grade products (CarPro, Koch Chemie, Gyeon, P&S, AutoFiber) trusted by experts for superior protection, longevity, and shine.</p>
                 </div>
-                <div class="service-text">
-                    <h3 class="h3">Paint Correction</h3>
-                    <p class="p-muted">
-                        Restore clarity and depth to your vehicle's paintwork. Paint correction removes swirl marks, light scratches, and oxidation through a multi-stage machine polishing process. This is the essential first step before applying Ceramic Coating or PPF to ensure a flawless finish.
-                    </p>
-                    <ul class="service-feature-list">
-                        <li class="service-feature-item">
-                            <svg class="feature-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
-                            Swirl Removal
-                        </li>
-                        <li class="service-feature-item">
-                            <svg class="feature-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
-                            Scratch Repair
-                        </li>
-                        <li class="service-feature-item">
-                            <svg class="feature-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
-                            Mirror Finish
-                        </li>
-                        <li class="service-feature-item">
-                            <svg class="feature-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
-                            Gloss Enhancement
-                        </li>
-                    </ul>
-                    <a href="https://wikdwraps.com/pages/contact" class="btn btn-primary">
-                        <span>Restore Perfection</span>
-                    </a>
+
+                <!-- 2. Professional Detailers -->
+                <div class="feature-card">
+                    <animated-icons
+                        src="https://animatedicons.co/get-icon?name=Staff&style=minimalistic&token=ae89d06d-f628-4b1b-a043-ad9291637752"
+                        trigger="loop"
+                        attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","background":"transparent"}}'
+                        height="80" width="80" class="animated-icon-svg"
+                    ></animated-icons>
+                    <h3 class="h3 text-xl mb-2 font-heading">Professional Detailers</h3>
+                    <p class="p-muted text-sm">Every inch matters. Our trained in-house detailers meticulously clean and refine every surface, ensuring a flawless, showroom-quality finish with no streaks or residue.</p>
+                </div>
+
+                <!-- 3. Long-Lasting Clean -->
+                <div class="feature-card">
+                    <animated-icons
+                        src="https://animatedicons.co/get-icon?name=time&style=minimalistic&token=3bc53c8e-3d89-40cf-8b97-c59301710b1f"
+                        trigger="loop"
+                        attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","background":"transparent"}}'
+                        height="80" width="80" class="animated-icon-svg"
+                    ></animated-icons>
+                    <h3 class="h3 text-xl mb-2 font-heading">Long-Lasting Clean</h3>
+                    <p class="p-muted text-sm">A clean car is protected. Our deep-cleaning and sealing process removes contaminants that degrade surfaces, preserving your vehicle’s paint, leather, and trim for the long haul.</p>
                 </div>
             </div>
 
-        </div>
-        
-        <!-- Final CTA -->
-        <div class="text-center mt-16">
-            <h3 class="h2 mb-6">Ready for a Showroom Finish?</h3>
-            <a class="btn btn-primary" href="https://wikdwraps.com/pages/contact">
-              <span>Schedule Service</span>
-            </a>
+            <div class="text-center mt-8">
+                <a class="btn btn-primary" href="https://wikdwraps.com/pages/contact">
+                    <span>Book Your Spot Today</span>
+                </a>
+            </div>
+            
+
         </div>
     </main>
+
+    <!-- NEW DISCLOSURE SECTION -->
+    <section class="disclaimer-section">
+        <p class="text-xs text-center text-[var(--color-text-muted)]">
+            <span class="text-[var(--color-primary)] font-bold">*</span> Excessive pet hair, biohazards, or deep stains may incur additional charges.
+        </p>
+    </section>
 
     <footer class="wikd-footer">
         <div class="wikd-footer-container">
@@ -490,6 +653,18 @@
                         <li><a href="https://www.wikdmotorsports.com/" target="_blank">WIKD Motorsports</a></li>
                     </ul>
                 </div>
+                
+                <!-- Newsletter Column -->
+                <div class="wikd-footer-column">
+                    <h3>Join the Fleet</h3>
+                    <div class="wikd-footer-newsletter">
+                        <p>Get exclusive updates, promotions, and expert tips delivered to your inbox.</p>
+                        <form action="https://wikdwraps.com/contact#newsletter" method="post" accept-charset="UTF-8">
+                            <input type="email" name="contact[email]" class="wikd-footer-email-input" placeholder="Your email" required>
+                            <button type="submit" class="wikd-footer-subscribe-btn">Subscribe</button>
+                        </form>
+                    </div>
+                </div>
             </div>
 
             <!-- Bottom Bar -->
@@ -506,5 +681,31 @@
         </div>
     </footer>
 
+    <!-- JS for Collapsible Paint Correction Details -->
+    <script>
+        function toggleCorrectionDetail(id) {
+            const content = document.getElementById(id);
+            const header = content.previousElementSibling;
+            
+            // Toggle the 'open' class on the header and content
+            header.classList.toggle('open');
+            content.classList.toggle('open');
+            
+            if (content.classList.contains('open')) {
+                // Set the maxHeight dynamically to the current scroll height for smooth transition
+                // Added 100px buffer to max-height calculation to ensure space for margins/promotions
+                content.style.maxHeight = (content.scrollHeight + 100) + "px"; 
+            } else {
+                content.style.maxHeight = null;
+            }
+            
+            // Re-calculate max-height on resize if it's currently open
+            window.addEventListener('resize', () => {
+                if (content.classList.contains('open')) {
+                    content.style.maxHeight = (content.scrollHeight + 100) + "px";
+                }
+            });
+        }
+    </script>
 </body>
 </html>
