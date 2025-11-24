@@ -195,7 +195,7 @@
             .split-row { grid-template-columns: 1fr 1fr; gap: 5rem; }
         }
         
-        /* Clean container for diagram image */
+        /* Clean container for diagram image - SCALED DOWN & UNCROPPED */
         .diagram-wrapper {
             width: 100%;
             display: flex;
@@ -204,9 +204,10 @@
             /* No border, no clip-path */
         }
         .diagram-image { 
-            max-width: 100%; 
+            max-width: 80%; /* Scaled down to prevent pixelation */
             height: auto; 
             object-fit: contain; /* Ensure it's not cropped */
+            display: block;
         } 
 
         /* --- IMAGE SEQUENCE CTA SECTION --- */
@@ -229,7 +230,7 @@
             border: 1px solid var(--color-border);
             clip-path: polygon(0 0, 100% 0, 100% 90%, 95% 100%, 0 100%);
             overflow: hidden;
-            background: #000; /* Fallback bg */
+            background: transparent; 
         }
         .sequence-image {
             position: absolute;
@@ -237,7 +238,7 @@
             width: 100%; height: 100%;
             object-fit: contain; /* Keep aspect ratio inside container */
             opacity: 0;
-            transition: opacity 0.8s ease-in-out;
+            transition: opacity 0.5s ease-in-out; /* Faster transition */
         }
         .sequence-image.active { opacity: 1; }
 
@@ -306,11 +307,12 @@
     <!-- Page Hero -->
     <header class="page-hero">
         <div class="page-hero-content">
-            <span class="text-red-600 font-bold tracking-widest uppercase text-sm mb-2 block font-heading">Paint Protection Film</span>
-            <h1 class="h1 mb-4">Premium Paint Protection Film</h1>
-            <p class="p-muted max-w-2xl">
-                Invisible Protection. Superior Durability. Swirl-Free Self-Healing. Right in McKinney, TX.
-            </p>
+            <h2 class="banner__heading inline-richtext h1">
+              Premium Paint Protection Film
+            </h2>
+            <div class="banner__text rte body">
+              <p>Invisible Protection. Superior Durability. Swirl-Free Self-Healing. Right in McKinney, TX.</p>
+            </div>
         </div>
     </header>
 
@@ -320,16 +322,20 @@
             <div class="mobile-scaled-container">
                 <div class="split-row">
                     <div class="diagram-wrapper">
-                        <!-- UPDATED IMAGE: Track Pack webp used for "What is PPF" - Full Color, Uncropped -->
-                        <img src="https://wikdwraps.com/cdn/shop/files/Track_Pack.webp?v=1738085280&width=750" alt="PPF Coverage Example" class="diagram-image">
+                        <!-- UPDATED IMAGE: Track Pack webp - Full Color, Uncropped, Scaled -->
+                        <img src="https://wikdwraps.com/cdn/shop/files/Track_Pack.webp?v=1738085280&width=750" alt="PPF Coverage Diagram" class="diagram-image">
                     </div>
                     <div>
-                        <h2 class="h2 mb-4">What is PPF?</h2>
-                        <div class="p-muted rte">
+                        <h2 class="image-with-text__heading inline-richtext h1">
+                            What is PPF?
+                        </h2>
+                        <div class="image-with-text__text rte body">
                             <p>Paint Protection Film (PPF), also known as a <strong>clear bra or protective film,</strong> is a <strong>thin, self-healing thermoplastic polyurethane layer</strong> applied to your vehicle’s painted surfaces. With a thickness of <strong>6-8 mils</strong>, it provides <strong>advanced protection against rock chips, scratches, and chemical contaminants.</strong> The <strong>UV-resistant adhesive</strong> ensures a secure bond to your paint, helping preserve your vehicle’s finish for years to come.</p>
                         </div>
                         <div class="mt-8">
-                            <a href="https://wikdwraps.com/pages/contact" class="btn btn-primary"><span>Protect Your Car Now</span></a>
+                            <a href="https://wikdwraps.com/pages/contact" class="btn btn-primary">
+                                <span>Protect Your Car Now</span>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -340,7 +346,9 @@
         <section class="content-section bg-[var(--color-surface)]">
             <div class="mobile-scaled-container">
                 <div class="text-center mb-12">
-                    <h2 class="h2">Why do I need PPF?</h2>
+                    <h2 class="title inline-richtext h1">
+                      Why do I need PPF?
+                    </h2>
                 </div>
                 
                 <div class="features-grid-3x1">
@@ -352,8 +360,8 @@
                             attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","group-3":"transparent","background":"transparent"}}'
                             height="80" width="80" class="mb-4"
                         ></animated-icons>
-                        <h3 class="h3 text-2xl mb-3">Paint Protection</h3>
-                        <p class="p-muted text-sm">Shield your vehicle’s exterior from rock chips, scratches, road debris, and environmental contaminants like bird droppings and acid rain.</p>
+                        <h3 class="inline-richtext h3 text-2xl mb-3">Paint Protection</h3>
+                        <div class="rte"><p>Shield your vehicle’s exterior from rock chips, scratches, road debris, and environmental contaminants like bird droppings and acid rain.</p></div>
                     </div>
 
                     <!-- 2. Ease of Maintenance (Sync / Self Healing) -->
@@ -364,8 +372,8 @@
                           attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","background":"transparent"}}'
                           height="80" width="80" class="mb-4"
                         ></animated-icons>
-                        <h3 class="h3 text-2xl mb-3">Ease of Maintenance</h3>
-                        <p class="p-muted text-sm">Our self-healing, hydrophobic top coats reduce maintenance effort by repelling dirt, water, and stains, keeping your car cleaner for longer. Minor scratches disappear with heat, maintaining a flawless finish.</p>
+                        <h3 class="inline-richtext h3 text-2xl mb-3">Ease of Maintenance</h3>
+                        <div class="rte"><p>Our self-healing, hydrophobic top coats reduce maintenance effort by repelling dirt, water, and stains, keeping your car cleaner for longer. Minor scratches disappear with heat, maintaining a flawless finish.</p></div>
                     </div>
 
                     <!-- 3. Resale Value (Rain / Hydrophobic concept) -->
@@ -376,24 +384,25 @@
                             attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","background":"transparent"}}'
                             height="80" width="80" class="mb-4"
                         ></animated-icons>
-                        <h3 class="h3 text-2xl mb-3">Resale Value Preservation</h3>
-                        <p class="p-muted text-sm">A well-maintained exterior boosts resale value by keeping your car’s paint in pristine condition. Buyers are willing to pay more for a vehicle that looks like new.</p>
+                        <h3 class="inline-richtext h3 text-2xl mb-3">Resale Value Preservation</h3>
+                        <div class="rte"><p>A well-maintained exterior boosts resale value by keeping your car’s paint in pristine condition. Buyers are willing to pay more for a vehicle that looks like new.</p></div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- SECTION 3: NEW IMAGE SEQUENCE CTA (Replaced Coverage Levels) -->
+        <!-- SECTION 3: IMAGE SEQUENCE CTA (Replaced Coverage Cards) -->
         <section class="content-section">
             <div class="mobile-scaled-container">
                 <div class="sequence-cta-section">
                     <!-- Left: Text Content -->
                     <div class="service-text">
-                        <span class="text-red-600 font-bold tracking-widest uppercase text-sm mb-2 block font-heading">Custom Coverage</span>
-                        <h3 class="h3">Build Your Protection Package</h3>
-                        <p class="p-muted mb-6">
-                            Every driver's needs are different. From basic protection to full vehicle coverage, use our interactive tool to see exactly what fits your vehicle and budget.
-                        </p>
+                        <h2 class="rich-text__heading rte inline-richtext h1">
+                            Coverage Options
+                        </h2>
+                        <div class="rich-text__text rte body mb-6">
+                            <p>Every driver's needs are different. From basic protection to full vehicle coverage, use our interactive tool to see exactly what fits your vehicle and budget.</p>
+                        </div>
                         <a href="https://wikdwraps.com/pages/estimate-configurator" class="btn btn-primary">
                             <span>Launch Configurator</span>
                         </a>
@@ -415,7 +424,9 @@
         <section class="content-section bg-[var(--color-surface)]">
             <div class="mobile-scaled-container">
                 <div class="text-center mb-12">
-                    <h2 class="h2">About our Films</h2>
+                    <h2 class="title inline-richtext h1">
+                      About our Films
+                    </h2>
                 </div>
 
                 <div class="features-grid-4x1">
@@ -427,8 +438,8 @@
                           attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","background":"transparent"}}'
                           height="60" width="60" class="mb-4"
                         ></animated-icons>
-                        <h3 class="h3 text-xl mb-2">Expertly Installed</h3>
-                        <p class="p-muted text-sm">Trust our factory certified installers to truly deliver exceptional quality precision-cut installations. No cut corners, no misaligned edges, and certainly no damaged paint.</p>
+                        <h3 class="inline-richtext h3 text-xl mb-2">Expertly Installed</h3>
+                        <div class="rte p-muted text-sm"><p>Trust our factory certified installers to truly deliver exceptional quality precision-cut installations. No cut corners, no misaligned edges, and certainly no damaged paint.</p></div>
                     </div>
 
                     <!-- Warrantied (Warranty Icon) -->
@@ -439,8 +450,8 @@
                           attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","background":"transparent"}}'
                           height="60" width="60" class="mb-4"
                         ></animated-icons>
-                        <h3 class="h3 text-xl mb-2">Warrantied</h3>
-                        <p class="p-muted text-sm">All of our Paint Protection Film installations come with a 10-12 year warranty from the manufacturer. No worries about peeling, lifting, yellowing, cracking, or fading!</p>
+                        <h3 class="inline-richtext h3 text-xl mb-2">Warrantied</h3>
+                        <div class="rte p-muted text-sm"><p>All of our Paint Protection Film installations come with a 10-12 year warranty from the manufacturer. No worries about peeling, lifting, yellowing, cracking, or fading!</p></div>
                     </div>
 
                     <!-- Customize & Protect (Magic Box) -->
@@ -451,8 +462,8 @@
                             attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","background":"transparent"}}'
                             height="60" width="60" class="mb-4"
                         ></animated-icons>
-                        <h3 class="h3 text-xl mb-2">Customize & Protect</h3>
-                        <p class="p-muted text-sm">Emerging technologies from PPF manufacturers allow the same protective benefits of PPF, with the color and finish change options of a vinyl wrap or matte paint!</p>
+                        <h3 class="inline-richtext h3 text-xl mb-2">Customize & Protect</h3>
+                        <div class="rte p-muted text-sm"><p>Emerging technologies from PPF manufacturers allow the same protective benefits of PPF, with the color and finish change options of a vinyl wrap or matte paint!</p></div>
                     </div>
 
                     <!-- Peace of Mind (STEK Logo) -->
@@ -460,8 +471,8 @@
                         <div class="mb-4 h-16 flex items-center justify-center">
                             <img src="https://wikdwraps.com/cdn/shop/files/STEK_USA_V3_white_-_w_logo.png?v=1741272400&width=200" alt="STEK Logo" style="max-height: 100%; width: auto;">
                         </div>
-                        <h3 class="h3 text-xl mb-2">Peace of Mind</h3>
-                        <p class="p-muted text-sm">Know your car is recieving the quality and care it deserves. WIKD PBW is proud to be an authorized installer for STEK Films.</p>
+                        <h3 class="inline-richtext h3 text-xl mb-2">Peace of Mind</h3>
+                        <div class="rte p-muted text-sm"><p>Know your car is recieving the quality and care it deserves. WIKD PBW is proud to be an authorized installer for STEK Films.</p></div>
                     </div>
                 </div>
                 
@@ -539,7 +550,7 @@
             // Image Sequence Loop Logic
             const images = document.querySelectorAll('.sequence-image');
             let currentIndex = 0;
-            const intervalTime = 3000; // 3 seconds per image
+            const intervalTime = 1500; // 1.5 seconds per image (HALVED)
 
             if(images.length > 0) {
                 setInterval(() => {
