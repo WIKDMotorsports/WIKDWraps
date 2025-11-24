@@ -44,8 +44,8 @@
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
-        .font-heading { font-family: var(--font-heading); }
-        .font-body { font-family: var(--font-body); }
+        .font-heading { font-family: var(--font-heading) !important; }
+        .font-body { font-family: var(--font-body) !important; }
         
         h1, h2, h3, .h1, .h2, .h3 {
             font-family: var(--font-heading) !important;
@@ -167,13 +167,18 @@
             .features-grid-3x1 { grid-template-columns: repeat(3, 1fr); gap: 2rem; }
         }
         
+        /* UPDATED GRID LOGIC FOR HOMOGENOUS LOOK */
         .features-grid-4x1 {
-            display: grid; grid-template-columns: 1fr; gap: 1.5rem;
+            display: grid; 
+            grid-template-columns: 1fr; 
+            gap: 1.5rem;
         }
-        @media (min-width: 768px) {
+        /* Tablet: 2x2 */
+        @media (min-width: 640px) {
             .features-grid-4x1 { grid-template-columns: repeat(2, 1fr); }
         }
-        @media (min-width: 1200px) {
+        /* Desktop/Laptop: 4x1 (Lowered breakpoint to 1024px to ensure it's a 1x row on standard laptops) */
+        @media (min-width: 1024px) {
             .features-grid-4x1 { grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
         }
 
@@ -226,8 +231,7 @@
             position: relative;
             aspect-ratio: 16 / 9;
             width: 100%;
-            /* Standard sharp corners and border */
-            border: 1px solid var(--color-border);
+            /* REMOVED BORDER here */
             clip-path: polygon(0 0, 100% 0, 100% 90%, 95% 100%, 0 100%);
             overflow: hidden;
             background: transparent; 
@@ -265,9 +269,10 @@
             font-family: var(--font-heading, 'Rajdhani', sans-serif); font-size: 1.1rem; font-weight: 700; color: white;
             text-transform: uppercase; margin-bottom: 1.25rem; letter-spacing: 0.5px;
         }
-        .wikd-footer-links { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+        .wikd-footer-links { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem;
+        }
         .wikd-footer-links a {
-            color: var(--color-text-muted, #888888); text-decoration: none; font-size: 0.95rem; transition: all 0.3s ease; display: inline-block;
+            color: var(--color-text-muted, #888888); text-decoration: none; font-size: 0.95rem; transition: all 0.3s ease; display: inline-block; font-family: var(--font-body, 'Inter', sans-serif);
         }
         .wikd-footer-links a:hover { color: var(--color-primary, #FF3B30); transform: translateX(5px); }
         .wikd-footer-bottom {
@@ -280,10 +285,10 @@
         .wikd-footer-legal a { color: var(--color-text-muted, #888888); text-decoration: none; font-size: 0.875rem; transition: color 0.3s ease; }
         .wikd-footer-legal a:hover { color: var(--color-primary, #FF3B30); }
         .wikd-footer-newsletter { display: flex; flex-direction: column; gap: 0.75rem; }
-        .wikd-footer-newsletter p { color: var(--color-text-muted, #888888); font-size: 0.9rem; line-height: 1.5; margin: 0; }
+        .wikd-footer-newsletter p { color: var(--color-text-muted, #888888); font-size: 0.9rem; line-height: 1.5; margin: 0; font-family: var(--font-body, 'Inter', sans-serif); }
         .wikd-footer-email-input {
             background: var(--color-background, #0A0A0A); border: 1px solid var(--color-border, #2A2A2A);
-            color: white; padding: 0.875rem 1rem; border-radius: 4px; font-size: 0.95rem; width: 100%;
+            color: white; padding: 0.875rem 1rem; border-radius: 4px; font-size: 0.95rem; width: 100%; font-family: var(--font-body, 'Inter', sans-serif);
         }
         .wikd-footer-subscribe-btn {
             background: var(--color-primary, #FF3B30); color: white; border: none; padding: 0.875rem 1.5rem;
@@ -307,7 +312,7 @@
     <!-- Page Hero -->
     <header class="page-hero">
         <div class="page-hero-content">
-            <h2 class="banner__heading inline-richtext h1">
+            <h2 class="banner__heading inline-richtext h1 font-heading">
               Premium Paint Protection Film
             </h2>
             <div class="banner__text rte body">
@@ -322,11 +327,11 @@
             <div class="mobile-scaled-container">
                 <div class="split-row">
                     <div class="diagram-wrapper">
-                        <!-- UPDATED IMAGE: Track Pack webp - Full Color, Uncropped, Scaled -->
+                        <!-- UPDATED IMAGE: Track Pack webp used for "What is PPF" - Full Color, Uncropped -->
                         <img src="https://wikdwraps.com/cdn/shop/files/Track_Pack.webp?v=1738085280&width=750" alt="PPF Coverage Diagram" class="diagram-image">
                     </div>
                     <div>
-                        <h2 class="image-with-text__heading inline-richtext h1">
+                        <h2 class="image-with-text__heading inline-richtext h1 font-heading">
                             What is PPF?
                         </h2>
                         <div class="image-with-text__text rte body">
@@ -346,7 +351,7 @@
         <section class="content-section bg-[var(--color-surface)]">
             <div class="mobile-scaled-container">
                 <div class="text-center mb-12">
-                    <h2 class="title inline-richtext h1">
+                    <h2 class="title inline-richtext h1 font-heading">
                       Why do I need PPF?
                     </h2>
                 </div>
@@ -360,7 +365,7 @@
                             attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","group-3":"transparent","background":"transparent"}}'
                             height="80" width="80" class="mb-4"
                         ></animated-icons>
-                        <h3 class="inline-richtext h3 text-2xl mb-3">Paint Protection</h3>
+                        <h3 class="inline-richtext h3 text-2xl mb-3 font-heading">Paint Protection</h3>
                         <div class="rte"><p>Shield your vehicle’s exterior from rock chips, scratches, road debris, and environmental contaminants like bird droppings and acid rain.</p></div>
                     </div>
 
@@ -372,7 +377,7 @@
                           attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","background":"transparent"}}'
                           height="80" width="80" class="mb-4"
                         ></animated-icons>
-                        <h3 class="inline-richtext h3 text-2xl mb-3">Ease of Maintenance</h3>
+                        <h3 class="inline-richtext h3 text-2xl mb-3 font-heading">Ease of Maintenance</h3>
                         <div class="rte"><p>Our self-healing, hydrophobic top coats reduce maintenance effort by repelling dirt, water, and stains, keeping your car cleaner for longer. Minor scratches disappear with heat, maintaining a flawless finish.</p></div>
                     </div>
 
@@ -384,7 +389,7 @@
                             attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","background":"transparent"}}'
                             height="80" width="80" class="mb-4"
                         ></animated-icons>
-                        <h3 class="inline-richtext h3 text-2xl mb-3">Resale Value Preservation</h3>
+                        <h3 class="inline-richtext h3 text-2xl mb-3 font-heading">Resale Value Preservation</h3>
                         <div class="rte"><p>A well-maintained exterior boosts resale value by keeping your car’s paint in pristine condition. Buyers are willing to pay more for a vehicle that looks like new.</p></div>
                     </div>
                 </div>
@@ -397,7 +402,8 @@
                 <div class="sequence-cta-section">
                     <!-- Left: Text Content -->
                     <div class="service-text">
-                        <h2 class="rich-text__heading rte inline-richtext h1">
+                        <!-- FORCED FONT HERE -->
+                        <h2 class="rich-text__heading rte inline-richtext h1" style="font-family: 'Rajdhani', sans-serif !important; white-space: nowrap;">
                             Coverage Options
                         </h2>
                         <div class="rich-text__text rte body mb-6">
@@ -424,7 +430,7 @@
         <section class="content-section bg-[var(--color-surface)]">
             <div class="mobile-scaled-container">
                 <div class="text-center mb-12">
-                    <h2 class="title inline-richtext h1">
+                    <h2 class="title inline-richtext h1 font-heading">
                       About our Films
                     </h2>
                 </div>
@@ -438,7 +444,7 @@
                           attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","background":"transparent"}}'
                           height="60" width="60" class="mb-4"
                         ></animated-icons>
-                        <h3 class="inline-richtext h3 text-xl mb-2">Expertly Installed</h3>
+                        <h3 class="inline-richtext h3 text-xl mb-2 font-heading">Expertly Installed</h3>
                         <div class="rte p-muted text-sm"><p>Trust our factory certified installers to truly deliver exceptional quality precision-cut installations. No cut corners, no misaligned edges, and certainly no damaged paint.</p></div>
                     </div>
 
@@ -450,7 +456,7 @@
                           attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","background":"transparent"}}'
                           height="60" width="60" class="mb-4"
                         ></animated-icons>
-                        <h3 class="inline-richtext h3 text-xl mb-2">Warrantied</h3>
+                        <h3 class="inline-richtext h3 text-xl mb-2 font-heading">Warrantied</h3>
                         <div class="rte p-muted text-sm"><p>All of our Paint Protection Film installations come with a 10-12 year warranty from the manufacturer. No worries about peeling, lifting, yellowing, cracking, or fading!</p></div>
                     </div>
 
@@ -462,7 +468,7 @@
                             attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","background":"transparent"}}'
                             height="60" width="60" class="mb-4"
                         ></animated-icons>
-                        <h3 class="inline-richtext h3 text-xl mb-2">Customize & Protect</h3>
+                        <h3 class="inline-richtext h3 text-xl mb-2 font-heading">Customize & Protect</h3>
                         <div class="rte p-muted text-sm"><p>Emerging technologies from PPF manufacturers allow the same protective benefits of PPF, with the color and finish change options of a vinyl wrap or matte paint!</p></div>
                     </div>
 
@@ -471,7 +477,7 @@
                         <div class="mb-4 h-16 flex items-center justify-center">
                             <img src="https://wikdwraps.com/cdn/shop/files/STEK_USA_V3_white_-_w_logo.png?v=1741272400&width=200" alt="STEK Logo" style="max-height: 100%; width: auto;">
                         </div>
-                        <h3 class="inline-richtext h3 text-xl mb-2">Peace of Mind</h3>
+                        <h3 class="inline-richtext h3 text-xl mb-2 font-heading">Peace of Mind</h3>
                         <div class="rte p-muted text-sm"><p>Know your car is recieving the quality and care it deserves. WIKD PBW is proud to be an authorized installer for STEK Films.</p></div>
                     </div>
                 </div>
