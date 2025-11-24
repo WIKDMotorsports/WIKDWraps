@@ -9,7 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
     <script src="https://animatedicons.co/scripts/embed-animated-icons.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
@@ -671,7 +671,346 @@
 
     </style>
 
+<style>
+    :root {
+        --color-primary: #FF3B30;
+        --font-heading: 'Rajdhani', sans-serif;
+        --font-body: 'Inter', sans-serif;
+        --nav-height: 80px;
+    }
+
+    /* --- NAVBAR CORE STYLES --- */
+    .wikd-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: var(--nav-height);
+        z-index: 1000;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        background: transparent; /* Initially transparent */
+        border-bottom: 1px solid transparent;
+    }
+
+    .wikd-header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 5%;
+        max-width: 1400px;
+        margin: 0 auto;
+        height: 100%;
+    }
+
+    /* --- LOGO (TEXT BASED) --- */
+    .wikd-logo-text {
+        font-family: var(--font-heading);
+        font-weight: 800;
+        font-size: 2rem; /* Adjust size as needed */
+        color: white;
+        text-decoration: none;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        line-height: 1;
+        white-space: nowrap;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.3); /* Slight shadow for contrast on hero images */
+    }
+
+    /* --- NAVIGATION LINKS --- */
+    .wikd-nav {
+        display: flex;
+        align-items: center;
+    }
+
+    .wikd-nav-links {
+        display: flex;
+        gap: 2.5rem;
+        list-style: none;
+        align-items: center;
+        margin: 0;
+        padding: 0;
+    }
+
+    .wikd-nav-item {
+        position: relative;
+        height: 100%;
+        display: flex;
+        align-items: center;
+    }
+
+    .wikd-nav-item > a {
+        color: white;
+        text-decoration: none;
+        font-family: var(--font-body);
+        font-size: 0.95rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: color 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.5rem 0;
+    }
+
+    .wikd-nav-item > a:hover {
+        color: var(--color-primary);
+    }
+
+    .wikd-dropdown-arrow {
+        font-size: 0.7rem;
+        transition: transform 0.3s ease;
+    }
+
+    .wikd-nav-item:hover .wikd-dropdown-arrow {
+        transform: rotate(180deg);
+    }
+
+    /* --- DROPDOWN MENUS --- */
+    .wikd-dropdown-menu {
+        position: absolute;
+        top: 100%; /* Aligns with bottom of nav item */
+        left: 50%;
+        transform: translateX(-50%) translateY(10px);
+        background: #0A0A0A; /* Solid dark background */
+        min-width: 220px;
+        padding: 0.5rem 0;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.2s ease;
+        z-index: 1000;
+        border: 1px solid #2A2A2A;
+        border-top: 3px solid var(--color-primary); /* Red accent line */
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        border-radius: 0 0 4px 4px;
+    }
+
+    .wikd-nav-item:hover .wikd-dropdown-menu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    .wikd-dropdown-menu a {
+        color: #EAEAEA;
+        text-decoration: none;
+        display: block;
+        padding: 0.75rem 1.5rem;
+        transition: all 0.2s;
+        font-family: var(--font-body);
+        font-size: 0.9rem;
+        border-left: 3px solid transparent;
+    }
+
+    .wikd-dropdown-menu a:hover {
+        background: #141414;
+        border-left-color: var(--color-primary);
+        color: white;
+        padding-left: 1.8rem; /* Slide effect */
+    }
+
+    /* Mega Menu (Shop) */
+    .wikd-shop-dropdown {
+        min-width: 600px;
+        left: 50%; /* Center relative to parent */
+        transform: translateX(-50%) translateY(10px);
+        padding: 2rem;
+    }
+
+    .wikd-shop-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+    }
+
+    .wikd-dropdown-section {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .wikd-dropdown-title {
+        font-family: var(--font-heading);
+        color: #888;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+        border-bottom: 1px solid #2A2A2A;
+        padding-bottom: 0.5rem;
+    }
+
+    /* --- SCROLLED STATE (Glassmorphism + Noise) --- */
+    .wikd-header.scrolled {
+        background-color: rgba(10, 10, 10, 0.75); /* Semi-transparent black */
+        backdrop-filter: blur(12px); /* Glass blur */
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        height: 70px; /* Slightly smaller on scroll */
+    }
+
+    /* Noise Texture Overlay for Navbar */
+    .wikd-header.scrolled::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        pointer-events: none;
+        z-index: -1;
+        opacity: 0.15; /* Visibility of noise */
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    /* --- MOBILE MENU TOGGLE --- */
+    .wikd-mobile-menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.8rem;
+        cursor: pointer;
+        z-index: 1100;
+    }
+
+    /* --- RESPONSIVE --- */
+    @media (max-width: 992px) {
+        .wikd-nav-links {
+            display: none;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0;
+            background: #0A0A0A;
+            position: fixed;
+            top: var(--nav-height);
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 2rem 5%;
+            z-index: 999;
+            overflow-y: auto;
+            border-top: 1px solid #2A2A2A;
+        }
+
+        .wikd-nav-links.active {
+            display: flex;
+        }
+
+        .wikd-nav-item {
+            width: 100%;
+            height: auto;
+            flex-direction: column;
+            align-items: flex-start;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        .wikd-nav-item > a {
+            width: 100%;
+            padding: 1.5rem 0;
+            font-size: 1.1rem;
+            justify-content: space-between;
+        }
+
+        .wikd-dropdown-menu, .wikd-shop-dropdown {
+            position: static;
+            transform: none;
+            opacity: 1;
+            visibility: visible;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            padding: 0 0 1rem 1rem;
+            min-width: 100%;
+            display: none; /* Hidden by default on mobile */
+        }
+
+        /* Simple JS toggle class for mobile submenus */
+        .wikd-nav-item.open .wikd-dropdown-menu {
+            display: block;
+        }
+
+        .wikd-shop-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .wikd-mobile-menu-toggle {
+            display: block;
+        }
+
+        .wikd-header.scrolled {
+             background-color: #0A0A0A; /* Solid dark on mobile scroll for readability */
+             backdrop-filter: none;
+        }
+    }
+</style>
 </head><body class="gradient">
+<header class="wikd-header">
+    <div class="wikd-header-container">
+        <!-- TEXT LOGO REPLACEMENT -->
+        <a href="/" class="wikd-logo-text">
+            WIKD WRAPS
+        </a>
+
+        <nav class="wikd-nav">
+            <ul class="wikd-nav-links">
+                <li class="wikd-nav-item">
+                    <a href="/pages/our-services">
+                        Shop
+                        <span class="wikd-dropdown-arrow">▾</span>
+                    </a>
+                    <div class="wikd-dropdown-menu wikd-shop-dropdown">
+                        <div class="wikd-shop-grid">
+                            <div class="wikd-dropdown-section">
+                                <div class="wikd-dropdown-title">Correct</div>
+                                <a href="/pages/detailing">Detailing</a>
+                                <a href="/pages/paint-correction">Paint Correction</a>
+                            </div>
+                            <div class="wikd-dropdown-section">
+                                <div class="wikd-dropdown-title">Protect</div>
+                                <a href="/pages/paint-protection-film">Paint Protection Film</a>
+                                <a href="/pages/ceramic-coatings">Ceramic Coatings</a>
+                                <a href="/pages/window-tint">Window Tint</a>
+                            </div>
+                            <div class="wikd-dropdown-section">
+                                <div class="wikd-dropdown-title">Enhance</div>
+                                <a href="/pages/vinyl-wraps">Vinyl Wraps</a>
+                                <a href="/pages/maintenance-plans">Maintenance Plans</a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="wikd-nav-item">
+                    <a href="#">
+                        About Us
+                        <span class="wikd-dropdown-arrow">▾</span>
+                    </a>
+                    <div class="wikd-dropdown-menu">
+                        <a href="/pages/about-us-1">Why Choose WIKD</a>
+                        <a href="/pages/gallery">Gallery</a>
+                        <a href="https://www.wikdmotorsports.com/" target="_blank">WIKD Motorsports</a>
+                        <a href="https://boltmotorsports.com/" target="_blank">BOLT Motorsports</a>
+                    </div>
+                </li>
+
+                <li class="wikd-nav-item">
+                    <a href="/pages/contact">
+                        Contact
+                        <span class="wikd-dropdown-arrow">▾</span>
+                    </a>
+                    <div class="wikd-dropdown-menu">
+                        <a href="/pages/contact">Book Now</a>
+                        <a href="/pages/careers">Careers</a>
+                        <a href="/pages/dealers">Dealers</a>
+                        <a href="/pages/estimate-configurator">Instant Quote Tool</a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+
+        <button class="wikd-mobile-menu-toggle" aria-label="Menu">☰</button>
+    </div>
+</header>
     
     <!-- SVG Definitions for reuse -->
     <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
@@ -1183,6 +1522,53 @@
     </div>
 </footer>
 
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // 1. Scroll Effect (Glassmorphism & Noise)
+        const header = document.querySelector('.wikd-header');
+
+        const handleScroll = () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        // Check on load in case we start down the page
+        handleScroll();
+
+
+        // 2. Mobile Menu Toggle
+        const mobileToggle = document.querySelector('.wikd-mobile-menu-toggle');
+        const navLinks = document.querySelector('.wikd-nav-links');
+
+        if(mobileToggle) {
+            mobileToggle.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+                mobileToggle.textContent = navLinks.classList.contains('active') ? '✕' : '☰';
+            });
+        }
+
+        // 3. Mobile Submenu Toggle (Clicking parent opens dropdown on mobile)
+        if (window.innerWidth <= 992) {
+            const dropdownParents = document.querySelectorAll('.wikd-nav-item');
+
+            dropdownParents.forEach(parent => {
+                const link = parent.querySelector('a');
+                const menu = parent.querySelector('.wikd-dropdown-menu');
+
+                if (menu) {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault(); // Prevent nav click
+                        parent.classList.toggle('open');
+                    });
+                }
+            });
+        }
+    });
+</script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         
