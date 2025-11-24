@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html class="js" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Window Tint | WIKD Wraps</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+    <script src="https://animatedicons.co/scripts/embed-animated-icons.js"></script>
+
+    <style>
+      :root {
+            --color-background: #0A0A0A;
+            --color-text: #EAEAEA;
+            --color-text-muted: #888888;
+            --color-primary: #FF3B30;
+            --color-surface: #141414;
+            --color-border: #2A2A2A;
+            --font-heading: 'Rajdhani', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        /* Base styles */
+        html { scroll-behavior: smooth; }
+        body {
+            background-color: var(--color-background) !important;
+            color: var(--color-text) !important;
+            font-family: var(--font-body) !important;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* --- NOISE TEXTURE OVERLAY --- */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9999; opacity: 0.08;
+            background-size: 100px 100px;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        .font-heading { font-family: var(--font-heading); }
+        .font-body { font-family: var(--font-body); }
+        
+        h1, h2, h3, .h1, .h2, .h3 {
+            font-family: var(--font-heading) !important;
+            font-weight: 700 !important;
+            line-height: 1.1 !important;
+            text-transform: uppercase !important;
+            color: white !important;
+        }
+        .h1 { font-size: clamp(2.5rem, 6vw, 4rem); }
+        .h2 { font-size: clamp(2rem, 5vw, 3rem); }
+        .h3 { font-size: clamp(1.5rem, 4vw, 2.25rem); }
+        
+        p, .p, .rte, .rte p { 
+          font-family: var(--font-body) !important; 
+          color: var(--color-text) !important; 
+          line-height: 1.6 !important;
+        }
+        .p-muted { font-family: var(--font-body); color: var(--color-text-muted) !important; line-height: 1.6;}
+
+        /* --- NAVIGATION --- */
+        .nav-bar {
+            position: absolute;
+            top: 0; left: 0; width: 100%;
+            padding: 2rem 5%;
+            z-index: 50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-logo {
+            font-family: var(--font-heading);
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: white;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+        .nav-back-link {
+            color: var(--color-text);
+            text-decoration: none;
+            font-family: var(--font-heading);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s;
+        }
+        .nav-back-link:hover { color: var(--color-primary); }
+
+        /* --- BUTTON STYLES --- */
+        .btn {
+            display: inline-block;
+            padding: 14px 32px;
+            font-family: var(--font-heading) !important;
+            font-size: 18px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--color-text) !important;
+            background-color: transparent;
+            border: 2px solid var(--color-border);
+            position: relative;
+            overflow: hidden;
+            transition: color 0.4s ease-in-out, border-color 0.4s ease-in-out, transform 0.3s ease;
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 10px 100%, 0 85%);
+            text-decoration: none;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        .btn span { position: relative; z-index: 2; }
+        .btn::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1; transform: translateX(-101%);
+            transition: transform 0.5s cubic-bezier(0.7, 0, 0.3, 1);
+        }
+        .btn:hover { color: white !important; transform: translateY(-3px); }
+        .btn:hover::before { transform: translateX(0); }
+        
+        .btn.btn-primary { border-color: var(--color-primary); }
+        .btn.btn-primary::before { background-color: var(--color-primary); }
+        .btn.btn-primary:hover { border-color: var(--color-primary); }
+
+        /* --- HERO --- */
+        .page-hero {
+            height: 60vh;
+            width: 100vw;
+            /* Using Window Tint specific image */
+            background-image: linear-gradient(to bottom, rgba(0,0,0,0.5), var(--color-background)), 
+                              url('https://wikdwraps.com/cdn/shop/files/Clean_Ryft_Black_McLaren_720s_HRE_Wheels_WIKD_Exhaust.jpg?v=1744062478');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            padding-bottom: 4rem;
+        }
+        .page-hero-content {
+            width: 92%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* --- CONTENT SECTIONS --- */
+        .content-section {
+            padding: 5rem 0;
+        }
+        
+        /* Grid for Features */
+        .features-grid-3x2 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        @media (min-width: 768px) {
+            .features-grid-3x2 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (min-width: 992px) {
+            .features-grid-3x2 {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 2rem;
+            }
+        }
+
+        .feature-box {
+            border: 1px solid var(--color-border);
+            padding: 2rem;
+            height: 100%;
+            /* SHARP GEOMETRY */
+            clip-path: polygon(0 0, 100% 0, 100% 90%, 95% 100%, 0 100%);
+            background: rgba(255,255,255,0.02);
+            transition: border-color 0.3s ease, transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .feature-box:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-5px);
+        }
+
+        .content-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3rem;
+            align-items: center;
+            margin-bottom: 4rem;
+        }
+        @media (min-width: 992px) {
+            .content-row {
+                grid-template-columns: 1fr 1fr;
+                gap: 5rem;
+            }
+        }
+
+        /* --- FOOTER STYLES --- */
+        .wikd-footer {
+            background-color: var(--color-surface, #141414);
+            border-top: 1px solid var(--color-border, #2A2A2A);
+            padding: 4rem 0 2rem;
+            font-family: var(--font-body, 'Inter', sans-serif);
+        }
+        .wikd-footer-container {
+            width: 92%; max-width: 1200px; margin: 0 auto;
+        }
+        .wikd-footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        .wikd-footer-brand { display: flex; flex-direction: column; gap: 1rem; }
+        .wikd-footer-logo { width: 180px; height: auto; }
+        .wikd-footer-tagline {
+            color: var(--color-text-muted, #888888);
+            font-size: 0.95rem; line-height: 1.6; max-width: 300px;
+        }
+        .wikd-footer-social { display: flex; gap: 1rem; margin-top: 1rem; }
+        .wikd-footer-social-link {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: var(--color-background, #0A0A0A);
+            border: 1px solid var(--color-border, #2A2A2A);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--color-text, #EAEAEA);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        .wikd-footer-social-link:hover {
+            background: var(--color-primary, #FF3B30);
+            border-color: var(--color-primary, #FF3B30);
+            transform: translateY(-3px);
+        }
+        .wikd-footer-column h3 {
+            font-family: var(--font-heading, 'Rajdhani', sans-serif);
+            font-size: 1.1rem; font-weight: 700; color: white;
+            text-transform: uppercase; margin-bottom: 1.25rem; letter-spacing: 0.5px;
+        }
+        .wikd-footer-links {
+            list-style: none; padding: 0; margin: 0;
+            display: flex; flex-direction: column; gap: 0.75rem;
+        }
+        .wikd-footer-links a {
+            color: var(--color-text-muted, #888888);
+            text-decoration: none; font-size: 0.95rem;
+            transition: all 0.3s ease; display: inline-block;
+        }
+        .wikd-footer-links a:hover {
+            color: var(--color-primary, #FF3B30); transform: translateX(5px);
+        }
+        .wikd-footer-bottom {
+            border-top: 1px solid var(--color-border, #2A2A2A);
+            padding-top: 2rem;
+            display: flex; justify-content: space-between;
+            align-items: center; flex-wrap: wrap; gap: 1rem;
+        }
+        .wikd-footer-copyright { color: var(--color-text-muted, #888888); font-size: 0.875rem; }
+        .wikd-footer-copyright a { color: var(--color-primary, #FF3B30); text-decoration: none; font-weight: 600; }
+        .wikd-footer-legal { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+        .wikd-footer-legal a {
+            color: var(--color-text-muted, #888888); text-decoration: none;
+            font-size: 0.875rem; transition: color 0.3s ease;
+        }
+        .wikd-footer-legal a:hover { color: var(--color-primary, #FF3B30); }
+
+        /* MOBILE SCALING ADJUSTMENT */
+        .mobile-scaled-container {
+            width: 92%; max-width: 1200px; margin-left: auto; margin-right: auto;
+        }
+        @media (max-width: 992px) {
+            .wikd-footer-grid { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+            .wikd-footer-brand { grid-column: 1 / -1; }
+        }
+        @media (max-width: 640px) {
+            .wikd-footer { padding: 3rem 0 1.5rem; }
+            .wikd-footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .wikd-footer-bottom { flex-direction: column; text-align: center; }
+            .wikd-footer-legal { justify-content: center; }
+        }
+    </style>
+</head>
+<body class="gradient">
+
+    <!-- Simple Nav -->
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-logo">WIKD WRAPS</a>
+        <a href="services.html" class="nav-back-link">
+            &larr; Back to Services
+        </a>
+    </nav>
+
+    <!-- Page Hero -->
+    <header class="page-hero">
+        <div class="page-hero-content">
+            <span class="text-red-600 font-bold tracking-widest uppercase text-sm mb-2 block font-heading">Heat Rejection Experts</span>
+            <h1 class="h1 mb-4">Premium Window Tint</h1>
+            <p class="p-muted max-w-2xl">
+                Experience superior comfort, privacy, and protection. Our advanced Nano-Ceramic films block up to 98% of infrared heat without compromising clarity.
+            </p>
+        </div>
+    </header>
+
+    <main>
+        <!-- Intro Section -->
+        <section class="content-section">
+            <div class="mobile-scaled-container">
+                <div class="content-row">
+                    <div>
+                        <h2 class="h2 mb-4">Why Ceramic Tint?</h2>
+                        <p class="p-muted mb-4">
+                            Standard window tint is just for looks. WIKD Wraps utilizes cutting-edge Nano-Ceramic technology that focuses on heat rejection. By filtering out infrared rays, our films keep your cabin significantly cooler, reducing the load on your A/C and making Texas summers bearable.
+                        </p>
+                        <p class="p-muted mb-6">
+                            Beyond comfort, our films provide 99% UV protection, shielding your skin and preventing your dashboard and leather interior from fading and cracking over time.
+                        </p>
+                        <a href="https://wikdwraps.com/pages/contact" class="btn btn-primary">
+                            <span>Get A Quote</span>
+                        </a>
+                    </div>
+                    <div class="diagram-container" style="border: 1px solid var(--color-border); clip-path: polygon(0 0, 100% 0, 100% 90%, 95% 100%, 0 100%);">
+                         <!-- UPDATED DIAGRAM LINK -->
+                         <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/Tint_Diagram.png?v=1764005254" alt="Window tint heat rejection diagram showing infrared block" style="width: 100%; height: auto; display: block; opacity: 0.8;">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Benefits Grid (Using requested animated icons) -->
+        <section class="content-section bg-[var(--color-surface)]">
+            <div class="mobile-scaled-container">
+                <div class="text-center mb-10">
+                    <h2 class="h2">The WIKD Standard</h2>
+                    <p class="p-muted max-w-2xl mx-auto mt-2">Engineered for performance, installed with precision.</p>
+                </div>
+                
+                <div class="features-grid-3x2">
+                    <!-- UV & IR Rejection -->
+                    <div class="feature-box">
+                        <animated-icons
+                            src="https://animatedicons.co/get-icon?name=Sun&style=minimalistic&token=af857f3d-6096-42d0-9f04-a9ee72f54aa4"
+                            trigger="loop"
+                            attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","group-3":"transparent","background":"transparent"}}'
+                            height="100"
+                            width="100"
+                            class="mb-4"
+                        ></animated-icons>
+                        <h3 class="text-xl font-heading text-white mb-2">UV & IR Rejection</h3>
+                        <p class="text-sm text-gray-400">Blocks 99% of UV rays and up to 98% of heat-producing infrared rays.</p>
+                    </div>
+
+                    <!-- Enhanced Privacy -->
+                    <div class="feature-box">
+                        <animated-icons
+                            src="https://animatedicons.co/get-icon?name=Sunglasses&style=minimalistic&token=af857f3d-6096-42d0-9f04-a9ee72f54aa4"
+                            trigger="loop"
+                            attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","group-3":"transparent","background":"transparent"}}'
+                            height="100"
+                            width="100"
+                            class="mb-4"
+                        ></animated-icons>
+                        <h3 class="text-xl font-heading text-white mb-2">Enhanced Privacy</h3>
+                        <p class="text-sm text-gray-400">Protect your belongings and enjoy a secluded cabin feel without sacrificing visibility.</p>
+                    </div>
+
+                    <!-- Superior Durability -->
+                    <div class="feature-box">
+                        <animated-icons
+                            src="https://animatedicons.co/get-icon?name=Advantage&style=minimalistic&token=af857f3d-6096-42d0-9f04-a9ee72f54aa4"
+                            trigger="loop"
+                            attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","group-3":"transparent","background":"transparent"}}'
+                            height="100"
+                            width="100"
+                            class="mb-4"
+                        ></animated-icons>
+                        <h3 class="text-xl font-heading text-white mb-2">Superior Durability</h3>
+                        <p class="text-sm text-gray-400">Color-stable construction guarantees your tint won't turn purple or bubble.</p>
+                    </div>
+
+                    <!-- Expertly Installed -->
+                    <div class="feature-box">
+                        <animated-icons
+                            src="https://animatedicons.co/get-icon?name=Maintenance&style=minimalistic&token=af857f3d-6096-42d0-9f04-a9ee72f54aa4"
+                            trigger="loop"
+                            attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","group-3":"transparent","background":"transparent"}}'
+                            height="100"
+                            width="100"
+                            class="mb-4"
+                        ></animated-icons>
+                        <h3 class="text-xl font-heading text-white mb-2">Expertly Installed</h3>
+                        <p class="text-sm text-gray-400">Micro-edge filing and seamless rear windows for a factory-glass appearance.</p>
+                    </div>
+
+                    <!-- Long Lasting Protection -->
+                    <div class="feature-box">
+                        <animated-icons
+                            src="https://animatedicons.co/get-icon?name=Security&style=minimalistic&token=af857f3d-6096-42d0-9f04-a9ee72f54aa4"
+                            trigger="loop"
+                            attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","group-3":"transparent","background":"transparent"}}'
+                            height="100"
+                            width="100"
+                            class="mb-4"
+                        ></animated-icons>
+                        <h3 class="text-xl font-heading text-white mb-2">Long Lasting Protection</h3>
+                        <p class="text-sm text-gray-400">Backed by a lifetime warranty against peeling, cracking, and fading.</p>
+                    </div>
+
+                    <!-- Preserve & Protect -->
+                    <div class="feature-box">
+                        <animated-icons
+                            src="https://animatedicons.co/get-icon?name=Badge&style=minimalistic&token=af857f3d-6096-42d0-9f04-a9ee72f54aa4"
+                            trigger="loop"
+                            attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","group-3":"transparent","background":"transparent"}}'
+                            height="100"
+                            width="100"
+                            class="mb-4"
+                        ></animated-icons>
+                        <h3 class="text-xl font-heading text-white mb-2">Preserve & Protect</h3>
+                        <p class="text-sm text-gray-400">Keeps your interior looking new by blocking damaging solar energy.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final CTA -->
+        <section class="py-20">
+            <div class="mobile-scaled-container text-center">
+                <h2 class="h2 mb-6">Stay Cool, Look WIKD.</h2>
+                <p class="p-muted max-w-2xl mx-auto mb-8">
+                    Don't settle for cheap tint that fades. Invest in premium ceramic protection for your ride.
+                </p>
+                <a class="btn btn-primary" href="https://wikdwraps.com/pages/contact">
+                  <span>Book Appointment</span>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="wikd-footer">
+        <div class="wikd-footer-container">
+            <div class="wikd-footer-grid">
+                <!-- Brand Column -->
+                <div class="wikd-footer-brand">
+                    <img src="https://wikdwraps.com/cdn/shop/files/output-onlinepngtools_3.png?v=1737407428&width=300" alt="WIKD Wraps" class="wikd-footer-logo">
+                    <p class="wikd-footer-tagline">Uncompromised Protection. WIKD Craftsmanship.</p>
+                    <div class="wikd-footer-social">
+                        <a href="https://www.facebook.com/wikdwraps" target="_blank" rel="noopener" class="wikd-footer-social-link" aria-label="Facebook">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        </a>
+                        <a href="https://www.instagram.com/wikdwraps" target="_blank" rel="noopener" class="wikd-footer-social-link" aria-label="Instagram">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                        </a>
+                        <a href="https://twitter.com/wikdwraps" target="_blank" rel="noopener" class="wikd-footer-social-link" aria-label="X (Twitter)">
+                            <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Services Column -->
+                <div class="wikd-footer-column">
+                    <h3>Services</h3>
+                    <ul class="wikd-footer-links">
+                        <li><a href="https://wikdwraps.com/pages/paint-protection-film">Paint Protection Film</a></li>
+                        <li><a href="https://wikdwraps.com/pages/ceramic-coatings">Ceramic Coatings</a></li>
+                        <li><a href="https://wikdwraps.com/pages/vinyl-wraps">Vinyl Wraps</a></li>
+                        <li><a href="https://wikdwraps.com/pages/window-tint">Window Tint</a></li>
+                        <li><a href="https://wikdwraps.com/pages/detailing">Detailing</a></li>
+                        <li><a href="https://wikdwraps.com/pages/maintenance-plans">Maintenance Plans</a></li>
+                    </ul>
+                </div>
+
+                <!-- Company Column -->
+                <div class="wikd-footer-column">
+                    <h3>Company</h3>
+                    <ul class="wikd-footer-links">
+                        <li><a href="https://wikdwraps.com/pages/about-us-1">About Us</a></li>
+                        <li><a href="https://wikdwraps.com/pages/gallery">Gallery</a></li>
+                        <li><a href="https://wikdwraps.com/pages/contact">Contact</a></li>
+                        <li><a href="https://wikdwraps.com/pages/careers">Careers</a></li>
+                        <li><a href="https://wikdwraps.com/pages/dealers">Dealers</a></li>
+                        <li><a href="https://www.wikdmotorsports.com/" target="_blank">WIKD Motorsports</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="wikd-footer-bottom">
+                <div class="wikd-footer-copyright">
+                    © 2025 <a href="/">WIKD Wraps</a>. All rights reserved.
+                </div>
+                <div class="wikd-footer-legal">
+                    <a href="https://wikdwraps.com/pages/privacy-policy">Privacy Policy</a>
+                    <a href="https://wikdwraps.com/pages/refund-policy">Refund Policy</a>
+                    <a href="https://wikdwraps.com/pages/terms-of-service">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
