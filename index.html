@@ -14,9 +14,7 @@
     <script src="https://animatedicons.co/scripts/embed-animated-icons.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
 
-    <title>
-      WIKDWRAPS
-    </title>
+    <title>WIKDWRAPS</title>
 
     <style>
       :root {
@@ -42,7 +40,7 @@
             position: relative;
         }
         
-        /* --- NOISE TEXTURE OVERLAY (Fixed Resolution) --- */
+        /* --- NOISE TEXTURE OVERLAY --- */
         body::before {
             content: "";
             position: fixed;
@@ -51,9 +49,8 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 9999; /* On top of everything */
-            opacity: 0.08; /* Increased opacity for visibility */
-            /* Forces the noise to tile in small 100px squares, making it look high-res */
+            z-index: 9999;
+            opacity: 0.08;
             background-size: 100px 100px;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
@@ -85,25 +82,8 @@
         a.link:hover {
             text-decoration: underline !important;
         }
-        .button.button--primary {
-            background: transparent !important;
-            color: white !important;
-            border: 2px solid var(--color-primary) !important;
-            clip-path: polygon(0 0, 100% 0, 100% 100%, 10px 100%, 0 85%) !important;
-            transition: all 0.3s ease !important;
-            font-family: var(--font-heading) !important;
-            text-transform: uppercase !important;
-            position: relative;
-            z-index: 1;
-            padding: 14px 32px;
-        }
-        .button.button--primary:hover {
-            color: white !important;
-            background: var(--color-primary) !important;
-        }
 
-
-        /* --- BUTTON STYLES --- */
+        /* --- BUTTON STYLES (Consolidated) --- */
         .btn {
             display: inline-block;
             padding: 14px 32px;
@@ -117,6 +97,7 @@
             position: relative;
             overflow: hidden;
             transition: color 0.4s ease-in-out, border-color 0.4s ease-in-out, transform 0.3s ease;
+            /* GEOMETRY UPDATE: Consistent angle clip */
             clip-path: polygon(0 0, 100% 0, 100% 100%, 10px 100%, 0 85%);
             text-decoration: none;
             flex-shrink: 0;
@@ -136,6 +117,9 @@
         
         .btn.btn-primary { 
             border-color: var(--color-primary); 
+            /* Initial text color matches standard, hover effect brings background */
+        }
+        .btn.btn-primary::before {
             background-color: var(--color-primary);
         }
         .btn.btn-primary:hover { border-color: var(--color-primary); }
@@ -164,11 +148,27 @@
         }
 
         /* --- CARD STYLES --- */
+        /* Unified Card Style for Text-Heavy Cards (Locations, Difference) */
+        .wikd-card {
+            border: 1px solid var(--color-border);
+            padding: 1.5rem; /* p-5 equivalent */
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            border-radius: 0px; /* GEOMETRY UPDATE: Sharp corners */
+            background: transparent;
+            transition: border-color 0.3s ease, transform 0.3s ease;
+        }
+        .wikd-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-5px);
+        }
+
         .package-card {
             position: relative;
             aspect-ratio: 4 / 5;
             overflow: hidden;
-            border-radius: 8px;
+            border-radius: 0px; /* GEOMETRY UPDATE: Sharp corners */
             border: 1px solid var(--color-border);
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
             display: block;
@@ -279,7 +279,8 @@
         .gallery-card-wrapper { max-width: 380px; width: 100%; perspective: 1000px; }
         .gallery-card {
             display: block; position: relative; aspect-ratio: 1 / 1;
-            border-radius: 8px; border: 1px solid var(--color-border);
+            border-radius: 0px; /* GEOMETRY UPDATE: Sharp corners */
+            border: 1px solid var(--color-border);
             text-decoration: none; isolation: isolate;
             transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.4s ease, border-color 0.4s ease;
             transform-style: preserve-3d;
@@ -322,7 +323,7 @@
             clip-path: polygon(0 0, 100% 0, 100% 100%, 8px 100%, 0 80%);
         }
         .gallery-card::before {
-            content: ""; position: absolute; inset: 0; border-radius: 8px;
+            content: ""; position: absolute; inset: 0; border-radius: 0px; /* GEOMETRY UPDATE: Sharp corners */
             padding: 2px;
             background: linear-gradient(90deg, #b30000, #ff1a00, #ffaa00, #ff1a00, #b30000);
             background-size: 300%; animation: lavaFlow 4s ease-in-out infinite;
@@ -371,130 +372,302 @@
            font-size: clamp(1.5rem, 4vw, 2.25rem) !important;
        }
        
-        /* --- STAR RATING --- */
-        .star-container-fade-in {
-            opacity: 0;
-            animation: fadeIn 0.5s cubic-bezier(0.1, 1.2, 0, 1) forwards; /* Aggressive easing */
-        }
-        .star-glow-pulse {
-            animation: pulseGlow 3s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite; /* Aggressive easing */
-        }
-        .star-gradient-pulse {
-            --center-opacity: 0.7; /* Set initial state */
-            animation: pulseGradient 3s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite; /* Aggressive easing */
-        }
-        .glint-wrapper {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>');
-            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>');
-            -webkit-mask-size: contain; mask-size: contain;
-            -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
-            -webkit-mask-position: center; mask-position: center;
-        }
-        .glint-wrapper::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.6) 50%, transparent 60%);
-            background-size: 200% 100%;
-            background-position: 200% 0;
-            animation: glintWipe 5s infinite;
-            animation-delay: var(--glint-delay, 0s);
-        }
-        
-        .lava-text {
-            background: linear-gradient(90deg, #ff7f00, #ff4500, #ff3b30, #ff4500, #ff7f00); 
-            background-size: 300%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: lavaFlow 4s ease-in-out infinite;
-            font-weight: 600; 
+       /* --- STAR RATING --- */
+       .star-container-fade-in {
+           opacity: 0;
+           animation: fadeIn 0.5s cubic-bezier(0.1, 1.2, 0, 1) forwards; /* Aggressive easing */
+       }
+       .star-glow-pulse {
+           animation: pulseGlow 3s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite; /* Aggressive easing */
+       }
+       .star-gradient-pulse {
+           --center-opacity: 0.7; /* Set initial state */
+           animation: pulseGradient 3s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite; /* Aggressive easing */
+       }
+       .glint-wrapper {
+           position: absolute;
+           top: 0; left: 0;
+           width: 100%; height: 100%;
+           -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>');
+           mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>');
+           -webkit-mask-size: contain; mask-size: contain;
+           -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+           -webkit-mask-position: center; mask-position: center;
+       }
+       .glint-wrapper::after {
+           content: '';
+           position: absolute;
+           top: 0; left: 0;
+           width: 100%; height: 100%;
+           background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.6) 50%, transparent 60%);
+           background-size: 200% 100%;
+           background-position: 200% 0;
+           animation: glintWipe 5s infinite;
+           animation-delay: var(--glint-delay, 0s);
+       }
+       
+       .lava-text {
+           background: linear-gradient(90deg, #ff7f00, #ff4500, #ff3b30, #ff4500, #ff7f00); 
+           background-size: 300%;
+           -webkit-background-clip: text;
+           -webkit-text-fill-color: transparent;
+           animation: lavaFlow 4s ease-in-out infinite;
+           font-weight: 600; 
+       }
+
+       .dropdown-icon {
+           transition: transform 0.3s ease;
+       }
+
+       .dropdown-icon.active {
+           transform: rotate(180deg);
+       }
+
+       .qr-tooltip {
+           position: absolute;
+           bottom: 100%;
+           left: 50%;
+           transform: translateX(-50%) translateY(10px);
+           margin-bottom: 12px;
+           background-color: #141414; /* Fixed BG color */
+           border: 1px solid var(--color-border);
+           border-radius: 12px;
+           padding: 0.75rem;
+           z-index: 2006;
+           text-align: center;
+           box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+           opacity: 0;
+           visibility: hidden;
+           transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+           pointer-events: none;
+           width: max-content;
+       }
+       .qr-tooltip.active {
+           opacity: 1;
+           visibility: visible;
+           transform: translateX(-50%) translateY(0);
+           pointer-events: auto;
+       }
+       .qr-tooltip::before {
+           content: '';
+           position: absolute;
+           top: 100%;
+           left: 50%;
+           transform: translateX(-50%);
+           border-width: 8px;
+           border-style: solid;
+           border-color: var(--color-border) transparent transparent transparent;
+       }
+       .qr-tooltip::after {
+           content: '';
+           position: absolute;
+           top: 100%;
+           left: 50%;
+           transform: translateX(-50%);
+           margin-top: -1px;
+           border-width: 7px;
+           border-style: solid;
+           border-color: var(--color-surface) transparent transparent transparent;
+       }
+       
+       @keyframes fadeIn {
+           from { opacity: 0; transform: scale(0.8); }
+           to   { opacity: 1; transform: scale(1); }
+       }
+       @keyframes pulseGlow {
+           0%, 100% { filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.7)); }
+           50% { filter: drop-shadow(0 0 8px rgba(251, 191, 36, 1)); }
+       }
+       @keyframes pulseGradient {
+           0%, 100% { --center-opacity: 0.7; }
+           50% { --center-opacity: 1; }
+       }
+       @keyframes glintWipe {
+           0%   { background-position: 200% 0; }
+           5%   { background-position: 200% 0; }
+           25%  { background-position: -200% 0; } /* Slowed down wipe */
+           100% { background-position: -200% 0; }
+       }
+
+       /* MOBILE SCALING ADJUSTMENT: Explicit Container Width */
+       .mobile-scaled-container {
+           width: 92%;
+           max-width: 1200px;
+           margin-left: auto;
+           margin-right: auto;
+       }
+
+       /* --- FOOTER STYLES --- */
+       .wikd-footer {
+        background-color: var(--color-surface, #141414);
+        border-top: 1px solid var(--color-border, #2A2A2A);
+        padding: 4rem 0 2rem;
+        font-family: var(--font-body, 'Inter', sans-serif);
+    }
+
+    .wikd-footer-container {
+        width: 92%;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .wikd-footer-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr; /* Balanced 3-column layout */
+        gap: 3rem;
+        margin-bottom: 3rem;
+    }
+
+    .wikd-footer-brand {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .wikd-footer-logo {
+        width: 180px;
+        height: auto;
+    }
+
+    .wikd-footer-tagline {
+        color: var(--color-text-muted, #888888);
+        font-size: 0.95rem;
+        line-height: 1.6;
+        max-width: 300px;
+    }
+
+    .wikd-footer-social {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .wikd-footer-social-link {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--color-background, #0A0A0A);
+        border: 1px solid var(--color-border, #2A2A2A);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-text, #EAEAEA);
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-size: 1.2rem;
+    }
+
+    .wikd-footer-social-link:hover {
+        background: var(--color-primary, #FF3B30);
+        border-color: var(--color-primary, #FF3B30);
+        transform: translateY(-3px);
+    }
+
+    .wikd-footer-column h3 {
+        font-family: var(--font-heading, 'Rajdhani', sans-serif);
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: white;
+        text-transform: uppercase;
+        margin-bottom: 1.25rem;
+        letter-spacing: 0.5px;
+    }
+
+    .wikd-footer-links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .wikd-footer-links a {
+        color: var(--color-text-muted, #888888);
+        text-decoration: none;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+
+    .wikd-footer-links a:hover {
+        color: var(--color-primary, #FF3B30);
+        transform: translateX(5px);
+    }
+
+    .wikd-footer-bottom {
+        border-top: 1px solid var(--color-border, #2A2A2A);
+        padding-top: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .wikd-footer-copyright {
+        color: var(--color-text-muted, #888888);
+        font-size: 0.875rem;
+    }
+
+    .wikd-footer-copyright a {
+        color: var(--color-primary, #FF3B30);
+        text-decoration: none;
+        font-weight: 600;
+        transition: opacity 0.3s ease;
+    }
+
+    .wikd-footer-copyright a:hover {
+        opacity: 0.8;
+    }
+
+    .wikd-footer-legal {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .wikd-footer-legal a {
+        color: var(--color-text-muted, #888888);
+        text-decoration: none;
+        font-size: 0.875rem;
+        transition: color 0.3s ease;
+    }
+
+    .wikd-footer-legal a:hover {
+        color: var(--color-primary, #FF3B30);
+    }
+
+    @media (max-width: 992px) {
+        .wikd-footer-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 2.5rem;
         }
 
-        .dropdown-icon {
-            transition: transform 0.3s ease;
+        .wikd-footer-brand {
+            grid-column: 1 / -1;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .wikd-footer {
+            padding: 3rem 0 1.5rem;
         }
 
-        .dropdown-icon.active {
-            transform: rotate(180deg);
+        .wikd-footer-grid {
+            grid-template-columns: 1fr;
+            gap: 2rem;
         }
 
-        .qr-tooltip {
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%) translateY(10px);
-            margin-bottom: 12px;
-            background-color: #141414; /* Fixed BG color */
-            border: 1px solid var(--color-border);
-            border-radius: 12px;
-            padding: 0.75rem;
-            z-index: 2006;
+        .wikd-footer-bottom {
+            flex-direction: column;
             text-align: center;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
-            pointer-events: none;
-            width: max-content;
-        }
-        .qr-tooltip.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translateX(-50%) translateY(0);
-            pointer-events: auto;
-        }
-        .qr-tooltip::before {
-            content: '';
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            border-width: 8px;
-            border-style: solid;
-            border-color: var(--color-border) transparent transparent transparent;
-        }
-        .qr-tooltip::after {
-            content: '';
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            margin-top: -1px;
-            border-width: 7px;
-            border-style: solid;
-            border-color: var(--color-surface) transparent transparent transparent;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.8); }
-            to   { opacity: 1; transform: scale(1); }
-        }
-        @keyframes pulseGlow {
-            0%, 100% { filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.7)); }
-            50% { filter: drop-shadow(0 0 8px rgba(251, 191, 36, 1)); }
-        }
-        @keyframes pulseGradient {
-            0%, 100% { --center-opacity: 0.7; }
-            50% { --center-opacity: 1; }
-        }
-        @keyframes glintWipe {
-            0%   { background-position: 200% 0; }
-            5%   { background-position: 200% 0; }
-            25%  { background-position: -200% 0; } /* Slowed down wipe */
-            100% { background-position: -200% 0; }
         }
 
-        /* MOBILE SCALING ADJUSTMENT: Explicit Container Width */
-        .mobile-scaled-container {
-            width: 92%;
-            max-width: 1200px;
-            margin-left: auto;
-            margin-right: auto;
+        .wikd-footer-legal {
+            justify-content: center;
         }
+    }
 
     </style>
 
@@ -525,8 +698,6 @@
   }</style><div class="color-background-1 gradient">
   <div class="section-template--20779275780301__custom_liquid_TPCGPH-padding">
     
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WIKD Wraps - Paint Protection Specialists</title>
     <style>
         .hero * {
             box-sizing: border-box;
@@ -547,21 +718,30 @@
             align-items: center;
         }
 
-        /* Hero Content - Uses mobile scaling container logic */
+        /* Hero Content - Uses standardized container logic */
         .hero-content {
-            /* Applied directly via inline class for specificity if needed, but using the class below */
-            padding-top: 3rem;
-            padding-bottom: 3rem;
+            /* Standard container logic matching .mobile-scaled-container and .wikd-footer-container */
             width: 92%;
             max-width: 1200px;
             margin: 0 auto;
+            
+            /* Flexbox to handle vertical centering if needed, but primarily for structure */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            
+            padding-top: 3rem;
+            padding-bottom: 3rem;
         }
         
+        /* Inner wrapper to restrict text width for readability while keeping container centered */
+        .hero-text-wrapper {
+             max-width: 100%;
+        }
+
         @media (min-width: 768px) {
-             .hero-content {
-                width: 50%;
-                margin-left: 5%; /* Restore left alignment on desktop */
-                margin-right: auto;
+             .hero-text-wrapper {
+                 max-width: 60%; /* Limits line length on desktop for better readability */
              }
         }
 
@@ -607,30 +787,10 @@
             transform: translateX(5px);
         }
 
-        @media (max-width: 1200px) {
-            .hero-content {
-                width: 60%; /* Desktop overrides */
-                margin-left: 5%;
-            }
-        }
-
-        @media (max-width: 992px) {
-            .hero-content {
-                width: 70%;
-                margin-left: 5%;
-            }
-        }
-
         @media (max-width: 768px) {
             .hero {
                 height: 85vh;
                 min-height: 85vh;
-            }
-
-            .hero-content {
-                width: 92%; /* Mobile Scaling: Explicit width */
-                margin: 0 auto; /* Center content */
-                padding: 2rem 0; /* Remove side padding, handle via width */
             }
 
             .hero h1 {
@@ -652,19 +812,21 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
-            <div class="badge">TOP PPF &amp; COATING SPECIALISTS IN MCKINNEY TX</div>
-            <h1>Paint Protection Solutions From The Best Name In Custom Performance</h1>
-            
-            <div class="cta-buttons">
-                <a href="#services-section" class="btn btn-primary">
-                    <span>Explore Services</span>
-                </a>
-                <a href="https://wikdwraps.com/pages/estimate-configurator" class="btn btn-secondary">
-                    <span>Instant Quote Tool</span>
-                </a>
-                <a href="https://wikdwraps.com/pages/contact" class="btn btn-tertiary">
-                   <span>Reserve Your Spot</span>
-                </a>
+            <div class="hero-text-wrapper">
+                <div class="badge">TOP PPF &amp; COATING SPECIALISTS IN MCKINNEY TX</div>
+                <h1>Paint Protection Solutions From The Best Name In Custom Performance</h1>
+                
+                <div class="cta-buttons">
+                    <a href="#services-section" class="btn btn-primary">
+                        <span>Explore Services</span>
+                    </a>
+                    <a href="https://wikdwraps.com/pages/estimate-configurator" class="btn btn-secondary">
+                        <span>Instant Quote Tool</span>
+                    </a>
+                    <a href="https://wikdwraps.com/pages/contact" class="btn btn-tertiary">
+                    <span>Reserve Your Spot</span>
+                    </a>
+                </div>
             </div>
         </div>
     </section>
@@ -730,7 +892,7 @@
             <a href="https://wikdwraps.com/pages/window-tint" class="package-card">
                  <img src="https://wikdwraps.com/cdn/shop/files/Clean_Ryft_Black_McLaren_720s_HRE_Wheels_WIKD_Exhaust.jpg?v=1744062478" alt="McLaren 720s with Nano-Ceramic Tint" class="package-card-bg">
                 <div class="package-card-overlay">
-                     <div class="package-card-content flex flex-col">
+                      <div class="package-card-content flex flex-col">
                         <h3 class="package-card-title text-2xl">Nano-Ceramic Tint</h3>
                         <p class="package-card-description text-sm leading-snug">Industry-leading heat rejection, UV protection, and privacy.</p>
                         <span class="package-card-link">Learn More &rarr;</span>
@@ -741,7 +903,7 @@
             <a href="https://wikdwraps.com/pages/maintenance-plans" class="package-card">
                  <img src="https://wikdwraps.com/cdn/shop/files/Black_Lamborghini_Urus_Interior_Detail.jpg?v=1744062916" alt="Interior of a Lamborghini Urus after detailing" class="package-card-bg">
                 <div class="package-card-overlay">
-                     <div class="package-card-content flex flex-col">
+                      <div class="package-card-content flex flex-col">
                         <h3 class="package-card-title text-2xl">Maintenance Plans</h3>
                         <p class="package-card-description text-sm leading-snug">Keep your vehicle flawless year-round with our exclusive member plans.</p>
                         <span class="package-card-link">Learn More &rarr;</span>
@@ -759,8 +921,9 @@
             <h2 class="h2">The WIKD Difference</h2>
              <p class="p-muted max-w-2xl mx-auto mt-2">We combine world-class craftsmanship with industry-leading materials to deliver results that speak for themselves.</p>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <div class="p-5 border border-[var(--color-border)] rounded-lg flex flex-col gap-3 h-full">
+        <!-- GEOMETRY UPDATE: Using uniform .wikd-card class -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+            <div class="wikd-card">
                 <div class="flex justify-center items-center mb-2">
                     <animated-icons
                         src="https://animatedicons.co/get-icon?name=Reliable&style=minimalistic&token=27a30965-9fd9-4579-acc0-b9c372561841"
@@ -773,7 +936,7 @@
                 <h3 class="h3 text-2xl mb-1">Craftsmanship You Can Trust</h3>
                 <p class="p-muted text-sm leading-snug">Our expert technicians are factory-certified installers known for their precision and attention to detail. We treat every vehicle as if it were our own, ensuring flawless results every time.</p>
             </div>
-            <div class="p-5 border border-[var(--color-border)] rounded-lg flex flex-col gap-3 h-full">
+            <div class="wikd-card">
                 <div class="flex justify-center items-center mb-2">
                     <animated-icons
                         src="https://animatedicons.co/get-icon?name=Chemist&style=minimalistic&token=153ce80d-3f45-4dc6-b13a-40ea011dbbfe"
@@ -786,7 +949,7 @@
                 <h3 class="h3 text-2xl mb-1">Industry Leading Materials</h3>
                 <p class="p-muted text-sm leading-snug">We’ve partnered with top-tier brands like STEK to provide the best durability, clarity, and performance for your vehicle. We don't compromise on quality.</p>
             </div>
-            <div class="p-5 border border-[var(--color-border)] rounded-lg flex flex-col gap-3 h-full">
+            <div class="wikd-card">
                 <div class="flex justify-center items-center mb-2">
                     <animated-icons
                         src="https://animatedicons.co/get-icon?name=edit&style=minimalistic&token=bef79568-d828-4e67-a904-60a1bb446375"
@@ -851,9 +1014,10 @@
                  </a>
              </div>
         </div>
-        <div class="text-center mt-12">
-            <a class="button button--primary" href="https://wikdwraps.com/pages/gallery">
-              Explore Full Gallery
+        <!-- UPDATED SPACING AND BUTTON STYLE -->
+        <div class="text-center mt-16">
+            <a class="btn btn-primary" href="https://wikdwraps.com/pages/gallery">
+              <span>Explore Full Gallery</span>
             </a>
         </div>
     </div>
@@ -866,8 +1030,8 @@
             <h2 class="h2">Your Nearest WIKD Locations</h2>
         </div>
          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- WIKD WRAPS CARD -->
-            <div class="border border-[var(--color-border)] p-5 rounded-lg flex flex-col h-full">
+            <!-- WIKD WRAPS CARD - GEOMETRY UPDATE: Using .wikd-card for consistency -->
+            <div class="wikd-card">
                 <h3 class="h3 text-2xl text-center md:text-left">WIKD Wraps</h3>
                 <div class="flex items-center gap-3 my-2 justify-center md:justify-start min-h-[28px]">
                     <span id="status-line-pbw" class="text-sm font-semibold"></span>
@@ -897,8 +1061,8 @@
                 </div>
             </div>
 
-             <!-- WIKD MOTORSPORTS CARD -->
-             <div class="border border-[var(--color-border)] p-5 rounded-lg flex flex-col h-full">
+             <!-- WIKD MOTORSPORTS CARD - GEOMETRY UPDATE: Using .wikd-card for consistency -->
+             <div class="wikd-card">
                 <h3 class="h3 text-2xl text-center md:text-left">WIKD Motorsports</h3>
                 <div class="flex items-center my-2 justify-center md:justify-start min-h-[28px] gap-3">
                     <div class="flex items-center space-x-1">
@@ -950,11 +1114,75 @@
                <p class="p-muted max-w-2xl mx-auto mt-4 mb-8">
                  Trust a shop that shares your passion and refuses to cut corners. Experience precision, craftsmanship, and care as if your vehicle were our own.
                </p>
-              <a href="https://wikdwraps.com/pages/contact" class="button button--primary">Get Started</a>
+              <a href="https://wikdwraps.com/pages/contact" class="btn btn-primary">
+                <span>Get Started</span>
+              </a>
     </div>
 </section>
  <textarea id="address-clipboard-helper" style="position: absolute; left: -9999px;"></textarea>
 </main>
+
+<footer class="wikd-footer">
+    <div class="wikd-footer-container">
+        <div class="wikd-footer-grid">
+            <!-- Brand Column -->
+            <div class="wikd-footer-brand">
+                <img src="https://wikdwraps.com/cdn/shop/files/output-onlinepngtools_3.png?v=1737407428&width=300" alt="WIKD Wraps" class="wikd-footer-logo">
+                <p class="wikd-footer-tagline">Uncompromised Protection. WIKD Craftsmanship.</p>
+                <div class="wikd-footer-social">
+                    <a href="https://www.facebook.com/wikdwraps" target="_blank" rel="noopener" class="wikd-footer-social-link" aria-label="Facebook">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    </a>
+                    <a href="https://www.instagram.com/wikdwraps" target="_blank" rel="noopener" class="wikd-footer-social-link" aria-label="Instagram">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                    </a>
+                    <a href="https://twitter.com/wikdwraps" target="_blank" rel="noopener" class="wikd-footer-social-link" aria-label="X (Twitter)">
+                        <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Services Column -->
+            <div class="wikd-footer-column">
+                <h3>Services</h3>
+                <ul class="wikd-footer-links">
+                    <li><a href="https://wikdwraps.com/pages/paint-protection-film">Paint Protection Film</a></li>
+                    <li><a href="https://wikdwraps.com/pages/ceramic-coatings">Ceramic Coatings</a></li>
+                    <li><a href="https://wikdwraps.com/pages/vinyl-wraps">Vinyl Wraps</a></li>
+                    <li><a href="https://wikdwraps.com/pages/window-tint">Window Tint</a></li>
+                    <li><a href="https://wikdwraps.com/pages/detailing">Detailing</a></li>
+                    <li><a href="https://wikdwraps.com/pages/maintenance-plans">Maintenance Plans</a></li>
+                </ul>
+            </div>
+
+            <!-- Company Column -->
+            <div class="wikd-footer-column">
+                <h3>Company</h3>
+                <ul class="wikd-footer-links">
+                    <li><a href="https://wikdwraps.com/pages/about-us-1">About Us</a></li>
+                    <li><a href="https://wikdwraps.com/pages/gallery">Gallery</a></li>
+                    <li><a href="https://wikdwraps.com/pages/contact">Contact</a></li>
+                    <li><a href="https://wikdwraps.com/pages/careers">Careers</a></li>
+                    <li><a href="https://wikdwraps.com/pages/dealers">Dealers</a></li>
+                    <li><a href="https://www.wikdmotorsports.com/" target="_blank">WIKD Motorsports</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="wikd-footer-bottom">
+            <div class="wikd-footer-copyright">
+                © 2025 <a href="/">WIKD Wraps</a>. All rights reserved.
+            </div>
+            <div class="wikd-footer-legal">
+                <a href="https://wikdwraps.com/pages/privacy-policy">Privacy Policy</a>
+                <a href="https://wikdwraps.com/pages/refund-policy">Refund Policy</a>
+                <a href="https://wikdwraps.com/pages/terms-of-service">Terms of Service</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         
