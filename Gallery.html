@@ -89,11 +89,10 @@
         }
         .nav-link:hover { color: var(--color-primary); }
 
-        /* --- PAGE HEADER --- */
-        .page-header {
-            padding: 10rem 0 4rem;
-            text-align: center;
-            background: radial-gradient(circle at center top, rgba(255, 59, 48, 0.15), transparent 70%);
+        /* --- PAGE HEADER REMOVED --- */
+        /* Adjusted Main to account for absolute nav */
+        main {
+            padding-top: 8rem;
         }
 
         /* --- PROJECT SECTIONS --- */
@@ -116,6 +115,7 @@
             overflow: hidden;
             width: 100%;
             padding: 1rem 0;
+            position: relative; /* Needed for arrow positioning */
             /* Fade out edges for smoother look */
             mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
             -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
@@ -125,30 +125,8 @@
             display: flex;
             gap: 1.5rem;
             width: max-content;
-            /* Animation: Moves left by 50% */
-            animation: scroll 40s linear infinite;
-        }
-        
-        /* Reverse direction class */
-        .ticker-track.reverse {
-            animation-name: scroll-reverse;
-        }
-        
-        /* Pause on hover for usability */
-        .ticker-track:hover {
-            animation-play-state: paused;
-        }
-
-        /* Move Left (Standard) */
-        @keyframes scroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        /* Move Right (Reverse) */
-        @keyframes scroll-reverse {
-            0% { transform: translateX(-50%); }
-            100% { transform: translateX(0); }
+            /* Animation handled by JS now for manual control */
+            will-change: transform;
         }
         
         .gallery-item {
@@ -240,12 +218,6 @@
         </a>
     </nav>
 
-    <!-- Page Title -->
-    <header class="page-header">
-        <h1 class="text-5xl md:text-7xl font-bold uppercase tracking-wide text-white font-heading">Gallery</h1>
-        <p class="mt-4 text-gray-400 font-body max-w-lg mx-auto">Precision. Protection. Perfection. See our latest work.</p>
-    </header>
-
     <main>
         <!-- PROJECT 1: C8 Z06 (LEFT SCROLL) -->
         <section class="project-section">
@@ -255,7 +227,7 @@
             </div>
             
             <div class="ticker-view">
-                <div class="ticker-track" style="animation-duration: 60s;">
+                <div class="ticker-track">
                     <!-- Original Set (7 Images) -->
                     <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Chevrolet_Corvette_C8_Z06_Z07_3LZ_Ceramic_Coating.jpg?v=1744063218" alt="C8 Z06" class="gallery-img"></div>
                     <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_5248_c7f62583-2e3b-4465-b677-738558d513b2.jpg?v=1742420944" alt="C8 Z06" class="gallery-img"></div>
@@ -285,7 +257,7 @@
             </div>
             
             <div class="ticker-view">
-                <div class="ticker-track reverse" style="animation-duration: 30s;">
+                <div class="ticker-track reverse">
                     <!-- Original Set (3 Images) -->
                     <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Red_and_White_Stripe_Fifth_Gen_Dodge_Viper_Freshly_Detailed.jpg?v=1743435206" alt="Dodge Viper" class="gallery-img"></div>
                     <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_8750-Enhanced-NR-Edit.jpg?v=1742481613" alt="Dodge Viper" class="gallery-img"></div>
@@ -307,7 +279,7 @@
             </div>
             
             <div class="ticker-view">
-                <div class="ticker-track" style="animation-duration: 30s;">
+                <div class="ticker-track">
                     <!-- Original Set (3 Images) -->
                     <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Freshly_Detailed_Ryft_McLaren_720s_on_HRE_Wheels_with_WIKD_Exhaust.jpg?v=1744062350" alt="McLaren 720s PPF" class="gallery-img"></div>
                     <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Clean_Ryft_Black_McLaren_720s_HRE_Wheels_WIKD_Exhaust.jpg?v=1744062478" alt="McLaren 720s PPF" class="gallery-img"></div>
@@ -329,7 +301,7 @@
             </div>
             
             <div class="ticker-view">
-                <div class="ticker-track reverse" style="animation-duration: 30s;">
+                <div class="ticker-track reverse">
                     <!-- Original Set (3 Images) -->
                     <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/wmremove-transformed_1.png?v=1764107106" alt="McLaren 720s Wrap" class="gallery-img"></div>
                     <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/White_McLaren_720s_With_Custom_Valentine_s_Livery.jpg?v=1744204351" alt="McLaren 720s Wrap" class="gallery-img"></div>
@@ -377,7 +349,7 @@
             </div>
             
             <div class="ticker-view">
-                <div class="ticker-track reverse" style="animation-duration: 30s;"> 
+                <div class="ticker-track reverse"> 
                     <!-- Original Set (3 Images) -->
                     <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1919.jpg?v=1741643606&width=1100" alt="Blackwing Front" class="gallery-img"></div>
                     <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1917.jpg?v=1741643606&width=1100" alt="Blackwing Side" class="gallery-img"></div>
@@ -399,7 +371,7 @@
             </div>
             
             <div class="ticker-view">
-                <div class="ticker-track" style="animation-duration: 45s;">
+                <div class="ticker-track">
                     <!-- Original Set (5 Images) -->
                     <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_2350.jpg?v=1741643189&width=1100" alt="Ford F450 Front" class="gallery-img"></div>
                     <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/Black_Ford_F450_Platinum_Powerstroke_Dually_Chrome_Delete.jpg?v=1744062595&width=1100" alt="Ford F450 Chrome Delete" class="gallery-img"></div>
@@ -425,7 +397,7 @@
             </div>
             
             <div class="ticker-view">
-                <div class="ticker-track reverse" style="animation-duration: 55s;">
+                <div class="ticker-track reverse">
                     <!-- Original Set (6 Images) -->
                     <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Nissan_GTR_R35_Freshly_Detailed_and_Paint_Corrected.jpg?v=1743435296" alt="Other Work" class="gallery-img"></div>
                     <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_5329_2cefb844-69c3-4719-95c9-d0316ed56283.jpg?v=1744204714" alt="Other Work" class="gallery-img"></div>
@@ -506,6 +478,96 @@
             </div>
         </div>
     </footer>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const tickers = document.querySelectorAll('.ticker-view');
+
+        tickers.forEach(view => {
+            const track = view.querySelector('.ticker-track');
+            if (!track) return;
+
+            // Determine direction based on class 'reverse'
+            // Default (no reverse): moves left (-1). Reverse: moves right (1).
+            // Speed factor controls pace
+            let baseSpeed = track.classList.contains('reverse') ? 0.5 : -0.5;
+            let currentSpeed = baseSpeed;
+            let pos = 0;
+            let targetPos = 0; // Target position for smooth animation
+            let isHovered = false;
+            let animationFrameId;
+
+            // Animation Loop
+            function animate() {
+                // 1. Update target position based on automatic movement
+                if (!isHovered) {
+                    targetPos += currentSpeed;
+                }
+                
+                // 2. Smoothly move pos towards targetPos (Linear Interpolation)
+                // The factor 0.1 controls the smoothness. Lower is slower/smoother.
+                pos += (targetPos - pos) * 0.1;
+
+                // 3. Logic for infinite loop (re-clamping)
+                // We assume the track contains two sets of identical items.
+                // The loop point is half the scrollWidth.
+                const totalWidth = track.scrollWidth;
+                const halfWidth = totalWidth / 2;
+                
+                // If images are not loaded yet, scrollWidth might be small. 
+                // We rely on the fact that eventually it loads.
+                if (halfWidth > 0) {
+                    // Reset both pos and targetPos to maintain the offset
+                    if (pos <= -halfWidth) {
+                        pos += halfWidth;
+                        targetPos += halfWidth;
+                    } else if (pos > 0) {
+                        pos -= halfWidth;
+                        targetPos -= halfWidth;
+                    }
+                }
+                
+                track.style.transform = `translateX(${pos}px)`;
+                animationFrameId = requestAnimationFrame(animate);
+            }
+            // Start Animation
+            animationFrameId = requestAnimationFrame(animate);
+
+            // Hover listeners to pause
+            view.addEventListener('mouseenter', () => isHovered = true);
+            view.addEventListener('mouseleave', () => isHovered = false);
+
+            // Helper to create buttons
+            const createBtn = (dir) => {
+                const btn = document.createElement('button');
+                // Removed bg-black/60 and backdrop-blur-sm
+                btn.className = `absolute top-1/2 -translate-y-1/2 z-10 p-3 hover:bg-red-600 text-white rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100 ${dir === 'left' ? 'left-4' : 'right-4'} shadow-lg`;
+                
+                // Arrow Icons
+                btn.innerHTML = dir === 'left' 
+                    ? '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>' 
+                    : '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>';
+                
+                btn.onclick = (e) => {
+                   e.stopPropagation(); // prevent other clicks
+                   // Manual Shift by updating targetPos
+                   // Left button -> Move content RIGHT (increase targetPos) to see left items
+                   const shiftAmount = 400; // Increased for a more noticeable shift
+                   targetPos += (dir === 'left' ? shiftAmount : -shiftAmount);
+                   
+                   // Re-clamping is handled in the animate loop for smoothness
+                };
+                
+                return btn;
+            };
+
+            // Ensure view has group class for hover effects
+            view.classList.add('group');
+            view.appendChild(createBtn('left'));
+            view.appendChild(createBtn('right'));
+        });
+    });
+    </script>
 
 </body>
 </html>
