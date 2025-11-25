@@ -13,7 +13,7 @@
     <script src="https://animatedicons.co/scripts/embed-animated-icons.js"></script>
 
     <style>
-      :root {
+       :root {
             --color-background: #0A0A0A;
             --color-text: #EAEAEA;
             --color-text-muted: #888888;
@@ -22,6 +22,8 @@
             --color-border: #2A2A2A;
             --font-heading: 'Rajdhani', sans-serif;
             --font-body: 'Inter', sans-serif;
+            /* Define the car image URL once to use in multiple places for masking */
+            --car-mask-url: url('https://cdn.shopify.com/s/files/1/0671/4635/0805/files/image_24.png?v=1764085690');
         }
 
         /* Base styles */
@@ -209,6 +211,79 @@
             height: auto;
             display: block;
         }
+
+        /* --- CAR OVERLAY COMPOSITE STYLES --- */
+        .car-composite-wrapper {
+            position: relative;
+            /* Center the wrapper */
+            margin: 0 auto 2rem auto;
+            /* Limit max width so it doesn't get too huge on large screens */
+            max-width: 338px; /* INCREASED from 225px to 338px (150%) */
+            width: 100%;
+            /* Ensure the container shrinks tightly around the base image */
+            display: inline-block;
+            /* Ensure glow isn't clipped and define a stacking context */
+            overflow: visible; 
+            z-index: 0;
+        }
+
+        /* ADDED: Subtle Red Radial Gradient Behind the car */
+        .car-composite-wrapper::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            /* Scale X axis to widen aspect ratio, Scale Y to shrink height */
+            transform: translate(-50%, -50%) scaleX(1.5) scaleY(0.7);
+            /* Adjusted size to prevent clipping - wider and much taller */
+            width: 150%;
+            height: 300%;
+            /* Subtle red glow fading to transparent */
+            /* EXAGGERATED SUBTLETY: Decreased opacity to 0.1 and extended falloff to 90% */
+            background: radial-gradient(circle, rgba(255, 59, 48, 0.1) 0%, rgba(0,0,0,0) 90%);
+            z-index: -1; /* Behind the car image */
+            pointer-events: none;
+            mix-blend-mode: screen;
+        }
+
+        /* The base car image defines the dimensions of the container */
+        .car-base-image {
+            display: block;
+            width: 100%;
+            height: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* The video sits exactly on top */
+        .car-effect-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            /* Force the video to fill the container space defined by the image */
+            object-fit: fill; 
+            pointer-events: none; /* Let clicks pass through */
+
+            /* 1. Blend Mode plus-lighter: A stronger additive effect than screen */
+            mix-blend-mode: plus-lighter;
+
+            /* 2. Alpha Masking: Use the car image itself to crop the video */
+            /* We use the CSS variable defined in :root for the URL */
+            -webkit-mask-image: var(--car-mask-url);
+            mask-image: var(--car-mask-url);
+            
+            /* Ensure the mask stretches exactly like the base image */
+            -webkit-mask-size: 100% 100%;
+            mask-size: 100% 100%;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-position: center;
+        }
+
 
         /* --- FOOTER STYLES --- */
         .wikd-footer {
@@ -426,8 +501,28 @@
         </section>
 
         <!-- Final CTA -->
-        <section class="py-20">
-            <div class="mobile-scaled-container text-center">
+        <section class="py-20 relative overflow-hidden">
+            <div class="mobile-scaled-container text-center relative z-10">
+                
+                <!-- Car Composite Image/Video Section -->
+                <!-- 
+                  This wrapper holds the base image and the overlaid video. 
+                  It uses display: flex and justify-content: center to ensure the inline-block container is centered.
+                -->
+                <div style="display: flex; justify-content: center;">
+                    <div class="car-composite-wrapper">
+                        <!-- The base car image. It dictates the size of the container. -->
+                        <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/image_24.png?v=1764085690" alt="WIKD Wraps Ceramic Coated Car" class="car-base-image">
+                        
+                        <!-- 
+                          The overlay video. It is absolutely positioned on top.
+                          CSS applies mix-blend-mode: screen and uses the car image itself as an alpha mask.
+                        -->
+                        <video src="https://cdn.shopify.com/videos/c/o/v/fa85c90cb3b948b2979fbbbc32f75d8a.mp4" autoplay loop muted playsinline class="car-effect-video"></video>
+                    </div>
+                </div>
+                <!-- End Car Composite Section -->
+
                 <h2 class="h2 mb-6">Protect Your Investment</h2>
                 <p class="p-muted max-w-2xl mx-auto mb-8">
                     Don't let the elements degrade your vehicle's finish. Lock in that showroom shine for years to come.
