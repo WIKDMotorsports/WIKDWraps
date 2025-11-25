@@ -142,9 +142,9 @@
 
         .section-image {
             width: 100%;
-            border-radius: 4px;
             border: 1px solid var(--color-border);
-            /* No Clip Path on these specific images per your layout */
+            /* Clip Path for cut-off corner aesthetic (bottom-left corner cut) */
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 30px 100%, 0 calc(100% - 30px));
         }
 
         /* --- PARTNERS GRID --- */
@@ -166,25 +166,20 @@
             height: auto;
             max-height: 80px;
             object-fit: contain;
-            /* READABILITY FIX: Darken logos slightly when static, and invert only on hover */
-            opacity: 0.8; 
+            /* Base State: Slightly transparent (dimmed) but not darkened by color */
+            opacity: 0.6; 
             transition: opacity 0.3s ease, filter 0.3s ease;
-            filter: brightness(0.8); /* Slightly darken colored logos for the dark background */
         }
         .partner-logo img:hover { 
+            /* Hover State: Full opacity and brightened */
             opacity: 1; 
-            filter: brightness(1) invert(1); /* Invert to white on hover for clear visibility */
+            filter: brightness(1.2); 
         }
         
-        /* Special handling for logos requiring screen blend mode or specific effects */
+        /* Special handling for logos requiring screen blend mode */
         .partner-logo .stek-logo, .partner-logo .flect-logo {
-            filter: none; /* Keep original colors, overrides brightness(0.8) above */
-            mix-blend-mode: screen; /* Apply screen blend mode for visibility */
-            opacity: 1; /* Always visible */
-        }
-        .partner-logo .stek-logo:hover, .partner-logo .flect-logo:hover {
-            opacity: 0.8; /* Subtle hover effect */
-            filter: none; /* Keep blend mode */
+            mix-blend-mode: screen; 
+            /* Inherits opacity and hover effects from parent selector above */
         }
 
 
@@ -450,18 +445,17 @@
                         <img src="https://wikdwraps.com/cdn/shop/files/Dodge_Viper_Carbon_Wheel_Brake_Calipers_Ceramic_Coated.jpg?v=1744144862&width=750" alt="Warranties" class="section-image">
                     </div>
                     <div>
-                        <p class="text-[var(--color-primary)] font-bold uppercase tracking-widest mb-2 text-sm">Industry leading</p>
-                        <h2 class="h2 font-heading mb-4">WARRANTIES</h2>
+                        <p class="text-[var(--color-primary)] font-bold uppercase tracking-widest mb-2 text-sm">Peace of Mind</p>
+                        <h2 class="h2 font-heading mb-4">MANUFACTURER WARRANTIES</h2>
                         <div class="rte body text-gray-400 mb-6">
-                            <p>At WIKD Wraps, we stand behind every product we install. Enjoy unmatched protection with:</p>
+                            <p>As certified installers for the world's leading protection brands, we ensure you receive authentic products backed directly by the manufacturer. While we guarantee our installation craftsmanship, your material investment is secured by industry-leading coverage.</p>
                             <ul class="list-disc pl-5 mt-4 mb-4 space-y-1">
-                                <li>10-year warranty on Paint Protection Film</li>
-                                <li>5-year warranty on Ceramic Coatings</li>
-                                <li>Lifetime warranty on Nanoceramic Window Tint</li>
+                                <li>Paint Protection Film</li>
+                                <li>Ceramic Coatings</li>
+                                <li>Nanoceramic Window Tint</li>
                             </ul>
-                            <p>Plus, our exclusive maintenance plans ensure your investment stays show-ready for years to come.</p>
                         </div>
-                        <a href="https://wikdwraps.com/pages/maintenance-plans" class="btn btn-secondary"><span>Maintenance Plans</span></a>
+                        <a href="https://wikdwraps.com/pages/contact" class="btn btn-secondary"><span>Get a Quote</span></a>
                     </div>
                 </div>
             </div>
