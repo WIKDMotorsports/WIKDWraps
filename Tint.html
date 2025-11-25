@@ -13,7 +13,7 @@
     <script src="https://animatedicons.co/scripts/embed-animated-icons.js"></script>
 
     <style>
-      :root {
+       :root {
             --color-background: #0A0A0A;
             --color-text: #EAEAEA;
             --color-text-muted: #888888;
@@ -38,7 +38,10 @@
         body::before {
             content: "";
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none; z-index: 9999; opacity: 0.08;
             background-size: 100px 100px;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
@@ -178,8 +181,14 @@
             height: 100%;
             /* SHARP GEOMETRY */
             clip-path: polygon(0 0, 100% 0, 100% 90%, 95% 100%, 0 100%);
-            background: rgba(255,255,255,0.02);
-            transition: border-color 0.3s ease, transform 0.3s ease;
+            
+            /* CHANGED: Use solid Surface color (#141414) to match icon background exactly */
+            background: var(--color-surface);
+            
+            /* ADDED: Subtle drop shadow */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+            
+            transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -189,6 +198,8 @@
         .feature-box:hover {
             border-color: var(--color-primary);
             transform: translateY(-5px);
+            /* ADDED: Stronger hover shadow */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
         }
 
         .content-row {
@@ -203,6 +214,63 @@
                 grid-template-columns: 1fr 1fr;
                 gap: 5rem;
             }
+        }
+
+        /* --- CAR OVERLAY COMPOSITE STYLES --- */
+        .car-composite-wrapper {
+            position: relative;
+            /* Center the wrapper */
+            margin: 0 auto 2rem auto;
+            /* Limit max width so it doesn't get too huge on large screens */
+            max-width: 400px; /* Slightly larger for the SUV */
+            width: 100%;
+            /* Ensure the container shrinks tightly around the base image */
+            display: inline-block;
+            /* Ensure glow isn't clipped and define a stacking context */
+            overflow: visible; 
+            z-index: 0;
+        }
+
+        /* Subtle Red Radial Gradient Behind the car */
+        .car-composite-wrapper::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            /* Scale X axis to widen aspect ratio, Scale Y to shrink height */
+            transform: translate(-50%, -50%) scaleX(1.5) scaleY(0.7);
+            /* Adjusted size to prevent clipping - wider and much taller */
+            width: 150%;
+            height: 300%;
+            /* Subtle red glow fading to transparent */
+            /* EXAGGERATED SUBTLETY: Decreased opacity to 0.1 and extended falloff to 90% */
+            background: radial-gradient(circle, rgba(255, 59, 48, 0.1) 0%, rgba(0,0,0,0) 90%);
+            z-index: -1; /* Behind the car image */
+            pointer-events: none;
+            mix-blend-mode: screen;
+        }
+
+        /* The base car image defines the dimensions of the container */
+        .car-base-image {
+            display: block;
+            width: 100%;
+            height: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* The Tint Overlay sits on top */
+        .car-tint-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            object-fit: contain; 
+            pointer-events: none; /* Let clicks pass through */
+            opacity: 0; /* Default opacity */
+            transition: opacity 1s ease-in-out;
         }
 
         /* --- FOOTER STYLES --- */
@@ -351,7 +419,7 @@
                         <animated-icons
                             src="https://animatedicons.co/get-icon?name=Sun&style=minimalistic&token=af857f3d-6096-42d0-9f04-a9ee72f54aa4"
                             trigger="loop"
-                            attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","group-3":"transparent","background":"transparent"}}'
+                            attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#EAEAEA","group-2":"#FF3B30","background":"#141414"}}'
                             height="100"
                             width="100"
                             class="mb-4"
@@ -365,7 +433,7 @@
                         <animated-icons
                             src="https://animatedicons.co/get-icon?name=Sunglasses&style=minimalistic&token=af857f3d-6096-42d0-9f04-a9ee72f54aa4"
                             trigger="loop"
-                            attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","group-3":"transparent","background":"transparent"}}'
+                            attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#EAEAEA","group-2":"#FF3B30","background":"#141414"}}'
                             height="100"
                             width="100"
                             class="mb-4"
@@ -379,7 +447,7 @@
                         <animated-icons
                             src="https://animatedicons.co/get-icon?name=Advantage&style=minimalistic&token=af857f3d-6096-42d0-9f04-a9ee72f54aa4"
                             trigger="loop"
-                            attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","group-3":"transparent","background":"transparent"}}'
+                            attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#EAEAEA","group-2":"#FF3B30","background":"#141414"}}'
                             height="100"
                             width="100"
                             class="mb-4"
@@ -393,7 +461,7 @@
                         <animated-icons
                             src="https://animatedicons.co/get-icon?name=Maintenance&style=minimalistic&token=af857f3d-6096-42d0-9f04-a9ee72f54aa4"
                             trigger="loop"
-                            attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","group-3":"transparent","background":"transparent"}}'
+                            attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#EAEAEA","group-2":"#FF3B30","background":"#141414"}}'
                             height="100"
                             width="100"
                             class="mb-4"
@@ -407,7 +475,7 @@
                         <animated-icons
                             src="https://animatedicons.co/get-icon?name=Security&style=minimalistic&token=af857f3d-6096-42d0-9f04-a9ee72f54aa4"
                             trigger="loop"
-                            attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","group-3":"transparent","background":"transparent"}}'
+                            attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#EAEAEA","group-2":"#FF3B30","background":"#141414"}}'
                             height="100"
                             width="100"
                             class="mb-4"
@@ -421,7 +489,7 @@
                         <animated-icons
                             src="https://animatedicons.co/get-icon?name=Badge&style=minimalistic&token=af857f3d-6096-42d0-9f04-a9ee72f54aa4"
                             trigger="loop"
-                            attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","group-3":"transparent","background":"transparent"}}'
+                            attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#EAEAEA","group-2":"#FF3B30","background":"#141414"}}'
                             height="100"
                             width="100"
                             class="mb-4"
@@ -434,8 +502,21 @@
         </section>
 
         <!-- Final CTA -->
-        <section class="py-20">
-            <div class="mobile-scaled-container text-center">
+        <section class="py-20 relative overflow-hidden">
+            <div class="mobile-scaled-container text-center relative z-10">
+                
+                <!-- Car Composite Image/Video Section -->
+                 <div style="display: flex; justify-content: center; margin-bottom: 2rem;">
+                     <div class="car-composite-wrapper">
+                         <!-- The base car image. It dictates the size of the container. -->
+                         <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/CadillacSUVBase.png?v=1762966194" alt="WIKD Wraps Tinted Car Base" class="car-base-image">
+                         
+                         <!-- The Tint Overlay, opacity controlled by JS -->
+                         <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/SUV_Tint.png?v=1762888396" alt="Window Tint Overlay" class="car-tint-overlay" id="tint-overlay">
+                     </div>
+                 </div>
+                 <!-- End Car Composite Section -->
+
                 <h2 class="h2 mb-6">Stay Cool, Look WIKD.</h2>
                 <p class="p-muted max-w-2xl mx-auto mb-8">
                     Don't settle for cheap tint that fades. Invest in premium ceramic protection for your ride.
@@ -508,5 +589,31 @@
         </div>
     </footer>
 
+    <!-- Tint Animation Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tintOverlay = document.getElementById('tint-overlay');
+            
+            // defined specific opacity stages: 0%, 25%, 50%, 100%
+            const opacityStages = [0, 0.25, 0.5, 1.0];
+            let currentStageIndex = 0;
+            
+            const intervalTime = 1500; // 1.5 seconds per step
+
+            if (tintOverlay) {
+                // Initialize
+                tintOverlay.style.opacity = opacityStages[0].toString();
+
+                setInterval(() => {
+                    // Increment index, loop back to 0
+                    currentStageIndex = (currentStageIndex + 1) % opacityStages.length;
+                    
+                    // Set opacity from array
+                    tintOverlay.style.opacity = opacityStages[currentStageIndex].toString();
+                    
+                }, intervalTime);
+            }
+        });
+    </script>
 </body>
 </html>
