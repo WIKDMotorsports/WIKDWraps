@@ -13,7 +13,7 @@
     <script src="https://animatedicons.co/scripts/embed-animated-icons.js"></script>
 
     <style>
-      :root {
+       :root {
             --color-background: #0A0A0A;
             --color-text: #EAEAEA;
             --color-text-muted: #888888;
@@ -134,12 +134,20 @@
         .feature-box {
             border: 1px solid var(--color-border); padding: 2rem; height: 100%;
             clip-path: polygon(0 0, 100% 0, 100% 90%, 95% 100%, 0 100%);
-            background: rgba(255,255,255,0.02);
-            transition: border-color 0.3s ease, transform 0.3s ease;
+            /* CHANGED: Use solid Surface color (#141414) to match icon background exactly */
+            background: var(--color-surface);
+            /* ADDED: Subtle drop shadow */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+            transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
             display: flex; flex-direction: column;
             justify-content: flex-start; align-items: center; text-align: center;
         }
-        .feature-box:hover { border-color: var(--color-primary); transform: translateY(-5px); }
+        .feature-box:hover { 
+            border-color: var(--color-primary); 
+            transform: translateY(-5px); 
+            /* ADDED: Stronger shadow on hover */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+        }
 
         /* --- FORM STYLES --- */
         .dealer-form-container {
@@ -149,6 +157,8 @@
             max-width: 800px;
             margin: 0 auto;
             clip-path: polygon(0 0, 100% 0, 100% 98%, 98% 100%, 0 100%);
+            /* ADDED: Subtle drop shadow */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
         }
         
         .form-group { display: grid; gap: 1rem; margin-bottom: 1.5rem; }
@@ -374,7 +384,7 @@
                          <animated-icons
                             src="https://animatedicons.co/get-icon?name=Handshake&style=minimalistic&token=af857f3d-6096-42d0-9f04-a9ee72f54aa4"
                             trigger="loop"
-                            attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","group-3":"transparent","background":"transparent"}}'
+                            attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#EAEAEA","group-2":"#FF3B30","background":"#141414"}}'
                             height="80" width="80" class="mb-4"
                         ></animated-icons>
                         <h3 class="inline-richtext h3 text-2xl mb-3 font-heading">Pre-Delivery Installation</h3>
@@ -387,7 +397,7 @@
                          <animated-icons
                             src="https://animatedicons.co/get-icon?name=Training&style=minimalistic&token=6c957804-4670-47c0-966e-e4c3ad32540d"
                             trigger="loop"
-                            attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","background":"transparent"}}'
+                            attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#EAEAEA","group-2":"#FF3B30","background":"#141414"}}'
                             height="100" width="100" class="mb-4"
                         ></animated-icons>
                         <h3 class="inline-richtext h3 text-2xl mb-3 font-heading">Sales Training</h3>
@@ -400,7 +410,7 @@
                         <animated-icons
                             src="https://animatedicons.co/get-icon?name=Maintenance&style=minimalistic&token=c427791f-d7f8-4a99-a56b-60ef3373e1f7"
                             trigger="loop"
-                            attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#FFFFFF","group-2":"#FF3B30","background":"transparent"}}'
+                            attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#EAEAEA","group-2":"#FF3B30","background":"#141414"}}'
                             height="100" width="100" class="mb-4"
                         ></animated-icons>
                         <h3 class="inline-richtext h3 text-2xl mb-3 font-heading">In House Installation</h3>
