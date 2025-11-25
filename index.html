@@ -26,6 +26,8 @@
             --color-border: #2A2A2A;
             --font-heading: 'Rajdhani', sans-serif;
             --font-body: 'Inter', sans-serif;
+            /* Define the car image URL for masking logic */
+            --car-mask-url: url('https://cdn.shopify.com/s/files/1/0671/4635/0805/files/image_24.png?v=1764085690');
         }
 
         /* Base styles for preview components */
@@ -496,6 +498,85 @@
            margin-left: auto;
            margin-right: auto;
        }
+       
+       /* --- CAR OVERLAY COMPOSITE STYLES --- */
+        .car-composite-wrapper {
+            position: relative;
+            /* Center the wrapper */
+            margin: 0 auto 2rem auto;
+            /* Limit max width so it doesn't get too huge on large screens */
+            max-width: 338px; /* INCREASED from 225px to 338px (150%) */
+            width: 100%;
+            /* Ensure the container shrinks tightly around the base image */
+            display: inline-block;
+            /* Ensure glow isn't clipped and define a stacking context */
+            overflow: visible; 
+            z-index: 0;
+        }
+
+        /* ADDED: Subtle Red Radial Gradient Behind the car */
+        .car-composite-wrapper::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            /* Scale X axis to widen aspect ratio, Scale Y to shrink height */
+            transform: translate(-50%, -50%) scaleX(1.5) scaleY(0.7);
+            /* Adjusted size to prevent clipping - wider and much taller */
+            width: 150%;
+            height: 300%;
+            /* Subtle red glow fading to transparent */
+            /* EXAGGERATED SUBTLETY: Decreased opacity to 0.1 and extended falloff to 90% */
+            background: radial-gradient(circle, rgba(255, 59, 48, 0.1) 0%, rgba(0,0,0,0) 90%);
+            z-index: -1; /* Behind the car image */
+            pointer-events: none;
+            mix-blend-mode: screen;
+        }
+
+        /* The base car image defines the dimensions of the container */
+        .car-base-image {
+            display: block;
+            width: 100%;
+            height: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* The video sits exactly on top */
+        .car-effect-video, .car-effect-video-2 {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            /* Force the video to fill the container space defined by the image */
+            object-fit: fill; 
+            pointer-events: none; /* Let clicks pass through */
+
+            /* 1. Blend Mode CHANGED to screen as requested */
+            mix-blend-mode: screen;
+
+            /* 2. Alpha Masking: Use the car image itself to crop the video */
+            /* We use the CSS variable defined in :root for the URL */
+            -webkit-mask-image: var(--car-mask-url);
+            mask-image: var(--car-mask-url);
+            
+            /* Ensure the mask stretches exactly like the base image */
+            -webkit-mask-size: 100% 100%;
+            mask-size: 100% 100%;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-position: center;
+        }
+        
+        /* Ensure the second video is also at z-index 2 and blended */
+        .car-effect-video-2 {
+            z-index: 2;
+            mix-blend-mode: screen;
+        }
+
 
        /* --- FOOTER STYLES --- */
        .wikd-footer {
@@ -1089,14 +1170,14 @@
                     <p class="p-muted text-sm leading-snug text-center md:text-left">Forced Induction Systems Specialists</p>
                 </div>
                 <div class="mt-auto pt-4 flex flex-col items-center md:items-start gap-4">
-                     <div class="flex items-center gap-4">
-                         <a id="directions-link-ms" href="#" target="_blank" class="text-sm font-semibold uppercase tracking-wider text-primary-red hover:text-white transition">Directions</a>
-                         <div id="copy-controls-wrapper-ms" class="relative flex items-center">
-                             <button id="copy-address-button-ms" class="text-sm font-semibold uppercase tracking-wider text-gray-400 hover:text-white transition">Copy Address</button>
-                             <span id="copy-confirmation-ms" class="text-green-400 absolute right-0 top-1/2 -translate-y-1/2 ml-2 text-xs font-semibold opacity-0 transition pointer-events-none">Copied!</span>
-                         </div>
-                     </div>
-                     <div id="phone-container-ms" class="relative"></div>
+                      <div class="flex items-center gap-4">
+                          <a id="directions-link-ms" href="#" target="_blank" class="text-sm font-semibold uppercase tracking-wider text-primary-red hover:text-white transition">Directions</a>
+                          <div id="copy-controls-wrapper-ms" class="relative flex items-center">
+                              <button id="copy-address-button-ms" class="text-sm font-semibold uppercase tracking-wider text-gray-400 hover:text-white transition">Copy Address</button>
+                              <span id="copy-confirmation-ms" class="text-green-400 absolute right-0 top-1/2 -translate-y-1/2 ml-2 text-xs font-semibold opacity-0 transition pointer-events-none">Copied!</span>
+                          </div>
+                      </div>
+                      <div id="phone-container-ms" class="relative"></div>
                 </div>
             </div>
         </div>
@@ -1107,16 +1188,33 @@
 <section id="final-cta-section" class="py-20" style="background-color: var(--color-background);">
     <!-- Updated container to mobile-scaled-container for alignment -->
     <div class="mobile-scaled-container text-center">
+        
+        <!-- Car Composite Image/Video Section -->
+         <div style="display: flex; justify-content: center; margin-bottom: 2rem;">
+             <div class="car-composite-wrapper">
+                 <!-- The base car image. It dictates the size of the container. -->
+                 <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/image_24.png?v=1764085690" alt="WIKD Wraps Ceramic Coated Car" class="car-base-image">
+                 
+                 <!-- 
+                   The overlay video. It is absolutely positioned on top.
+                   CSS applies mix-blend-mode: screen and uses the car image itself as an alpha mask.
+                 -->
+                 <video src="https://cdn.shopify.com/videos/c/o/v/fa85c90cb3b948b2979fbbbc32f75d8a.mp4" autoplay loop muted playsinline class="car-effect-video"></video>
+                 <video src="https://cdn.shopify.com/videos/c/o/v/903a4795909c4064b3672c6dfe148552.mp4" autoplay loop muted playsinline class="car-effect-video-2"></video>
+             </div>
+         </div>
+         <!-- End Car Composite Section -->
+
          <!-- Adjusted font size clamp to ensure it fits the width perfectly -->
          <h2 class="h1" style="font-size: clamp(1.8rem, 4vw, 3.2rem);">
                  Your car deserves nothing less than perfection.
          </h2>
-               <p class="p-muted max-w-2xl mx-auto mt-4 mb-8">
-                 Trust a shop that shares your passion and refuses to cut corners. Experience precision, craftsmanship, and care as if your vehicle were our own.
-               </p>
-              <a href="https://wikdwraps.com/pages/contact" class="btn btn-primary">
-                <span>Get Started</span>
-              </a>
+            <p class="p-muted max-w-2xl mx-auto mt-4 mb-8">
+               Trust a shop that shares your passion and refuses to cut corners. Experience precision, craftsmanship, and care as if your vehicle were our own.
+            </p>
+           <a href="https://wikdwraps.com/pages/contact" class="btn btn-primary">
+             <span>Get Started</span>
+           </a>
     </div>
 </section>
  <textarea id="address-clipboard-helper" style="position: absolute; left: -9999px;"></textarea>
@@ -1164,7 +1262,7 @@
                     <li><a href="https://wikdwraps.com/pages/contact">Contact</a></li>
                     <li><a href="https://wikdwraps.com/pages/careers">Careers</a></li>
                     <li><a href="https://wikdwraps.com/pages/dealers">Dealers</a></li>
-                    <li><a href="https://www.wikdmotorsports.com/" target="_blank">WIKD Motorsports</a></li>
+                    <li><a href="https://wikdwraps.com/pages/dealers">WIKD Motorsports</a></li>
                 </ul>
             </div>
         </div>
