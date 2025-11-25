@@ -241,6 +241,23 @@
         }
         .blend-screen { mix-blend-mode: screen; }
         
+        /* UPDATED: Sequence Image Styles for Dealers */
+        .sequence-image {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: contain;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .sequence-image.active { opacity: 1; }
+        
+        /* UPDATED: Tint Overlay Animation Styles */
+        #tint-overlay {
+            transition: opacity 1s ease-in-out;
+            opacity: 0; /* Start at 0 to sync with Base Image */
+        }
+
         /* UPDATED: MASKING CLASS FOR CERAMIC VIDEO */
         .mask-ceramic {
             -webkit-mask-image: url('https://cdn.shopify.com/s/files/1/0671/4635/0805/files/CadillacSUVBase.png?v=1762966194');
@@ -253,7 +270,6 @@
             mask-position: center;
         }
         
-        /* NEW MASK FOR ADDITIONAL VIDEO LAYER */
         .mask-car-shape {
             -webkit-mask-image: url('https://cdn.shopify.com/s/files/1/0671/4635/0805/files/CadillacSUVBase.png?v=1762966194');
             mask-image: url('https://cdn.shopify.com/s/files/1/0671/4635/0805/files/CadillacSUVBase.png?v=1762966194');
@@ -404,20 +420,24 @@
                 </div>
                 
                 <div class="features-grid-3x1">
-                    <!-- 1. Paint Protection Film -->
+                    <!-- 1. Paint Protection Film (UPDATED WITH SEQUENCE) -->
                     <div class="feature-box">
-                        <div class="mini-visual-container">
-                            <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/CadillacSUVF1.png?v=1762966216" alt="Paint Protection Film" class="mini-visual-base">
+                        <div class="mini-visual-container" id="ppf-sequence-container">
+                            <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/CadillacSUVBase.png?v=1762966194" class="sequence-image active" alt="Base Coverage">
+                            <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/CadillacSUVFront.png?v=1762966187" class="sequence-image" alt="Full Front Coverage">
+                            <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/CadillacSUVTrack.png?v=1762966199" class="sequence-image" alt="Track Pack Coverage">
+                            <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/CadillacSUVFull.png?v=1762966207" class="sequence-image" alt="Full Car Coverage">
+                            <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/CadillacSUVF1.png?v=1762966216" class="sequence-image" alt="Formula 1 Coverage">
                         </div>
                         <h3 class="inline-richtext h3 text-2xl mb-3 font-heading text-[var(--color-primary)]">Paint Protection Film</h3>
                         <div class="rte"><p>Give your customers ultimate peace of mind with invisible paint protection film that shields their vehicle's factory paint from road debris, scratches, and everyday wear.</p></div>
                     </div>
 
-                    <!-- 2. Window Tint -->
+                    <!-- 2. Window Tint (UPDATED WITH OPACITY SYNC) -->
                     <div class="feature-box">
                         <div class="mini-visual-container">
                             <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/CadillacSUVBase.png?v=1762966194" alt="Base Car" class="mini-visual-base">
-                            <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/SUV_Tint.png?v=1762888396" alt="Tint Overlay" class="mini-visual-overlay">
+                            <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/SUV_Tint.png?v=1762888396" alt="Tint Overlay" class="mini-visual-overlay" id="tint-overlay">
                         </div>
                         <h3 class="inline-richtext h3 text-2xl mb-3 font-heading text-[var(--color-primary)]">Window Tint</h3>
                         <div class="rte"><p>Enhance your customers' comfort, privacy, and UV protection. Reduce glare, block harmful sun rays, and maintain a cooler interior while offering a sleek, stylish appearance.</p></div>
@@ -561,6 +581,42 @@
             </div>
         </div>
     </footer>
+
+    <!-- SCRIPTS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Sequence Loop Logic
+            const ppfImages = document.querySelectorAll('.sequence-image');
+            const tintOverlay = document.getElementById('tint-overlay');
+            
+            let currentIndex = 0;
+            const intervalTime = 1500; // 1.5 seconds per step
+
+            // Initialize tint opacity to 0 since we start at index 0 (Base)
+             if (tintOverlay) {
+                tintOverlay.style.opacity = '0';
+            }
+
+            if(ppfImages.length > 0) {
+                setInterval(() => {
+                    // 1. Cycle PPF Images
+                    ppfImages[currentIndex].classList.remove('active');
+                    currentIndex = (currentIndex + 1) % ppfImages.length;
+                    ppfImages[currentIndex].classList.add('active');
+                    
+                    // 2. Sync Tint Opacity Progressive
+                    if (tintOverlay) {
+                        // Calculate opacity fraction: 0 to 1 based on index
+                        // Index 0 (Base) = 0
+                        // Index 4 (F1) = 1
+                        const maxIndex = ppfImages.length - 1;
+                        const opacity = currentIndex / maxIndex;
+                        tintOverlay.style.opacity = opacity.toString();
+                    }
+                }, intervalTime);
+            }
+        });
+    </script>
 
 </body>
 </html>
