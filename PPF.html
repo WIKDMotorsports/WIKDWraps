@@ -254,6 +254,32 @@
         }
         .sequence-image.active { opacity: 1; }
 
+        /* --- CTA GLOW WRAPPER (For Final CTA) --- */
+        .cta-sequence-wrapper {
+            position: relative;
+            margin: 0 auto 2rem auto;
+            max-width: 500px; /* Reduced from 800px */
+            width: 100%;
+            z-index: 10;
+        }
+        /* Subtle Red Radial Gradient Behind the car */
+        .cta-sequence-wrapper::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            /* Scale X axis to widen aspect ratio, Scale Y to shrink height */
+            transform: translate(-50%, -50%) scaleX(1.5) scaleY(0.7);
+            /* Adjusted size to prevent clipping */
+            width: 150%;
+            height: 300%;
+            /* Subtle red glow fading to transparent */
+            background: radial-gradient(circle, rgba(255, 59, 48, 0.1) 0%, rgba(0,0,0,0) 90%);
+            z-index: -1; /* Behind the car image */
+            pointer-events: none;
+            mix-blend-mode: screen;
+        }
+
         /* --- FOOTER STYLES --- */
         .wikd-footer {
             background-color: var(--color-surface, #141414);
@@ -320,11 +346,19 @@
     <!-- Page Hero -->
     <header class="page-hero">
         <div class="page-hero-content">
+            <!-- RESTORED: Original Headline -->
             <h2 class="banner__heading inline-richtext h1 font-heading">
               Premium Paint Protection Film
             </h2>
             <div class="banner__text rte body">
+              <!-- RESTORED: Original Text (Swirl-Free, etc.) -->
               <p>Invisible Protection. Superior Durability. Swirl-Free Self-Healing. Right in McKinney, TX.</p>
+            </div>
+            <!-- UPDATED: Link to Configurator -->
+            <div class="mt-8">
+                <a href="https://wikdwraps.com/pages/estimate-configurator" class="btn btn-primary">
+                    <span>Get A Free Quote</span>
+                </a>
             </div>
         </div>
     </header>
@@ -335,19 +369,25 @@
             <div class="mobile-scaled-container">
                 <div class="split-row">
                     <div class="diagram-wrapper">
-                        <!-- UPDATED IMAGE: Track Pack webp used for "What is PPF" - Full Color, Uncropped -->
-                        <img src="https://wikdwraps.com/cdn/shop/files/Track_Pack.webp?v=1738085280&width=750" alt="PPF Coverage Diagram" class="diagram-image">
+                        <!-- NEW IMAGE SEQUENCE (Porsche/Sports Car) -->
+                        <div class="sequence-container" id="cadillac-sequence-intro">
+                            <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/image.png?v=1763057511" class="sequence-image active" alt="Base Coverage">
+                            <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/Full_Front.png?v=1763057505" class="sequence-image" alt="Full Front Coverage">
+                            <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/Track_Pack.png?v=1763057475" class="sequence-image" alt="Track Pack Coverage">
+                            <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/Full_coverage.png?v=1763057481" class="sequence-image" alt="Full Car Coverage">
+                            <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/image_21.png?v=1763057528" class="sequence-image" alt="Formula 1 Coverage">
+                        </div>
                     </div>
                     <div>
                         <h2 class="image-with-text__heading inline-richtext h1 font-heading">
                             What is PPF?
                         </h2>
                         <div class="image-with-text__text rte body">
-                            <!-- UPDATED: Thickness from 6-8 mils to 7.5-12 mils -->
                             <p>Paint Protection Film (PPF), also known as a <strong>clear bra or protective film,</strong> is a <strong>thin, self-healing thermoplastic polyurethane layer</strong> applied to your vehicle’s painted surfaces. With a thickness of <strong>7.5-12 mils</strong>, it provides <strong>advanced protection against rock chips, scratches, and chemical contaminants.</strong> The <strong>UV-resistant adhesive</strong> ensures a secure bond to your paint, helping preserve your vehicle’s finish for years to come.</p>
                         </div>
                         <div class="mt-8">
-                            <a href="https://wikdwraps.com/pages/contact" class="btn btn-primary">
+                            <!-- UPDATED: Link to Configurator -->
+                            <a href="https://wikdwraps.com/pages/estimate-configurator" class="btn btn-primary">
                                 <span>Protect Your Car Now</span>
                             </a>
                         </div>
@@ -360,6 +400,7 @@
         <section class="content-section bg-[var(--color-surface)]">
             <div class="mobile-scaled-container">
                 <div class="text-center mb-12">
+                    <!-- RESTORED: Original Headline -->
                     <h2 class="title inline-richtext h1 font-heading">
                       Why do I need PPF?
                     </h2>
@@ -414,12 +455,14 @@
                     <!-- Left: Text Content -->
                     <div class="service-text">
                         <!-- FORCED FONT HERE -->
+                        <!-- RESTORED: Original Headline -->
                         <h2 class="rich-text__heading rte inline-richtext h1" style="font-family: 'Rajdhani', sans-serif !important; white-space: nowrap;">
                             Coverage Options
                         </h2>
                         <div class="rich-text__text rte body mb-6">
                             <p>Every driver's needs are different. From basic protection to full vehicle coverage, use our interactive tool to see exactly what fits your vehicle and budget.</p>
                         </div>
+                        <!-- RESTORED: Original Button Text (Already links to configurator) -->
                         <a href="https://wikdwraps.com/pages/estimate-configurator" class="btn btn-primary">
                             <span>Launch Configurator</span>
                         </a>
@@ -427,11 +470,12 @@
 
                     <!-- Right: Image Sequence Container -->
                     <div class="sequence-container" id="cadillac-sequence">
-                        <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/CadillacSUVBase.png?v=1762966194" class="sequence-image active" alt="Base Coverage">
-                        <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/CadillacSUVFront.png?v=1762966187" class="sequence-image" alt="Full Front Coverage">
-                        <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/CadillacSUVTrack.png?v=1762966199" class="sequence-image" alt="Track Pack Coverage">
-                        <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/CadillacSUVFull.png?v=1762966207" class="sequence-image" alt="Full Car Coverage">
-                        <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/CadillacSUVF1.png?v=1762966216" class="sequence-image" alt="Formula 1 Coverage">
+                        <!-- UPDATED TO 4-DOOR SEDAN SEQUENCE -->
+                        <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/4DoorBase.png?v=1762975768" class="sequence-image active" alt="Base Coverage">
+                        <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/4DoorFront.png?v=1762975750" class="sequence-image" alt="Full Front Coverage">
+                        <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/4DoorTrackPack.png?v=1762975762" class="sequence-image" alt="Track Pack Coverage">
+                        <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/4DoorFull.png?v=1762975756" class="sequence-image" alt="Full Car Coverage">
+                        <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/4DoorF1.png?v=1762975743" class="sequence-image" alt="Formula 1 Coverage">
                     </div>
                 </div>
             </div>
@@ -489,14 +533,34 @@
                             <img src="https://wikdwraps.com/cdn/shop/files/STEK_USA_V3_white_-_w_logo.png?v=1741272400&width=200" alt="STEK Logo" style="max-height: 100%; width: auto;">
                         </div>
                         <h3 class="inline-richtext h3 text-xl mb-2 font-heading">Peace of Mind</h3>
-                        <!-- UPDATED: Replaced WIKD PBW with WIKD Wraps -->
                         <div class="rte p-muted text-sm"><p>Know your car is recieving the quality and care it deserves. WIKD Wraps is proud to be an authorized installer for STEK Films.</p></div>
                     </div>
                 </div>
-                
-                <div class="mt-10 text-center">
-                    <a href="https://wikdwraps.com/pages/contact" class="btn btn-primary"><span>Get Protected Now</span></a>
+            </div>
+        </section>
+
+        <!-- SECTION 5: Final CTA (New) -->
+        <section class="content-section relative overflow-hidden pt-0 pb-20">
+            <div class="mobile-scaled-container text-center relative z-10">
+                <!-- Sequence Animation Container wrapped in Glow -->
+                <div class="cta-sequence-wrapper">
+                    <div class="sequence-container" id="footer-sequence">
+                         <!-- RE-USING CADILLAC SUV SEQUENCE -->
+                        <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/CadillacSUVBase.png?v=1762966194" class="sequence-image active" alt="Base Coverage">
+                        <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/CadillacSUVFront.png?v=1762966187" class="sequence-image" alt="Full Front Coverage">
+                        <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/CadillacSUVTrack.png?v=1762966199" class="sequence-image" alt="Track Pack Coverage">
+                        <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/CadillacSUVFull.png?v=1762966207" class="sequence-image" alt="Full Car Coverage">
+                        <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/CadillacSUVF1.png?v=1762966216" class="sequence-image" alt="Formula 1 Coverage">
+                    </div>
                 </div>
+
+                <h2 class="h2 mb-6">Uncompromised Protection.</h2>
+                <p class="p-muted max-w-2xl mx-auto mb-8">
+                    Don't wait for the first rock chip. Secure your vehicle's value today with the best protection McKinney has to offer.
+                </p>
+                <a href="https://wikdwraps.com/pages/estimate-configurator" class="btn btn-primary">
+                  <span>Get A Free Quote</span>
+                </a>
             </div>
         </section>
     </main>
@@ -565,23 +629,27 @@
     <!-- SCRIPTS -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Image Sequence Loop Logic
-            const images = document.querySelectorAll('.sequence-image');
-            let currentIndex = 0;
-            const intervalTime = 1500; // 1.5 seconds per image (HALVED)
+            // Updated Logic: Run each sequence container independently
+            const containers = document.querySelectorAll('.sequence-container');
 
-            if(images.length > 0) {
-                setInterval(() => {
-                    // Remove active class from current
-                    images[currentIndex].classList.remove('active');
-                    
-                    // Increment index
-                    currentIndex = (currentIndex + 1) % images.length;
-                    
-                    // Add active class to next
-                    images[currentIndex].classList.add('active');
-                }, intervalTime);
-            }
+            containers.forEach(container => {
+                const images = container.querySelectorAll('.sequence-image');
+                let currentIndex = 0;
+                const intervalTime = 1500; // 1.5 seconds per image
+
+                if (images.length > 0) {
+                    setInterval(() => {
+                        // Remove active class from current image in THIS specific container
+                        images[currentIndex].classList.remove('active');
+                        
+                        // Increment index
+                        currentIndex = (currentIndex + 1) % images.length;
+                        
+                        // Add active class to next image in THIS specific container
+                        images[currentIndex].classList.add('active');
+                    }, intervalTime);
+                }
+            });
         });
     </script>
 
