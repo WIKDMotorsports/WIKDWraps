@@ -192,8 +192,20 @@
 
         .service-text h3 {
             font-size: 2.5rem;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem; /* Reduced margin to sit closer to price note */
             color: white;
+        }
+
+        /* NEW STYLE FOR PRICING NOTES */
+        .service-price-note {
+            font-family: var(--font-heading);
+            color: var(--color-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 1.15rem;
+            margin-bottom: 1.25rem;
+            letter-spacing: 0.5px;
+            display: block;
         }
         
         .service-feature-list {
@@ -336,6 +348,9 @@
                 </div>
                 <div class="service-text">
                     <h3 class="h3">Paint Protection Film (PPF)</h3>
+                    <!-- INSERTED NOTE -->
+                    <span class="service-price-note">Impact Protection starting at $1695</span>
+
                     <p class="p-muted">
                         Your vehicle’s first line of defense against the road. Our PPF is an optically clear, urethane film that absorbs impact from rock chips, scratches, and debris. It’s self-healing, meaning minor swirls disappear with heat, keeping your paint flawless for years.
                     </p>
@@ -370,6 +385,9 @@
                 </div>
                 <div class="service-text">
                     <h3 class="h3">Ceramic Coatings</h3>
+                    <!-- INSERTED NOTE -->
+                    <span class="service-price-note">Self Cleaning Shine starting at $995</span>
+
                     <p class="p-muted">
                         Create a permanent bond with your paint that delivers unmatched gloss and hydrophobicity. Our ceramic coatings act as a hardened glass layer, repelling water, dirt, and UV rays while making maintenance washes effortless.
                     </p>
@@ -404,6 +422,9 @@
                 </div>
                 <div class="service-text">
                     <h3 class="h3">Vinyl Wraps</h3>
+                    <!-- INSERTED NOTE -->
+                    <span class="service-price-note">Color Customization as low as $695</span>
+
                     <p class="p-muted">
                         Change the color of your car without the commitment of paint. Whether you want a matte black finish, a satin shift, or a full chrome delete, our vinyl wraps offer endless customization options while protecting the paint underneath.
                     </p>
@@ -438,6 +459,9 @@
                 </div>
                 <div class="service-text">
                     <h3 class="h3">Nano-Ceramic Tint</h3>
+                    <!-- INSERTED NOTE -->
+                    <span class="service-price-note">Heat Rejection from $175</span>
+
                     <p class="p-muted">
                         Upgrade your comfort and privacy with our advanced Nano-Ceramic Window Tint. Unlike standard dyed films, our ceramic tint rejects up to 98% of infrared heat and blocks 99% of harmful UV rays, keeping your interior cool and protected.
                     </p>
