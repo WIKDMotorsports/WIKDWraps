@@ -89,7 +89,6 @@
         }
         .nav-link:hover { color: var(--color-primary); }
 
-        /* --- PAGE HEADER REMOVED --- */
         /* Adjusted Main to account for absolute nav */
         main {
             padding-top: 8rem;
@@ -100,14 +99,16 @@
             margin-bottom: 6rem;
             padding-bottom: 4rem;
             border-bottom: 1px solid var(--color-border);
+            /* Performance: Isolate rendering context */
+            contain: content; 
         }
         .project-section:last-child { border-bottom: none; margin-bottom: 0; }
 
         .project-info {
-            text-align: left; /* Changed to Left */
+            text-align: left;
             margin-bottom: 2rem;
             width: 100%;
-            padding: 0 5%; /* Aligns with nav-bar padding */
+            padding: 0 5%;
         }
 
         /* --- INFINITE TICKER GALLERY --- */
@@ -115,29 +116,35 @@
             overflow: hidden;
             width: 100%;
             padding: 1rem 0;
-            position: relative; /* Needed for arrow positioning */
-            /* Fade out edges for smoother look */
+            position: relative;
+            /* Fade out edges */
             mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
             -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+            /* Performance: GPU Promotion */
+            transform: translateZ(0);
         }
 
         .ticker-track {
             display: flex;
             gap: 1.5rem;
             width: max-content;
-            /* Animation handled by JS now for manual control */
             will-change: transform;
+            /* Performance: GPU Promotion & Anti-aliasing fix */
+            transform: translate3d(0,0,0);
+            backface-visibility: hidden;
+            perspective: 1000px;
         }
         
         .gallery-item {
-            /* Fixed widths relative to viewport to maintain consistent ticker speed appearance */
             flex: 0 0 60vw; 
             position: relative;
-            aspect-ratio: 1/1;
+            aspect-ratio: 4/3; 
             border-radius: 4px;
             overflow: hidden;
             border: 1px solid var(--color-border);
             background: var(--color-surface);
+            /* Performance: Prevent layout shifts */
+            transform: translateZ(0);
         }
         
         @media (min-width: 768px) {
@@ -151,8 +158,13 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.5s ease;
+            transition: transform 0.5s ease, opacity 0.5s ease-out;
+            opacity: 0; /* Fade in on load */
+            background-color: #1a1a1a; 
+            /* Performance: independent layer */
+            will-change: transform, opacity;
         }
+        .gallery-img.loaded { opacity: 1; }
         .gallery-item:hover .gallery-img { transform: scale(1.05); }
 
         /* --- FOOTER STYLES --- */
@@ -193,16 +205,6 @@
         .wikd-footer-legal { display: flex; gap: 1.5rem; flex-wrap: wrap; }
         .wikd-footer-legal a { color: var(--color-text-muted, #888888); text-decoration: none; font-size: 0.875rem; transition: color 0.3s ease; }
         .wikd-footer-legal a:hover { color: var(--color-primary, #FF3B30); }
-        .wikd-footer-newsletter { display: flex; flex-direction: column; gap: 0.75rem; }
-        .wikd-footer-newsletter p { color: var(--color-text-muted, #888888); font-size: 0.9rem; line-height: 1.5; margin: 0; font-family: var(--font-body, 'Inter', sans-serif); }
-        .wikd-footer-email-input {
-            background: var(--color-background, #0A0A0A); border: 1px solid var(--color-border, #2A2A2A);
-            color: white; padding: 0.875rem 1rem; border-radius: 4px; font-size: 0.95rem; width: 100%; font-family: var(--font-body, 'Inter', sans-serif);
-        }
-        .wikd-footer-subscribe-btn {
-            background: var(--color-primary, #FF3B30); color: white; border: none; padding: 0.875rem 1.5rem;
-            border-radius: 4px; font-family: var(--font-heading, 'Rajdhani', sans-serif); font-size: 0.95rem; font-weight: 700; text-transform: uppercase; cursor: pointer;
-        }
 
         @media (max-width: 992px) { .wikd-footer-grid { grid-template-columns: 1fr 1fr; } .wikd-footer-brand { grid-column: 1 / -1; } }
         @media (max-width: 640px) { .wikd-footer-grid { grid-template-columns: 1fr; } .wikd-footer-bottom { flex-direction: column; text-align: center; } }
@@ -219,203 +221,605 @@
     </nav>
 
     <main>
-        <!-- PROJECT 1: C8 Z06 (LEFT SCROLL) -->
+        
+        <!-- PROJECT 1: Yellow Urus -->
+        <section class="project-section">
+            <div class="project-info">
+                <h2 class="text-3xl md:text-4xl text-white font-heading mb-2">Lamborghini Urus (Yellow)</h2>
+                <p class="text-muted text-lg">Full Body PPF & Ceramic Coating</p>
+            </div>
+            <div class="ticker-view">
+                <div class="ticker-track">
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Yellow_Urus_Full_body_PPF_and_ceramic_coating_9.jpg?v=1764344268&width=600" class="gallery-img" alt="Yellow Urus" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Yellow_Urus_Full_body_PPF_and_ceramic_coating_10.jpg?v=1764344268&width=600" class="gallery-img" alt="Yellow Urus" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Yellow_Urus_Full_body_PPF_and_ceramic_coating_1.jpg?v=1764344268&width=600" class="gallery-img" alt="Yellow Urus" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <!-- Start Lazy Loading -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Yellow_Urus_Full_body_PPF_and_ceramic_coating_7.jpg?v=1764344270&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Yellow_Urus_Full_body_PPF_and_ceramic_coating_4.jpg?v=1764344268&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Yellow_Urus_Full_body_PPF_and_ceramic_coating_2.jpg?v=1764344268&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Yellow_Urus_Full_body_PPF_and_ceramic_coating_3.jpg?v=1764344268&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Yellow_Urus_Full_body_PPF_and_ceramic_coating_8.jpg?v=1764344268&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Yellow_Urus_Full_body_PPF_and_ceramic_coating_5.jpg?v=1764344268&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Yellow_Urus_Full_body_PPF_and_ceramic_coating_6.jpg?v=1764344267&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <!-- Duplicate -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Yellow_Urus_Full_body_PPF_and_ceramic_coating_9.jpg?v=1764344268&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Yellow_Urus_Full_body_PPF_and_ceramic_coating_10.jpg?v=1764344268&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Yellow_Urus_Full_body_PPF_and_ceramic_coating_1.jpg?v=1764344268&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Yellow_Urus_Full_body_PPF_and_ceramic_coating_7.jpg?v=1764344270&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Yellow_Urus_Full_body_PPF_and_ceramic_coating_4.jpg?v=1764344268&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Yellow_Urus_Full_body_PPF_and_ceramic_coating_2.jpg?v=1764344268&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Yellow_Urus_Full_body_PPF_and_ceramic_coating_3.jpg?v=1764344268&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Yellow_Urus_Full_body_PPF_and_ceramic_coating_8.jpg?v=1764344268&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Yellow_Urus_Full_body_PPF_and_ceramic_coating_5.jpg?v=1764344268&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Yellow_Urus_Full_body_PPF_and_ceramic_coating_6.jpg?v=1764344267&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECT 2: WS6 Firebird -->
+        <section class="project-section">
+            <div class="project-info">
+                <h2 class="text-3xl md:text-4xl text-white font-heading mb-2">WS6 Firebird</h2>
+                <p class="text-muted text-lg">3-Stage Paint Correction & Ceramic Coating</p>
+            </div>
+            <div class="ticker-view">
+                <div class="ticker-track reverse">
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WS6_Firebird_3_stage_paint_correction_and_ceramic_coating_3.jpg?v=1764344264&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WS6_Firebird_3_stage_paint_correction_and_ceramic_coating_1.jpg?v=1764344264&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WS6_Firebird_3_stage_paint_correction_and_ceramic_coating_2.jpg?v=1764344264&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WS6_Firebird_3_stage_paint_correction_and_ceramic_coating_7.jpg?v=1764344264&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WS6_Firebird_3_stage_paint_correction_and_ceramic_coating_6.jpg?v=1764344264&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WS6_Firebird_3_stage_paint_correction_and_ceramic_coating_8.jpg?v=1764344263&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WS6_Firebird_3_stage_paint_correction_and_ceramic_coating_5.jpg?v=1764344263&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WS6_Firebird_3_stage_paint_correction_and_ceramic_coating_4.jpg?v=1764344263&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WS6_Firebird_3_stage_paint_correction_and_ceramic_coating_9.jpg?v=1764344263&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <!-- Duplicate -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WS6_Firebird_3_stage_paint_correction_and_ceramic_coating_3.jpg?v=1764344264&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WS6_Firebird_3_stage_paint_correction_and_ceramic_coating_1.jpg?v=1764344264&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WS6_Firebird_3_stage_paint_correction_and_ceramic_coating_2.jpg?v=1764344264&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WS6_Firebird_3_stage_paint_correction_and_ceramic_coating_7.jpg?v=1764344264&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WS6_Firebird_3_stage_paint_correction_and_ceramic_coating_6.jpg?v=1764344264&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WS6_Firebird_3_stage_paint_correction_and_ceramic_coating_8.jpg?v=1764344263&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WS6_Firebird_3_stage_paint_correction_and_ceramic_coating_5.jpg?v=1764344263&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WS6_Firebird_3_stage_paint_correction_and_ceramic_coating_4.jpg?v=1764344263&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WS6_Firebird_3_stage_paint_correction_and_ceramic_coating_9.jpg?v=1764344263&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECT 3: C7 Corvette -->
+        <section class="project-section">
+            <div class="project-info">
+                <h2 class="text-3xl md:text-4xl text-white font-heading mb-2">C7 Corvette</h2>
+                <p class="text-muted text-lg">Full Body Satin PPF & Ceramic Coating</p>
+            </div>
+            <div class="ticker-view">
+                <div class="ticker-track">
+                    <!-- Original -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_3.jpg?v=1764344259&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_1.jpg?v=1764344259&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_4.jpg?v=1764344259&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_5.jpg?v=1764344259&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_13.jpg?v=1764344259&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_7.jpg?v=1764344259&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_2.jpg?v=1764344259&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_9.jpg?v=1764344259&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_19.jpg?v=1764344259&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_10.jpg?v=1764344259&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_17.jpg?v=1764344258&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_6.jpg?v=1764344258&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_18.jpg?v=1764344258&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_11.jpg?v=1764344258&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_8.jpg?v=1764344258&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_14.jpg?v=1764344258&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_16.jpg?v=1764344258&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_15.jpg?v=1764344257&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_12.jpg?v=1764344257&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                     <!-- Duplicate -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_3.jpg?v=1764344259&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_1.jpg?v=1764344259&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_4.jpg?v=1764344259&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_5.jpg?v=1764344259&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_13.jpg?v=1764344259&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_7.jpg?v=1764344259&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_2.jpg?v=1764344259&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_9.jpg?v=1764344259&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_19.jpg?v=1764344259&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_10.jpg?v=1764344259&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_17.jpg?v=1764344258&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_6.jpg?v=1764344258&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_18.jpg?v=1764344258&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_11.jpg?v=1764344258&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_8.jpg?v=1764344258&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_14.jpg?v=1764344258&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_16.jpg?v=1764344258&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_15.jpg?v=1764344257&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/WIKD_C7_Full_body_satin_PPF_ceramic_coating_12.jpg?v=1764344257&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECT 4: Bullitt -->
+        <section class="project-section">
+            <div class="project-info">
+                <h2 class="text-3xl md:text-4xl text-white font-heading mb-2">Bullitt</h2>
+                <p class="text-muted text-lg">2 stage paint correction, rock chip removal, & ceramic coating</p>
+            </div>
+            <div class="ticker-view">
+                <div class="ticker-track reverse">
+                    <!-- Original -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Turqouise_5.jpg?v=1764344251&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Turqouise_6.jpg?v=1764344251&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Turqouise_2.jpg?v=1764344251&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Turqouise_4.jpg?v=1764344250&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Turqouise_3.jpg?v=1764344251&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Turqouise_1.jpg?v=1764344250&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <!-- Duplicate -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Turqouise_5.jpg?v=1764344251&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Turqouise_6.jpg?v=1764344251&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Turqouise_2.jpg?v=1764344251&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Turqouise_4.jpg?v=1764344250&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Turqouise_3.jpg?v=1764344251&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Turqouise_1.jpg?v=1764344250&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECT 5: Chevy SSR -->
+        <section class="project-section">
+            <div class="project-info">
+                <h2 class="text-3xl md:text-4xl text-white font-heading mb-2">Chevy SSR</h2>
+                <p class="text-muted text-lg">Custom Hand-Cut PPF & Ceramic Coating</p>
+            </div>
+            <div class="ticker-view">
+                <div class="ticker-track">
+                    <!-- Original -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SSR_Full_body_custom_hand-cut_PPF_ceramic_coating_2.jpg?v=1764344246&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SSR_Full_body_custom_hand-cut_PPF_ceramic_coating_7.jpg?v=1764344246&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SSR_Full_body_custom_hand-cut_PPF_ceramic_coating_5.jpg?v=1764344246&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SSR_Full_body_custom_hand-cut_PPF_ceramic_coating_8.jpg?v=1764344246&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SSR_Full_body_custom_hand-cut_PPF_ceramic_coating_4.jpg?v=1764344246&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SSR_Full_body_custom_hand-cut_PPF_ceramic_coating_3.jpg?v=1764344246&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SSR_Full_body_custom_hand-cut_PPF_ceramic_coating_6.jpg?v=1764344246&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SSR_Full_body_custom_hand-cut_PPF_ceramic_coating_1.jpg?v=1764344246&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <!-- Duplicate -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SSR_Full_body_custom_hand-cut_PPF_ceramic_coating_2.jpg?v=1764344246&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SSR_Full_body_custom_hand-cut_PPF_ceramic_coating_7.jpg?v=1764344246&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SSR_Full_body_custom_hand-cut_PPF_ceramic_coating_5.jpg?v=1764344246&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SSR_Full_body_custom_hand-cut_PPF_ceramic_coating_8.jpg?v=1764344246&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SSR_Full_body_custom_hand-cut_PPF_ceramic_coating_4.jpg?v=1764344246&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SSR_Full_body_custom_hand-cut_PPF_ceramic_coating_3.jpg?v=1764344246&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SSR_Full_body_custom_hand-cut_PPF_ceramic_coating_6.jpg?v=1764344246&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SSR_Full_body_custom_hand-cut_PPF_ceramic_coating_1.jpg?v=1764344246&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECT 6: Silver Tahoe -->
+        <section class="project-section">
+            <div class="project-info">
+                <h2 class="text-3xl md:text-4xl text-white font-heading mb-2">Silver Tahoe</h2>
+                <p class="text-muted text-lg">Full Tint, Windshield Film, & Ceramic Coating</p>
+            </div>
+            <div class="ticker-view">
+                <div class="ticker-track reverse">
+                    <!-- Original -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SIB10B_1.jpg?v=1764344245&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SILVER_2.jpg?v=1764344243&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SILVER_3.jpg?v=1764344243&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SILVER_1.jpg?v=1764344243&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SILVER_4.jpg?v=1764344243&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SI1547_1.jpg?v=1764344243&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SIBBA1_1.jpg?v=1764344243&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SI533D_1.jpg?v=1764344243&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <!-- Duplicate -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SIB10B_1.jpg?v=1764344245&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SILVER_2.jpg?v=1764344243&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SILVER_3.jpg?v=1764344243&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SILVER_1.jpg?v=1764344243&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SILVER_4.jpg?v=1764344243&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SI1547_1.jpg?v=1764344243&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SIBBA1_1.jpg?v=1764344243&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/SI533D_1.jpg?v=1764344243&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECT 7: Silver Camaro -->
+        <section class="project-section">
+            <div class="project-info">
+                <h2 class="text-3xl md:text-4xl text-white font-heading mb-2">Silver Camaro</h2>
+                <p class="text-muted text-lg">PPF Removal, Paint Correction & Ceramic Coating</p>
+            </div>
+            <div class="ticker-view">
+                <div class="ticker-track">
+                    <!-- Original -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Silver_Camaro_PPF_removal_2_stage_paint_correction_rock_chip_removal_ceramic_coating_1.jpg?v=1764344241&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Silver_Camaro_PPF_removal_2_stage_paint_correction_rock_chip_removal_ceramic_coating_7.jpg?v=1764344239&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Silver_Camaro_PPF_removal_2_stage_paint_correction_rock_chip_removal_ceramic_coating_9.jpg?v=1764344238&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Silver_Camaro_PPF_removal_2_stage_paint_correction_rock_chip_removal_ceramic_coating_10.jpg?v=1764344238&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Silver_Camaro_PPF_removal_2_stage_paint_correction_rock_chip_removal_ceramic_coating_8.jpg?v=1764344238&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Silver_Camaro_PPF_removal_2_stage_paint_correction_rock_chip_removal_ceramic_coating_4.jpg?v=1764344238&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Silver_Camaro_PPF_removal_2_stage_paint_correction_rock_chip_removal_ceramic_coating_5.jpg?v=1764344237&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Silver_Camaro_PPF_removal_2_stage_paint_correction_rock_chip_removal_ceramic_coating_6.jpg?v=1764344237&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Silver_Camaro_PPF_removal_2_stage_paint_correction_rock_chip_removal_ceramic_coating_3.jpg?v=1764344238&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Silver_Camaro_PPF_removal_2_stage_paint_correction_rock_chip_removal_ceramic_coating_2.jpg?v=1764344237&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <!-- Duplicate -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Silver_Camaro_PPF_removal_2_stage_paint_correction_rock_chip_removal_ceramic_coating_1.jpg?v=1764344241&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Silver_Camaro_PPF_removal_2_stage_paint_correction_rock_chip_removal_ceramic_coating_7.jpg?v=1764344239&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Silver_Camaro_PPF_removal_2_stage_paint_correction_rock_chip_removal_ceramic_coating_9.jpg?v=1764344238&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Silver_Camaro_PPF_removal_2_stage_paint_correction_rock_chip_removal_ceramic_coating_10.jpg?v=1764344238&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Silver_Camaro_PPF_removal_2_stage_paint_correction_rock_chip_removal_ceramic_coating_8.jpg?v=1764344238&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Silver_Camaro_PPF_removal_2_stage_paint_correction_rock_chip_removal_ceramic_coating_4.jpg?v=1764344238&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Silver_Camaro_PPF_removal_2_stage_paint_correction_rock_chip_removal_ceramic_coating_5.jpg?v=1764344237&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Silver_Camaro_PPF_removal_2_stage_paint_correction_rock_chip_removal_ceramic_coating_6.jpg?v=1764344237&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Silver_Camaro_PPF_removal_2_stage_paint_correction_rock_chip_removal_ceramic_coating_3.jpg?v=1764344238&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Silver_Camaro_PPF_removal_2_stage_paint_correction_rock_chip_removal_ceramic_coating_2.jpg?v=1764344237&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECT 8: Red C8 Z06 -->
+        <section class="project-section">
+            <div class="project-info">
+                <h2 class="text-3xl md:text-4xl text-white font-heading mb-2">Red C8 Z06</h2>
+                <p class="text-muted text-lg">Front Partial PPF</p>
+            </div>
+            <div class="ticker-view">
+                <div class="ticker-track reverse">
+                    <!-- Original -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Red_C8_Z06_Front_partial_PPF_2.jpg?v=1764344233&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Red_C8_Z06_Front_partial_PPF_1.jpg?v=1764344232&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <!-- Duplicate -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Red_C8_Z06_Front_partial_PPF_2.jpg?v=1764344233&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Red_C8_Z06_Front_partial_PPF_1.jpg?v=1764344232&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <!-- Quadruplicate for short lists -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Red_C8_Z06_Front_partial_PPF_2.jpg?v=1764344233&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Red_C8_Z06_Front_partial_PPF_1.jpg?v=1764344232&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECT 9: Orange Viper -->
+        <section class="project-section">
+            <div class="project-info">
+                <h2 class="text-3xl md:text-4xl text-white font-heading mb-2">Orange Viper</h2>
+                <p class="text-muted text-lg">Custom Vinyl Winglet & Decals</p>
+            </div>
+            <div class="ticker-view">
+                <div class="ticker-track">
+                    <!-- Original -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Orange_viper_Custom_vinyl_winglet_and_engine_cover_decals_printed_installed_5.jpg?v=1764344231&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Orange_viper_Custom_vinyl_winglet_and_engine_cover_decals_printed_installed_3.jpg?v=1764344231&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Orange_viper_Custom_vinyl_winglet_and_engine_cover_decals_printed_installed_6.jpg?v=1764344231&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Orange_viper_Custom_vinyl_winglet_and_engine_cover_decals_printed_installed_1.jpg?v=1764344230&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Orange_viper_Custom_vinyl_winglet_and_engine_cover_decals_printed_installed_4.jpg?v=1764344230&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Orange_viper_Custom_vinyl_winglet_and_engine_cover_decals_printed_installed_2.jpg?v=1764344230&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <!-- Duplicate -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Orange_viper_Custom_vinyl_winglet_and_engine_cover_decals_printed_installed_5.jpg?v=1764344231&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Orange_viper_Custom_vinyl_winglet_and_engine_cover_decals_printed_installed_3.jpg?v=1764344231&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Orange_viper_Custom_vinyl_winglet_and_engine_cover_decals_printed_installed_6.jpg?v=1764344231&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Orange_viper_Custom_vinyl_winglet_and_engine_cover_decals_printed_installed_1.jpg?v=1764344230&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Orange_viper_Custom_vinyl_winglet_and_engine_cover_decals_printed_installed_4.jpg?v=1764344230&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Orange_viper_Custom_vinyl_winglet_and_engine_cover_decals_printed_installed_2.jpg?v=1764344230&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECT 10: Blue Mercedes -->
+        <section class="project-section">
+            <div class="project-info">
+                <h2 class="text-3xl md:text-4xl text-white font-heading mb-2">Blue Mercedes</h2>
+                <p class="text-muted text-lg">Track Package PPF</p>
+            </div>
+            <div class="ticker-view">
+                <div class="ticker-track reverse">
+                    <!-- Original -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Blue_Mercedes_Track_package_PPF_2.jpg?v=1764344232&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Blue_Mercedes_Track_package_PPF_7.jpg?v=1764344231&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Blue_Mercedes_Track_package_PPF_1.jpg?v=1764344231&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Blue_Mercedes_Track_package_PPF_3.jpg?v=1764344231&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Blue_Mercedes_Track_package_PPF_6.jpg?v=1764344231&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Blue_Mercedes_Track_package_PPF_4.jpg?v=1764344231&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Blue_Mercedes_Track_package_PPF_5.jpg?v=1764344230&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/BLUECA_4.jpg?v=1764344228&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Blue_Mercedes_Track_package_PPF_8.jpg?v=1764344228&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/BLUECA_3.jpg?v=1764344227&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/BLUECA_2.jpg?v=1764344226&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <!-- Duplicate -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Blue_Mercedes_Track_package_PPF_2.jpg?v=1764344232&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Blue_Mercedes_Track_package_PPF_7.jpg?v=1764344231&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Blue_Mercedes_Track_package_PPF_1.jpg?v=1764344231&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Blue_Mercedes_Track_package_PPF_3.jpg?v=1764344231&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Blue_Mercedes_Track_package_PPF_6.jpg?v=1764344231&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Blue_Mercedes_Track_package_PPF_4.jpg?v=1764344231&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Blue_Mercedes_Track_package_PPF_5.jpg?v=1764344230&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/BLUECA_4.jpg?v=1764344228&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Blue_Mercedes_Track_package_PPF_8.jpg?v=1764344228&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/BLUECA_3.jpg?v=1764344227&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/BLUECA_2.jpg?v=1764344226&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECT 11: Satin Black 720s -->
+        <section class="project-section">
+            <div class="project-info">
+                <h2 class="text-3xl md:text-4xl text-white font-heading mb-2">Black McLaren 720s</h2>
+                <p class="text-muted text-lg">Full Body Satin PPF & Rock Chip Repair</p>
+            </div>
+            <div class="ticker-view">
+                <div class="ticker-track">
+                    <!-- Original -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_720s_PPF_removal_front_bumper_rock_chip_removal_full_body_satin_PPF_ceramic_coating_9.jpg?v=1764344227&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_720s_PPF_removal_front_bumper_rock_chip_removal_full_body_satin_PPF_ceramic_coating_7.jpg?v=1764344227&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_720s_PPF_removal_front_bumper_rock_chip_removal_full_body_satin_PPF_ceramic_coating_3.jpg?v=1764344227&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_720s_PPF_removal_front_bumper_rock_chip_removal_full_body_satin_PPF_ceramic_coating_2.jpg?v=1764344226&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_720s_PPF_removal_front_bumper_rock_chip_removal_full_body_satin_PPF_ceramic_coating_4.jpg?v=1764344227&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/BL17E5_1.jpg?v=1764344226&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/BL12DD_1.jpg?v=1764344226&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_720s_PPF_removal_front_bumper_rock_chip_removal_full_body_satin_PPF_ceramic_coating_5.jpg?v=1764344223&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_720s_PPF_removal_front_bumper_rock_chip_removal_full_body_satin_PPF_ceramic_coating_1.jpg?v=1764344222&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_720s_PPF_removal_front_bumper_rock_chip_removal_full_body_satin_PPF_ceramic_coating_6.jpg?v=1764344221&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <!-- Duplicate -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_720s_PPF_removal_front_bumper_rock_chip_removal_full_body_satin_PPF_ceramic_coating_9.jpg?v=1764344227&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_720s_PPF_removal_front_bumper_rock_chip_removal_full_body_satin_PPF_ceramic_coating_7.jpg?v=1764344227&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_720s_PPF_removal_front_bumper_rock_chip_removal_full_body_satin_PPF_ceramic_coating_3.jpg?v=1764344227&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_720s_PPF_removal_front_bumper_rock_chip_removal_full_body_satin_PPF_ceramic_coating_2.jpg?v=1764344226&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_720s_PPF_removal_front_bumper_rock_chip_removal_full_body_satin_PPF_ceramic_coating_4.jpg?v=1764344227&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/BL17E5_1.jpg?v=1764344226&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/BL12DD_1.jpg?v=1764344226&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_720s_PPF_removal_front_bumper_rock_chip_removal_full_body_satin_PPF_ceramic_coating_5.jpg?v=1764344223&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_720s_PPF_removal_front_bumper_rock_chip_removal_full_body_satin_PPF_ceramic_coating_1.jpg?v=1764344222&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_720s_PPF_removal_front_bumper_rock_chip_removal_full_body_satin_PPF_ceramic_coating_6.jpg?v=1764344221&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECT 12: Satin Black Urus -->
+        <section class="project-section">
+            <div class="project-info">
+                <h2 class="text-3xl md:text-4xl text-white font-heading mb-2">Black Lamborghini Urus</h2>
+                <p class="text-muted text-lg">Satin PPF, Ceramic Coating & Custom Decals</p>
+            </div>
+            <div class="ticker-view">
+                <div class="ticker-track reverse">
+                    <!-- Original -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Urus_PPF_removal_full_body_satin_PPF_ceramic_coating_and_custom_decals_4.jpg?v=1764344226&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Urus_PPF_removal_full_body_satin_PPF_ceramic_coating_and_custom_decals_7.jpg?v=1764344225&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Urus_PPF_removal_full_body_satin_PPF_ceramic_coating_and_custom_decals_5.jpg?v=1764344225&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Urus_PPF_removal_full_body_satin_PPF_ceramic_coating_and_custom_decals_1.jpg?v=1764344225&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/BL56A6_1.jpg?v=1764344224&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/BLDE69_1.jpg?v=1764344224&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Urus_PPF_removal_full_body_satin_PPF_ceramic_coating_and_custom_decals_2.jpg?v=1764344224&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/BLC355_1.jpg?v=1764344225&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/BLF7D8_1.jpg?v=1764344225&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/BL70AB_1.jpg?v=1764344225&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/BL54F0_1.jpg?v=1764344221&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/BL1E2A_1.jpg?v=1764344223&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/BLA3E6_1.jpg?v=1764344222&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/BL4519_1.jpg?v=1764344222&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/BLB2CE_1.jpg?v=1764344221&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Urus_PPF_removal_full_body_satin_PPF_ceramic_coating_and_custom_decals_3.jpg?v=1764344217&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <!-- Duplicate -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Urus_PPF_removal_full_body_satin_PPF_ceramic_coating_and_custom_decals_4.jpg?v=1764344226&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Urus_PPF_removal_full_body_satin_PPF_ceramic_coating_and_custom_decals_7.jpg?v=1764344225&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Urus_PPF_removal_full_body_satin_PPF_ceramic_coating_and_custom_decals_5.jpg?v=1764344225&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Urus_PPF_removal_full_body_satin_PPF_ceramic_coating_and_custom_decals_1.jpg?v=1764344225&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/BL56A6_1.jpg?v=1764344224&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/BLDE69_1.jpg?v=1764344224&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Urus_PPF_removal_full_body_satin_PPF_ceramic_coating_and_custom_decals_2.jpg?v=1764344224&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/BLC355_1.jpg?v=1764344225&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/BLF7D8_1.jpg?v=1764344225&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/BL70AB_1.jpg?v=1764344225&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/BL54F0_1.jpg?v=1764344221&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/BL1E2A_1.jpg?v=1764344223&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/BLA3E6_1.jpg?v=1764344222&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/BL4519_1.jpg?v=1764344222&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/BLB2CE_1.jpg?v=1764344221&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Urus_PPF_removal_full_body_satin_PPF_ceramic_coating_and_custom_decals_3.jpg?v=1764344217&width=600" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECT 13: C8 Z06 (New) -->
         <section class="project-section">
             <div class="project-info">
                 <h2 class="text-3xl md:text-4xl text-white font-heading mb-2">C8 Z06</h2>
                 <p class="text-muted text-lg">Ceramic Coat, Full Detail</p>
             </div>
-            
             <div class="ticker-view">
                 <div class="ticker-track">
-                    <!-- Original Set (7 Images) -->
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Chevrolet_Corvette_C8_Z06_Z07_3LZ_Ceramic_Coating.jpg?v=1744063218" alt="C8 Z06" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_5248_c7f62583-2e3b-4465-b677-738558d513b2.jpg?v=1742420944" alt="C8 Z06" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Chevrolet_Corvette_C8_Z06_Z07_3LZ_with_Full_PPF_WIKD_Exhaust.jpg?v=1744063098" alt="C8 Z06" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_5248_afb497ce-2376-458e-8183-01fc67128e13.jpg?v=1742478458" alt="C8 Z06" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_5150_515ca20f-dbad-4e50-894c-9578ed4f4651.jpg?v=1742420945" alt="C8 Z06" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Chevrolet_Corvette_C7_Z06_3LZ_Carbon_Buckets_Interior_Detail.jpg?v=1744062855" alt="C8 Z06" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Freshly_Detailed_WIKD_Z06_Black_Chevrolet_Corvette_C7_Z06_3LZ_with_Signatiure_Wheels_Drag_Pack_Beadlocks.jpg?v=1744062820" alt="C8 Z06" class="gallery-img"></div>
-
-                    <!-- Duplicated Set -->
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Chevrolet_Corvette_C8_Z06_Z07_3LZ_Ceramic_Coating.jpg?v=1744063218" alt="C8 Z06" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_5248_c7f62583-2e3b-4465-b677-738558d513b2.jpg?v=1742420944" alt="C8 Z06" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Chevrolet_Corvette_C8_Z06_Z07_3LZ_with_Full_PPF_WIKD_Exhaust.jpg?v=1744063098" alt="C8 Z06" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_5248_afb497ce-2376-458e-8183-01fc67128e13.jpg?v=1742478458" alt="C8 Z06" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_5150_515ca20f-dbad-4e50-894c-9578ed4f4651.jpg?v=1742420945" alt="C8 Z06" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Chevrolet_Corvette_C7_Z06_3LZ_Carbon_Buckets_Interior_Detail.jpg?v=1744062855" alt="C8 Z06" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Freshly_Detailed_WIKD_Z06_Black_Chevrolet_Corvette_C7_Z06_3LZ_with_Signatiure_Wheels_Drag_Pack_Beadlocks.jpg?v=1744062820" alt="C8 Z06" class="gallery-img"></div>
+                    <!-- Original -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Chevrolet_Corvette_C8_Z06_Z07_3LZ_Ceramic_Coating.jpg?v=1744063218&width=600" class="gallery-img" alt="C8 Z06" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_5248_c7f62583-2e3b-4465-b677-738558d513b2.jpg?v=1742420944&width=600" class="gallery-img" alt="C8 Z06" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Chevrolet_Corvette_C8_Z06_Z07_3LZ_with_Full_PPF_WIKD_Exhaust.jpg?v=1744063098&width=600" class="gallery-img" alt="C8 Z06" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_5248_afb497ce-2376-458e-8183-01fc67128e13.jpg?v=1742478458&width=600" class="gallery-img" alt="C8 Z06" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_5150_515ca20f-dbad-4e50-894c-9578ed4f4651.jpg?v=1742420945&width=600" class="gallery-img" alt="C8 Z06" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Chevrolet_Corvette_C7_Z06_3LZ_Carbon_Buckets_Interior_Detail.jpg?v=1744062855&width=600" class="gallery-img" alt="C8 Z06" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Freshly_Detailed_WIKD_Z06_Black_Chevrolet_Corvette_C7_Z06_3LZ_with_Signatiure_Wheels_Drag_Pack_Beadlocks.jpg?v=1744062820&width=600" class="gallery-img" alt="C8 Z06" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <!-- Duplicate -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Chevrolet_Corvette_C8_Z06_Z07_3LZ_Ceramic_Coating.jpg?v=1744063218&width=600" class="gallery-img" alt="C8 Z06" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_5248_c7f62583-2e3b-4465-b677-738558d513b2.jpg?v=1742420944&width=600" class="gallery-img" alt="C8 Z06" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Chevrolet_Corvette_C8_Z06_Z07_3LZ_with_Full_PPF_WIKD_Exhaust.jpg?v=1744063098&width=600" class="gallery-img" alt="C8 Z06" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_5248_afb497ce-2376-458e-8183-01fc67128e13.jpg?v=1742478458&width=600" class="gallery-img" alt="C8 Z06" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_5150_515ca20f-dbad-4e50-894c-9578ed4f4651.jpg?v=1742420945&width=600" class="gallery-img" alt="C8 Z06" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Chevrolet_Corvette_C7_Z06_3LZ_Carbon_Buckets_Interior_Detail.jpg?v=1744062855&width=600" class="gallery-img" alt="C8 Z06" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Freshly_Detailed_WIKD_Z06_Black_Chevrolet_Corvette_C7_Z06_3LZ_with_Signatiure_Wheels_Drag_Pack_Beadlocks.jpg?v=1744062820&width=600" class="gallery-img" alt="C8 Z06" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
                 </div>
             </div>
         </section>
 
-        <!-- PROJECT 2: Dodge Viper (RIGHT SCROLL) -->
+        <!-- PROJECT 14: Dodge Viper (New) -->
         <section class="project-section">
             <div class="project-info">
                 <h2 class="text-3xl md:text-4xl text-white font-heading mb-2">Dodge Viper</h2>
                 <p class="text-muted text-lg">Full Detail, Ceramic coated Calipers</p>
             </div>
-            
             <div class="ticker-view">
                 <div class="ticker-track reverse">
-                    <!-- Original Set (3 Images) -->
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Red_and_White_Stripe_Fifth_Gen_Dodge_Viper_Freshly_Detailed.jpg?v=1743435206" alt="Dodge Viper" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_8750-Enhanced-NR-Edit.jpg?v=1742481613" alt="Dodge Viper" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Dodge_Viper_Carbon_Wheel_Brake_Calipers_Ceramic_Coated.jpg?v=1744144862" alt="Dodge Viper" class="gallery-img"></div>
-
-                    <!-- Duplicated Set -->
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Red_and_White_Stripe_Fifth_Gen_Dodge_Viper_Freshly_Detailed.jpg?v=1743435206" alt="Dodge Viper" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_8750-Enhanced-NR-Edit.jpg?v=1742481613" alt="Dodge Viper" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Dodge_Viper_Carbon_Wheel_Brake_Calipers_Ceramic_Coated.jpg?v=1744144862" alt="Dodge Viper" class="gallery-img"></div>
+                    <!-- Original -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Red_and_White_Stripe_Fifth_Gen_Dodge_Viper_Freshly_Detailed.jpg?v=1743435206&width=600" class="gallery-img" alt="Dodge Viper" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_8750-Enhanced-NR-Edit.jpg?v=1742481613&width=600" class="gallery-img" alt="Dodge Viper" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Dodge_Viper_Carbon_Wheel_Brake_Calipers_Ceramic_Coated.jpg?v=1744144862&width=600" class="gallery-img" alt="Dodge Viper" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <!-- Duplicate -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Red_and_White_Stripe_Fifth_Gen_Dodge_Viper_Freshly_Detailed.jpg?v=1743435206&width=600" class="gallery-img" alt="Dodge Viper" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_8750-Enhanced-NR-Edit.jpg?v=1742481613&width=600" class="gallery-img" alt="Dodge Viper" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Dodge_Viper_Carbon_Wheel_Brake_Calipers_Ceramic_Coated.jpg?v=1744144862&width=600" class="gallery-img" alt="Dodge Viper" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <!-- Quadruplicate -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Red_and_White_Stripe_Fifth_Gen_Dodge_Viper_Freshly_Detailed.jpg?v=1743435206&width=600" class="gallery-img" alt="Dodge Viper" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_8750-Enhanced-NR-Edit.jpg?v=1742481613&width=600" class="gallery-img" alt="Dodge Viper" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Dodge_Viper_Carbon_Wheel_Brake_Calipers_Ceramic_Coated.jpg?v=1744144862&width=600" class="gallery-img" alt="Dodge Viper" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
                 </div>
             </div>
         </section>
 
-        <!-- PROJECT 3: McLaren 720s PPF (LEFT SCROLL) -->
+        <!-- PROJECT 15: McLaren 720s PPF (New) -->
         <section class="project-section">
             <div class="project-info">
                 <h2 class="text-3xl md:text-4xl text-white font-heading mb-2">McLaren 720s</h2>
                 <p class="text-muted text-lg">PPF & Full Detail</p>
             </div>
-            
             <div class="ticker-view">
                 <div class="ticker-track">
-                    <!-- Original Set (3 Images) -->
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Freshly_Detailed_Ryft_McLaren_720s_on_HRE_Wheels_with_WIKD_Exhaust.jpg?v=1744062350" alt="McLaren 720s PPF" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Clean_Ryft_Black_McLaren_720s_HRE_Wheels_WIKD_Exhaust.jpg?v=1744062478" alt="McLaren 720s PPF" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_McLaren_720s_PPF_Wrapped_HRE_Wheels.jpg?v=1744145013" alt="McLaren 720s PPF" class="gallery-img"></div>
-
-                    <!-- Duplicated Set -->
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Freshly_Detailed_Ryft_McLaren_720s_on_HRE_Wheels_with_WIKD_Exhaust.jpg?v=1744062350" alt="McLaren 720s PPF" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Clean_Ryft_Black_McLaren_720s_HRE_Wheels_WIKD_Exhaust.jpg?v=1744062478" alt="McLaren 720s PPF" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_McLaren_720s_PPF_Wrapped_HRE_Wheels.jpg?v=1744145013" alt="McLaren 720s PPF" class="gallery-img"></div>
+                    <!-- Original -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Freshly_Detailed_Ryft_McLaren_720s_on_HRE_Wheels_with_WIKD_Exhaust.jpg?v=1744062350&width=600" class="gallery-img" alt="McLaren 720s PPF" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Clean_Ryft_Black_McLaren_720s_HRE_Wheels_WIKD_Exhaust.jpg?v=1744062478&width=600" class="gallery-img" alt="McLaren 720s PPF" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_McLaren_720s_PPF_Wrapped_HRE_Wheels.jpg?v=1744145013&width=600" class="gallery-img" alt="McLaren 720s PPF" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <!-- Duplicate -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Freshly_Detailed_Ryft_McLaren_720s_on_HRE_Wheels_with_WIKD_Exhaust.jpg?v=1744062350&width=600" class="gallery-img" alt="McLaren 720s PPF" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Clean_Ryft_Black_McLaren_720s_HRE_Wheels_WIKD_Exhaust.jpg?v=1744062478&width=600" class="gallery-img" alt="McLaren 720s PPF" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_McLaren_720s_PPF_Wrapped_HRE_Wheels.jpg?v=1744145013&width=600" class="gallery-img" alt="McLaren 720s PPF" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <!-- Quadruplicate -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Freshly_Detailed_Ryft_McLaren_720s_on_HRE_Wheels_with_WIKD_Exhaust.jpg?v=1744062350&width=600" class="gallery-img" alt="McLaren 720s PPF" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Clean_Ryft_Black_McLaren_720s_HRE_Wheels_WIKD_Exhaust.jpg?v=1744062478&width=600" class="gallery-img" alt="McLaren 720s PPF" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_McLaren_720s_PPF_Wrapped_HRE_Wheels.jpg?v=1744145013&width=600" class="gallery-img" alt="McLaren 720s PPF" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
                 </div>
             </div>
         </section>
 
-        <!-- PROJECT 4: McLaren 720s Graphic Wrap (RIGHT SCROLL) -->
+        <!-- PROJECT 16: McLaren 720s Wrap (New) -->
         <section class="project-section">
             <div class="project-info">
                 <h2 class="text-3xl md:text-4xl text-white font-heading mb-2">McLaren 720s</h2>
                 <p class="text-muted text-lg">Custom Graphic Wrap</p>
             </div>
-            
             <div class="ticker-view">
                 <div class="ticker-track reverse">
-                    <!-- Original Set (3 Images) -->
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/wmremove-transformed_1.png?v=1764107106" alt="McLaren 720s Wrap" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/White_McLaren_720s_With_Custom_Valentine_s_Livery.jpg?v=1744204351" alt="McLaren 720s Wrap" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/White_McLaren_720s_with_Custom_Vinyl_Wrap_Graphic_Livery_Quiet_Valentines.jpg?v=1744204592" alt="McLaren 720s Wrap" class="gallery-img"></div>
-
-                    <!-- Duplicated Set -->
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/wmremove-transformed_1.png?v=1764107106" alt="McLaren 720s Wrap" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/White_McLaren_720s_With_Custom_Valentine_s_Livery.jpg?v=1744204351" alt="McLaren 720s Wrap" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/White_McLaren_720s_with_Custom_Vinyl_Wrap_Graphic_Livery_Quiet_Valentines.jpg?v=1744204592" alt="McLaren 720s Wrap" class="gallery-img"></div>
+                    <!-- Original -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/wmremove-transformed_1.png?v=1764107106&width=600" class="gallery-img" alt="McLaren 720s Wrap" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/White_McLaren_720s_With_Custom_Valentine_s_Livery.jpg?v=1744204351&width=600" class="gallery-img" alt="McLaren 720s Wrap" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/White_McLaren_720s_with_Custom_Vinyl_Wrap_Graphic_Livery_Quiet_Valentines.jpg?v=1744204592&width=600" class="gallery-img" alt="McLaren 720s Wrap" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <!-- Duplicate -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/wmremove-transformed_1.png?v=1764107106&width=600" class="gallery-img" alt="McLaren 720s Wrap" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/White_McLaren_720s_With_Custom_Valentine_s_Livery.jpg?v=1744204351&width=600" class="gallery-img" alt="McLaren 720s Wrap" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/White_McLaren_720s_with_Custom_Vinyl_Wrap_Graphic_Livery_Quiet_Valentines.jpg?v=1744204592&width=600" class="gallery-img" alt="McLaren 720s Wrap" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <!-- Quadruplicate -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/wmremove-transformed_1.png?v=1764107106&width=600" class="gallery-img" alt="McLaren 720s Wrap" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/White_McLaren_720s_With_Custom_Valentine_s_Livery.jpg?v=1744204351&width=600" class="gallery-img" alt="McLaren 720s Wrap" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/White_McLaren_720s_with_Custom_Vinyl_Wrap_Graphic_Livery_Quiet_Valentines.jpg?v=1744204592&width=600" class="gallery-img" alt="McLaren 720s Wrap" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
                 </div>
             </div>
         </section>
 
-        <!-- PROJECT 5: Lamborghini Urus (LEFT SCROLL) -->
+        <!-- PROJECT 17: Lamborghini Urus Detail (New) -->
         <section class="project-section">
             <div class="project-info">
                 <h2 class="text-3xl md:text-4xl text-white font-heading mb-2">2018 Lamborghini Urus</h2>
                 <p class="text-muted text-lg">Impact PPF Repair, Paint Correction, and Detail</p>
             </div>
-            
             <div class="ticker-view">
                 <div class="ticker-track">
-                    <!-- Original Set (5 Images) -->
-                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/Black_Lamborghini_Urus_Paint_Correction_and_Rock_Chip_Repair.jpg?v=1744062951&width=1100" alt="Urus Detail" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1868.jpg?v=1741698889&width=1100" alt="Urus Detail" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1864.jpg?v=1741699154&width=1100" alt="Urus Detail" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_2056.jpg?v=1741643606&width=1100" alt="Urus Detail" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/Black_Lamborghini_Urus_Interior_Detail.jpg?v=1744062916&width=1100" alt="Urus Detail" class="gallery-img"></div>
-                    
-                    <!-- Duplicated Set for Infinite Loop -->
-                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/Black_Lamborghini_Urus_Paint_Correction_and_Rock_Chip_Repair.jpg?v=1744062951&width=1100" alt="Urus Detail" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1868.jpg?v=1741698889&width=1100" alt="Urus Detail" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1864.jpg?v=1741699154&width=1100" alt="Urus Detail" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_2056.jpg?v=1741643606&width=1100" alt="Urus Detail" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/Black_Lamborghini_Urus_Interior_Detail.jpg?v=1744062916&width=1100" alt="Urus Detail" class="gallery-img"></div>
+                    <!-- Original -->
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/Black_Lamborghini_Urus_Paint_Correction_and_Rock_Chip_Repair.jpg?v=1744062951&width=600" alt="Urus Detail" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1868.jpg?v=1741698889&width=600" alt="Urus Detail" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1864.jpg?v=1741699154&width=600" alt="Urus Detail" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_2056.jpg?v=1741643606&width=600" alt="Urus Detail" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/Black_Lamborghini_Urus_Interior_Detail.jpg?v=1744062916&width=600" alt="Urus Detail" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <!-- Duplicate -->
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/Black_Lamborghini_Urus_Paint_Correction_and_Rock_Chip_Repair.jpg?v=1744062951&width=600" alt="Urus Detail" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1868.jpg?v=1741698889&width=600" alt="Urus Detail" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1864.jpg?v=1741699154&width=600" alt="Urus Detail" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_2056.jpg?v=1741643606&width=600" alt="Urus Detail" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/Black_Lamborghini_Urus_Interior_Detail.jpg?v=1744062916&width=600" alt="Urus Detail" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
                 </div>
             </div>
         </section>
 
-        <!-- PROJECT 6: Cadillac CT5 V Blackwing (RIGHT SCROLL) -->
+        <!-- PROJECT 18: Cadillac CT5 V Blackwing (New) -->
         <section class="project-section">
             <div class="project-info">
                 <h2 class="text-3xl md:text-4xl text-white font-heading mb-2">2024 Cadillac CT5 V Blackwing</h2>
                 <p class="text-muted text-lg">Exterior Detail</p>
             </div>
-            
             <div class="ticker-view">
-                <div class="ticker-track reverse"> 
-                    <!-- Original Set (3 Images) -->
-                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1919.jpg?v=1741643606&width=1100" alt="Blackwing Front" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1917.jpg?v=1741643606&width=1100" alt="Blackwing Side" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1912.jpg?v=1741643718&width=1100" alt="Blackwing Rear" class="gallery-img"></div>
-
-                    <!-- Duplicated Set -->
-                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1919.jpg?v=1741643606&width=1100" alt="Blackwing Front" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1917.jpg?v=1741643606&width=1100" alt="Blackwing Side" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1912.jpg?v=1741643718&width=1100" alt="Blackwing Rear" class="gallery-img"></div>
+                <div class="ticker-track reverse">
+                    <!-- Original -->
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1919.jpg?v=1741643606&width=600" alt="Blackwing Front" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1917.jpg?v=1741643606&width=600" alt="Blackwing Side" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1912.jpg?v=1741643718&width=600" alt="Blackwing Rear" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <!-- Duplicate -->
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1919.jpg?v=1741643606&width=600" alt="Blackwing Front" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1917.jpg?v=1741643606&width=600" alt="Blackwing Side" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1912.jpg?v=1741643718&width=600" alt="Blackwing Rear" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <!-- Quadruplicate -->
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1919.jpg?v=1741643606&width=600" alt="Blackwing Front" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1917.jpg?v=1741643606&width=600" alt="Blackwing Side" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1912.jpg?v=1741643718&width=600" alt="Blackwing Rear" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
                 </div>
             </div>
         </section>
 
-        <!-- PROJECT 7: Ford F450 Platinum (LEFT SCROLL) -->
+        <!-- PROJECT 19: Ford F450 Platinum (New) -->
         <section class="project-section">
             <div class="project-info">
                 <h2 class="text-3xl md:text-4xl text-white font-heading mb-2">2024 Ford F450 Platinum</h2>
                 <p class="text-muted text-lg">Chrome Delete & Detail</p>
             </div>
-            
             <div class="ticker-view">
                 <div class="ticker-track">
-                    <!-- Original Set (5 Images) -->
-                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_2350.jpg?v=1741643189&width=1100" alt="Ford F450 Front" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/Black_Ford_F450_Platinum_Powerstroke_Dually_Chrome_Delete.jpg?v=1744062595&width=1100" alt="Ford F450 Chrome Delete" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_2062.jpg?v=1741643606&width=1100" alt="Ford F450 Side" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1614.jpg?v=1741698914&width=1100" alt="Ford F450 Detail" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1613.jpg?v=1741698889&width=1100" alt="Ford F450 Rear" class="gallery-img"></div>
-
-                    <!-- Duplicated Set -->
-                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_2350.jpg?v=1741643189&width=1100" alt="Ford F450 Front" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/Black_Ford_F450_Platinum_Powerstroke_Dually_Chrome_Delete.jpg?v=1744062595&width=1100" alt="Ford F450 Chrome Delete" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_2062.jpg?v=1741643606&width=1100" alt="Ford F450 Side" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1614.jpg?v=1741698914&width=1100" alt="Ford F450 Detail" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1613.jpg?v=1741698889&width=1100" alt="Ford F450 Rear" class="gallery-img"></div>
+                    <!-- Original -->
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_2350.jpg?v=1741643189&width=600" alt="Ford F450 Front" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/Black_Ford_F450_Platinum_Powerstroke_Dually_Chrome_Delete.jpg?v=1744062595&width=600" alt="Ford F450 Chrome Delete" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_2062.jpg?v=1741643606&width=600" alt="Ford F450 Side" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1614.jpg?v=1741698914&width=600" alt="Ford F450 Detail" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1613.jpg?v=1741698889&width=600" alt="Ford F450 Rear" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <!-- Duplicate -->
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_2350.jpg?v=1741643189&width=600" alt="Ford F450 Front" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/Black_Ford_F450_Platinum_Powerstroke_Dually_Chrome_Delete.jpg?v=1744062595&width=600" alt="Ford F450 Chrome Delete" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_2062.jpg?v=1741643606&width=600" alt="Ford F450 Side" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1614.jpg?v=1741698914&width=600" alt="Ford F450 Detail" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://wikdwraps.com/cdn/shop/files/IMG_1613.jpg?v=1741698889&width=600" alt="Ford F450 Rear" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
                 </div>
             </div>
         </section>
 
-        <!-- PROJECT 8: Other Work (RIGHT SCROLL) -->
+        <!-- PROJECT 20: Other Work (New) -->
         <section class="project-section">
             <div class="project-info">
                 <h2 class="text-3xl md:text-4xl text-white font-heading mb-2">Other Work</h2>
                 <p class="text-muted text-lg">Various Projects</p>
             </div>
-            
             <div class="ticker-view">
                 <div class="ticker-track reverse">
-                    <!-- Original Set (6 Images) -->
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Nissan_GTR_R35_Freshly_Detailed_and_Paint_Corrected.jpg?v=1743435296" alt="Other Work" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_5329_2cefb844-69c3-4719-95c9-d0316ed56283.jpg?v=1744204714" alt="Other Work" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Porsche_991_911_Turbo_S_Cabriolet_Ceramic_Coating.jpg?v=1744063185" alt="Other Work" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_1868.jpg?v=1741698889" alt="Other Work" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_2415.jpg?v=1742221623" alt="Other Work" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_2400.jpg?v=1742221623" alt="Other Work" class="gallery-img"></div>
-
-                    <!-- Duplicated Set -->
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Nissan_GTR_R35_Freshly_Detailed_and_Paint_Corrected.jpg?v=1743435296" alt="Other Work" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_5329_2cefb844-69c3-4719-95c9-d0316ed56283.jpg?v=1744204714" alt="Other Work" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Porsche_991_911_Turbo_S_Cabriolet_Ceramic_Coating.jpg?v=1744063185" alt="Other Work" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_1868.jpg?v=1741698889" alt="Other Work" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_2415.jpg?v=1742221623" alt="Other Work" class="gallery-img"></div>
-                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_2400.jpg?v=1742221623" alt="Other Work" class="gallery-img"></div>
+                    <!-- Original -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Nissan_GTR_R35_Freshly_Detailed_and_Paint_Corrected.jpg?v=1743435296&width=600" alt="Other Work" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_5329_2cefb844-69c3-4719-95c9-d0316ed56283.jpg?v=1744204714&width=600" alt="Other Work" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Porsche_991_911_Turbo_S_Cabriolet_Ceramic_Coating.jpg?v=1744063185&width=600" alt="Other Work" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_1868.jpg?v=1741698889&width=600" alt="Other Work" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_2415.jpg?v=1742221623&width=600" alt="Other Work" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_2400.jpg?v=1742221623&width=600" alt="Other Work" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <!-- Duplicate -->
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Nissan_GTR_R35_Freshly_Detailed_and_Paint_Corrected.jpg?v=1743435296&width=600" alt="Other Work" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_5329_2cefb844-69c3-4719-95c9-d0316ed56283.jpg?v=1744204714&width=600" alt="Other Work" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Black_Porsche_991_911_Turbo_S_Cabriolet_Ceramic_Coating.jpg?v=1744063185&width=600" alt="Other Work" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_1868.jpg?v=1741698889&width=600" alt="Other Work" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_2415.jpg?v=1742221623&width=600" alt="Other Work" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
+                    <div class="gallery-item"><img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_2400.jpg?v=1742221623&width=600" alt="Other Work" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')"></div>
                 </div>
             </div>
         </section>
+
     </main>
 
     <footer class="wikd-footer">
@@ -481,87 +885,111 @@
     
     <script>
     document.addEventListener('DOMContentLoaded', () => {
+        // Optimized Ticker Logic
         const tickers = document.querySelectorAll('.ticker-view');
+        
+        // 1. Setup IntersectionObserver to pause off-screen animations
+        const observerOptions = {
+            root: null,
+            rootMargin: '100px', // Pre-load slightly before view
+            threshold: 0
+        };
+
+        const tickerObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                // Store state on DOM node to avoid complex lookups
+                entry.target._isVisible = entry.isIntersecting;
+            });
+        }, observerOptions);
 
         tickers.forEach(view => {
             const track = view.querySelector('.ticker-track');
             if (!track) return;
+            
+            // Initial State
+            view._isVisible = false;
+            tickerObserver.observe(view);
 
-            // Determine direction based on class 'reverse'
-            // Default (no reverse): moves left (-1). Reverse: moves right (1).
-            // Speed factor controls pace
+            // Animation Config
             let baseSpeed = track.classList.contains('reverse') ? 0.5 : -0.5;
             let currentSpeed = baseSpeed;
             let pos = 0;
-            let targetPos = 0; // Target position for smooth animation
+            let targetPos = 0;
             let isHovered = false;
-            let animationFrameId;
+            
+            // CACHE WIDTHS - Critical for performance
+            // We only calculate width on load and resize, NOT in the animation loop
+            let trackWidth = track.scrollWidth;
+            let halfWidth = trackWidth / 2;
 
-            // Animation Loop
+            // Recalculate on resize with debounce
+            let resizeTimeout;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    trackWidth = track.scrollWidth;
+                    halfWidth = trackWidth / 2;
+                }, 100);
+            });
+
+            // Main Animation Loop
             function animate() {
-                // 1. Update target position based on automatic movement
-                if (!isHovered) {
-                    targetPos += currentSpeed;
-                }
-                
-                // 2. Smoothly move pos towards targetPos (Linear Interpolation)
-                // The factor 0.1 controls the smoothness. Lower is slower/smoother.
-                pos += (targetPos - pos) * 0.1;
-
-                // 3. Logic for infinite loop (re-clamping)
-                // We assume the track contains two sets of identical items.
-                // The loop point is half the scrollWidth.
-                const totalWidth = track.scrollWidth;
-                const halfWidth = totalWidth / 2;
-                
-                // If images are not loaded yet, scrollWidth might be small. 
-                // We rely on the fact that eventually it loads.
-                if (halfWidth > 0) {
-                    // Reset both pos and targetPos to maintain the offset
-                    if (pos <= -halfWidth) {
-                        pos += halfWidth;
-                        targetPos += halfWidth;
-                    } else if (pos > 0) {
-                        pos -= halfWidth;
-                        targetPos -= halfWidth;
+                // Only run logic if visible
+                if (view._isVisible) {
+                    
+                    if (!isHovered) {
+                        targetPos += currentSpeed;
                     }
+                    
+                    // Smooth lerp for fluid motion
+                    pos += (targetPos - pos) * 0.1;
+
+                    // Infinite Loop Logic using CACHED widths
+                    if (halfWidth > 0) {
+                        if (pos <= -halfWidth) {
+                            pos += halfWidth;
+                            targetPos += halfWidth;
+                        } else if (pos > 0) {
+                            pos -= halfWidth;
+                            targetPos -= halfWidth;
+                        }
+                    }
+                    
+                    // Force GPU Acceleration
+                    track.style.transform = `translate3d(${pos}px, 0, 0)`; 
                 }
                 
-                track.style.transform = `translateX(${pos}px)`;
-                animationFrameId = requestAnimationFrame(animate);
+                requestAnimationFrame(animate);
             }
-            // Start Animation
-            animationFrameId = requestAnimationFrame(animate);
+            
+            // Start Loop
+            requestAnimationFrame(animate);
 
-            // Hover listeners to pause
+            // Hover Events
             view.addEventListener('mouseenter', () => isHovered = true);
             view.addEventListener('mouseleave', () => isHovered = false);
+            view.addEventListener('touchstart', () => isHovered = true, {passive: true});
+            view.addEventListener('touchend', () => isHovered = false);
 
-            // Helper to create buttons
+            // Create Navigation Buttons - Simplified Style
             const createBtn = (dir) => {
                 const btn = document.createElement('button');
-                // Removed bg-black/60 and backdrop-blur-sm
-                btn.className = `absolute top-1/2 -translate-y-1/2 z-10 p-3 hover:bg-red-600 text-white rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100 ${dir === 'left' ? 'left-4' : 'right-4'} shadow-lg`;
+                // Removed backdrop-blur for performance
+                btn.className = `absolute top-1/2 -translate-y-1/2 z-10 p-3 bg-black/60 hover:bg-red-600 text-white rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100 ${dir === 'left' ? 'left-4' : 'right-4'} shadow-lg border border-white/10`;
                 
-                // Arrow Icons
                 btn.innerHTML = dir === 'left' 
                     ? '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>' 
                     : '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>';
                 
                 btn.onclick = (e) => {
-                   e.stopPropagation(); // prevent other clicks
-                   // Manual Shift by updating targetPos
-                   // Left button -> Move content RIGHT (increase targetPos) to see left items
-                   const shiftAmount = 400; // Increased for a more noticeable shift
+                   e.stopPropagation();
+                   const shiftAmount = window.innerWidth < 768 ? 300 : 500;
                    targetPos += (dir === 'left' ? shiftAmount : -shiftAmount);
-                   
-                   // Re-clamping is handled in the animate loop for smoothness
                 };
                 
                 return btn;
             };
 
-            // Ensure view has group class for hover effects
             view.classList.add('group');
             view.appendChild(createBtn('left'));
             view.appendChild(createBtn('right'));
