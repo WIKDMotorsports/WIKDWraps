@@ -369,77 +369,121 @@
             clip-path: polygon(0 0, 100% 0, 100% 100%, 10px 100%, 0 0); /* Custom tag shape */
         }
 
-        /* --- CAR OVERLAY COMPOSITE STYLES --- */
+        /* --- COMPOSITE WIDGET STYLES (UPDATED TO MATCH TINT PAGE) --- */
+        
+        /* 1. The Wrapper: Handles positioning and the red glow */
         .car-composite-wrapper {
             position: relative;
             margin: 0 auto 2rem auto;
             max-width: 400px;
             width: 100%;
-            display: inline-block;
+            /* Ensure the glow isn't clipped and define a stacking context */
             overflow: visible; 
             z-index: 0;
         }
 
-        /* Subtle Red Radial Gradient Behind the car */
+        /* 2. The Glow: Subtle Red Radial Gradient Behind the car */
         .car-composite-wrapper::before {
             content: "";
             position: absolute;
             top: 50%;
             left: 50%;
+            /* Scale X axis to widen aspect ratio, Scale Y to shrink height */
             transform: translate(-50%, -50%) scaleX(1.5) scaleY(0.7);
+            /* Adjusted size to prevent clipping - wider and much taller */
             width: 150%;
             height: 300%;
+            /* Subtle red glow fading to transparent */
             background: radial-gradient(circle, rgba(255, 59, 48, 0.1) 0%, rgba(0,0,0,0) 90%);
-            z-index: -1;
+            z-index: -1; /* Behind the car image */
             pointer-events: none;
             mix-blend-mode: screen;
         }
 
-        /* The base car image defines the dimensions */
-        .car-base-image {
-            display: block;
-            width: 100%;
-            height: auto;
+        /* 3. The Inner Container: Handles the Aspect Ratio and Masking Logic */
+        .composite-container {
             position: relative;
-            z-index: 1;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            /* REMOVED: Background color, border radius, box shadow to match tint page "transparent" look */
         }
 
-        /* MASK GROUP:
-           We use the BASE CAR IMAGE (image_25.png) as the alpha mask.
-           This means the video will be clipped to the shape of the car.
-        */
-        .car-mask-group {
+        .composite-layer {
             position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            pointer-events: none;
+            display: block;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Dirty Layer: Wipes away */
+        .layer-dirty {
+            z-index: 10;
+            will-change: clip-path;
+            transition: clip-path 0.75s cubic-bezier(0.4, 0, 0.2, 1);
+            /* Initial State: Full Coverage with 45deg slant */
+            clip-path: polygon(0% 0%, 160% 0%, 100% 100%, -60% 100%);
+        }
+
+        /* Wipe States */
+        .layer-dirty.state-hidden-right {
+            clip-path: polygon(160% 0%, 160% 0%, 100% 100%, 100% 100%);
+        }
+
+        .layer-dirty.state-hidden-left {
+            clip-path: polygon(-60% 0%, -60% 0%, -120% 100%, -120% 100%);
+        }
+
+        .cw-no-transition {
+            transition: none !important;
+        }
+
+        /* Clean Layer: Bottom */
+        .layer-clean {
             z-index: 5;
-            
-            /* The Magic: Use the SUV Image ITSELF as the mask */
-            -webkit-mask-image: url('https://cdn.shopify.com/s/files/1/0671/4635/0805/files/image_25.png?v=1764095964');
-            mask-image: url('https://cdn.shopify.com/s/files/1/0671/4635/0805/files/image_25.png?v=1764095964');
-            
+        }
+
+        /* Overlay Video: Top with Blend Mode */
+        .layer-overlay {
+            z-index: 20;
+            mix-blend-mode: plus-lighter;
+            opacity: 0.8;
+            object-fit: contain;
+            /* Alpha Masking */
+            -webkit-mask-image: url('https://cdn.shopify.com/s/files/1/0671/4635/0805/files/F450Base.png?v=1762966374');
+            mask-image: url('https://cdn.shopify.com/s/files/1/0671/4635/0805/files/F450Base.png?v=1762966374');
             -webkit-mask-size: contain;
             mask-size: contain;
             -webkit-mask-repeat: no-repeat;
             mask-repeat: no-repeat;
             -webkit-mask-position: center;
             mask-position: center;
-            
-            pointer-events: none;
-            
-            /* Screen blend mode ensures the entire GROUP blends with the car behind it */
-            mix-blend-mode: screen;
-            opacity: 0.9;
         }
 
-        /* The videos inside the mask */
-        .car-video-layer {
+        /* Loading State */
+        .cw-loader {
             position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            object-fit: cover;
-            /* Screen blend mode ensures videos blend WITH EACH OTHER inside the group */
-            mix-blend-mode: screen; 
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 50;
+            transition: opacity 0.5s ease;
+            color: white;
+            font-family: monospace;
+            font-size: 0.875rem;
+        }
+        
+        .cw-loader.fade-out {
+            opacity: 0;
+            pointer-events: none;
         }
 
         /* --- FOOTER STYLES --- */
@@ -717,35 +761,44 @@
         </section>
 
         <!-- Final CTA -->
-        <section class="py-20 relative overflow-hidden">
+        <section class="py-20 relative">
             <div class="mobile-scaled-container text-center relative z-10">
                 
                 <!-- Car Composite Image/Video Section -->
                  <div style="display: flex; justify-content: center; margin-bottom: 2rem;">
-                     <div class="car-composite-wrapper">
-                         <!-- The base car image - Visible underneath -->
-                         <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/image_25.png?v=1764095964" alt="WIKD Wraps Tinted Car Base" class="car-base-image">
-                         
-                         <!-- 
-                             Mask Group Container:
-                             Using the SAME CAR IMAGE as the mask.
-                             The videos will be clipped to the shape of the SUV.
-                         -->
-                         <div class="car-mask-group">
-                             <!-- Video Layer 1 -->
-                             <video 
-                                 src="https://cdn.shopify.com/videos/c/o/v/0e09468d513a4949916b2d6b0f5f62cf.mp4" 
-                                 class="car-video-layer"
-                                 autoplay muted loop playsinline
-                             ></video>
-                             <!-- Video Layer 2 -->
-                             <video 
-                                 src="https://cdn.shopify.com/videos/c/o/v/1de593a438f4430fa82c341cd5da5903.mp4" 
-                                 class="car-video-layer"
-                                 autoplay muted loop playsinline
-                             ></video>
-                         </div>
-                     </div>
+                    <!-- Wrapper for Glow Effect -->
+                    <div class="car-composite-wrapper">
+                        <!-- WIDGET HTML STRUCTURE -->
+                        <div class="composite-container" id="widgetContainer">
+                            <!-- 1. Clean Base -->
+                            <img 
+                                src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/F450Base.png?v=1762966374" 
+                                alt="Clean" 
+                                class="composite-layer layer-clean"
+                            >
+
+                            <!-- 2. Dirty Overlay -->
+                            <img 
+                                src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/image_30.png?v=1764362434" 
+                                alt="Dirty" 
+                                class="composite-layer layer-dirty" 
+                                id="cwDirtyLayer"
+                            >
+
+                            <!-- 3. Effect Video -->
+                            <video 
+                                id="cwEffectVideo"
+                                class="composite-layer layer-overlay" 
+                                muted 
+                                playsinline
+                                preload="auto"
+                            >
+                                <source src="https://cdn.shopify.com/videos/c/o/v/4bb677215ca345519f14a50e8b3c8742.mp4" type="video/mp4">
+                            </video>
+
+                            <div id="cwLoader" class="cw-loader">Loading...</div>
+                        </div>
+                    </div>
                  </div>
                  <!-- End Car Composite Section -->
 
@@ -821,5 +874,87 @@
         </div>
     </footer>
 
+    <!-- WIDGET LOGIC -->
+    <script>
+        (function() {
+            // Scoped variables to prevent global conflicts
+            const dirtyLayer = document.getElementById('cwDirtyLayer');
+            const video = document.getElementById('cwEffectVideo');
+            const loader = document.getElementById('cwLoader');
+
+            const CONFIG = {
+                WIPE_DURATION: 750,
+                HOLD_CLEAN: 1000,
+                HOLD_DIRTY: 2000
+            };
+
+            const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+            async function initWidget() {
+                // Handle video loading
+                if(video.readyState < 3) {
+                      await new Promise(r => video.addEventListener('canplay', r, {once:true}));
+                }
+                
+                // Hide loader
+                if(loader) {
+                    loader.classList.add('fade-out');
+                    setTimeout(() => loader.remove(), 500);
+                }
+                
+                runAnimationLoop();
+            }
+
+            async function runAnimationLoop() {
+                // 1. Reset to Dirty
+                resetToDirty();
+                await wait(CONFIG.HOLD_DIRTY);
+
+                // 2. Wipe Dirty -> Clean (with Shine)
+                playVideo();
+                dirtyLayer.classList.add('state-hidden-right');
+                await wait(CONFIG.WIPE_DURATION);
+
+                // 3. Clean State Hold
+                await wait(CONFIG.HOLD_CLEAN);
+                
+                // 4. Clean Shine
+                playVideo();
+                await wait(2500); // Approx video duration
+
+                // 5. Reset: Jump hidden to left, then wipe in
+                dirtyLayer.classList.add('cw-no-transition');
+                dirtyLayer.classList.remove('state-hidden-right');
+                dirtyLayer.classList.add('state-hidden-left');
+                void dirtyLayer.offsetWidth; // Force Reflow
+                
+                dirtyLayer.classList.remove('cw-no-transition');
+                dirtyLayer.classList.remove('state-hidden-left');
+                await wait(CONFIG.WIPE_DURATION);
+
+                // Loop
+                runAnimationLoop();
+            }
+
+            function resetToDirty() {
+                dirtyLayer.classList.add('cw-no-transition');
+                dirtyLayer.classList.remove('state-hidden-right', 'state-hidden-left');
+                void dirtyLayer.offsetWidth;
+                dirtyLayer.classList.remove('cw-no-transition');
+            }
+
+            function playVideo() {
+                video.currentTime = 0;
+                video.play().catch(e => { /* Autoplay handling */ });
+            }
+
+            // Initialize when DOM is ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initWidget);
+            } else {
+                initWidget();
+            }
+        })();
+    </script>
 </body>
 </html>
