@@ -173,7 +173,7 @@
             }
         }
 
-        /* Unified Card Style - UPDATED FOR ICON FIX */
+        /* Unified Card Style */
         .wikd-card {
             border: 1px solid var(--color-border);
             padding: 2rem;
@@ -181,10 +181,10 @@
             /* SHARP GEOMETRY */
             clip-path: polygon(0 0, 100% 0, 100% 90%, 95% 100%, 0 100%);
             
-            /* CHANGED: Use solid Surface color (#141414) to match icon background exactly */
+            /* Use solid Surface color (#141414) to match icon background exactly */
             background: var(--color-surface);
             
-            /* ADDED: Subtle drop shadow */
+            /* Subtle drop shadow */
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
             
             transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
@@ -196,7 +196,7 @@
         .wikd-card:hover {
             border-color: var(--color-primary);
             transform: translateY(-5px);
-            /* ADDED: Stronger hover shadow */
+            /* Stronger hover shadow */
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
         }
 
@@ -253,7 +253,7 @@
         .pricing-card.elite-gradient {
             border: none !important; /* Remove default border */
             position: relative;
-            /* UPDATED: Set background to main page background color (Darker) */
+            /* Set background to main page background color (Darker) */
             background: var(--color-background); 
         }
 
@@ -309,7 +309,7 @@
             color: white;
         }
         
-        /* UPDATED: Lava text for Elite title */
+        /* Lava text for Elite title */
         .pricing-card.elite-gradient .plan-name {
              background: linear-gradient(90deg, #8b0000, #d80000, #ff2a00, #d80000, #8b0000);
              background-size: 300%;
@@ -367,6 +367,79 @@
             font-size: 0.8rem;
             padding: 0.25rem 1rem;
             clip-path: polygon(0 0, 100% 0, 100% 100%, 10px 100%, 0 0); /* Custom tag shape */
+        }
+
+        /* --- CAR OVERLAY COMPOSITE STYLES --- */
+        .car-composite-wrapper {
+            position: relative;
+            margin: 0 auto 2rem auto;
+            max-width: 400px;
+            width: 100%;
+            display: inline-block;
+            overflow: visible; 
+            z-index: 0;
+        }
+
+        /* Subtle Red Radial Gradient Behind the car */
+        .car-composite-wrapper::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scaleX(1.5) scaleY(0.7);
+            width: 150%;
+            height: 300%;
+            background: radial-gradient(circle, rgba(255, 59, 48, 0.1) 0%, rgba(0,0,0,0) 90%);
+            z-index: -1;
+            pointer-events: none;
+            mix-blend-mode: screen;
+        }
+
+        /* The base car image defines the dimensions */
+        .car-base-image {
+            display: block;
+            width: 100%;
+            height: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* MASK GROUP:
+           We use the BASE CAR IMAGE (image_25.png) as the alpha mask.
+           This means the video will be clipped to the shape of the car.
+        */
+        .car-mask-group {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 5;
+            
+            /* The Magic: Use the SUV Image ITSELF as the mask */
+            -webkit-mask-image: url('https://cdn.shopify.com/s/files/1/0671/4635/0805/files/image_25.png?v=1764095964');
+            mask-image: url('https://cdn.shopify.com/s/files/1/0671/4635/0805/files/image_25.png?v=1764095964');
+            
+            -webkit-mask-size: contain;
+            mask-size: contain;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-position: center;
+            
+            pointer-events: none;
+            
+            /* Screen blend mode ensures the entire GROUP blends with the car behind it */
+            mix-blend-mode: screen;
+            opacity: 0.9;
+        }
+
+        /* The videos inside the mask */
+        .car-video-layer {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            /* Screen blend mode ensures videos blend WITH EACH OTHER inside the group */
+            mix-blend-mode: screen; 
         }
 
         /* --- FOOTER STYLES --- */
@@ -489,7 +562,7 @@
                 
                 <!-- 3-Column Benefits Row using Animated Icons -->
                 <div class="features-row">
-                    <!-- Benefit 1: Priority Scheduling (Updated Icon) -->
+                    <!-- Benefit 1: Priority Scheduling -->
                     <div class="wikd-card">
                         <animated-icons
                             src="https://animatedicons.co/get-icon?name=Schedule&style=minimalistic&token=5be054c1-2954-4c87-9287-f1e6362c8da3"
@@ -513,8 +586,8 @@
                             width="80"
                             class="mb-4"
                         ></animated-icons>
-                        <h3 class="text-xl font-heading text-white mb-2">Preferred Pricing</h3>
-                        <p class="text-sm text-gray-400">Enjoy exclusive discounts on all maintenance services and future detailing packages.</p>
+                        <h3 class="text-xl font-heading text-white mb-2">Member Discounts</h3>
+                        <p class="text-sm text-gray-400">All maintenance plan members get an additional <strong>10% off</strong> all protection and customization services.</p>
                     </div>
 
                     <!-- Benefit 3 -->
@@ -560,18 +633,22 @@
                             </li>
                             <li class="plan-feature-item">
                                 <svg class="check-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                <span>Interior Vacuum & Wipe Down</span>
+                                <span>Monthly Interior Vacuum & Wipe<span class="text-red-500">*</span></span>
                             </li>
                             <li class="plan-feature-item">
                                 <svg class="check-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                                 <span>Tire Dressing</span>
+                            </li>
+                            <li class="plan-feature-item">
+                                <svg class="check-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                <span>10% Off Services</span>
                             </li>
                         </ul>
                         
                         <a href="https://wikdwraps.com/pages/contact" class="btn btn-tertiary text-center w-full"><span>Select Plan</span></a>
                     </div>
 
-                    <!-- Plan 2: The Maintenance (Popular) -->
+                    <!-- Plan 2: The Standard (Popular) -->
                     <div class="pricing-card popular">
                         <div class="popular-badge">Most Popular</div>
                         <h3 class="plan-name">The Standard</h3>
@@ -581,7 +658,7 @@
                         <ul class="plan-features">
                             <li class="plan-feature-item">
                                 <svg class="check-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                <span><strong>Unlimited</strong> Hand Washes</span>
+                                <span><strong>Weekly</strong> Hand Wash</span>
                             </li>
                             <li class="plan-feature-item">
                                 <svg class="check-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
@@ -589,11 +666,11 @@
                             </li>
                             <li class="plan-feature-item">
                                 <svg class="check-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                <span>Detailed Interior Clean</span>
+                                <span>Bi-Weekly Interior Refresh<span class="text-red-500">*</span></span>
                             </li>
                             <li class="plan-feature-item">
                                 <svg class="check-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                <span>10% Off Additional Services</span>
+                                <span>10% Off Services</span>
                             </li>
                         </ul>
                         
@@ -609,11 +686,11 @@
                         <ul class="plan-features">
                             <li class="plan-feature-item">
                                 <svg class="check-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                <span>Concierge Pick-up & Drop-off</span>
+                                <span><strong>Weekly</strong> Premium Exterior Detail</span>
                             </li>
                             <li class="plan-feature-item">
                                 <svg class="check-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                <span>Weekly Premium Detail</span>
+                                <span><strong>Weekly</strong> Interior Detail<span class="text-red-500">*</span></span>
                             </li>
                             <li class="plan-feature-item">
                                 <svg class="check-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
@@ -621,19 +698,57 @@
                             </li>
                             <li class="plan-feature-item">
                                 <svg class="check-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                <span>20% Off Additional Services</span>
+                                <span>10% Off Services</span>
                             </li>
                         </ul>
                         
                         <a href="https://wikdwraps.com/pages/contact" class="btn btn-tertiary text-center w-full"><span>Inquire</span></a>
                     </div>
                 </div>
+                
+                <!-- Disclaimer -->
+                <div class="mt-8 text-center">
+                    <p class="text-xs text-[var(--color-text-muted)] italic">
+                        <span class="text-red-500">*</span> Additional charges for haz-mat, pet hair, and deep stain removal may apply.
+                    </p>
+                </div>
+                
             </div>
         </section>
 
         <!-- Final CTA -->
-        <section class="py-20">
-            <div class="mobile-scaled-container text-center">
+        <section class="py-20 relative overflow-hidden">
+            <div class="mobile-scaled-container text-center relative z-10">
+                
+                <!-- Car Composite Image/Video Section -->
+                 <div style="display: flex; justify-content: center; margin-bottom: 2rem;">
+                     <div class="car-composite-wrapper">
+                         <!-- The base car image - Visible underneath -->
+                         <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/image_25.png?v=1764095964" alt="WIKD Wraps Tinted Car Base" class="car-base-image">
+                         
+                         <!-- 
+                             Mask Group Container:
+                             Using the SAME CAR IMAGE as the mask.
+                             The videos will be clipped to the shape of the SUV.
+                         -->
+                         <div class="car-mask-group">
+                             <!-- Video Layer 1 -->
+                             <video 
+                                 src="https://cdn.shopify.com/videos/c/o/v/0e09468d513a4949916b2d6b0f5f62cf.mp4" 
+                                 class="car-video-layer"
+                                 autoplay muted loop playsinline
+                             ></video>
+                             <!-- Video Layer 2 -->
+                             <video 
+                                 src="https://cdn.shopify.com/videos/c/o/v/1de593a438f4430fa82c341cd5da5903.mp4" 
+                                 class="car-video-layer"
+                                 autoplay muted loop playsinline
+                             ></video>
+                         </div>
+                     </div>
+                 </div>
+                 <!-- End Car Composite Section -->
+
                 <h2 class="h2 mb-6">Keep It WIKD.</h2>
                 <p class="p-muted max-w-2xl mx-auto mb-8">
                     Your vehicle is an investment. Treat it like one. Sign up for a maintenance plan today and never worry about a dirty car again.
