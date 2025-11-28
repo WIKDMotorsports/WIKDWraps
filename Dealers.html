@@ -141,6 +141,7 @@
             transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
             display: flex; flex-direction: column;
             justify-content: flex-start; align-items: center; text-align: center;
+            text-decoration: none !important; /* Ensures links don't have underlines */
         }
         .feature-box:hover { 
             border-color: var(--color-primary); 
@@ -148,6 +149,27 @@
             /* ADDED: Stronger shadow on hover */
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
         }
+
+        /* NEW: Learn More Link Style */
+        .cta-link {
+            margin-top: auto; /* Pushes to bottom of flex container */
+            padding-top: 1.5rem;
+            color: var(--color-primary);
+            font-family: var(--font-heading);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: gap 0.3s ease, color 0.3s ease;
+        }
+        .feature-box:hover .cta-link {
+            gap: 1rem; /* Animation: Arrow moves away */
+            color: white; /* Optional: Highlights white on hover */
+        }
+
 
         /* --- FORM STYLES --- */
         .dealer-form-container {
@@ -430,8 +452,8 @@
                 </div>
                 
                 <div class="features-grid-3x1">
-                    <!-- 1. Paint Protection Film (UPDATED WITH SEQUENCE) -->
-                    <div class="feature-box">
+                    <!-- 1. Paint Protection Film (LINKED) -->
+                    <a href="https://wikdwraps.com/pages/paint-protection-film" class="feature-box">
                         <div class="mini-visual-container" id="ppf-sequence-container">
                             <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/CadillacSUVBase.png?v=1762966194" class="sequence-image active" alt="Base Coverage">
                             <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/CadillacSUVFront.png?v=1762966187" class="sequence-image" alt="Full Front Coverage">
@@ -441,20 +463,28 @@
                         </div>
                         <h3 class="inline-richtext h3 text-2xl mb-3 font-heading text-[var(--color-primary)]">Paint Protection Film</h3>
                         <div class="rte"><p>Give your customers ultimate peace of mind with invisible paint protection film that shields their vehicle's factory paint from road debris, scratches, and everyday wear.</p></div>
-                    </div>
+                        <span class="cta-link">
+                            Learn More
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </span>
+                    </a>
 
-                    <!-- 2. Window Tint (UPDATED WITH OPACITY SYNC) -->
-                    <div class="feature-box">
+                    <!-- 2. Window Tint (LINKED) -->
+                    <a href="https://wikdwraps.com/pages/window-tint" class="feature-box">
                         <div class="mini-visual-container">
                             <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/CadillacSUVBase.png?v=1762966194" alt="Base Car" class="mini-visual-base">
                             <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/SUV_Tint.png?v=1762888396" alt="Tint Overlay" class="mini-visual-overlay" id="tint-overlay">
                         </div>
                         <h3 class="inline-richtext h3 text-2xl mb-3 font-heading text-[var(--color-primary)]">Window Tint</h3>
                         <div class="rte"><p>Enhance your customers' comfort, privacy, and UV protection. Reduce glare, block harmful sun rays, and maintain a cooler interior while offering a sleek, stylish appearance.</p></div>
-                    </div>
+                        <span class="cta-link">
+                            Learn More
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </span>
+                    </a>
 
-                    <!-- 3. Ceramic Coatings -->
-                    <div class="feature-box">
+                    <!-- 3. Ceramic Coatings (LINKED) -->
+                    <a href="https://wikdwraps.com/pages/ceramic-coatings" class="feature-box">
                         <div class="mini-visual-container">
                             <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/CadillacSUVBase.png?v=1762966194" alt="Base Car" class="mini-visual-base">
                             <!-- Main Ceramic Coat Video -->
@@ -464,7 +494,11 @@
                         </div>
                         <h3 class="inline-richtext h3 text-2xl mb-3 font-heading text-[var(--color-primary)]">Ceramic Coatings</h3>
                         <div class="rte"><p>Shield your customers' vehicles from UV damage, chemical contaminants, and oxidation with advanced hydrophobic and high gloss ceramic coatings.</p></div>
-                    </div>
+                        <span class="cta-link">
+                            Learn More
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </span>
+                    </a>
                 </div>
             </div>
         </section>
