@@ -23,6 +23,12 @@
             --color-border: #2A2A2A;
             --font-heading: 'Rajdhani', sans-serif;
             --font-body: 'Inter', sans-serif;
+            
+            /* Ceramic Mask URL */
+            --car-mask-url: url('https://cdn.shopify.com/s/files/1/0671/4635/0805/files/image_24.png?v=1764085690');
+            /* Glow Colors */
+            --glow-base: rgba(255, 255, 255, 0.1);
+            --glow-active: rgba(39, 145, 245, 0.5);
         }
 
         /* Base styles */
@@ -170,33 +176,111 @@
             }
         }
 
-        .service-image-container {
+        /* Replaced Standard Image Container with Composite Styles */
+        .composite-container {
             position: relative;
-            aspect-ratio: 16 / 10;
             width: 100%;
-            border: 1px solid var(--color-border);
-            /* SHARP GEOMETRY */
-            clip-path: polygon(0 0, 100% 0, 100% 85%, 95% 100%, 0 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- SHARED COMPOSITE STYLES --- */
+        
+        /* 1. GENERAL CAR WRAPPER (Used for Tint, Ceramic, PPF) */
+        .car-composite-wrapper {
+            position: relative;
+            /* Center the wrapper */
+            margin: 0 auto;
+            /* Limit max width so it matches flow */
+            max-width: 100%; 
+            width: 100%;
+            display: inline-block;
+            overflow: visible; 
+            z-index: 0;
         }
         
-        .service-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: grayscale(100%) contrast(110%);
-            transition: filter 0.5s ease;
+        /* UPDATED: Red Radial Gradient Behind (SCALED TO MATCH VINYL) */
+        .car-composite-wrapper::before {
+            content: ""; position: absolute;
+            top: 50%; left: 50%;
+            /* Vinyl Scale Logic: translate(-50%, -50%) scaleX(1.7) */
+            transform: translate(-50%, -50%) scaleX(1.7);
+            /* Vinyl Dimensions: 120% square */
+            width: 120%; height: 120%;
+            /* Vinyl Gradient Stop: transparent at 65% */
+            background: radial-gradient(circle, rgba(255, 59, 48, 0.15) 0%, transparent 65%);
+            /* Vinyl Blur */
+            filter: blur(20px);
+            z-index: -1; pointer-events: none; mix-blend-mode: screen;
         }
-        .service-image-container:hover .service-image {
-            filter: grayscale(0%) contrast(100%);
+        
+        /* ADDED: Blue Gradient Modifier for PPF */
+        .car-composite-wrapper.glow-blue::before {
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.25) 0%, transparent 65%);
+        }
+
+        .car-base-image {
+            display: block; width: 100%; height: auto; position: relative; z-index: 1;
+        }
+
+        /* 2. TINT SPECIFIC */
+        .car-tint-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 2; object-fit: contain; pointer-events: none;
+            opacity: 0; transition: opacity 1s ease-in-out;
+        }
+
+        /* 3. CERAMIC VIDEO SPECIFIC */
+        .car-effect-video {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2;
+            object-fit: fill; pointer-events: none; mix-blend-mode: screen;
+            -webkit-mask-image: var(--car-mask-url); mask-image: var(--car-mask-url);
+            -webkit-mask-size: 100% 100%; mask-size: 100% 100%;
+            -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+            -webkit-mask-position: center; mask-position: center;
+        }
+
+        /* 4. SEQUENCE CONTAINER (PPF & VINYL) */
+        .sequence-container {
+            position: relative;
+            aspect-ratio: 16 / 9;
+            width: 100%;
+            /* Consistent clipping for style */
+            clip-path: polygon(0 0, 100% 0, 100% 90%, 95% 100%, 0 100%);
+            overflow: hidden;
+            background: transparent;
+        }
+        .sequence-image {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: contain; opacity: 0; transition: opacity 0.5s ease-in-out; z-index: 2;
+        }
+        .sequence-image.active { opacity: 1; }
+
+        /* 5. GLOW WRAPPER (VINYL - THE REFERENCE) */
+        .glow-wrapper {
+            position: relative; display: inline-block; width: 100%;
+            z-index: 1;
+            --glow-color: rgba(255, 255, 255, 0.1); 
+            transition: --glow-color 0.5s ease-in-out;
+        }
+        /* Reference Gradient for Alignment */
+        .glow-wrapper::before {
+            content: ""; position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scaleX(1.7);
+            width: 120%; height: 120%;
+            background: radial-gradient(circle, var(--glow-color) 0%, transparent 65%);
+            filter: blur(20px); z-index: -1; pointer-events: none;
+            mix-blend-mode: screen; transition: background 0.5s ease-in-out;
         }
 
         .service-text h3 {
             font-size: 2.5rem;
-            margin-bottom: 0.5rem; /* Reduced margin to sit closer to price note */
+            margin-bottom: 0.5rem;
             color: white;
         }
 
-        /* NEW STYLE FOR PRICING NOTES */
+        /* Pricing Notes */
         .service-price-note {
             font-family: var(--font-heading);
             color: var(--color-primary);
@@ -209,26 +293,16 @@
         }
         
         .service-feature-list {
-            list-style: none;
-            padding: 0;
-            margin: 1.5rem 0;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
+            list-style: none; padding: 0; margin: 1.5rem 0;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
         }
         .service-feature-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            color: var(--color-text-muted);
-            font-family: var(--font-heading);
-            text-transform: uppercase;
-            font-weight: 600;
-            font-size: 0.9rem;
+            display: flex; align-items: center; gap: 0.75rem;
+            color: var(--color-text-muted); font-family: var(--font-heading);
+            text-transform: uppercase; font-weight: 600; font-size: 0.9rem;
         }
         .feature-icon {
-            color: var(--color-primary);
-            width: 16px; height: 16px;
+            color: var(--color-primary); width: 16px; height: 16px;
         }
 
         /* --- FOOTER STYLES --- */
@@ -341,10 +415,19 @@
     <main class="py-20">
         <div class="mobile-scaled-container">
             
-            <!-- Service 1: PPF -->
+            <!-- Service 1: PPF (Replaced with Sequence) -->
             <div class="service-row">
-                <div class="service-image-container">
-                    <img src="https://wikdwraps.com/cdn/shop/files/Satin_PPF_Wrapped_Black_and_Green_Lamborghini_Huracan_STO_Freshly_Detailed.jpg?v=1743435243" alt="Paint Protection Film" class="service-image">
+                <div class="composite-container">
+                    <!-- Added car-composite-wrapper with glow-blue class -->
+                    <div class="car-composite-wrapper glow-blue">
+                        <div class="sequence-container" id="ppf-sequence">
+                            <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/image.png?v=1763057511" class="sequence-image active" alt="Base Coverage">
+                            <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/Full_Front.png?v=1763057505" class="sequence-image" alt="Full Front Coverage">
+                            <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/Track_Pack.png?v=1763057475" class="sequence-image" alt="Track Pack Coverage">
+                            <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/Full_coverage.png?v=1763057481" class="sequence-image" alt="Full Car Coverage">
+                            <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/image_21.png?v=1763057528" class="sequence-image" alt="Formula 1 Coverage">
+                        </div>
+                    </div>
                 </div>
                 <div class="service-text">
                     <h3 class="h3">Paint Protection Film (PPF)</h3>
@@ -378,10 +461,15 @@
                 </div>
             </div>
 
-            <!-- Service 2: Ceramic Coatings -->
+            <!-- Service 2: Ceramic Coatings (Replaced with Video Overlay) -->
             <div class="service-row reverse">
-                <div class="service-image-container">
-                    <img src="https://wikdwraps.com/cdn/shop/files/Blue_and_White_Stripe_2006_Ford_GT_Ford_GT40_Detailed_and_Ceramic_Coated.jpg?v=1743434907" alt="Ceramic Coating" class="service-image">
+                <div class="composite-container">
+                    <div class="car-composite-wrapper">
+                        <!-- Base Image -->
+                        <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/image_24.png?v=1764085690" alt="Ceramic Coated Car" class="car-base-image">
+                        <!-- Video Overlay -->
+                        <video src="https://cdn.shopify.com/videos/c/o/v/fa85c90cb3b948b2979fbbbc32f75d8a.mp4" autoplay loop muted playsinline class="car-effect-video"></video>
+                    </div>
                 </div>
                 <div class="service-text">
                     <h3 class="h3">Ceramic Coatings</h3>
@@ -415,10 +503,23 @@
                 </div>
             </div>
 
-            <!-- Service 3: Vinyl Wraps -->
+            <!-- Service 3: Vinyl Wraps (Replaced with Color Changing Truck) -->
             <div class="service-row">
-                <div class="service-image-container">
-                    <img src="https://wikdwraps.com/cdn/shop/files/Black_Ford_F450_Platinum_Powerstroke_Dually_Chrome_Delete.jpg?v=1744062595" alt="Vinyl Wrap" class="service-image">
+                <div class="composite-container">
+                    <div class="glow-wrapper" id="dynamic-glow-wrapper">
+                        <div class="sequence-container" id="truck-sequence">
+                            <!-- 1. Base (White Glow) -->
+                            <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/F450Base.png?v=1762966374" class="sequence-image active" alt="Base Truck" data-glow="rgba(255, 255, 255, 0.1)">
+                            <!-- 2. Purple -->
+                            <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/image_26.png?v=1764101432" class="sequence-image" alt="Purple Wrap" data-glow="rgba(147, 51, 234, 0.15)">
+                            <!-- 3. Grey -->
+                            <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/image_27.png?v=1764101804" class="sequence-image" alt="Grey Wrap" data-glow="rgba(200, 200, 200, 0.12)">
+                            <!-- 4. Maroon -->
+                            <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/image_28.png?v=1764101845" class="sequence-image" alt="Maroon Wrap" data-glow="rgba(120, 0, 0, 0.18)">
+                            <!-- 5. Blue -->
+                            <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/image_29.png?v=1764101851" class="sequence-image" alt="Blue Wrap" data-glow="rgba(0, 80, 255, 0.15)">
+                        </div>
+                    </div>
                 </div>
                 <div class="service-text">
                     <h3 class="h3">Vinyl Wraps</h3>
@@ -452,10 +553,15 @@
                 </div>
             </div>
 
-            <!-- Service 4: Window Tint -->
+            <!-- Service 4: Window Tint (Replaced with Tint Opacity Overlay) -->
             <div class="service-row reverse">
-                <div class="service-image-container">
-                    <img src="https://wikdwraps.com/cdn/shop/files/Clean_Ryft_Black_McLaren_720s_HRE_Wheels_WIKD_Exhaust.jpg?v=1744062478" alt="Window Tint" class="service-image">
+                <div class="composite-container">
+                    <div class="car-composite-wrapper">
+                        <!-- Base Car -->
+                        <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/image_25.png?v=1764095964" alt="Tint Base" class="car-base-image">
+                        <!-- Overlay -->
+                        <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/SUV_Tint.png?v=1762888396" alt="Window Tint Overlay" class="car-tint-overlay" id="tint-overlay">
+                    </div>
                 </div>
                 <div class="service-text">
                     <h3 class="h3">Nano-Ceramic Tint</h3>
@@ -506,12 +612,6 @@
                         <a href="https://www.instagram.com/wikdwraps" target="_blank" rel="noopener" class="wikd-footer-social-link" aria-label="Instagram">
                             <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
                         </a>
-                        <a href="https://www.tiktok.com/@wikdwraps" target="_blank" rel="noopener" class="wikd-footer-social-link" aria-label="TikTok">
-                            <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/></svg>
-                        </a>
-                        <a href="https://www.youtube.com/@wikdwraps" target="_blank" rel="noopener" class="wikd-footer-social-link" aria-label="YouTube">
-                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                        </a>
                         <a href="https://twitter.com/wikdwraps" target="_blank" rel="noopener" class="wikd-footer-social-link" aria-label="X (Twitter)">
                             <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                         </a>
@@ -558,6 +658,58 @@
             </div>
         </div>
     </footer>
+
+    <!-- Animations Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- 1. SEQUENCE ANIMATIONS (For PPF and Vinyl Truck) ---
+            const sequenceContainers = document.querySelectorAll('.sequence-container');
+            sequenceContainers.forEach(container => {
+                const images = container.querySelectorAll('.sequence-image');
+                if(images.length === 0) return;
+
+                let currentIndex = 0;
+                // Slower interval for truck to match glow, faster for standard sequences if needed
+                const intervalTime = container.id === 'truck-sequence' ? 3000 : 2000;
+
+                setInterval(() => {
+                    // Remove active from current
+                    images[currentIndex].classList.remove('active');
+                    
+                    // Next index
+                    currentIndex = (currentIndex + 1) % images.length;
+                    
+                    // Add active to next
+                    const nextImage = images[currentIndex];
+                    nextImage.classList.add('active');
+
+                    // If this is the truck sequence, update the glow color
+                    if(container.id === 'truck-sequence') {
+                        const wrapper = document.getElementById('dynamic-glow-wrapper');
+                        const nextColor = nextImage.getAttribute('data-glow');
+                        if(wrapper && nextColor) {
+                            // Slight delay to sync with image fade
+                            setTimeout(() => {
+                                wrapper.style.setProperty('--glow-color', nextColor);
+                            }, 100);
+                        }
+                    }
+                }, intervalTime);
+            });
+
+            // --- 2. TINT OVERLAY ANIMATION ---
+            const tintOverlay = document.getElementById('tint-overlay');
+            if (tintOverlay) {
+                const opacityStages = [0, 0.25, 0.5, 1.0];
+                let currentStageIndex = 0;
+                setInterval(() => {
+                    currentStageIndex = (currentStageIndex + 1) % opacityStages.length;
+                    tintOverlay.style.opacity = opacityStages[currentStageIndex].toString();
+                }, 1500);
+            }
+        });
+    </script>
 
 </body>
 </html>
