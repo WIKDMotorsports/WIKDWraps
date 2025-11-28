@@ -275,10 +275,19 @@
             margin: 5rem 0;
             border-radius: 4px;
             clip-path: polygon(0 0, 100% 0, 100% 98%, 10px 100%, 0 100%);
+            
+            /* UPDATED: Flex properties for button alignment */
+            display: flex;
+            flex-direction: column;
         }
         .paint-correction-box h3 {
             color: var(--color-primary);
         }
+        /* UPDATED: Push button to bottom */
+        .paint-correction-box .btn {
+            margin-top: auto;
+        }
+
         .correction-list {
             list-style: none;
             padding: 0;
@@ -572,7 +581,7 @@
                 <!-- CTA 2: Maintenance Plans -->
                 <div class="paint-correction-box">
                     <h3 class="h2 font-heading text-3xl mb-4">Year-Round Refreshment</h3>
-                    <p class="price-starting">As Low as $110 / Month</p>
+                    <p class="price-starting">As Low as $150 / Month</p>
                     <p class="p-muted text-lg mb-6">Want to keep your detailed car pristine and maintain your protection investment? Our convenient, hassle-free maintenance plans offer discounted rates and priority scheduling!</p>
                     <a href="https://wikdwraps.com/pages/maintenance-plans" class="btn btn-primary w-full"><span>Learn More</span></a>
                 </div>
