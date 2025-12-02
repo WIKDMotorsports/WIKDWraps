@@ -1483,7 +1483,7 @@
     <section class="hero">
         <!-- New Background Container for Time Reactive Module -->
         <div id="hero-bg-container" class="hero-bg-wrapper">
-             <!-- Images inserted here by JS -->
+             <img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Freshly_Detailed_Ryft_McLaren_720s_on_HRE_Wheels_with_WIKD_Exhaust.jpg?v=1744062350" class="fade-image active" alt="Hero Background">
         </div>
         
         <!-- Overlay to ensure text readability -->
@@ -1881,86 +1881,6 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         
-        // --- 1. TIME REACTIVE HERO IMAGE LOGIC ---
-        const images = [
-            "https://cdn.shopify.com/s/files/1/0648/4826/5421/files/wmremove-transformed_2.png?v=1764340843", // 0: Dawn
-            "https://cdn.shopify.com/s/files/1/0648/4826/5421/files/wmremove-transformed_1_2e4959f8-0902-419b-9a6b-4fb95a8c778a.png?v=1764341229", // 1: Day
-            "https://cdn.shopify.com/s/files/1/0648/4826/5421/files/wmremove-transformed_3.png?v=1764340842", // 2: Sunset
-            "https://cdn.shopify.com/s/files/1/0648/4826/5421/files/wmremove-transformed_7cdce489-7890-4328-85e1-027247c75e9e.png?v=1764340839" // 3: Night
-        ];
-
-        // Configuration (24-hour format)
-        const SCHEDULE = {
-            DAWN_START: 6.0,    // 6:00 AM
-            DAY_START: 10.0,    // 10:00 AM
-            SUNSET_START: 16.5, // 4:30 PM (16:30)
-            NIGHT_START: 19.0   // 7:00 PM (Sunset ends/Night begins)
-        };
-
-        const heroContainer = document.getElementById('hero-bg-container');
-        let currentActiveIndex = -1; // Start with no active image
-
-        if (heroContainer) {
-            // A. Setup: Load all images into the DOM
-            images.forEach((url, index) => {
-                const img = document.createElement('img');
-                img.src = url;
-                img.className = 'fade-image'; 
-                img.id = `hero-img-${index}`;
-                heroContainer.appendChild(img);
-            });
-
-            // B. Logic: Determine which image should be shown
-            function checkTimeAndSetImage() {
-                const now = new Date();
-                // Convert current time to a decimal hour (e.g., 4:30 PM = 16.5)
-                const currentHourDecimal = now.getHours() + (now.getMinutes() / 60);
-
-                let newIndex = 3; // Default to Night
-
-                if (currentHourDecimal >= SCHEDULE.DAWN_START && currentHourDecimal < SCHEDULE.DAY_START) {
-                    newIndex = 0; // Dawn (6am - 10am)
-                } else if (currentHourDecimal >= SCHEDULE.DAY_START && currentHourDecimal < SCHEDULE.SUNSET_START) {
-                    newIndex = 1; // Day (10am - 4:30pm)
-                } else if (currentHourDecimal >= SCHEDULE.SUNSET_START && currentHourDecimal < SCHEDULE.NIGHT_START) {
-                    newIndex = 2; // Sunset (4:30pm - 7:00pm)
-                } else {
-                    newIndex = 3; // Night (7:00pm - 6:00am)
-                }
-
-                // Only update DOM if the phase actually changed
-                if (newIndex !== currentActiveIndex) {
-                    setImage(newIndex);
-                }
-            }
-
-            function setImage(index) {
-                const allImages = document.querySelectorAll('.fade-image');
-                
-                // Remove active from all
-                allImages.forEach(img => img.classList.remove('active'));
-
-                // Add active to new
-                const nextImage = document.getElementById(`hero-img-${index}`);
-                if (nextImage) {
-                    nextImage.classList.add('active');
-                }
-                
-                currentActiveIndex = index;
-                
-                // Optional: Log for debugging
-                console.log(`Time: ${new Date().toLocaleTimeString()} | Setting Phase: ${index}`);
-            }
-
-            // Run immediately on load
-            checkTimeAndSetImage();
-
-            // Check every minute (60000ms) to see if we need to switch
-            setInterval(checkTimeAndSetImage, 60000); 
-        }
-        // --- END TIME REACTIVE HERO LOGIC ---
-
-
         function initializeLocationCard(config) {
             const { idPrefix, phone, address, directionsLink, hours, showOpenStatus } = config;
 
