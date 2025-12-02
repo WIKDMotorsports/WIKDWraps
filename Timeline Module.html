@@ -99,14 +99,21 @@
             );
             opacity: 0;
             transform: translateX(-100%);
-            /* Syncing Pulse to Trough: -2s offset aligns the middle of this 4s animation with the 0s/4s trough of the card */
+            /* SYNCED: delay -1.6s puts the pulse at 40% (the card position) at T=0 */
             animation: pulseLine 4s ease-in-out infinite;
-            animation-delay: -2s; 
+            animation-delay: -1.6s;
         }
 
         @keyframes pulseLine {
+            /* 0% - 35%: Invisible Approach (Hides the line coming from left) */
             0% { transform: translateX(-100%); opacity: 0; }
-            50% { opacity: 0.8; }
+            35% { opacity: 0; } 
+            
+            /* 40%: The Impact Point - Ramps up quickly but smoothly (5% of duration = 0.2s fade in) */
+            40% { opacity: 1; } 
+            
+            /* 41% - 100%: Travel and fade out to the right */
+            90% { opacity: 0; } 
             100% { transform: translateX(200%); opacity: 0; }
         }
 
@@ -272,6 +279,7 @@
         .delay-100 { transition-delay: 100ms; }
         .delay-200 { transition-delay: 200ms; }
         .delay-300 { transition-delay: 300ms; }
+        .delay-line { transition-delay: 500ms; } /* Delayed to shoot through after cards rise */
 
         /* --- NEW: Active/Bouncing Step Styles --- */
         
@@ -318,35 +326,89 @@
             animation: floatingStep 4s ease-in-out infinite;
         }
 
-        /* Override Inner Background (::before) AND apply gradient pulse */
         .step-active::before {
-            /* High intensity static gradient */
             background: linear-gradient(180deg, rgba(255, 59, 48, 0.95) 0%, rgba(10,10,10,1) 100%);
-            /* Smooth opacity animation */
             animation: pulseRedOpacity 4s ease-in-out infinite;
         }
 
-        /* Override Border Color (::after) */
         .step-active::after {
             background-color: var(--color-primary) !important;
         }
 
-        /* Override Number Color */
         .step-active .process-number {
-            color: white !important; /* Force white to stand out against strong red */
+            color: white !important;
             animation: pulseTextShadow 4s ease-in-out infinite;
         }
 
-        /* Pause animation on hover to allow the hover lift to take over */
         .process-item:hover .step-active,
         .process-item:hover .step-active::before,
         .process-item:hover .step-active .process-number {
             animation-play-state: paused;
         }
 
-        /* Ensure parent hover pause logic overrides the bounce transform */
         .process-item:hover .step-active {
             transform: translateY(-8px);
+        }
+
+        /* --- CARD GLOW PHYSICS LOGIC --- */
+        
+        .process-card-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 160%; 
+            height: 160%;
+            transform: translate(-50%, -50%);
+            
+            /* Smoother radial falloff using stops */
+            background: radial-gradient(circle, 
+                rgba(255, 59, 48, 0.8) 0%, 
+                rgba(255, 59, 48, 0.15) 45%, 
+                transparent 70%
+            );
+            
+            opacity: 0;
+            pointer-events: none;
+            z-index: 5; 
+            mix-blend-mode: screen; 
+        }
+
+        /* Keyframes mapped to exact Pulse Position percentages */
+        
+        /* CARD 02: Pulse passes center screen approx 50-51% */
+        @keyframes glowPass02 {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            40% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            
+            /* Peak Hit */
+            50% { opacity: 0.2; transform: translate(-50%, -50%) scale(1.1); }
+            
+            60% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+        }
+
+        /* CARD 03: Pulse passes right third approx 61-62% */
+        @keyframes glowPass03 {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            51% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            
+            /* Peak Hit */
+            61% { opacity: 0.1; transform: translate(-50%, -50%) scale(1.1); }
+            
+            71% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+        }
+
+        .card-glow-02 {
+            /* Locked to same timeline as pulse (-1.6s delay) */
+            animation: glowPass02 4s ease-in-out infinite;
+            animation-delay: -1.6s;
+        }
+
+        .card-glow-03 {
+            /* Locked to same timeline as pulse (-1.6s delay) */
+            animation: glowPass03 4s ease-in-out infinite;
+            animation-delay: -1.6s;
         }
 
 
@@ -372,7 +434,7 @@
             <!-- Section Header -->
             <div class="text-center mb-16 reveal-on-scroll">
                 <h2 class="h2 mb-4 leading-tight">From Vision To Reality</h2>
-                <div class="w-24 h-1 bg-[#FF3B30] mx-auto mb-6" style="clip-path: polygon(0 0, 100% 0, 90% 100%, 10% 100%);"></div>
+                <!-- Removed red bar div here -->
                 <p class="p-muted max-w-xl mx-auto text-lg">
                     Design your build online. We handle the transformation. You take the wheel.
                 </p>
@@ -382,7 +444,7 @@
             <div class="relative grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-8 text-center">
                 
                 <!-- Animated Connecting Line (Desktop) -->
-                <div class="hidden md:block process-line-container reveal-on-scroll">
+                <div class="hidden md:block process-line-container reveal-line delay-line">
                     <div class="process-line-pulse"></div>
                 </div>
 
@@ -398,7 +460,7 @@
                                 <animated-icons
                                   src="https://animatedicons.co/get-icon?name=Report%20V2&style=minimalistic&token=1869947d-0b96-4314-9dd7-a86ec7a829ff"
                                   trigger="loop"
-                                  attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#000000FF","group-2":"#000000FF","background":"#FFFFFF"}}'
+                                  attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#141414","group-2":"#141414","background":"#FFFFFF"}}'
                                   height="60"
                                   width="60"
                                 ></animated-icons>
@@ -416,6 +478,8 @@
                 <!-- Step 02 -->
                 <div class="process-item relative group cursor-default reveal-on-scroll delay-200">
                     <div class="process-step-box">
+                        <!-- NEW: Glow Element -->
+                        <div class="process-card-glow card-glow-02"></div>
                         <div class="process-content-wrapper">
                             <span class="process-number">02</span>
                             <div class="process-icon">
@@ -440,6 +504,8 @@
                 <!-- Step 03 -->
                 <div class="process-item relative group cursor-default reveal-on-scroll delay-300">
                     <div class="process-step-box">
+                        <!-- NEW: Glow Element -->
+                        <div class="process-card-glow card-glow-03"></div>
                         <div class="process-content-wrapper">
                             <span class="process-number">03</span>
                             <div class="process-icon">
@@ -484,7 +550,7 @@
                 });
             }, observerOptions);
 
-            const revealElements = document.querySelectorAll('.reveal-on-scroll');
+            const revealElements = document.querySelectorAll('.reveal-on-scroll, .reveal-line');
             revealElements.forEach(el => observer.observe(el));
         });
     </script>
