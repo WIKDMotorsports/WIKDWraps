@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WIKD Process Section | Upgraded</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://animatedicons.co/scripts/embed-animated-icons.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- CORE WIKD VARIABLES --- */
+        :root {
+            --color-background: #0A0A0A;
+            --color-text: #EAEAEA;
+            --color-text-muted: #888888;
+            --color-primary: #FF3B30;
+            --color-surface: #141414;
+            --color-border: #2A2A2A;
+            --font-heading: 'Rajdhani', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--color-background);
+            color: var(--color-text);
+            font-family: var(--font-body);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Noise Texture */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9999;
+            opacity: 0.08;
+            background-size: 100px 100px;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Typography Utilities */
+        .font-heading { font-family: var(--font-heading); }
+        .font-body { font-family: var(--font-body); }
+        
+        .h2 {
+            font-family: var(--font-heading) !important;
+            font-weight: 700 !important;
+            line-height: 1.1 !important;
+            text-transform: uppercase !important;
+            color: white !important;
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            letter-spacing: 0.02em;
+        }
+
+        .p-muted {
+            font-family: var(--font-body);
+            color: var(--color-text-muted) !important;
+            line-height: 1.6;
+        }
+
+        /* Container Utility */
+        .mobile-scaled-container {
+            width: 90%;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* --- PROCESS SPECIFIC STYLES --- */
+        
+        /* The Connecting Line (Desktop) */
+        .process-line-container {
+            position: absolute;
+            top: 3.5rem; /* Center of the box vertically */
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--color-border);
+            z-index: 0;
+            overflow: hidden;
+            /* Fade edges using CSS Mask */
+            mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+        }
+
+        /* The Moving Pulse */
+        .process-line-pulse {
+            position: absolute;
+            top: 0; left: 0; bottom: 0;
+            width: 50%;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                var(--color-primary) 50%, 
+                transparent 100%
+            );
+            opacity: 0;
+            transform: translateX(-100%);
+            /* Syncing Pulse to Trough: -2s offset aligns the middle of this 4s animation with the 0s/4s trough of the card */
+            animation: pulseLine 4s ease-in-out infinite;
+            animation-delay: -2s; 
+        }
+
+        @keyframes pulseLine {
+            0% { transform: translateX(-100%); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateX(200%); opacity: 0; }
+        }
+
+        /* Vertical Line (Mobile) */
+        .mobile-process-line {
+            position: absolute;
+            top: 0; bottom: 0; left: 50%;
+            width: 1px;
+            background: linear-gradient(180deg, 
+                var(--color-background) 0%, 
+                var(--color-border) 20%, 
+                var(--color-border) 80%, 
+                var(--color-background) 100%
+            );
+            transform: translateX(-50%);
+            z-index: 0;
+        }
+
+        /* The Box Container */
+        .process-step-box {
+            width: 7rem; 
+            height: 7rem;
+            background-color: var(--color-surface);
+            position: relative;
+            z-index: 10;
+            margin: 0 auto 1.5rem auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            
+            /* WIKD GEOMETRY */
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 20px 100%, 0 80%);
+        }
+
+        /* Double border effect using pseudo element to keep clip-path clean */
+        .process-step-box::before {
+            content: '';
+            position: absolute;
+            inset: 1px; /* 1px border width */
+            background-color: var(--color-surface); 
+            z-index: 2;
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 20px 100%, 0 80%);
+        }
+
+        /* The border background layer */
+        .process-step-box::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-color: var(--color-border);
+            z-index: 1;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Content inside the box (Number and Icon) */
+        .process-content-wrapper {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Number Styling */
+        .process-number {
+            position: absolute;
+            font-family: var(--font-heading);
+            font-weight: 800;
+            font-size: 2.75rem;
+            color: var(--color-text-muted);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            line-height: 1;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Icon Wrapper Styling */
+        .process-icon {
+            position: absolute;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 60px; /* Constrain icon size */
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Apply Drop Shadow directly to the Animated Icon element */
+        .process-icon animated-icons {
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5));
+        }
+
+        /* Hover Group Logic: Switch Number for Icon */
+        .process-item:hover .process-number {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+
+        .process-item:hover .process-icon {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .process-item:hover .process-step-box {
+            transform: translateY(-8px);
+        }
+
+        /* Border turns red on hover */
+        .process-item:hover .process-step-box::after {
+            background-color: var(--color-primary);
+        }
+
+        /* Text Styling */
+        .process-title {
+            color: white;
+            font-family: var(--font-heading);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 1.75rem;
+            margin-bottom: 0.75rem;
+            letter-spacing: 0.05em;
+            transition: color 0.3s ease;
+        }
+
+        .process-item:hover .process-title {
+            color: var(--color-primary);
+        }
+        
+        /* Text Reveal Logic (Desktop Only) */
+        @media (min-width: 768px) {
+            .process-item p {
+                opacity: 0;
+                transform: translateY(10px);
+                filter: blur(4px);
+                transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            }
+            
+            .process-item:hover p {
+                opacity: 1;
+                transform: translateY(0);
+                filter: blur(0);
+            }
+        }
+
+        /* Scroll Animation States */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .reveal-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Delays */
+        .delay-100 { transition-delay: 100ms; }
+        .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
+
+        /* --- NEW: Active/Bouncing Step Styles --- */
+        
+        @keyframes floatingStep {
+            0% { 
+                transform: translateY(0); 
+                filter: drop-shadow(0 0px 5px rgba(255,59,48,0.1));
+            }
+            50% { 
+                transform: translateY(-10px); 
+                filter: drop-shadow(0 15px 20px rgba(255,59,48,0.5));
+            }
+            100% { 
+                transform: translateY(0); 
+                filter: drop-shadow(0 0px 5px rgba(255,59,48,0.1));
+            }
+        }
+
+        /* INVERTED Opacity Pulse: Bright at bottom, dimmer at top */
+        @keyframes pulseRedOpacity {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        /* INVERTED Text Shadow Pulse to match background intensity */
+        @keyframes pulseTextShadow {
+            0% { 
+                text-shadow: 0 0 20px rgba(255, 59, 48, 0.7);
+                color: #ffffff;
+            }
+            50% { 
+                text-shadow: 0 0 10px rgba(255, 59, 48, 0.4);
+                color: rgba(255, 255, 255, 0.95);
+            }
+            100% { 
+                text-shadow: 0 0 20px rgba(255, 59, 48, 0.7);
+                color: #ffffff;
+            }
+        }
+
+        /* Apply animation and red theme to specific box */
+        .step-active {
+            animation: floatingStep 4s ease-in-out infinite;
+        }
+
+        /* Override Inner Background (::before) AND apply gradient pulse */
+        .step-active::before {
+            /* High intensity static gradient */
+            background: linear-gradient(180deg, rgba(255, 59, 48, 0.95) 0%, rgba(10,10,10,1) 100%);
+            /* Smooth opacity animation */
+            animation: pulseRedOpacity 4s ease-in-out infinite;
+        }
+
+        /* Override Border Color (::after) */
+        .step-active::after {
+            background-color: var(--color-primary) !important;
+        }
+
+        /* Override Number Color */
+        .step-active .process-number {
+            color: white !important; /* Force white to stand out against strong red */
+            animation: pulseTextShadow 4s ease-in-out infinite;
+        }
+
+        /* Pause animation on hover to allow the hover lift to take over */
+        .process-item:hover .step-active,
+        .process-item:hover .step-active::before,
+        .process-item:hover .step-active .process-number {
+            animation-play-state: paused;
+        }
+
+        /* Ensure parent hover pause logic overrides the bounce transform */
+        .process-item:hover .step-active {
+            transform: translateY(-8px);
+        }
+
+
+        @media (max-width: 768px) {
+            .process-line-container { display: none; }
+        }
+        @media (min-width: 769px) {
+            .mobile-process-line { display: none; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- WIKD PROCESS SECTION -->
+    <section id="process-section" class="py-24 md:py-32 relative overflow-hidden" style="background-color: var(--color-background);">
+        
+        <!-- Subtle background glow behind the section for depth -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-red-600/5 blur-[120px] rounded-full pointer-events-none"></div>
+
+        <div class="mobile-scaled-container relative z-10">
+            
+            <!-- Section Header -->
+            <div class="text-center mb-16 reveal-on-scroll">
+                <h2 class="h2 mb-4 leading-tight">From Vision To Reality</h2>
+                <div class="w-24 h-1 bg-[#FF3B30] mx-auto mb-6" style="clip-path: polygon(0 0, 100% 0, 90% 100%, 10% 100%);"></div>
+                <p class="p-muted max-w-xl mx-auto text-lg">
+                    Design your build online. We handle the transformation. You take the wheel.
+                </p>
+            </div>
+
+            <!-- Process Grid -->
+            <div class="relative grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-8 text-center">
+                
+                <!-- Animated Connecting Line (Desktop) -->
+                <div class="hidden md:block process-line-container reveal-on-scroll">
+                    <div class="process-line-pulse"></div>
+                </div>
+
+                <!-- Vertical Connecting Line (Mobile) -->
+                <div class="block md:hidden mobile-process-line"></div>
+
+                <!-- Step 01 (ACTIVE/RED LINK) -->
+                <a href="https://wikdwraps.com/pages/estimate-configurator" class="process-item block relative group cursor-pointer reveal-on-scroll delay-100">
+                    <div class="process-step-box step-active">
+                        <div class="process-content-wrapper">
+                            <span class="process-number">01</span>
+                            <div class="process-icon">
+                                <animated-icons
+                                  src="https://animatedicons.co/get-icon?name=Report%20V2&style=minimalistic&token=1869947d-0b96-4314-9dd7-a86ec7a829ff"
+                                  trigger="loop"
+                                  attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#000000FF","group-2":"#000000FF","background":"#FFFFFF"}}'
+                                  height="60"
+                                  width="60"
+                                ></animated-icons>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative z-10 bg-[#0A0A0A] md:bg-transparent py-2"> <!-- Bg patch for mobile line text readability -->
+                        <h3 class="process-title">Configure</h3>
+                        <p class="p-muted text-sm leading-relaxed max-w-[280px] mx-auto">
+                            Input your budget for instant expert picks, or build your custom package from scratch.
+                        </p>
+                    </div>
+                </a>
+
+                <!-- Step 02 -->
+                <div class="process-item relative group cursor-default reveal-on-scroll delay-200">
+                    <div class="process-step-box">
+                        <div class="process-content-wrapper">
+                            <span class="process-number">02</span>
+                            <div class="process-icon">
+                                <animated-icons
+                                  src="https://animatedicons.co/get-icon?name=Hey&style=minimalistic&token=1869947d-0b96-4314-9dd7-a86ec7a829ff"
+                                  trigger="loop"
+                                  attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#EAEAEA","group-2":"#FF3B30","background":"transparent"}}'
+                                  height="60"
+                                  width="60"
+                                ></animated-icons>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative z-10 bg-[#0A0A0A] md:bg-transparent py-2">
+                        <h3 class="process-title">Drop Off</h3>
+                        <p class="p-muted text-sm leading-relaxed max-w-[280px] mx-auto">
+                            Bring your vehicle to our McKinney studio. We confirm details and begin the transformation.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step 03 -->
+                <div class="process-item relative group cursor-default reveal-on-scroll delay-300">
+                    <div class="process-step-box">
+                        <div class="process-content-wrapper">
+                            <span class="process-number">03</span>
+                            <div class="process-icon">
+                                <animated-icons
+                                  src="https://animatedicons.co/get-icon?name=KM&style=minimalistic&token=5729fdff-2cfc-4b8b-9952-2ff7da52563d"
+                                  trigger="loop"
+                                  attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#EAEAEA","group-2":"#FF3B30","background":"transparent"}}'
+                                  height="60"
+                                  width="60"
+                                ></animated-icons>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative z-10 bg-[#0A0A0A] md:bg-transparent py-2">
+                        <h3 class="process-title">Drive</h3>
+                        <p class="p-muted text-sm leading-relaxed max-w-[280px] mx-auto">
+                            Pick up your showroom-ready vehicle, protected and styled to absolute perfection.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+            
+        </div>
+    </section>
+
+    <!-- Scroll Reveal Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.15 
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('reveal-visible');
+                        observer.unobserve(entry.target); // Only animate once
+                    }
+                });
+            }, observerOptions);
+
+            const revealElements = document.querySelectorAll('.reveal-on-scroll');
+            revealElements.forEach(el => observer.observe(el));
+        });
+    </script>
+
+</body>
+</html>
