@@ -1,18 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WIKD Process Section | Upgraded</title>
+<!-- saved from url=(0022)https://wikdwraps.com/ -->
+<html class="js" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="">
+    <link rel="canonical" href="https://wikdwraps.com/">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://animatedicons.co/scripts/embed-animated-icons.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+    <script src="https://animatedicons.co/scripts/embed-animated-icons.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
+
+    <title>WIKDWRAPS</title>
 
     <style>
-        /* --- CORE WIKD VARIABLES --- */
-        :root {
+      :root {
             --color-background: #0A0A0A;
             --color-text: #EAEAEA;
             --color-text-muted: #888888;
@@ -21,552 +26,2104 @@
             --color-border: #2A2A2A;
             --font-heading: 'Rajdhani', sans-serif;
             --font-body: 'Inter', sans-serif;
+            /* Define the car image URL for masking logic */
+            --car-mask-url: url('https://cdn.shopify.com/s/files/1/0671/4635/0805/files/image_24.png?v=1764085690');
         }
 
+        /* Base styles for preview components */
+        html {
+            scroll-behavior: smooth;
+        }
         body {
-            background-color: var(--color-background);
-            color: var(--color-text);
-            font-family: var(--font-body);
+            background-color: var(--color-background) !important;
+            color: var(--color-text) !important;
+            font-family: var(--font-body) !important;
+            overflow-x: hidden; /* Prevent horizontal scroll */
             position: relative;
-            overflow-x: hidden;
         }
-
-        /* Noise Texture */
+        
+        /* --- NOISE TEXTURE OVERLAY --- */
         body::before {
             content: "";
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 9999;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
             opacity: 0.08;
             background-size: 100px 100px;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
-        /* Typography Utilities */
         .font-heading { font-family: var(--font-heading); }
         .font-body { font-family: var(--font-body); }
-        
-        .h2 {
+        h1, h2, h3, .h1, .h2, .h3 {
             font-family: var(--font-heading) !important;
             font-weight: 700 !important;
-            line-height: 1.1 !important;
+            line-height: 1.2 !important;
             text-transform: uppercase !important;
             color: white !important;
-            font-size: clamp(2.5rem, 5vw, 3.5rem);
-            letter-spacing: 0.02em;
+        }
+        .h1 { font-size: clamp(2.5rem, 6vw, 4rem); }
+        .h2 { font-size: clamp(2rem, 5vw, 3rem); }
+        .h3 { font-size: clamp(1.5rem, 4vw, 2.25rem); }
+        p, .p, .rte, .rte p { 
+          font-family: var(--font-body) !important; 
+          color: var(--color-text) !important; 
+          line-height: 1.6 !important;
+        }
+        .p-muted { font-family: var(--font-body); color: var(--color-text-muted) !important; line-height: 1.6;}
+        a.link {
+            color: var(--color-primary) !important;
+            text-decoration: none;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        a.link:hover {
+            text-decoration: underline !important;
         }
 
-        .p-muted {
-            font-family: var(--font-body);
-            color: var(--color-text-muted) !important;
-            line-height: 1.6;
-        }
-
-        /* Container Utility */
-        .mobile-scaled-container {
-            width: 90%;
-            max-width: 1200px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* --- PROCESS SPECIFIC STYLES --- */
-        
-        /* The Connecting Line (Desktop) */
-        .process-line-container {
-            position: absolute;
-            top: 3.5rem; /* Center of the box vertically */
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: var(--color-border);
-            z-index: 0;
+        /* --- BUTTON STYLES (Consolidated) --- */
+        .btn {
+            display: inline-block;
+            padding: 14px 32px;
+            font-family: var(--font-heading) !important;
+            font-size: 18px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--color-text) !important;
+            background-color: transparent;
+            border: 2px solid var(--color-border);
+            position: relative;
             overflow: hidden;
-            /* Fade edges using CSS Mask */
-            mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
-            -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+            transition: color 0.4s ease-in-out, border-color 0.4s ease-in-out, transform 0.3s ease;
+            /* GEOMETRY UPDATE: Consistent angle clip */
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 10px 100%, 0 85%);
+            text-decoration: none;
+            flex-shrink: 0;
+            cursor: pointer;
         }
-
-        /* The Moving Pulse */
-        .process-line-pulse {
-            position: absolute;
-            top: 0; left: 0; bottom: 0;
-            width: 50%;
-            background: linear-gradient(90deg, 
-                transparent 0%, 
-                var(--color-primary) 50%, 
-                transparent 100%
-            );
-            opacity: 0;
-            transform: translateX(-100%);
-            /* SYNCED: delay -1.6s puts the pulse at 40% (the card position) at T=0 */
-            animation: pulseLine 4s ease-in-out infinite;
-            animation-delay: -1.6s;
-        }
-
-        @keyframes pulseLine {
-            /* Start visible (low opacity) to show direction of travel */
-            0% { transform: translateX(-100%); opacity: 0.3; }
-            35% { opacity: 0.3; } 
-            
-            /* 40%: The Impact Point - Ramps up quickly to full brightness */
-            40% { opacity: 1; } 
-            
-            /* Fade out as it travels away to the right */
-            90% { opacity: 0; } 
-            100% { transform: translateX(200%); opacity: 0; }
-        }
-
-        /* Vertical Line (Mobile) */
-        .mobile-process-line {
-            position: absolute;
-            top: 0; bottom: 0; left: 50%;
-            width: 1px;
-            background: linear-gradient(180deg, 
-                var(--color-background) 0%, 
-                var(--color-border) 20%, 
-                var(--color-border) 80%, 
-                var(--color-background) 100%
-            );
-            transform: translateX(-50%);
-            z-index: 0;
-        }
-
-        /* The Box Container */
-        .process-step-box {
-            width: 7rem; 
-            height: 7rem;
-            background-color: var(--color-surface);
-            position: relative;
-            z-index: 10;
-            margin: 0 auto 1.5rem auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            
-            /* WIKD GEOMETRY */
-            clip-path: polygon(0 0, 100% 0, 100% 100%, 20px 100%, 0 80%);
-        }
-
-        /* Double border effect using pseudo element to keep clip-path clean */
-        .process-step-box::before {
+        .btn span { position: relative; z-index: 2; }
+        .btn::before {
             content: '';
             position: absolute;
-            inset: 1px; /* 1px border width */
-            background-color: var(--color-surface); 
-            z-index: 2;
-            clip-path: polygon(0 0, 100% 0, 100% 100%, 20px 100%, 0 80%);
-        }
-
-        /* The border background layer */
-        .process-step-box::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-color: var(--color-border);
+            top: 0; left: 0; width: 100%; height: 100%;
             z-index: 1;
-            transition: background-color 0.3s ease;
+            transform: translateX(-101%);
+            transition: transform 0.5s cubic-bezier(0.7, 0, 0.3, 1);
         }
-
-        /* Content inside the box (Number and Icon) */
-        .process-content-wrapper {
-            position: relative;
-            z-index: 10;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Number Styling */
-        .process-number {
-            position: absolute;
-            font-family: var(--font-heading);
-            font-weight: 800;
-            font-size: 2.75rem;
-            color: var(--color-text-muted);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            line-height: 1;
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        /* Icon Wrapper Styling */
-        .process-icon {
-            position: absolute;
-            opacity: 0;
-            transform: scale(0.5);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            width: 60px; /* Constrain icon size */
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        .btn:hover { color: white !important; transform: translateY(-3px); }
+        .btn:hover::before { transform: translateX(0); }
         
-        /* Apply Drop Shadow directly to the Animated Icon element */
-        .process-icon animated-icons {
-            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5));
+        .btn.btn-primary { 
+            border-color: var(--color-primary); 
+            /* Initial text color matches standard, hover effect brings background */
         }
-
-        /* Hover Group Logic: Switch Number for Icon */
-        .process-item:hover .process-number {
-            opacity: 0;
-            transform: scale(0.5);
-        }
-
-        .process-item:hover .process-icon {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        .process-item:hover .process-step-box {
-            transform: translateY(-8px);
-        }
-
-        /* Border turns red on hover */
-        .process-item:hover .process-step-box::after {
+        .btn.btn-primary::before {
             background-color: var(--color-primary);
         }
+        .btn.btn-primary:hover { border-color: var(--color-primary); }
 
-        /* Text Styling */
-        .process-title {
-            color: white;
-            font-family: var(--font-heading);
-            font-weight: 700;
-            text-transform: uppercase;
-            font-size: 1.75rem;
-            margin-bottom: 0.75rem;
-            letter-spacing: 0.05em;
-            transition: color 0.3s ease;
+        .btn.btn-secondary {
+            border-color: var(--color-text);
+            background-color: var(--color-text);
+            color: var(--color-background) !important;
         }
-
-        .process-item:hover .process-title {
-            color: var(--color-primary);
+          .btn.btn-secondary:hover {
+            border-color: var(--color-primary);
+            color: white !important;
+        }
+        .btn.btn-secondary::before {
+            background-color: var(--color-primary);
         }
         
-        /* Text Reveal Logic (Desktop Only) */
-        @media (min-width: 768px) {
-            .process-item p {
-                opacity: 0;
-                transform: translateY(10px);
-                filter: blur(4px);
-                transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            }
-            
-            .process-item:hover p {
-                opacity: 1;
-                transform: translateY(0);
-                filter: blur(0);
-            }
+        .btn.btn-tertiary {
+             border-color: white;
+        }
+        .btn.btn-tertiary:hover {
+             border-color: var(--color-primary);
+        }
+        .btn.btn-tertiary::before {
+             background-color: var(--color-primary);
         }
 
-        /* Scroll Animation States */
-        .reveal-on-scroll {
+        /* --- CARD STYLES --- */
+        /* Unified Card Style for Text-Heavy Cards (Locations, Difference) */
+        .wikd-card {
+            border: 1px solid var(--color-border);
+            padding: 1.5rem; /* p-5 equivalent */
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            border-radius: 0px; /* GEOMETRY UPDATE: Sharp corners */
+            background: transparent;
+            transition: border-color 0.3s ease, transform 0.3s ease;
+        }
+        .wikd-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-5px);
+        }
+
+        .package-card {
+            position: relative;
+            aspect-ratio: 4 / 5;
+            overflow: hidden;
+            border-radius: 0px; /* GEOMETRY UPDATE: Sharp corners */
+            border: 1px solid var(--color-border);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            display: block;
+        }
+        /* Added .mobile-view selector for scroll trigger */
+        .package-card:hover, 
+        .package-card.mobile-view {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3), 0 0 15px rgba(255, 59, 48, 0.3);
+            border-color: var(--color-primary);
+        }
+        .package-card-bg {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            /* LAZY PREMIUM HACK: Unified filter for all images */
+            filter: grayscale(100%) contrast(110%);
+            transition: transform 0.5s ease, filter 0.5s ease;
+        }
+        /* Added .mobile-view selector for scroll trigger */
+        .package-card:hover .package-card-bg,
+        .package-card.mobile-view .package-card-bg { 
+            transform: scale(1.05); 
+            filter: grayscale(0%) contrast(100%);
+        }
+        
+        .package-card-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, transparent 60%);
+            display: flex; flex-direction: column; justify-content: flex-end;
+            padding: 20px;
+        }
+
+        /* --- UPDATED CONTENT REVEAL LOGIC --- */
+        .package-card-content {
+             /* Content container is now visible and manages child visibility */
+             transform: translateY(0); 
+             opacity: 1;
+             transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+             display: flex;
+             flex-direction: column;
+             gap: 0; /* Spacing handled by margins on reveal */
+        }
+
+        .package-card-title {
+            font-family: var(--font-heading);
+            font-size: 1.5rem; color: white;
+            text-transform: uppercase;
+            margin-bottom: 0;
+            transition: margin-bottom 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .package-card-description {
+            color: var(--color-text-muted);
+            font-size: 0.875rem;
+            line-height: 1.4;
+            /* Hidden state */
+            max-height: 0;
             opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            overflow: hidden;
+            transform: translateY(10px);
+            margin-bottom: 0;
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        .reveal-visible {
+        .package-card-link {
+            font-size: 0.875rem; color: var(--color-primary);
+            text-transform: uppercase; font-weight: 600;
+            text-decoration: none;
+            /* Hidden state */
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transform: translateY(10px);
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* --- REVEAL ON HOVER/MOBILE SCROLL --- */
+        
+        /* Push title up slightly */
+        .package-card:hover .package-card-title,
+        .package-card.mobile-view .package-card-title {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Reveal Description */
+        .package-card:hover .package-card-description,
+        .package-card.mobile-view .package-card-description {
+            max-height: 100px; /* Enough space for content */
+            opacity: 1;
+            transform: translateY(0);
+            margin-bottom: 0.75rem;
+        }
+
+        /* Reveal Link */
+        .package-card:hover .package-card-link,
+        .package-card.mobile-view .package-card-link {
+            max-height: 24px;
             opacity: 1;
             transform: translateY(0);
         }
 
-        /* NEW: Line Animation (Horizontal Pierce) */
-        .reveal-line {
-            opacity: 0;
-            transform: scaleX(0);
-            transform-origin: left center;
-            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        /* --- WIKD GALLERY CARD --- */
+        @keyframes lavaFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
-
-        .reveal-line.reveal-visible {
-            opacity: 1;
-            transform: scaleX(1);
+        .gallery-card-wrapper { max-width: 380px; width: 100%; perspective: 1000px; }
+        .gallery-card {
+            display: block; position: relative; aspect-ratio: 1 / 1;
+            border-radius: 0px; /* GEOMETRY UPDATE: Sharp corners */
+            border: 1px solid var(--color-border);
+            text-decoration: none; isolation: isolate;
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+            transform-style: preserve-3d;
         }
-
-        /* Delays */
-        .delay-100 { transition-delay: 100ms; }
-        .delay-200 { transition-delay: 200ms; }
-        .delay-300 { transition-delay: 300ms; }
-        .delay-line { transition-delay: 500ms; } /* Delayed to shoot through after cards rise */
-
-        /* --- NEW: Active/Bouncing Step Styles --- */
+        .gallery-card-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover; filter: grayscale(100%);
+            transition: transform 0.6s cubic-bezier(0.3, 1, 0.4, 1), filter 0.6s ease;
+        }
+        /* Added .mobile-view selector for scroll trigger */
+        .gallery-card:hover .gallery-card-bg,
+        .gallery-card.mobile-view .gallery-card-bg {
+            filter: grayscale(100%);
+        }
+        .gallery-card-overlay {
+            height: 100%; display: flex; flex-direction: column; justify-content: space-between;
+            background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 60%);
+            position: relative; z-index: 5; transform: translateZ(100px);
+            transform-style: preserve-3d; padding: 20px;
+        }
+        .gallery-card-title {
+            font-family: var(--font-heading);
+            font-size: 1.5rem; color: white; margin: 0; line-height: 1.2;
+            text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.8); transition: color 0.3s ease;
+            text-transform: uppercase;
+        }
+        /* Added .mobile-view selector for scroll trigger */
+        .gallery-card:hover .gallery-card-title,
+        .gallery-card.mobile-view .gallery-card-title {
+            background: linear-gradient(90deg, #b30000, #ff1a00, #ffaa00, #ff1a00, #b30000);
+            background-size: 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: lavaFlow 4s ease-in-out infinite; text-shadow: none;
+            filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.7));
+        }
+        .card-badge-container { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+        .wikd-sub-badge {
+            display: inline-block; background-color: rgba(255, 59, 48, 0.7);
+            color: white; padding: 6px 18px 8px; font-size: 11px;
+            font-weight: 600; font-style: italic;
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 8px 100%, 0 80%);
+        }
+        .gallery-card::before {
+            content: ""; position: absolute; inset: 0; border-radius: 0px; /* GEOMETRY UPDATE: Sharp corners */
+            padding: 2px;
+            background: linear-gradient(90deg, #b30000, #ff1a00, #ffaa00, #ff1a00, #b30000);
+            background-size: 300%; animation: lavaFlow 4s ease-in-out infinite;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            z-index: 6; pointer-events: none; opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        /* Added .mobile-view selector for scroll trigger */
+        .gallery-card:hover::before,
+        .gallery-card.mobile-view::before { opacity: 1; }
         
-        @keyframes floatingStep {
-            0% { 
-                transform: translateY(0); 
-                filter: drop-shadow(0 0px 5px rgba(255,59,48,0.1));
-            }
-            50% { 
-                transform: translateY(-10px); 
-                filter: drop-shadow(0 15px 20px rgba(255,59,48,0.5));
-            }
-            100% { 
-                transform: translateY(0); 
-                filter: drop-shadow(0 0px 5px rgba(255,59,48,0.1));
-            }
-        }
-
-        /* INVERTED Opacity Pulse: Bright at bottom, dimmer at top */
-        @keyframes pulseRedOpacity {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
+        /* Added .mobile-view selector for scroll trigger */
+        .gallery-card:hover,
+        .gallery-card.mobile-view { box-shadow: 0 0 25px rgba(255, 59, 48, 0.5); }
         
-        /* INVERTED Text Shadow Pulse to match background intensity */
-        @keyframes pulseTextShadow {
-            0% { 
-                text-shadow: 0 0 20px rgba(255, 59, 48, 0.7);
-                color: #ffffff;
-            }
-            50% { 
-                text-shadow: 0 0 10px rgba(255, 59, 48, 0.4);
-                color: rgba(255, 255, 255, 0.95);
-            }
-            100% { 
-                text-shadow: 0 0 20px rgba(255, 59, 48, 0.7);
-                color: #ffffff;
-            }
-        }
+      img {
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .image-wrapper {
+        border: none !important;
+      }
 
-        /* Apply animation and red theme to specific box */
-        .step-active {
-            animation: floatingStep 4s ease-in-out infinite;
+      /* Applied Styles to Hero */
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem) !important;
         }
-
-        .step-active::before {
-            background: linear-gradient(180deg, rgba(255, 59, 48, 0.95) 0%, rgba(10,10,10,1) 100%);
-            animation: pulseRedOpacity 4s ease-in-out infinite;
-        }
-
-        .step-active::after {
+        .hero .badge {
             background-color: var(--color-primary) !important;
+            font-family: var(--font-body) !important;
+        }
+      /* Applied to Multicolumn Section */
+      .multicolumn {
+          background-color: var(--color-background) !important;
+      }
+      .multicolumn.background-primary {
+           background-color: var(--color-surface) !important;
+           padding-top: 5rem;
+           padding-bottom: 5rem;
+      }
+      .multicolumn .title {
+          font-size: clamp(2rem, 5vw, 3rem) !important;
+      }
+       .multicolumn-card h3 {
+           font-size: clamp(1.5rem, 4vw, 2.25rem) !important;
+       }
+       
+       /* --- STAR RATING --- */
+       .star-container-fade-in {
+           opacity: 0;
+           animation: fadeIn 0.5s cubic-bezier(0.1, 1.2, 0, 1) forwards; /* Aggressive easing */
+       }
+       .star-glow-pulse {
+           animation: pulseGlow 3s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite; /* Aggressive easing */
+       }
+       .star-gradient-pulse {
+           --center-opacity: 0.7; /* Set initial state */
+           animation: pulseGradient 3s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite; /* Aggressive easing */
+       }
+       .glint-wrapper {
+           position: absolute;
+           top: 0; left: 0;
+           width: 100%; height: 100%;
+           -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>');
+           mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>');
+           -webkit-mask-size: contain; mask-size: contain;
+           -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+           -webkit-mask-position: center; mask-position: center;
+       }
+       .glint-wrapper::after {
+           content: '';
+           position: absolute;
+           top: 0; left: 0;
+           width: 100%; height: 100%;
+           background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.6) 50%, transparent 60%);
+           background-size: 200% 100%;
+           background-position: 200% 0;
+           animation: glintWipe 5s infinite;
+           animation-delay: var(--glint-delay, 0s);
+       }
+       
+       .lava-text {
+           background: linear-gradient(90deg, #ff7f00, #ff4500, #ff3b30, #ff4500, #ff7f00); 
+           background-size: 300%;
+           -webkit-background-clip: text;
+           -webkit-text-fill-color: transparent;
+           animation: lavaFlow 4s ease-in-out infinite;
+           font-weight: 600; 
+       }
+
+       .dropdown-icon {
+           transition: transform 0.3s ease;
+       }
+
+       .dropdown-icon.active {
+           transform: rotate(180deg);
+       }
+
+       .qr-tooltip {
+           position: absolute;
+           bottom: 100%;
+           left: 50%;
+           transform: translateX(-50%) translateY(10px);
+           margin-bottom: 12px;
+           background-color: #141414; /* Fixed BG color */
+           border: 1px solid var(--color-border);
+           border-radius: 12px;
+           padding: 0.75rem;
+           z-index: 2006;
+           text-align: center;
+           box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+           opacity: 0;
+           visibility: hidden;
+           transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+           pointer-events: none;
+           width: max-content;
+       }
+       .qr-tooltip.active {
+           opacity: 1;
+           visibility: visible;
+           transform: translateX(-50%) translateY(0);
+           pointer-events: auto;
+       }
+       .qr-tooltip::before {
+           content: '';
+           position: absolute;
+           top: 100%;
+           left: 50%;
+           transform: translateX(-50%);
+           border-width: 8px;
+           border-style: solid;
+           border-color: var(--color-border) transparent transparent transparent;
+       }
+       .qr-tooltip::after {
+           content: '';
+           position: absolute;
+           top: 100%;
+           left: 50%;
+           transform: translateX(-50%);
+           margin-top: -1px;
+           border-width: 7px;
+           border-style: solid;
+           border-color: var(--color-surface) transparent transparent transparent;
+       }
+       
+       @keyframes fadeIn {
+           from { opacity: 0; transform: scale(0.8); }
+           to   { opacity: 1; transform: scale(1); }
+       }
+       @keyframes pulseGlow {
+           0%, 100% { filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.7)); }
+           50% { filter: drop-shadow(0 0 8px rgba(251, 191, 36, 1)); }
+       }
+       @keyframes pulseGradient {
+           0%, 100% { --center-opacity: 0.7; }
+           50% { --center-opacity: 1; }
+       }
+       @keyframes glintWipe {
+           0%   { background-position: 200% 0; }
+           5%   { background-position: 200% 0; }
+           25%  { background-position: -200% 0; } /* Slowed down wipe */
+           100% { background-position: -200% 0; }
+       }
+
+       /* MOBILE SCALING ADJUSTMENT: Explicit Container Width */
+       .mobile-scaled-container {
+           width: 92%;
+           max-width: 1200px;
+           margin-left: auto;
+           margin-right: auto;
+       }
+       
+       /* --- CAR OVERLAY COMPOSITE STYLES --- */
+        .car-composite-wrapper {
+            position: relative;
+            /* Center the wrapper */
+            margin: 0 auto 2rem auto;
+            /* Limit max width so it doesn't get too huge on large screens */
+            max-width: 338px; /* INCREASED from 225px to 338px (150%) */
+            width: 100%;
+            /* Ensure the container shrinks tightly around the base image */
+            display: inline-block;
+            /* Ensure glow isn't clipped and define a stacking context */
+            overflow: visible; 
+            z-index: 0;
         }
 
-        .step-active .process-number {
-            color: white !important;
-            animation: pulseTextShadow 4s ease-in-out infinite;
-        }
-
-        .process-item:hover .step-active,
-        .process-item:hover .step-active::before,
-        .process-item:hover .step-active .process-number {
-            animation-play-state: paused;
-        }
-
-        .process-item:hover .step-active {
-            transform: translateY(-8px);
-        }
-
-        /* --- CARD GLOW PHYSICS LOGIC --- */
-        
-        .process-card-glow {
+        /* ADDED: Subtle Red Radial Gradient Behind the car */
+        .car-composite-wrapper::before {
+            content: "";
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 160%; 
-            height: 160%;
-            transform: translate(-50%, -50%);
-            
-            /* Smoother radial falloff using stops */
-            background: radial-gradient(circle, 
-                rgba(255, 59, 48, 0.8) 0%, 
-                rgba(255, 59, 48, 0.15) 45%, 
-                transparent 70%
-            );
-            
-            opacity: 0;
+            /* Scale X axis to widen aspect ratio, Scale Y to shrink height */
+            /* UPDATED: Removed scaleX, increased width directly to avoid clipping artifacts */
+            transform: translate(-50%, -50%) scaleY(0.7);
+            /* Adjusted size to prevent clipping - wider and much taller */
+            width: 300%; /* Increased from 150% */
+            height: 300%;
+            /* Subtle red glow fading to transparent */
+            /* EXAGGERATED SUBTLETY: Decreased opacity to 0.1 and extended falloff to 90% */
+            background: radial-gradient(circle, rgba(255, 59, 48, 0.1) 0%, rgba(0,0,0,0) 70%); /* Reduced to 70% to ensure fade happens well before edge */
+            z-index: -1; /* Behind the car image */
             pointer-events: none;
-            z-index: 5; 
-            mix-blend-mode: screen; 
+            mix-blend-mode: screen;
         }
 
-        /* Keyframes mapped to exact Pulse Position percentages */
+        /* The base car image defines the dimensions of the container */
+        .car-base-image {
+            display: block;
+            width: 100%;
+            height: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* The video sits exactly on top */
+        .car-effect-video, .car-effect-video-2 {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            /* Force the video to fill the container space defined by the image */
+            object-fit: fill; 
+            pointer-events: none; /* Let clicks pass through */
+
+            /* 1. Blend Mode CHANGED to screen as requested */
+            mix-blend-mode: screen;
+
+            /* 2. Alpha Masking: Use the car image itself to crop the video */
+            /* We use the CSS variable defined in :root for the URL */
+            -webkit-mask-image: var(--car-mask-url);
+            mask-image: var(--car-mask-url);
+            
+            /* Ensure the mask stretches exactly like the base image */
+            -webkit-mask-size: 100% 100%;
+            mask-size: 100% 100%;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-position: center;
+        }
         
-        /* CARD 02: Pulse passes center screen approx 50-51% */
-        @keyframes glowPass02 {
-            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
-            40% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
-            
-            /* Peak Hit */
-            50% { opacity: 0.2; transform: translate(-50%, -50%) scale(1.1); }
-            
-            60% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
-            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
-        }
-
-        /* CARD 03: Pulse passes right third approx 61-62% */
-        @keyframes glowPass03 {
-            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
-            51% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
-            
-            /* Peak Hit */
-            61% { opacity: 0.1; transform: translate(-50%, -50%) scale(1.1); }
-            
-            71% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
-            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
-        }
-
-        .card-glow-02 {
-            /* Locked to same timeline as pulse (-1.6s delay) */
-            animation: glowPass02 4s ease-in-out infinite;
-            animation-delay: -1.6s;
-        }
-
-        .card-glow-03 {
-            /* Locked to same timeline as pulse (-1.6s delay) */
-            animation: glowPass03 4s ease-in-out infinite;
-            animation-delay: -1.6s;
+        /* Ensure the second video is also at z-index 2 and blended */
+        .car-effect-video-2 {
+            z-index: 2;
+            mix-blend-mode: screen;
         }
 
 
-        @media (max-width: 768px) {
-            .process-line-container { display: none; }
+       /* --- FOOTER STYLES --- */
+       .wikd-footer {
+        background-color: var(--color-surface, #141414);
+        border-top: 1px solid var(--color-border, #2A2A2A);
+        padding: 4rem 0 2rem;
+        font-family: var(--font-body, 'Inter', sans-serif);
+    }
+
+    .wikd-footer-container {
+        width: 92%;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .wikd-footer-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr; /* Balanced 3-column layout */
+        gap: 3rem;
+        margin-bottom: 3rem;
+    }
+
+    .wikd-footer-brand {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .wikd-footer-logo {
+        width: 180px;
+        height: auto;
+    }
+
+    .wikd-footer-tagline {
+        color: var(--color-text-muted, #888888);
+        font-size: 0.95rem;
+        line-height: 1.6;
+        max-width: 300px;
+    }
+
+    .wikd-footer-social {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .wikd-footer-social-link {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--color-background, #0A0A0A);
+        border: 1px solid var(--color-border, #2A2A2A);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-text, #EAEAEA);
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-size: 1.2rem;
+    }
+
+    .wikd-footer-social-link:hover {
+        background: var(--color-primary, #FF3B30);
+        border-color: var(--color-primary, #FF3B30);
+        transform: translateY(-3px);
+    }
+
+    .wikd-footer-column h3 {
+        font-family: var(--font-heading, 'Rajdhani', sans-serif);
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: white;
+        text-transform: uppercase;
+        margin-bottom: 1.25rem;
+        letter-spacing: 0.5px;
+    }
+
+    .wikd-footer-links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .wikd-footer-links a {
+        color: var(--color-text-muted, #888888);
+        text-decoration: none;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+
+    .wikd-footer-links a:hover {
+        color: var(--color-primary, #FF3B30);
+        transform: translateX(5px);
+    }
+
+    .wikd-footer-bottom {
+        border-top: 1px solid var(--color-border, #2A2A2A);
+        padding-top: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .wikd-footer-copyright {
+        color: var(--color-text-muted, #888888);
+        font-size: 0.875rem;
+    }
+
+    .wikd-footer-copyright a {
+        color: var(--color-primary, #FF3B30);
+        text-decoration: none;
+        font-weight: 600;
+        transition: opacity 0.3s ease;
+    }
+
+    .wikd-footer-copyright a:hover {
+        opacity: 0.8;
+    }
+
+    .wikd-footer-legal {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .wikd-footer-legal a {
+        color: var(--color-text-muted, #888888);
+        text-decoration: none;
+        font-size: 0.875rem;
+        transition: color 0.3s ease;
+    }
+
+    .wikd-footer-legal a:hover {
+        color: var(--color-primary, #FF3B30);
+    }
+
+    @media (max-width: 992px) {
+        .wikd-footer-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 2.5rem;
         }
-        @media (min-width: 769px) {
-            .mobile-process-line { display: none; }
+
+        .wikd-footer-brand {
+            grid-column: 1 / -1;
         }
+    }
+
+    @media (max-width: 640px) {
+        .wikd-footer {
+            padding: 3rem 0 1.5rem;
+        }
+
+        .wikd-footer-grid {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .wikd-footer-bottom {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .wikd-footer-legal {
+            justify-content: center;
+        }
+    }
 
     </style>
-</head>
-<body>
 
-    <!-- WIKD PROCESS SECTION -->
-    <section id="process-section" class="py-24 md:py-32 relative overflow-hidden" style="background-color: var(--color-background);">
-        
-        <!-- Subtle background glow behind the section for depth -->
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-red-600/5 blur-[120px] rounded-full pointer-events-none"></div>
+</head><body class="gradient">
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-        <div class="mobile-scaled-container relative z-10">
-            
-            <!-- Section Header -->
-            <div class="text-center mb-16 reveal-on-scroll">
-                <h2 class="h2 mb-4 leading-tight">From Vision To Reality</h2>
-                <!-- Removed red bar div here -->
-                <p class="p-muted max-w-xl mx-auto text-lg">
-                    Design your build online. We handle the transformation. You take the wheel.
-                </p>
-            </div>
+<style>
+    :root {
+        --color-background: #0A0A0A;
+        --color-text: #EAEAEA;
+        --color-text-muted: #888888;
+        --color-primary: #FF3B30;
+        --color-surface: #141414;
+        --color-border: #2A2A2A;
+        --font-heading: 'Rajdhani', sans-serif;
+        --font-body: 'Inter', sans-serif;
+    }
 
-            <!-- Process Grid -->
-            <div class="relative grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-8 text-center">
-                
-                <!-- Animated Connecting Line (Desktop) -->
-                <div class="hidden md:block process-line-container reveal-line delay-line">
-                    <div class="process-line-pulse"></div>
-                </div>
+    body {
+        font-family: var(--font-body);
+        background-color: var(--color-background);
+        color: var(--color-text);
+        margin: 0;
+        padding: 0;
+    }
 
-                <!-- Vertical Connecting Line (Mobile) -->
-                <div class="block md:hidden mobile-process-line"></div>
+    .font-heading {
+        font-family: var(--font-heading);
+    }
 
-                <!-- Step 01 (ACTIVE/RED LINK) -->
-                <a href="https://wikdwraps.com/pages/estimate-configurator" class="process-item block relative group cursor-pointer reveal-on-scroll delay-100">
-                    <div class="process-step-box step-active">
-                        <div class="process-content-wrapper">
-                            <span class="process-number">01</span>
-                            <div class="process-icon">
-                                <animated-icons
-                                  src="https://animatedicons.co/get-icon?name=Report%20V2&style=minimalistic&token=1869947d-0b96-4314-9dd7-a86ec7a829ff"
-                                  trigger="loop"
-                                  attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#000000FF","group-2":"#000000FF","background":"#FFFFFF"}}'
-                                  height="60"
-                                  width="60"
-                                ></animated-icons>
-                            </div>
+    /* INSTANT QUOTE BUTTON */
+    .btn-wikd {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 36px;
+        padding: 0 1.5rem;
+        font-family: var(--font-heading);
+        font-size: 14px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background-color: #FFFFFF;
+        color: #000000;
+        border: none;
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 12px 100%, 0 70%);
+        line-height: 1;
+    }
+
+    .btn-wikd:hover {
+        background-color: #EAEAEA;
+        transform: translateY(-1px);
+    }
+
+    /* NAVBAR LINKS */
+    .nav-link {
+        position: relative;
+        font-family: var(--font-heading);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--color-text);
+        transition: color 0.2s ease;
+        font-size: 15px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        line-height: 1;
+        padding: 0;
+    }
+
+    .nav-link:hover {
+        color: var(--color-primary);
+    }
+
+    /* DROPDOWN PANEL */
+    .dropdown-menu {
+        opacity: 0;
+        visibility: hidden;
+        transform: translateX(-50%) translateY(-15px);
+        transition: opacity 0.15s ease-out, transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.15s;
+        background-color: #050505;
+        border: 1px solid #222;
+        border-top: 2px solid var(--color-primary);
+        clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+        padding: 0.5rem;
+        padding-bottom: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        z-index: 100;
+        box-shadow: 0 30px 60px -10px rgba(0,0,0,0.8);
+    }
+
+    .group:hover .dropdown-menu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    .menu-label {
+        font-family: var(--font-heading);
+        font-size: 0.65rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: #444;
+        padding: 0.75rem 1rem 0.25rem 1rem;
+        pointer-events: none;
+    }
+
+    .menu-tile {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        width: 100%;
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #999;
+        background-color: #111;
+        border: 1px solid #1A1A1A;
+        transition: all 0.15s ease-out;
+        text-decoration: none;
+        font-family: var(--font-body);
+        letter-spacing: 0.02em;
+        border-radius: 0;
+        line-height: 1.4;
+    }
+
+    .menu-tile:hover {
+        background-color: #161616;
+        color: white;
+        border-color: #333;
+        box-shadow: inset 3px 0 0 var(--color-primary);
+        transform: translateX(2px);
+    }
+
+    .menu-tile i {
+        color: #333;
+        transition: color 0.15s ease;
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+    }
+
+    .menu-tile:hover i {
+        color: var(--color-primary);
+    }
+
+    .menu-expand-row {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #999;
+        background-color: #111;
+        border: 1px solid #1A1A1A;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        border-radius: 0;
+        min-height: 42px;
+        height: auto;
+    }
+
+    .menu-expand-row:hover {
+        background-color: #161616;
+        color: white;
+        border-color: #333;
+        box-shadow: inset 3px 0 0 var(--color-primary);
+        transform: translateX(2px);
+    }
+
+    .menu-expand-description {
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        font-size: 0.75rem;
+        color: #666;
+        font-weight: 400;
+        margin-left: 2rem;
+        line-height: 1.3;
+        padding-top: 0;
+    }
+
+    .menu-expand-row:hover .menu-expand-description {
+        max-height: 100px;
+        opacity: 1;
+        padding-top: 0.25rem;
+    }
+
+    .menu-expand-row i {
+        color: #333;
+        transition: color 0.15s ease;
+    }
+
+    .menu-expand-row:hover i {
+        color: var(--color-primary);
+    }
+
+    .menu-tile-main {
+        background: linear-gradient(90deg, #161616 0%, #0A0A0A 100%);
+        border: 1px solid #222;
+        color: white;
+        font-family: var(--font-heading);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 0.75rem 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.25rem;
+    }
+
+    .menu-tile-main:hover {
+        border-color: #444;
+        color: var(--color-primary);
+    }
+
+    /* QR TOOLTIP */
+    .qr-tooltip {
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%) translateY(10px);
+        margin-top: 20px;
+        background-color: #141414;
+        border: 1px solid var(--color-border);
+        border-radius: 12px;
+        padding: 0.75rem;
+        z-index: 2006;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+        pointer-events: none;
+    }
+
+    .group\/call:hover .qr-tooltip {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(0);
+        pointer-events: auto;
+    }
+
+    .qr-tooltip::before {
+        content: '';
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 8px;
+        border-style: solid;
+        border-color: transparent transparent var(--color-border) transparent;
+    }
+
+    /* MOBILE MENU */
+    #mobile-menu {
+        transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+        background-color: #000;
+        border-bottom: 1px solid #222;
+    }
+
+    #mobile-menu.open {
+        max-height: 100vh;
+        opacity: 1;
+    }
+
+    .logo-text {
+        font-family: var(--font-heading);
+        font-weight: 800;
+        text-transform: uppercase;
+        line-height: 1;
+    }
+
+    /* NAVBAR GRADIENT */
+    nav::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100px;
+        background: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 1) 0%,
+            rgba(0, 0, 0, 0.8) 40%,
+            transparent 100%
+        );
+        z-index: -1;
+        pointer-events: none;
+    }
+</style>
+<!-- Navigation Bar -->
+<nav class="fixed top-0 w-full z-50 bg-transparent h-16">
+    <div class="max-w-[1400px] mx-auto px-4 h-full">
+        <div class="flex justify-between items-center h-full">
+
+            <!-- Logo -->
+            <a href="https://wikdwraps.com/" class="flex items-center">
+                <span class="logo-text text-2xl tracking-tight text-white hover:text-[#FF3B30] transition-colors">
+                    WIKD<span class="font-semibold text-[#666]">WRAPS</span>
+                </span>
+            </a>
+
+            <!-- Desktop Menu -->
+            <div class="hidden lg:flex items-center h-full gap-12">
+
+                <!-- Navigation Links -->
+                <div class="flex items-center gap-8 h-full">
+
+                    <!-- Services Dropdown -->
+                    <div class="relative group h-full flex items-center">
+                        <button class="nav-link">
+                            SERVICES
+                            <i data-lucide="chevron-down" class="w-3 h-3"></i>
+                        </button>
+                        <div class="dropdown-menu absolute top-[64px] left-1/2 w-80">
+                            <a href="https://wikdwraps.com/pages/our-services" class="menu-tile-main">
+                                <span>View All Services</span>
+                                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                            </a>
+
+                            <div class="menu-label">Protect</div>
+                            <a href="https://wikdwraps.com/pages/paint-protection-film" class="menu-tile">
+                                <i data-lucide="shield" class="w-4 h-4"></i>
+                                Paint Protection Film
+                            </a>
+                            <a href="https://wikdwraps.com/pages/ceramic-coatings" class="menu-tile">
+                                <i data-lucide="droplets" class="w-4 h-4"></i>
+                                Ceramic Coatings
+                            </a>
+                            <a href="https://wikdwraps.com/pages/window-tint" class="menu-tile">
+                                <i data-lucide="sun" class="w-4 h-4"></i>
+                                Window Tint
+                            </a>
+
+                            <div class="menu-label mt-1">Customize</div>
+                            <a href="https://wikdwraps.com/pages/vinyl-wraps" class="menu-tile">
+                                <i data-lucide="palette" class="w-4 h-4"></i>
+                                Vinyl Wraps
+                            </a>
+
+                            <div class="menu-label mt-1">Maintain</div>
+                            <a href="https://wikdwraps.com/pages/detailing" class="menu-tile">
+                                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                                Detailing
+                            </a>
+                            <a href="https://wikdwraps.com/pages/maintenance-plans" class="menu-tile">
+                                <i data-lucide="calendar-check" class="w-4 h-4"></i>
+                                Maintenance Plans
+                            </a>
+
+                            <div class="menu-label mt-1">Tools</div>
+                            <a href="https://wikdwraps.com/pages/estimate-configurator" class="menu-tile">
+                                <i data-lucide="calculator" class="w-4 h-4"></i>
+                                Estimate Configurator
+                            </a>
                         </div>
                     </div>
-                    <div class="relative z-10 bg-[#0A0A0A] md:bg-transparent py-2"> <!-- Bg patch for mobile line text readability -->
-                        <h3 class="process-title">Configure</h3>
-                        <p class="p-muted text-sm leading-relaxed max-w-[280px] mx-auto">
-                            Input your budget for instant expert picks, or build your custom package from scratch.
-                        </p>
+
+                    <!-- Company Dropdown -->
+                    <div class="relative group h-full flex items-center">
+                        <button class="nav-link">
+                            COMPANY
+                            <i data-lucide="chevron-down" class="w-3 h-3"></i>
+                        </button>
+                        <div class="dropdown-menu absolute top-[64px] left-1/2 w-64">
+                            <div class="menu-label">Information</div>
+                            <a href="https://wikdwraps.com/pages/about-us-1" class="menu-tile">
+                                <i data-lucide="info" class="w-4 h-4"></i>
+                                About Us
+                            </a>
+                            <a href="https://wikdwraps.com/pages/contact" class="menu-tile">
+                                <i data-lucide="mail" class="w-4 h-4"></i>
+                                Contact
+                            </a>
+                            <a href="https://wikdwraps.com/pages/careers" class="menu-tile">
+                                <i data-lucide="briefcase" class="w-4 h-4"></i>
+                                Careers
+                            </a>
+                            <a href="https://wikdwraps.com/pages/dealers" class="menu-tile">
+                                <i data-lucide="users" class="w-4 h-4"></i>
+                                Dealers
+                            </a>
+
+                            <div class="menu-label mt-1">Our Ecosystem</div>
+
+                            <a href="https://www.wikdmotorsports.com/" target="_blank" class="menu-expand-row">
+                                <div class="flex items-center justify-between w-full">
+                                    <div class="flex items-center gap-3">
+                                        <i data-lucide="gauge" class="w-4 h-4"></i>
+                                        <span>WIKD</span>
+                                    </div>
+                                    <i data-lucide="external-link" class="w-3 h-3 opacity-50"></i>
+                                </div>
+                                <div class="menu-expand-description">
+                                    Tuning, Fabrication & Custom Builds
+                                </div>
+                            </a>
+
+                            <a href="https://boltmotorsports.com/" target="_blank" class="menu-expand-row">
+                                <div class="flex items-center justify-between w-full">
+                                    <div class="flex items-center gap-3">
+                                        <i data-lucide="zap" class="w-4 h-4"></i>
+                                        <span>Bolt</span>
+                                    </div>
+                                    <i data-lucide="external-link" class="w-3 h-3 opacity-50"></i>
+                                </div>
+                                <div class="menu-expand-description">
+                                    Premium Performance Parts
+                                </div>
+                            </a>
+                        </div>
                     </div>
+
+                    <!-- Gallery Link -->
+                    <a href="https://wikdwraps.com/pages/gallery" class="nav-link">
+                        GALLERY
+                    </a>
+
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center gap-5 h-full">
+
+                    <!-- Call Icon with QR -->
+                    <div class="relative group/call flex items-center h-full">
+                        <a href="tel:469-625-1127" id="nav-call-link" class="flex items-center justify-center" title="Click to call or scan QR code on desktop">
+                            <div style="width: 24px; height: 24px;">
+                                <animated-icons
+                                    src="https://animatedicons.co/get-icon?name=Calling%20V3&style=minimalistic&token=66ff3706-138c-41fa-a993-dee03566e48c"
+                                    trigger="loop"
+                                    attributes='{"variationThumbColour":"#FF3B30","variationName":"Dark","variationNumber":4,"numberOfGroups":2,"strokeWidth":1.5,"background":"#000000","defaultColours":{"group-1":"#FF3B30","group-2":"#EAEAEA","background":"#000000"}}'
+                                    height="24" width="24">
+                                </animated-icons>
+                            </div>
+                        </a>
+
+                        <div id="nav-qr-tooltip" class="qr-tooltip">
+                            <div id="qr-code-container"></div>
+                            <p class="mt-2 text-xs text-gray-300 font-bold uppercase tracking-wider">Scan to call</p>
+                        </div>
+                    </div>
+
+                    <!-- Quote Button -->
+                    <a href="https://wikdwraps.com/pages/estimate-configurator" class="btn-wikd">
+                        INSTANT QUOTE
+                    </a>
+
+                </div>
+            </div>
+
+            <!-- Mobile Actions -->
+            <div class="flex items-center gap-4 lg:hidden">
+                <a href="tel:469-625-1127" class="text-white hover:text-[#FF3B30] transition-colors">
+                    <i data-lucide="phone" class="w-5 h-5"></i>
                 </a>
-
-                <!-- Step 02 -->
-                <div class="process-item relative group cursor-default reveal-on-scroll delay-200">
-                    <div class="process-step-box">
-                        <!-- NEW: Glow Element -->
-                        <div class="process-card-glow card-glow-02"></div>
-                        <div class="process-content-wrapper">
-                            <span class="process-number">02</span>
-                            <div class="process-icon">
-                                <animated-icons
-                                  src="https://animatedicons.co/get-icon?name=Hey&style=minimalistic&token=1869947d-0b96-4314-9dd7-a86ec7a829ff"
-                                  trigger="loop"
-                                  attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#EAEAEA","group-2":"#FF3B30","background":"transparent"}}'
-                                  height="60"
-                                  width="60"
-                                ></animated-icons>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="relative z-10 bg-[#0A0A0A] md:bg-transparent py-2">
-                        <h3 class="process-title">Drop Off</h3>
-                        <p class="p-muted text-sm leading-relaxed max-w-[280px] mx-auto">
-                            Bring your vehicle to our McKinney studio. We confirm details and begin the transformation.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Step 03 -->
-                <div class="process-item relative group cursor-default reveal-on-scroll delay-300">
-                    <div class="process-step-box">
-                        <!-- NEW: Glow Element -->
-                        <div class="process-card-glow card-glow-03"></div>
-                        <div class="process-content-wrapper">
-                            <span class="process-number">03</span>
-                            <div class="process-icon">
-                                <animated-icons
-                                  src="https://animatedicons.co/get-icon?name=KM&style=minimalistic&token=5729fdff-2cfc-4b8b-9952-2ff7da52563d"
-                                  trigger="loop"
-                                  attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#EAEAEA","group-2":"#FF3B30","background":"transparent"}}'
-                                  height="60"
-                                  width="60"
-                                ></animated-icons>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="relative z-10 bg-[#0A0A0A] md:bg-transparent py-2">
-                        <h3 class="process-title">Drive</h3>
-                        <p class="p-muted text-sm leading-relaxed max-w-[280px] mx-auto">
-                            Pick up your showroom-ready vehicle, protected and styled to absolute perfection.
-                        </p>
-                    </div>
-                </div>
-
+                <a href="https://wikdwraps.com/pages/estimate-configurator" class="text-white hover:text-[#FF3B30] transition-colors">
+                    <i data-lucide="file-text" class="w-5 h-5"></i>
+                </a>
+                <button id="mobile-menu-btn" class="text-white hover:text-[#FF3B30] focus:outline-none transition-colors">
+                    <i data-lucide="menu" class="w-7 h-7"></i>
+                </button>
             </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="lg:hidden mt-[64px]">
+        <div class="px-4 py-4 space-y-2 bg-black border-b border-[#333]">
+            <div class="space-y-1">
+                <div class="text-[10px] text-[#555] font-bold uppercase tracking-widest font-heading px-3 mb-1">Services</div>
+                <a href="https://wikdwraps.com/pages/paint-protection-film" class="block px-3 py-2 text-sm text-[#CCC] hover:text-white hover:bg-[#111]">Paint Protection</a>
+                <a href="https://wikdwraps.com/pages/ceramic-coatings" class="block px-3 py-2 text-sm text-[#CCC] hover:text-white hover:bg-[#111]">Ceramic Coatings</a>
+                <a href="https://wikdwraps.com/pages/vinyl-wraps" class="block px-3 py-2 text-sm text-[#CCC] hover:text-white hover:bg-[#111]">Vinyl Wraps</a>
+                <a href="https://wikdwraps.com/pages/window-tint" class="block px-3 py-2 text-sm text-[#CCC] hover:text-white hover:bg-[#111]">Window Tint</a>
+                <a href="https://wikdwraps.com/pages/detailing" class="block px-3 py-2 text-sm text-[#CCC] hover:text-white hover:bg-[#111]">Detailing</a>
+            </div>
+            <div class="pt-2">
+                <a href="https://wikdwraps.com/pages/estimate-configurator" class="block w-full text-center bg-white text-black font-bold uppercase tracking-wider py-3 text-sm" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 12px 100%, 0 80%);">Instant Quote</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<script>
+    lucide.createIcons();
+
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    mobileMenuBtn.addEventListener('click', () => {
+        const isOpen = mobileMenu.classList.contains('open');
+        if (isOpen) {
+            mobileMenu.classList.remove('open');
+            mobileMenuBtn.innerHTML = '<i data-lucide="menu" class="w-7 h-7"></i>';
+        } else {
+            mobileMenu.classList.add('open');
+            mobileMenuBtn.innerHTML = '<i data-lucide="x" class="w-7 h-7"></i>';
+        }
+        lucide.createIcons();
+    });
+
+    // QR Code Logic
+    const phone = "469-625-1127";
+    const normalizedPhone = phone.replace(/\D/g, '');
+    const qrContainer = document.getElementById('qr-code-container');
+
+    if (typeof QRCode !== 'undefined' && qrContainer) {
+        const canvas = document.createElement('canvas');
+        qrContainer.appendChild(canvas);
+
+        QRCode.toCanvas(canvas, `tel:${normalizedPhone}`, {
+            width: 120,
+            margin: 1,
+            color: { dark: '#FF3B30', light: '#141414' }
+        }, function (error) {
+            if (error) console.error("QR Code Error:", error);
+        });
+    }
+
+    const navCallLink = document.getElementById('nav-call-link');
+    if (navCallLink) {
+        navCallLink.addEventListener('click', function(e) {
+            if (window.innerWidth > 1024) {
+                e.preventDefault();
+            }
+        });
+    }
+</script>
+
+
+    
+    <!-- SVG Definitions for reuse -->
+    <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
+        <defs>
+            <radialGradient id="starGradient3D">
+                <stop offset="0%" stop-color="white" stop-opacity="var(--center-opacity, 0.7)"></stop>
+                <stop offset="20%" stop-color="#FDE047"></stop>
+                <stop offset="90%" stop-color="#F59E0B"></stop>
+            </radialGradient>
+        </defs>
+    </svg>
+
+    <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
+      <section id="shopify-section-template--20779275780301__custom_liquid_TPCGPH" class="shopify-section section"><style data-shopify="">.section-template--20779275780301__custom_liquid_TPCGPH-padding {
+    padding-top: calc(0px * 0.75);
+    padding-bottom: calc(0px  * 0.75);
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-template--20779275780301__custom_liquid_TPCGPH-padding {
+      padding-top: 0px;
+      padding-bottom: 0px;
+    }
+  }</style><div class="color-background-1 gradient">
+  <div class="section-template--20779275780301__custom_liquid_TPCGPH-padding">
+    
+    <style>
+        .hero * {
+            box-sizing: border-box;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            min-height: 100vh;
+            width: 100vw; /* Full viewport width */
             
+            /* REMOVED: Static Background Image */
+            /* background-image: ... */
+            
+            position: relative;
+            display: flex;
+            align-items: center;
+            overflow: hidden; /* Ensure images don't spill */
+        }
+
+        /* --- NEW HERO IMAGE STYLES --- */
+        .hero-bg-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .fade-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            pointer-events: none;
+        }
+
+        .fade-image.active {
+            opacity: 1;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4); /* Original linear-gradient opacity overlay */
+            z-index: 1;
+            pointer-events: none;
+        }
+        /* --------------------------- */
+
+        /* Hero Content - Uses standardized container logic */
+        .hero-content {
+            /* Standard container logic matching .mobile-scaled-container and .wikd-footer-container */
+            width: 92%;
+            max-width: 1200px;
+            margin: 0 auto;
+            
+            /* Flexbox to handle vertical centering if needed, but primarily for structure */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            
+            padding-top: 3rem;
+            padding-bottom: 3rem;
+            
+            position: relative;
+            z-index: 2; /* Sit above overlay and images */
+        }
+        
+        /* Inner wrapper to restrict text width for readability while keeping container centered */
+        .hero-text-wrapper {
+             max-width: 100%;
+        }
+
+        @media (min-width: 768px) {
+             .hero-text-wrapper {
+                 max-width: 60%; /* Limits line length on desktop for better readability */
+             }
+        }
+
+        .badge {
+            background: #c62828;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+        }
+
+        .hero h1 {
+            color: white;
+            font-size: 4rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 3rem;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+        }
+
+        .cta-buttons {
+            display: grid;
+            grid-template-columns: auto auto;
+            grid-template-rows: auto auto;
+            gap: 1.5rem;
+            width: fit-content;
+        }
+
+        .hero .btn:nth-child(3) {
+            grid-column: 1 / -1;
+        }
+
+        .arrow {
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .hero .btn:hover .arrow {
+            transform: translateX(5px);
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                height: 85vh;
+                min-height: 85vh;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .cta-buttons {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto;
+            }
+
+            .hero .btn:nth-child(3) {
+                grid-column: 1;
+            }
+        }
+    </style>
+
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <!-- New Background Container for Time Reactive Module -->
+        <div id="hero-bg-container" class="hero-bg-wrapper">
+             <img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Freshly_Detailed_Ryft_McLaren_720s_on_HRE_Wheels_with_WIKD_Exhaust.jpg?v=1744062350" class="fade-image active" alt="Hero Background">
+        </div>
+        
+        <!-- Overlay to ensure text readability -->
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+            <div class="hero-text-wrapper">
+                <div class="badge">TOP PPF &amp; COATING SPECIALISTS IN MCKINNEY TX</div>
+                <h1>Paint Protection Solutions From The Best Name In Custom Performance</h1>
+                
+                <div class="cta-buttons">
+                    <a href="#services-section" class="btn btn-primary">
+                        <span>Explore Services</span>
+                    </a>
+                    <a href="https://wikdwraps.com/pages/estimate-configurator" class="btn btn-secondary">
+                        <span>Instant Quote Tool</span>
+                    </a>
+                    <a href="https://wikdwraps.com/pages/contact" class="btn btn-tertiary">
+                    <span>Reserve Your Spot</span>
+                    </a>
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- Scroll Reveal Script -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
+
+  </div>
+</div>
+</section>
+
+<!-- PREMIER SERVICES SECTION -->
+<section id="services-section" class="py-20" style="background-color: var(--color-background);">
+    <div class="mobile-scaled-container">
+        <div class="text-center mb-10">
+            <h2 class="h2">Our Premier Services</h2>
+            <p class="p-muted max-w-3xl mx-auto mt-2">Your car deserves elite protection and precision styling. Our industry-leading films and coatings deliver unmatched durability, striking visuals, and a finish tailored to your vision.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- PPF Card -->
+            <a href="https://wikdwraps.com/pages/paint-protection-film" class="package-card">
+                <img src="https://wikdwraps.com/cdn/shop/files/Satin_PPF_Wrapped_Black_and_Green_Lamborghini_Huracan_STO_Freshly_Detailed.jpg?v=1743435243" alt="Lamborghini Huracan STO with Satin PPF" class="package-card-bg">
+                <div class="package-card-overlay">
+                    <div class="package-card-content flex flex-col">
+                        <h3 class="package-card-title text-2xl">Paint Protection Film</h3>
+                        <p class="package-card-description text-sm leading-snug">Absorb impacts and resist rock chips with invisible, self-healing defense.</p>
+                        <span class="package-card-link">Learn More &rarr;</span>
+                    </div>
+                </div>
+            </a>
+            <!-- Ceramic Coatings Card -->
+            <a href="https://wikdwraps.com/pages/ceramic-coatings" class="package-card">
+                 <img src="https://wikdwraps.com/cdn/shop/files/Blue_and_White_Stripe_2006_Ford_GT_Ford_GT40_Detailed_and_Ceramic_Coated.jpg?v=1743434907" alt="Ford GT with Ceramic Coating" class="package-card-bg">
+                <div class="package-card-overlay">
+                    <div class="package-card-content flex flex-col">
+                        <h3 class="package-card-title text-2xl">Ceramic Coatings</h3>
+                        <p class="package-card-description text-sm leading-snug">Ultra-durable protection for a deep, mirror-like, hydrophobic gloss.</p>
+                        <span class="package-card-link">Learn More &rarr;</span>
+                    </div>
+                </div>
+            </a>
+            <!-- Vinyl Wraps Card -->
+            <a href="https://wikdwraps.com/pages/vinyl-wraps" class="package-card">
+                <img src="https://wikdwraps.com/cdn/shop/files/Black_Ford_F450_Platinum_Powerstroke_Dually_Chrome_Delete.jpg?v=1744062595" alt="Ford F450 with a custom vinyl wrap" class="package-card-bg">
+                <div class="package-card-overlay">
+                    <div class="package-card-content flex flex-col">
+                        <h3 class="package-card-title text-2xl">Vinyl Wraps</h3>
+                         <p class="package-card-description text-sm leading-snug">Transform your vehicle with endless customization and paint protection.</p>
+                        <span class="package-card-link">Learn More &rarr;</span>
+                    </div>
+                </div>
+            </a>
+             <!-- Detailing Card -->
+            <a href="https://wikdwraps.com/pages/detailing" class="package-card">
+                <img src="https://wikdwraps.com/cdn/shop/files/IMG_5156_f16f1bb4-c32d-4e4a-89d3-47cd61d28c72.jpg?v=1742478458" alt="Professional auto detailing" class="package-card-bg">
+                <div class="package-card-overlay">
+                    <div class="package-card-content flex flex-col">
+                        <h3 class="package-card-title text-2xl">Automotive Detailing</h3>
+                        <p class="package-card-description text-sm leading-snug">Meticulous interior and exterior restoration for a showroom finish.</p>
+                        <span class="package-card-link">Learn More &rarr;</span>
+                    </div>
+                </div>
+            </a>
+            <!-- Nano-Ceramic Tint Card -->
+            <a href="https://wikdwraps.com/pages/window-tint" class="package-card">
+                 <img src="https://wikdwraps.com/cdn/shop/files/Clean_Ryft_Black_McLaren_720s_HRE_Wheels_WIKD_Exhaust.jpg?v=1744062478" alt="McLaren 720s with Nano-Ceramic Tint" class="package-card-bg">
+                <div class="package-card-overlay">
+                      <div class="package-card-content flex flex-col">
+                        <h3 class="package-card-title text-2xl">Nano-Ceramic Tint</h3>
+                        <p class="package-card-description text-sm leading-snug">Industry-leading heat rejection, UV protection, and privacy.</p>
+                        <span class="package-card-link">Learn More &rarr;</span>
+                    </div>
+                </div>
+            </a>
+            <!-- Maintenance Card -->
+            <a href="https://wikdwraps.com/pages/maintenance-plans" class="package-card">
+                 <img src="https://wikdwraps.com/cdn/shop/files/Black_Lamborghini_Urus_Interior_Detail.jpg?v=1744062916" alt="Interior of a Lamborghini Urus after detailing" class="package-card-bg">
+                <div class="package-card-overlay">
+                      <div class="package-card-content flex flex-col">
+                        <h3 class="package-card-title text-2xl">Maintenance Plans</h3>
+                        <p class="package-card-description text-sm leading-snug">Keep your vehicle flawless year-round with our exclusive member plans.</p>
+                        <span class="package-card-link">Learn More &rarr;</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- THE WIKD DIFFERENCE SECTION -->
+<section id="difference-section" class="py-20" style="background-color: var(--color-surface);">
+    <div class="mobile-scaled-container">
+        <div class="text-center mb-10">
+            <h2 class="h2">The WIKD Difference</h2>
+             <p class="p-muted max-w-2xl mx-auto mt-2">We combine world-class craftsmanship with industry-leading materials to deliver results that speak for themselves.</p>
+        </div>
+        <!-- GEOMETRY UPDATE: Using uniform .wikd-card class -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+            <div class="wikd-card">
+                <div class="flex justify-center items-center mb-2">
+                    <animated-icons
+                        src="https://animatedicons.co/get-icon?name=Reliable&style=minimalistic&token=27a30965-9fd9-4579-acc0-b9c372561841"
+                        trigger="loop"
+                        attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#EAEAEA","group-2":"#FF3B30","background":"#141414"}}'
+                        height="100"
+                        width="100"
+                    ></animated-icons>
+                </div>
+                <h3 class="h3 text-2xl mb-1">Craftsmanship You Can Trust</h3>
+                <p class="p-muted text-sm leading-snug">Our expert technicians are factory-certified installers known for their precision and attention to detail. We treat every vehicle as if it were our own, ensuring flawless results every time.</p>
+            </div>
+            <div class="wikd-card">
+                <div class="flex justify-center items-center mb-2">
+                    <animated-icons
+                        src="https://animatedicons.co/get-icon?name=Chemist&style=minimalistic&token=153ce80d-3f45-4dc6-b13a-40ea011dbbfe"
+                        trigger="loop"
+                        attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#EAEAEA","group-2":"#FF3B30","background":"#141414"}}'
+                        height="100"
+                        width="100"
+                    ></animated-icons>
+                </div>
+                <h3 class="h3 text-2xl mb-1">Industry Leading Materials</h3>
+                <p class="p-muted text-sm leading-snug">We’ve partnered with top-tier brands like STEK to provide the best durability, clarity, and performance for your vehicle. We don't compromise on quality.</p>
+            </div>
+            <div class="wikd-card">
+                <div class="flex justify-center items-center mb-2">
+                    <animated-icons
+                        src="https://animatedicons.co/get-icon?name=edit&style=minimalistic&token=bef79568-d828-4e67-a904-60a1bb446375"
+                        trigger="loop"
+                        attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#EAEAEA","group-2":"#FF3B30","background":"#141414"}}'
+                        height="100"
+                        width="100"
+                    ></animated-icons>
+                </div>
+                <h3 class="h3 text-2xl mb-1">Bespoke Solutions</h3>
+                <p class="p-muted text-sm leading-snug">From exotics to daily drivers, we offer customized protection plans to fit your needs and budget. Your vision is our blueprint for a perfect finish.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- GALLERY SECTION -->
+<section id="gallery-section" class="py-20" style="background-color: var(--color-background);">
+    <div class="mobile-scaled-container">
+        <div class="text-center mb-10">
+            <h2 class="h2">From Showroom to Showstopper</h2>
+            <p class="p-muted max-w-2xl mx-auto mt-2">Explore our gallery of recent projects and see the WIKD difference for yourself. Your vision is our mission.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
+             <div class="gallery-card-wrapper">
+                 <a href="https://wikdwraps.com/pages/gallery" class="gallery-card">
+                     <img src="https://wikdwraps.com/cdn/shop/files/Black_Lamborghini_Urus_Paint_Correction_and_Rock_Chip_Repair.jpg?v=1744062951" class="gallery-card-bg" alt="Lamborghini Urus">
+                     <div class="gallery-card-overlay">
+                         <div class="card-badge-container">
+                             <div class="wikd-sub-badge">PPF Repair &amp; Detail</div>
+                         </div>
+                         <div class="gallery-card-title-block">
+                             <h3 class="gallery-card-title text-2xl">2018 Lamborghini Urus</h3>
+                         </div>
+                     </div>
+                 </a>
+             </div>
+             <div class="gallery-card-wrapper">
+                 <a href="https://wikdwraps.com/pages/gallery" class="gallery-card">
+                     <img src="https://wikdwraps.com/cdn/shop/files/IMG_1919.jpg?v=1741643606" class="gallery-card-bg" alt="Cadillac CT5 V Blackwing">
+                     <div class="gallery-card-overlay">
+                         <div class="card-badge-container">
+                             <div class="wikd-sub-badge">Exterior Detail</div>
+                         </div>
+                         <div class="gallery-card-title-block">
+                             <h3 class="gallery-card-title text-2xl">2024 Cadillac CT5 V Blackwing</h3>
+                         </div>
+                     </div>
+                 </a>
+             </div>
+              <div class="gallery-card-wrapper">
+                 <a href="https://wikdwraps.com/pages/gallery" class="gallery-card">
+                     <img src="https://wikdwraps.com/cdn/shop/files/Black_Ford_F450_Platinum_Powerstroke_Dually_Chrome_Delete.jpg?v=1744062595" class="gallery-card-bg" alt="Ford F450 Platinum">
+                     <div class="gallery-card-overlay">
+                         <div class="card-badge-container">
+                            <div class="wikd-sub-badge">Chrome Delete</div>
+                         </div>
+                         <div class="gallery-card-title-block">
+                             <h3 class="gallery-card-title text-2xl">2024 Ford F450 Platinum</h3>
+                         </div>
+                     </div>
+                 </a>
+             </div>
+        </div>
+        <!-- UPDATED SPACING AND BUTTON STYLE -->
+        <div class="text-center mt-16">
+            <a class="btn btn-primary" href="https://wikdwraps.com/pages/gallery">
+              <span>Explore Full Gallery</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- LOCATIONS SECTION -->
+<section id="locations-section" class="py-20" style="background-color: var(--color-surface);">
+    <div class="mobile-scaled-container">
+        <div class="text-center mb-10">
+            <h2 class="h2">Your Nearest WIKD Locations</h2>
+        </div>
+         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- WIKD WRAPS CARD - GEOMETRY UPDATE: Using .wikd-card for consistency -->
+            <div class="wikd-card">
+                <h3 class="h3 text-2xl text-center md:text-left">WIKD Wraps</h3>
+                <div class="flex items-center gap-3 my-2 justify-center md:justify-start min-h-[28px]">
+                    <span id="status-line-pbw" class="text-sm font-semibold"></span>
+                    <div id="hours-toggle-wrapper-pbw" class="relative">
+                         <div id="hours-dropdown-toggle-pbw" class="cursor-pointer text-sm font-semibold text-gray-400 hover:text-white transition duration-200 flex items-center gap-1">
+                            <span class="uppercase">All Hours</span>
+                            <svg class="dropdown-icon w-3 h-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor"><path d="M7 10L12 15L17 10" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                        </div>
+                        <div id="full-hours-dropdown-pbw" class="absolute top-full left-0 z-[2005] p-3 bg-black/95 border border-primary-red border-t-0 rounded-b-lg w-48 text-gray-300 text-xs overflow-hidden max-h-0 opacity-0 transition-all duration-300 ease-out"></div>
+                    </div>
+                </div>
+
+                <div class="flex-grow flex flex-col gap-0.5">
+                    <p class="p-muted text-sm leading-snug text-center md:text-left">Wraps, Tint, Coatings, & Detailing</p>
+                    <p class="p-muted text-sm leading-snug text-center md:text-left">Automotive Film & Coating Specialists</p>
+                </div>
+                
+                <div class="mt-auto pt-4 flex flex-col items-center md:items-start gap-4">
+                    <div class="flex items-center gap-4">
+                        <a id="directions-link-pbw" href="#" target="_blank" class="text-sm font-semibold uppercase tracking-wider text-primary-red hover:text-white transition">Directions</a>
+                        <div id="copy-controls-wrapper-pbw" class="relative flex items-center">
+                            <button id="copy-address-button-pbw" class="text-sm font-semibold uppercase tracking-wider text-gray-400 hover:text-white transition">Copy Address</button>
+                            <span id="copy-confirmation-pbw" class="text-green-400 absolute right-0 top-1/2 -translate-y-1/2 ml-2 text-xs font-semibold opacity-0 transition pointer-events-none">Copied!</span>
+                        </div>
+                    </div>
+                    <div id="phone-container-pbw" class="relative"></div>
+                </div>
+            </div>
+
+             <!-- WIKD MOTORSPORTS CARD - GEOMETRY UPDATE: Using .wikd-card for consistency -->
+             <div class="wikd-card">
+                <h3 class="h3 text-2xl text-center md:text-left">WIKD Motorsports</h3>
+                <div class="flex items-center my-2 justify-center md:justify-start min-h-[28px] gap-3">
+                    <div class="flex items-center space-x-1">
+                        <!-- Star 1 -->
+                        <a href="https://share.google/7vAZnoZqZSVFpq84p" target="_blank" rel="noopener noreferrer" class="relative block w-4 h-4 star-container-fade-in"><svg class="absolute top-0 left-0 w-full h-full text-yellow-400 star-glow-pulse" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><svg class="absolute top-0 left-0 w-full h-full star-gradient-pulse" fill="url(#starGradient3D)" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><div class="glint-wrapper"></div></a>
+                        <!-- Star 2 -->
+                        <a href="https://share.google/7vAZnoZqZSVFpq84p" target="_blank" rel="noopener noreferrer" class="relative block w-4 h-4 star-container-fade-in"><svg class="absolute top-0 left-0 w-full h-full text-yellow-400 star-glow-pulse" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><svg class="absolute top-0 left-0 w-full h-full star-gradient-pulse" fill="url(#starGradient3D)" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><div class="glint-wrapper"></div></a>
+                        <!-- Star 3 -->
+                        <a href="https://share.google/7vAZnoZqZSVFpq84p" target="_blank" rel="noopener noreferrer" class="relative block w-4 h-4 star-container-fade-in"><svg class="absolute top-0 left-0 w-full h-full text-yellow-400 star-glow-pulse" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><svg class="absolute top-0 left-0 w-full h-full star-gradient-pulse" fill="url(#starGradient3D)" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><div class="glint-wrapper"></div></a>
+                        <!-- Star 4 -->
+                        <a href="https://share.google/7vAZnoZqZSVFpq84p" target="_blank" rel="noopener noreferrer" class="relative block w-4 h-4 star-container-fade-in"><svg class="absolute top-0 left-0 w-full h-full text-yellow-400 star-glow-pulse" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><svg class="absolute top-0 left-0 w-full h-full star-gradient-pulse" fill="url(#starGradient3D)" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><div class="glint-wrapper"></div></a>
+                        <!-- Star 5 (Partial) -->
+                        <a href="https://share.google/7vAZnoZqZSVFpq84p" target="_blank" rel="noopener noreferrer" class="relative block w-4 h-4 star-container-fade-in"><svg class="absolute top-0 left-0 w-full h-full text-yellow-400 star-glow-pulse" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><svg class="absolute top-0 left-0 w-full h-full text-zinc-600" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><div class="absolute top-0 left-0 w-full h-full" style="clip-path: inset(0 40% 0 0);"><svg class="w-full h-full star-gradient-pulse" fill="url(#starGradient3D)" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><div class="glint-wrapper"></div></div></a>
+                    </div>
+                    <div class="text-zinc-300 font-bold text-base star-container-fade-in">
+                        4.6 / 5
+                    </div>
+                </div>
+                 <div id="status-info-group-ms" class="flex items-center gap-3 mb-2 justify-center md:justify-start">
+                    <span id="status-line-ms" class="text-sm font-semibold"></span>
+                 </div>
+                <div class="flex-grow flex flex-col gap-0.5">
+                    <p class="p-muted text-sm leading-snug text-center md:text-left">Tuning, Fabrication, & Custom Builds</p>
+                    <p class="p-muted text-sm leading-snug text-center md:text-left">Forced Induction Systems Specialists</p>
+                </div>
+                <div class="mt-auto pt-4 flex flex-col items-center md:items-start gap-4">
+                      <div class="flex items-center gap-4">
+                          <a id="directions-link-ms" href="#" target="_blank" class="text-sm font-semibold uppercase tracking-wider text-primary-red hover:text-white transition">Directions</a>
+                          <div id="copy-controls-wrapper-ms" class="relative flex items-center">
+                              <button id="copy-address-button-ms" class="text-sm font-semibold uppercase tracking-wider text-gray-400 hover:text-white transition">Copy Address</button>
+                              <span id="copy-confirmation-ms" class="text-green-400 absolute right-0 top-1/2 -translate-y-1/2 ml-2 text-xs font-semibold opacity-0 transition pointer-events-none">Copied!</span>
+                          </div>
+                      </div>
+                      <div id="phone-container-ms" class="relative"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FINAL CTA -->
+<section id="final-cta-section" class="py-20" style="background-color: var(--color-background);">
+    <!-- Updated container to mobile-scaled-container for alignment -->
+    <div class="mobile-scaled-container text-center">
+        
+        <!-- Car Composite Image/Video Section -->
+         <div style="display: flex; justify-content: center; margin-bottom: 2rem;">
+             <div class="car-composite-wrapper">
+                 <!-- The base car image. It dictates the size of the container. -->
+                 <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/image_24.png?v=1764085690" alt="WIKD Wraps Ceramic Coated Car" class="car-base-image">
+                 
+                 <!-- 
+                   The overlay video. It is absolutely positioned on top.
+                   CSS applies mix-blend-mode: screen and uses the car image itself as an alpha mask.
+                 -->
+                 <video src="https://cdn.shopify.com/videos/c/o/v/fa85c90cb3b948b2979fbbbc32f75d8a.mp4" autoplay loop muted playsinline class="car-effect-video"></video>
+                 <video src="https://cdn.shopify.com/videos/c/o/v/903a4795909c4064b3672c6dfe148552.mp4" autoplay loop muted playsinline class="car-effect-video-2"></video>
+             </div>
+         </div>
+         <!-- End Car Composite Section -->
+
+         <!-- Adjusted font size clamp to ensure it fits the width perfectly -->
+         <h2 class="h1" style="font-size: clamp(1.8rem, 4vw, 3.2rem);">
+                 Your car deserves nothing less than perfection.
+         </h2>
+            <p class="p-muted max-w-2xl mx-auto mt-4 mb-8">
+               Trust a shop that shares your passion and refuses to cut corners. Experience precision, craftsmanship, and care as if your vehicle were our own.
+            </p>
+           <a href="https://wikdwraps.com/pages/contact" class="btn btn-primary">
+             <span>Get Started</span>
+           </a>
+    </div>
+</section>
+ <textarea id="address-clipboard-helper" style="position: absolute; left: -9999px;"></textarea>
+</main>
+
+<footer class="wikd-footer">
+    <div class="wikd-footer-container">
+        <div class="wikd-footer-grid">
+            <!-- Brand Column -->
+            <div class="wikd-footer-brand">
+                <img src="https://wikdwraps.com/cdn/shop/files/output-onlinepngtools_3.png?v=1737407428&width=300" alt="WIKD Wraps" class="wikd-footer-logo">
+                <p class="wikd-footer-tagline">Uncompromised Protection. WIKD Craftsmanship.</p>
+                <div class="wikd-footer-social">
+                    <a href="https://www.facebook.com/wikdwraps" target="_blank" rel="noopener" class="wikd-footer-social-link" aria-label="Facebook">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    </a>
+                    <a href="https://www.instagram.com/wikdwraps" target="_blank" rel="noopener" class="wikd-footer-social-link" aria-label="Instagram">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                    </a>
+                    <a href="https://twitter.com/wikdwraps" target="_blank" rel="noopener" class="wikd-footer-social-link" aria-label="X (Twitter)">
+                        <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Services Column -->
+            <div class="wikd-footer-column">
+                <h3>Services</h3>
+                <ul class="wikd-footer-links">
+                    <li><a href="https://wikdwraps.com/pages/paint-protection-film">Paint Protection Film</a></li>
+                    <li><a href="https://wikdwraps.com/pages/ceramic-coatings">Ceramic Coatings</a></li>
+                    <li><a href="https://wikdwraps.com/pages/vinyl-wraps">Vinyl Wraps</a></li>
+                    <li><a href="https://wikdwraps.com/pages/window-tint">Window Tint</a></li>
+                    <li><a href="https://wikdwraps.com/pages/detailing">Detailing</a></li>
+                    <li><a href="https://wikdwraps.com/pages/maintenance-plans">Maintenance Plans</a></li>
+                </ul>
+            </div>
+
+            <!-- Company Column -->
+            <div class="wikd-footer-column">
+                <h3>Company</h3>
+                <ul class="wikd-footer-links">
+                    <li><a href="https://wikdwraps.com/pages/about-us-1">About Us</a></li>
+                    <li><a href="https://wikdwraps.com/pages/gallery">Gallery</a></li>
+                    <li><a href="https://wikdwraps.com/pages/contact">Contact</a></li>
+                    <li><a href="https://wikdwraps.com/pages/careers">Careers</a></li>
+                    <li><a href="https://wikdwraps.com/pages/dealers">Dealers</a></li>
+                    <li><a href="https://wikdwraps.com/pages/dealers">WIKD Motorsports</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="wikd-footer-bottom">
+            <div class="wikd-footer-copyright">
+                © 2025 <a href="/">WIKD Wraps</a>. All rights reserved.
+            </div>
+            <div class="wikd-footer-legal">
+                <a href="https://wikdwraps.com/pages/privacy-policy">Privacy Policy</a>
+                <a href="https://wikdwraps.com/pages/refund-policy">Refund Policy</a>
+                <a href="https://wikdwraps.com/pages/terms-of-service">Terms of Service</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        
+        function initializeLocationCard(config) {
+            const { idPrefix, phone, address, directionsLink, hours, showOpenStatus } = config;
+
+            const UI = {
+                statusLine: document.getElementById(`status-line-${idPrefix}`),
+                phoneContainer: document.getElementById(`phone-container-${idPrefix}`),
+                hoursToggle: document.getElementById(`hours-dropdown-toggle-${idPrefix}`),
+                hoursDropdown: document.getElementById(`full-hours-dropdown-${idPrefix}`),
+                copyButton: document.getElementById(`copy-address-button-${idPrefix}`),
+                copyConfirmation: document.getElementById(`copy-confirmation-${idPrefix}`),
+                directionsLink: document.getElementById(`directions-link-${idPrefix}`),
+                clipboardHelper: document.getElementById('address-clipboard-helper')
+            };
+
+            const normalizedPhone = phone.replace(/\D/g, '');
+            const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+            function formatTime(hourFloat) {
+                if (hourFloat === null) return 'Closed';
+                const hours = Math.floor(hourFloat);
+                const minutes = Math.round((hourFloat - hours) * 60);
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                const displayHours = hours % 12 || 12;
+                const displayMinutes = minutes < 10 ? '0' + minutes : minutes;
+                return `${displayHours}:${displayMinutes} ${ampm}`;
+            }
+
+            function getBusinessStatus() {
+                const now = new Date();
+                const dayIndex = now.getDay();
+                const currentDay = DAYS[dayIndex];
+                const currentHourFloat = now.getHours() + now.getMinutes() / 60;
+                
+                const todayHours = hours[currentDay];
+                const isOpen = todayHours.open !== null && 
+                               currentHourFloat >= todayHours.open && 
+                               currentHourFloat < todayHours.close;
+
+                if (isOpen) {
+                    return { isOpen: true, statusText: 'OPEN' };
+                }
+
+                for (let i = 0; i < 7; i++) {
+                    const checkDayIndex = (dayIndex + i) % 7;
+                    const checkDay = DAYS[checkDayIndex];
+                    const dayHoursData = hours[checkDay];
+
+                    if (dayHoursData.open !== null) {
+                        if (i === 0) {
+                            if (currentHourFloat < dayHoursData.open) {
+                                return { isOpen: false, nextOpenTime: formatTime(dayHoursData.open), nextOpenDay: 'TODAY' };
+                            }
+                        } else {
+                            return { isOpen: false, nextOpenTime: formatTime(dayHoursData.open), nextOpenDay: checkDay.toUpperCase() };
+                        }
+                    }
+                }
+                
+                return { isOpen: false, statusText: 'CLOSED FOR WEEK' };
+            }
+            
+            function isMobileDevice() {
+                return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+            }
+
+            function toggleHoursDropdown() {
+                if(!UI.hoursDropdown) return;
+                UI.hoursDropdown.classList.toggle('max-h-0');
+                UI.hoursDropdown.classList.toggle('max-h-64'); 
+                UI.hoursDropdown.classList.toggle('opacity-0'); 
+                UI.hoursToggle.querySelector('svg').classList.toggle('active');
+            }
+
+            function toggleQrTooltip(qrTooltip, canvas) {
+                const isActive = qrTooltip.classList.contains('active');
+                
+                if (isActive && typeof QRCode !== 'undefined' && !canvas.dataset.rendered) {
+                    QRCode.toCanvas(canvas, `tel:${normalizedPhone}`, {
+                        width: 150,
+                        margin: 1,
+                        color: { dark: '#FF3B30', light: '#141414' }
+                    }, function (error) {
+                        if (error) console.error("QR Code Error:", error);
+                        canvas.dataset.rendered = 'true';
+                    });
+                }
+            }
+
+            function renderDynamicContent() {
+                const status = getBusinessStatus();
+                
+                if (UI.statusLine) {
+                    UI.statusLine.className = 'text-sm font-semibold transition duration-300';
+                    if (status.isOpen) {
+                        if (showOpenStatus) {
+                            UI.statusLine.classList.add('text-green-400'); // success-green
+                            UI.statusLine.textContent = status.statusText;
+                        } else {
+                             UI.statusLine.textContent = '';
+                        }
+                    } else {
+                        UI.statusLine.classList.add('text-primary-red');
+                        if (status.nextOpenDay) {
+                            UI.statusLine.textContent = `OPENS ${status.nextOpenDay} at ${status.nextOpenTime}`;
+                        } else {
+                            UI.statusLine.textContent = status.statusText;
+                        }
+                    }
+                }
+
+                if (UI.phoneContainer) {
+                    if (status.isOpen) {
+                        UI.phoneContainer.innerHTML = `
+                            <div class="call-link-container" style="display: inline-block; position: relative;">
+                                <a href="tel:${normalizedPhone}" id="call-link-${idPrefix}" class="call-link push-to-call inline-flex items-center p-0 border-none bg-none cursor-pointer text-decoration-none gap-1" title="Click to call or scan QR code on desktop">
+                                    <animated-icons
+                                        src="https://animatedicons.co/get-icon?name=Calling%20V3&style=minimalistic&token=66ff3706-138c-41fa-a993-dee03566e48c"
+                                        trigger="loop"
+                                        attributes='{"variationThumbColour":"#ff3b30","variationName":"Dark","variationNumber":4,"numberOfGroups":2,"strokeWidth":1.5,"background":"#000000","defaultColours":{"group-1":"#ff3b30","group-2":"#eaeaea","background":"#000000"}}'
+                                        height="16" width="16">
+                                    </animated-icons>
+                                    <span class="lava-text text-sm uppercase leading-none">GIVE US A RING</span>
+                                </a>
+                                <div id="qr-tooltip-${idPrefix}" class="qr-tooltip">
+                                    <canvas width="150" height="150"></canvas>
+                                    <p class="mt-1 text-xs text-gray-300">Scan to call us!</p>
+                                </div>
+                            </div>`;
+
+                        const callLink = document.getElementById(`call-link-${idPrefix}`);
+                        const qrTooltip = document.getElementById(`qr-tooltip-${idPrefix}`);
+                        const canvas = qrTooltip ? qrTooltip.querySelector('canvas') : null;
+
+                        if (callLink && qrTooltip && canvas) {
+                            callLink.addEventListener('click', function(e) {
+                                if (!isMobileDevice()) {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    qrTooltip.classList.toggle('active');
+                                    toggleQrTooltip(qrTooltip, canvas);
+                                }
+                            });
+                        }
+                    } else {
+                        UI.phoneContainer.innerHTML = `<span class="text-gray-400 text-sm font-semibold m-0 p-0 block leading-none">${phone}</span>`;
+                    }
+                }
+                
+                if (UI.hoursDropdown) {
+                    let hoursHtml = '';
+                    for (const day of DAYS) {
+                        const dayHours = hours[day];
+                        const time = dayHours.closedText || `${formatTime(dayHours.open)} - ${formatTime(dayHours.close)}`;
+                        const isCurrentDay = (new Date()).getDay() === DAYS.indexOf(day);
+                        const dayClass = isCurrentDay ? 'text-primary-red font-bold' : 'text-gray-300';
+                        hoursHtml += `<div class="flex justify-between items-center py-0.5"><span class="${dayClass}">${day}:</span><span class="${dayClass}">${time}</span></div>`;
+                    }
+                    UI.hoursDropdown.innerHTML = hoursHtml;
+                }
+            }
+
+            function copyAddress() {
+                UI.clipboardHelper.value = address;
+                UI.clipboardHelper.select();
+                UI.clipboardHelper.setSelectionRange(0, 99999);
+                
+                try {
+                    const success = document.execCommand('copy');
+                    if (success) {
+                        UI.copyConfirmation.style.opacity = '1';
+                        setTimeout(() => { UI.copyConfirmation.style.opacity = '0'; }, 1500);
+                    }
+                } catch (err) {
+                    console.error('Failed to copy address:', err);
+                } finally {
+                    UI.clipboardHelper.value = '';
+                    if (window.getSelection) { window.getSelection().removeAllRanges(); }
+                }
+            }
+            
+            renderDynamicContent();
+            
+            if (UI.hoursToggle) UI.hoursToggle.addEventListener('click', toggleHoursDropdown);
+            if (UI.copyButton) UI.copyButton.addEventListener('click', copyAddress);
+            if (UI.directionsLink) UI.directionsLink.href = directionsLink;
+
+            setInterval(renderDynamicContent, 60000);
+        }
+
+        // --- CONFIGURATIONS ---
+        const pbwHours = { 'Sun': { open: null, close: null, closedText: 'Closed' }, 'Mon': { open: 8.5, close: 17 }, 'Tue': { open: 8.5, close: 17 }, 'Wed': { open: 8.5, close: 17 }, 'Thu': { open: 8.5, close: 17 }, 'Fri': { open: 8.5, close: 17 }, 'Sat': { open: null, close: null, closedText: 'Closed' } };
+        const msHours = { 'Sun': { open: null, close: null, closedText: 'Closed' }, 'Mon': { open: 8.5, close: 16.5 }, 'Tue': { open: 8.5, close: 16.5 }, 'Wed': { open: 8.5, close: 16.5 }, 'Thu': { open: 8.5, close: 16.5 }, 'Fri': { open: 8.5, close: 16.5 }, 'Sat': { open: null, close: null, closedText: 'Closed' } };
+
+        initializeLocationCard({
+            idPrefix: 'pbw', phone: '469-625-1127', address: '501 E Lamar St, McKinney, TX 75069',
+            directionsLink: 'https://maps.google.com/?daddr=501%20E%20Lamar%20St%2C%20McKinney%2C%20TX%2075069', hours: pbwHours,
+            showOpenStatus: true
+        });
+        initializeLocationCard({
+            idPrefix: 'ms', phone: '844-232-9453', address: '417 Metro Park Dr, McKinney, TX 75071',
+            directionsLink: 'https://maps.google.com/?daddr=417%20Metro%20Park%20Dr%2C%20McKinney%2C%20TX%2075071', hours: msHours,
+            showOpenStatus: false
+        });
+        
+        document.addEventListener('click', (e) => {
+             ['pbw', 'ms'].forEach(idPrefix => {
+                const qrTooltip = document.getElementById(`qr-tooltip-${idPrefix}`);
+                const callLink = document.getElementById(`call-link-${idPrefix}`);
+                if (qrTooltip && qrTooltip.classList.contains('active') && !qrTooltip.contains(e.target) && callLink && !callLink.contains(e.target)) {
+                    qrTooltip.classList.remove('active');
+                }
+             });
+        });
+
+        /* --- MOBILE SCROLL TO REVEAL LOGIC --- */
+        // Only run this logic if the window width is less than 768px (typical mobile breakpoint)
+        if (window.matchMedia('(max-width: 768px)').matches) {
+            
             const observerOptions = {
                 root: null,
                 rootMargin: '0px',
-                threshold: 0.15 
+                threshold: 0.5 // Trigger when 50% of the card is visible
             };
 
-            const observer = new IntersectionObserver((entries, observer) => {
+            const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        entry.target.classList.add('reveal-visible');
-                        observer.unobserve(entry.target); // Only animate once
+                        // Add the class to trigger the "hover" state effects
+                        entry.target.classList.add('mobile-view');
+                    } else {
+                        // Remove it when scrolling away so it can re-trigger
+                        entry.target.classList.remove('mobile-view');
                     }
                 });
             }, observerOptions);
 
-            const revealElements = document.querySelectorAll('.reveal-on-scroll, .reveal-line');
-            revealElements.forEach(el => observer.observe(el));
-        });
-    </script>
+            // Observe both Services cards and Gallery cards
+            const cardsToObserve = document.querySelectorAll('.package-card, .gallery-card');
+            cardsToObserve.forEach(card => {
+                observer.observe(card);
+            });
+        }
 
-</body>
-</html>
+    });
+</script>
+</body></html>
