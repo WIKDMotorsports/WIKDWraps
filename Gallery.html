@@ -66,8 +66,7 @@
         }
         .text-muted { color: var(--color-text-muted) !important; }
 
-        /* --- NAVIGATION STYLES (Unchanged) --- */
-        
+        /* --- NAVIGATION STYLES --- */
         .btn-wikd {
             display: inline-flex; align-items: center; justify-content: center; height: 36px;
             padding: 0 1.5rem; font-family: var(--font-heading); font-size: 14px;
@@ -201,34 +200,70 @@
             position: relative; z-index: 10; 
         }
         
+        /* --- CAROUSEL STYLES --- */
         .ticker-view {
             overflow: hidden; 
             width: 100%; 
             padding: 1rem 0; 
             position: relative;
-            mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+            /* Fade edges slightly */
+            mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
         }
 
-        /* STYLES FOR SEGMENTED CAROUSEL */
         .ticker-track {
             display: flex; 
             gap: 1.5rem; 
             width: fit-content; 
             will-change: transform;
-            /* 0.5s move duration as requested */
-            transition: transform 0.5s ease-in-out; 
-            /* Start with the first item fully visible (transform: 0) */
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
             transform: translateX(0);
         }
         
-        /* Stop the transition immediately for the loop-back snap */
-        .ticker-track.snap {
-            transition: none !important;
+        /* --- NAV ARROWS --- */
+        .nav-arrow {
+            position: absolute;
+            top: 50%; /* Center relative to the container */
+            transform: translateY(-50%);
+            z-index: 50;
+            width: 50px;
+            height: 50px;
+            background-color: rgba(0,0,0,0.8);
+            border: 1px solid #333;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            outline: none;
+            backdrop-filter: blur(4px);
+            border-radius: 50%;
+            opacity: 0; /* Hidden by default until hover or interaction needed? No, let's keep visible */
+            opacity: 1;
         }
+        .nav-arrow:hover {
+            background-color: var(--color-primary);
+            border-color: var(--color-primary);
+            transform: translateY(-50%) scale(1.1);
+        }
+        .nav-arrow:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+        .nav-arrow:disabled, .nav-arrow.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        
+        .nav-arrow-left { left: 1rem; }
+        .nav-arrow-right { right: 1rem; }
 
-        /* Remove the old marquee keyframes */
-        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        @media (max-width: 768px) {
+            .nav-arrow { width: 40px; height: 40px; }
+            .nav-arrow-left { left: 0.5rem; }
+            .nav-arrow-right { right: 0.5rem; }
+        }
 
         /* --- GALLERY ITEM STYLES --- */
         .gallery-item {
@@ -258,6 +293,8 @@
             background-size: 200% 100%; animation: shimmer 2s infinite;
             z-index: -1;
         }
+        
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
         /* --- LIGHTBOX STYLES --- */
         #lightbox {
@@ -319,36 +356,26 @@
             border: none;
             transition: color 0.3s ease, opacity 0.3s ease;
             opacity: 0.7;
-            /* Applying heavy text-shadow for drop shadow effect */
             text-shadow: 0 0 10px rgba(0, 0, 0, 1), 0 0 20px rgba(0, 0, 0, 0.8);
         }
         .lightbox-nav:hover {
             color: var(--color-primary);
             opacity: 1;
-            background-color: transparent; /* Ensure no background shape on hover */
+            background-color: transparent; 
             border-radius: 0;
         }
-        .lightbox-nav i {
-            /* Ensure the icon size is correct */
-            width: 2.5rem; 
-            height: 2.5rem;
-        }
+        .lightbox-nav i { width: 2.5rem; height: 2.5rem; }
         .lightbox-nav-left { left: -40px; }
         .lightbox-nav-right { right: -40px; }
         
         @media (max-width: 768px) {
-            .lightbox-nav { 
-                padding: 0.5rem 0.25rem; /* Smaller target area for mobile */
-            }
+            .lightbox-nav { padding: 0.5rem 0.25rem; }
             .lightbox-nav-left { left: 10px; }
             .lightbox-nav-right { right: 10px; }
             .lightbox-close { top: 10px; right: 10px; }
         }
-        /* --- END UPDATED LIGHTBOX NAV STYLES --- */
 
-        .gallery-block {
-            position: relative;
-        }
+        .gallery-block { position: relative; }
 
         /* --- FOOTER (Unchanged) --- */
         .wikd-footer {
@@ -579,117 +606,6 @@
         let intersectionObserverAppend = null; 
         let intersectionObserverRemove = null; 
 
-        // State to manage the stepping carousel animation timers
-        const stepperStates = new WeakMap();
-
-        // --- STEPPER LOGIC: MOVES ONE IMAGE PER CYCLE (1.0s) ---
-        function startStepper(track, direction) {
-            // Check if animation is already running for this track
-            const existingState = stepperStates.get(track);
-            if (existingState && existingState.intervalId) {
-                clearInterval(existingState.intervalId);
-            }
-
-            // Get initial dimensions (must run after items are in DOM and loaded)
-            const item = track.querySelector('.gallery-item');
-            if (!item) return;
-
-            const itemWidth = item.getBoundingClientRect().width;
-            // Get gap value (1.5rem = 24px by default in this CSS)
-            const trackStyle = getComputedStyle(track);
-            const gap = parseFloat(trackStyle.gap) || 0; 
-            const stepSize = itemWidth + gap;
-            
-            const totalItems = track.children.length;
-            const setSize = totalItems / 2; 
-
-            let currentIndex = 0; 
-
-            // Initialize state for this track
-            const state = { 
-                intervalId: null, 
-                currentIndex: 0, 
-                direction: direction,
-                totalSteps: setSize, // Number of steps until loop reset
-                stepSize: stepSize 
-            };
-            stepperStates.set(track, state);
-
-            // Immediate initial positioning for Right-moving rows
-            if (direction === -1) {
-                // Start by showing the first item of the second (cloned) set. 
-                state.currentIndex = setSize;
-                const startPos = -state.currentIndex * state.stepSize;
-                track.style.transform = `translateX(${startPos}px)`;
-            }
-
-            const step = () => {
-                // If the track is currently hovered, pause the step iteration
-                if (track.parentElement.matches(':hover') || lightbox.classList.contains('active')) {
-                    return; 
-                }
-
-                let shouldSnap = false;
-                
-                if (state.direction === 1) { // Moving Left: index increments
-                    state.currentIndex += 1;
-                    if (state.currentIndex > state.totalSteps) {
-                        shouldSnap = true;
-                    }
-                } else { // Moving Right: index decrements
-                    state.currentIndex -= 1;
-                    if (state.currentIndex < 0) {
-                        shouldSnap = true;
-                    }
-                }
-
-                if (shouldSnap) {
-                    // 1. Instant snap back (0.5s transition must be removed first)
-                    track.classList.add('snap');
-                    
-                    if (state.direction === 1) {
-                        // Moving Left: Snap back to the beginning of the first set (Index 0).
-                        track.style.transform = `translateX(0px)`;
-                        state.currentIndex = 0; 
-                    } else {
-                        // Moving Right: Snap back to the beginning of the second (cloned) set (Index = setSize).
-                        const snapPosition = -state.stepSize * state.totalSteps;
-                        track.style.transform = `translateX(${snapPosition}px)`;
-                        state.currentIndex = state.totalSteps; 
-                    }
-                    
-                    // 2. Re-enable the smooth transition for the next movement
-                    setTimeout(() => {
-                        track.classList.remove('snap');
-                        
-                        if (state.direction === 1) {
-                            state.currentIndex = 1; 
-                        } else {
-                            state.currentIndex = state.totalSteps - 1;
-                        }
-                        
-                        const nextX = -state.currentIndex * state.stepSize;
-                        track.style.transform = `translateX(${nextX}px)`;
-                        
-                    }, 50); // Small delay to ensure snap is registered
-                    
-                } else {
-                    // Normal step: Apply smooth transition (0.5s move)
-                    const newX = -state.currentIndex * state.stepSize;
-                    track.style.transform = `translateX(${newX}px)`;
-                }
-            };
-            
-            // Start stepping: 0.5s move + 0.5s hold = 1000ms total cycle time (120 BPM)
-            state.intervalId = setInterval(step, 1000); 
-
-            // Initial step after startStepper to kick off the rhythm with a hold, then a move
-            setTimeout(() => {
-                step();
-            }, 500); // Wait for the first 0.5s hold, then move.
-        }
-
-
         // --- UTILITY: REMOVE NOISE FROM TITLES (Unchanged) ---
         function cleanTitle(text) {
             let cleaned = text || "";
@@ -697,7 +613,7 @@
             return cleaned.replace(/\s\s+/g, ' ').trim();
         }
 
-        // --- CORE: GENERATE ONE FULL BLOCK OF GALLERY HTML (Unchanged) ---
+        // --- CORE: GENERATE ONE FULL BLOCK OF GALLERY HTML ---
         function createContentBlock() {
             const projects = allProjectsData;
             const tempDiv = document.createElement('div');
@@ -706,8 +622,6 @@
             let html = '';
             const mixedBagImages = [];
             
-            let localProjectCounter = 0; 
-
             projects.forEach(project => {
                 const isStandalone = project.images && project.images.length > 2;
 
@@ -721,13 +635,6 @@
                 const title = cleanTitle(project.title);
                 const subtitle = cleanTitle(project.subtitle);
                 
-                let direction = 1; 
-                if (localProjectCounter % 2 !== 0) { 
-                    direction = -1; 
-                }
-                
-                localProjectCounter++;
-
                 // Collect image URLs in a JSON string attribute
                 const imageUrls = project.images.map(imgUrl => imgUrl).join('|');
 
@@ -746,11 +653,12 @@
                                 <p class="text-muted text-lg tracking-wide">${subtitle}</p>
                             </div>
                         </div>
-                        <div class="ticker-view">
-                            <div class="ticker-track" data-direction="${direction}">
+                        <div class="ticker-view relative">
+                            <button class="nav-arrow nav-arrow-left" aria-label="Previous Slide"><i data-lucide="chevron-left"></i></button>
+                            <div class="ticker-track">
                                 ${imagesHtml}
-                                ${imagesHtml} <!-- CLONE FOR SMOOTH LOOP -->
                             </div>
+                            <button class="nav-arrow nav-arrow-right" aria-label="Next Slide"><i data-lucide="chevron-right"></i></button>
                         </div>
                     </section>
                 `;
@@ -767,13 +675,6 @@
                     </div>
                 `).join('');
 
-                let direction = 1;
-                if (localProjectCounter % 2 !== 0) { 
-                    direction = -1;
-                }
-                
-                localProjectCounter++;
-
                 html += `
                     <section class="project-section">
                         <div class="project-header">
@@ -782,11 +683,12 @@
                                 <p class="text-muted text-lg tracking-wide">Recent Works & Quick Snaps</p>
                             </div>
                         </div>
-                        <div class="ticker-view">
-                            <div class="ticker-track" data-direction="${direction}">
+                        <div class="ticker-view relative">
+                            <button class="nav-arrow nav-arrow-left" aria-label="Previous Slide"><i data-lucide="chevron-left"></i></button>
+                            <div class="ticker-track">
                                 ${imagesHtml}
-                                ${imagesHtml} <!-- CLONE FOR SMOOTH LOOP -->
                             </div>
+                            <button class="nav-arrow nav-arrow-right" aria-label="Next Slide"><i data-lucide="chevron-right"></i></button>
                         </div>
                     </section>
                 `;
@@ -799,6 +701,137 @@
             return { element: tempDiv };
         }
 
+        // --- FIXED: MANUAL CAROUSEL LOGIC WITH BOUNDARY CHECKS & TOUCH ---
+        function initManualCarousel(section) {
+            const track = section.querySelector('.ticker-track');
+            const view = section.querySelector('.ticker-view');
+            const leftBtn = section.querySelector('.nav-arrow-left');
+            const rightBtn = section.querySelector('.nav-arrow-right');
+            
+            if(!track || !leftBtn || !rightBtn || !view) return;
+            
+            let currentIndex = 0;
+            let startX = 0;
+            let currentTranslate = 0;
+            let isDragging = false;
+            
+            // --- Helper to calculate metrics ---
+            const getMetrics = () => {
+                const firstItem = track.querySelector('.gallery-item');
+                if (!firstItem) return { stepSize: 0, visibleCount: 1, totalItems: 0 };
+                
+                const itemWidth = firstItem.getBoundingClientRect().width;
+                const style = getComputedStyle(track);
+                const gap = parseFloat(style.gap) || 0;
+                const stepSize = itemWidth + gap;
+                const viewWidth = view.getBoundingClientRect().width;
+                const visibleCount = Math.floor(viewWidth / stepSize); 
+                // Note: visibleCount might be 1 on mobile, 2 or 3 on desktop
+                const totalItems = track.children.length;
+                
+                return { stepSize, visibleCount, totalItems };
+            };
+
+            const updateTrack = () => {
+                const { stepSize, visibleCount, totalItems } = getMetrics();
+                if (stepSize === 0) return;
+
+                // Max valid index to prevent empty space at end
+                // E.g. 10 items, 3 visible. Last index should be 7.
+                // If we go to index 8, we see items 8, 9, [empty].
+                // We want to stop where the last item aligns with right edge? 
+                // Simplified: stop when last item is visible.
+                
+                // Let's rely on simple index clamping first
+                // If view allows partial items, simple clamping is usually fine.
+                // We'll treat it as "slides"
+                
+                // Clamp index
+                const maxIndex = Math.max(0, totalItems - 1); 
+                if (currentIndex < 0) currentIndex = 0;
+                if (currentIndex > maxIndex) currentIndex = maxIndex;
+
+                // Update transform
+                currentTranslate = -(currentIndex * stepSize);
+                
+                // Boundary Check: If the translation goes beyond the track width minus view width
+                // This prevents white space at the end if the math isn't perfect
+                const trackWidth = track.scrollWidth;
+                const viewWidth = view.offsetWidth;
+                const maxTranslate = -(trackWidth - viewWidth);
+                
+                // Only clamp translation if we are actually overflowing
+                if (trackWidth > viewWidth) {
+                    if (currentTranslate < maxTranslate) {
+                        currentTranslate = maxTranslate;
+                         // Adjust index backwards so next 'left' click makes sense?
+                         // Actually, just visual clamp is safer for now.
+                    }
+                } else {
+                    currentTranslate = 0; // Content fits, no scroll needed
+                }
+                
+                track.style.transform = `translateX(${currentTranslate}px)`;
+                
+                // Button States
+                leftBtn.classList.toggle('disabled', currentIndex === 0 && currentTranslate === 0);
+                rightBtn.classList.toggle('disabled', currentTranslate <= maxTranslate + 5); // +5 for rounding tolerance
+            };
+            
+            // --- Click Handlers ---
+            leftBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                currentIndex--;
+                updateTrack();
+            });
+            
+            rightBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                currentIndex++;
+                updateTrack();
+            });
+            
+            // --- Touch Swipe Support ---
+            view.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+                isDragging = true;
+                // Temporarily remove transition for direct 1:1 movement feel? 
+                // For simplicity, we will just detect swipe direction and trigger step
+            }, { passive: true });
+            
+            view.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+            }, { passive: true });
+            
+            view.addEventListener('touchend', (e) => {
+                if (!isDragging) return;
+                const endX = e.changedTouches[0].clientX;
+                const diff = startX - endX;
+                
+                if (Math.abs(diff) > 50) { // Threshold
+                    if (diff > 0) {
+                        // Swiped Left -> Next
+                        rightBtn.click();
+                    } else {
+                        // Swiped Right -> Prev
+                        leftBtn.click();
+                    }
+                }
+                isDragging = false;
+            }, { passive: true });
+
+            
+            // Handle Resize
+            window.addEventListener('resize', () => {
+                // Reset to 0 or try to maintain? Resetting is safer to prevent layout bugs
+                // currentIndex = 0; 
+                updateTrack();
+            });
+            
+            // Initial call
+            // Small delay to ensure DOM is painted for width calcs
+            setTimeout(updateTrack, 100);
+        }
 
         // --- CORE: HANDLES CONTENT LOADING AND OBSERVER SETUP (Unchanged) ---
         function appendNewContent() {
@@ -809,11 +842,13 @@
 
             startLazyLoading(newBlock);
 
-            // Start the step animation for all new tracks
-            newBlock.querySelectorAll('.ticker-track').forEach(track => {
-                const direction = parseInt(track.getAttribute('data-direction'));
-                startStepper(track, direction);
+            // Initialize manual carousel for each section in the new block
+            newBlock.querySelectorAll('.project-section').forEach(section => {
+                initManualCarousel(section);
             });
+            
+            // Refresh icons for new buttons
+            lucide.createIcons();
 
             const lastSection = newBlock.querySelector('.project-section:last-child');
             if (lastSection) {
@@ -846,15 +881,6 @@
                     if (!entry.isIntersecting && entry.boundingClientRect.top < 0) {
                         const blockToRemove = entry.target.closest('.gallery-block');
                         if (blockToRemove) {
-                             // Clear intervals for all tickers in the removed block
-                            blockToRemove.querySelectorAll('.ticker-track').forEach(track => {
-                                const state = stepperStates.get(track);
-                                if (state && state.intervalId) {
-                                    clearInterval(state.intervalId);
-                                }
-                                stepperStates.delete(track);
-                            });
-                            
                             blockToRemove.remove();
                             intersectionObserverRemove.unobserve(entry.target);
                         }
@@ -923,14 +949,6 @@
             
             // Add keyboard navigation handler
             document.addEventListener('keydown', handleLightboxKeyboardNav);
-
-            // Stop carousels when lightbox is open
-            document.querySelectorAll('.ticker-track').forEach(track => {
-                if (stepperStates.get(track)) {
-                    // Force a check next cycle to ensure step pauses
-                    stepperStates.get(track).isLightboxOpen = true;
-                }
-            });
         };
 
         window.navigateLightbox = (direction) => {
