@@ -17,14 +17,11 @@
       :root {
             --color-background: #050505;
             --color-text: #EAEAEA;
-            --color-text-muted: #888888;
             --color-primary: #FF3B30;
             --color-surface: #111111;
             --color-border: #2A2A2A;
             --font-heading: 'Rajdhani', sans-serif;
             --font-body: 'Inter', sans-serif;
-            /* New CSS variable for marquee speed */
-            --marquee-speed: 60s; 
         }
 
         /* --- CORE BASE --- */
@@ -209,53 +206,32 @@
             width: 100%; 
             padding: 1rem 0; 
             position: relative;
-            /* Cursor removed as drag functionality is removed */
             mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
             -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
         }
 
-        /* New Ticker Track Styling for CSS Marquee */
+        /* STYLES FOR SEGMENTED CAROUSEL */
         .ticker-track {
             display: flex; 
             gap: 1.5rem; 
-            width: fit-content; /* Must be larger than its container */
+            width: fit-content; 
             will-change: transform;
-            
-            /* Apply common animation properties */
-            animation-iteration-count: infinite;
-            animation-timing-function: linear;
-            animation-duration: var(--marquee-speed);
-        }
-
-        /* --- CSS Marquee Animation Implementation --- */
-        /* Keyframes for Continuous Scroll Left */
-        @keyframes marqueeLeft {
-            0% { transform: translate3d(0, 0, 0); }
-            100% { transform: translate3d(calc(-50% - 0.75rem), 0, 0); } /* Scrolls one full content block and one gap */
+            /* 0.5s move duration as requested */
+            transition: transform 0.5s ease-in-out; 
+            /* Start with the first item fully visible (transform: 0) */
+            transform: translateX(0);
         }
         
-        /* Keyframes for Continuous Scroll Right */
-        @keyframes marqueeRight {
-            0% { transform: translate3d(calc(-50% - 0.75rem), 0, 0); }
-            100% { transform: translate3d(0, 0, 0); } /* Scrolls from end of first copy back to start of first copy */
+        /* Stop the transition immediately for the loop-back snap */
+        .ticker-track.snap {
+            transition: none !important;
         }
 
-        /* Animation Classes */
-        .ticker-anim-left {
-            animation-name: marqueeLeft;
-        }
-        .ticker-anim-right {
-            animation-name: marqueeRight;
-        }
-        
-        /* Pause on Hover for Aesthetics */
-        .ticker-view:hover .ticker-track {
-            animation-play-state: paused;
-        }
+        /* Remove the old marquee keyframes */
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
         /* --- GALLERY ITEM STYLES --- */
         .gallery-item {
-            /* Width must be fixed (in vw for responsiveness) for CSS marquee to calculate loop correctly */
             flex: 0 0 70vw; 
             position: relative; aspect-ratio: 16/9; 
             border-radius: 2px; overflow: hidden;
@@ -282,7 +258,6 @@
             background-size: 200% 100%; animation: shimmer 2s infinite;
             z-index: -1;
         }
-        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
         /* --- LIGHTBOX (Unchanged) --- */
         #lightbox {
@@ -526,6 +501,126 @@
         let intersectionObserverAppend = null; 
         let intersectionObserverRemove = null; 
 
+        // State to manage the stepping carousel animation timers
+        const stepperStates = new WeakMap();
+
+        // --- STEPPER LOGIC: MOVES ONE IMAGE PER CYCLE (1.0s) ---
+        function startStepper(track, direction) {
+            // Check if animation is already running for this track
+            const existingState = stepperStates.get(track);
+            if (existingState && existingState.intervalId) {
+                clearInterval(existingState.intervalId);
+            }
+
+            // Get initial dimensions (must run after items are in DOM and loaded)
+            const item = track.querySelector('.gallery-item');
+            if (!item) return;
+
+            const itemWidth = item.getBoundingClientRect().width;
+            // Get gap value (1.5rem = 24px by default in this CSS)
+            const trackStyle = getComputedStyle(track);
+            const gap = parseFloat(trackStyle.gap) || 0; 
+            const stepSize = itemWidth + gap;
+            
+            // The number of original images (half of the cloned set)
+            // We use the full count to prevent errors if the content hasn't fully loaded/cloned yet, 
+            // but rely on the fact that there are always two sets for loop calculation.
+            const totalItems = track.children.length;
+            const setSize = totalItems / 2; 
+
+            let currentIndex = 0; 
+
+            // Initialize state for this track
+            const state = { 
+                intervalId: null, 
+                currentIndex: 0, 
+                direction: direction,
+                totalSteps: setSize, // Number of steps until loop reset
+                stepSize: stepSize 
+            };
+            stepperStates.set(track, state);
+
+            // Immediate initial positioning for Right-moving rows
+            if (direction === -1) {
+                // Start by showing the first item of the second (cloned) set. 
+                // Index 'setSize' is the first cloned item.
+                state.currentIndex = setSize;
+                const startPos = -state.currentIndex * state.stepSize;
+                track.style.transform = `translateX(${startPos}px)`;
+            }
+
+            const step = () => {
+                // If the track is currently hovered, pause the step iteration
+                if (track.parentElement.matches(':hover')) {
+                    return; 
+                }
+
+                let shouldSnap = false;
+                
+                if (state.direction === 1) { // Moving Left: index increments
+                    state.currentIndex += 1;
+                    // Snap when the movement would start displaying the first image of the cloned set
+                    if (state.currentIndex > state.totalSteps) {
+                        shouldSnap = true;
+                    }
+                } else { // Moving Right: index decrements
+                    state.currentIndex -= 1;
+                    // Snap when the movement would display the last image of the first set (index -1 in our logic)
+                    if (state.currentIndex < 0) {
+                        shouldSnap = true;
+                    }
+                }
+
+                if (shouldSnap) {
+                    // 1. Instant snap back (0.5s transition must be removed first)
+                    track.classList.add('snap');
+                    
+                    if (state.direction === 1) {
+                        // Moving Left: Snap back to the beginning of the first set (Index 0).
+                        track.style.transform = `translateX(0px)`;
+                        state.currentIndex = 0; 
+                    } else {
+                        // Moving Right: Snap back to the beginning of the second (cloned) set (Index = setSize).
+                        const snapPosition = -state.stepSize * state.totalSteps;
+                        track.style.transform = `translateX(${snapPosition}px)`;
+                        state.currentIndex = state.totalSteps; 
+                    }
+                    
+                    // 2. Re-enable the smooth transition for the next movement
+                    setTimeout(() => {
+                        track.classList.remove('snap');
+                        // Crucially, immediately perform the first *visible* step here (0.5s move)
+                        
+                        if (state.direction === 1) {
+                            // After snapping to 0, the next step should go to 1 (Index 1)
+                            state.currentIndex = 1; 
+                        } else {
+                            // After snapping to setSize, the next step should go to setSize - 1
+                            state.currentIndex = state.totalSteps - 1;
+                        }
+                        
+                        const nextX = -state.currentIndex * state.stepSize;
+                        track.style.transform = `translateX(${nextX}px)`;
+                        
+                    }, 50); // Small delay to ensure snap is registered
+                    
+                } else {
+                    // Normal step: Apply smooth transition (0.5s move)
+                    const newX = -state.currentIndex * state.stepSize;
+                    track.style.transform = `translateX(${newX}px)`;
+                }
+            };
+            
+            // Start stepping: 0.5s move + 0.5s hold = 1000ms total cycle time (120 BPM)
+            state.intervalId = setInterval(step, 1000); 
+
+            // Initial step after startStepper to kick off the rhythm with a hold, then a move
+            setTimeout(() => {
+                step();
+            }, 500); // Wait for the first 0.5s hold, then move.
+        }
+
+
         // --- UTILITY: REMOVE NOISE FROM TITLES ---
         function cleanTitle(text) {
             let cleaned = text || "";
@@ -559,18 +654,13 @@
 
                 const title = cleanTitle(project.title);
                 const subtitle = cleanTitle(project.subtitle);
-                const baseSpeed = parseFloat(project.scroll_speed || "0.5");
                 
-                // Direction (1 = Left, -1 = Right)
-                let direction = 1; 
+                // Direction: Odd/Even rows for alternating movement
+                let direction = 1; // 1 = Left (default), -1 = Right
                 if (localProjectCounter % 2 !== 0) { 
                     direction = -1; 
                 }
                 
-                // Set the animation class based on direction
-                const directionClass = direction === -1 ? 'ticker-anim-right' : 'ticker-anim-left';
-
-                // Increment counter for the next section
                 localProjectCounter++;
 
                 const imagesHtml = project.images.map(imgUrl => `
@@ -589,10 +679,10 @@
                             </div>
                         </div>
                         <div class="ticker-view">
-                            <!-- Duplicate the content items for continuous CSS Marquee loop -->
-                            <div class="ticker-track ${directionClass}">
+                            <!-- Duplicate the content items for smooth transition before loop-back -->
+                            <div class="ticker-track" data-direction="${direction}">
                                 ${imagesHtml}
-                                ${imagesHtml} <!-- CLONE FOR INFINITE LOOP -->
+                                ${imagesHtml} <!-- CLONE FOR SMOOTH LOOP -->
                             </div>
                         </div>
                     </section>
@@ -608,13 +698,10 @@
                     </div>
                 `).join('');
 
-                const baseSpeed = 0.4;
                 let direction = 1;
                 if (localProjectCounter % 2 !== 0) { 
                     direction = -1;
                 }
-                
-                const directionClass = direction === -1 ? 'ticker-anim-right' : 'ticker-anim-left';
                 
                 localProjectCounter++;
 
@@ -627,16 +714,15 @@
                             </div>
                         </div>
                         <div class="ticker-view">
-                            <div class="ticker-track ${directionClass}">
+                            <div class="ticker-track" data-direction="${direction}">
                                 ${imagesHtml}
-                                ${imagesHtml} <!-- CLONE FOR INFINITE LOOP -->
+                                ${imagesHtml} <!-- CLONE FOR SMOOTH LOOP -->
                             </div>
                         </div>
                     </section>
                 `;
             }
             
-            // Mark the entire block for potential removal later
             const firstSection = tempDiv.querySelector('.project-section:first-child');
             if(firstSection) firstSection.classList.add('js-first-section');
 
@@ -645,26 +731,27 @@
         }
 
 
-        // --- CORE: HANDLES CLONING CONTENT AND OBSERVER SETUP ---
+        // --- CORE: HANDLES CONTENT LOADING AND OBSERVER SETUP (Unchanged) ---
         function appendNewContent() {
             if (allProjectsData.length === 0) return;
 
-            // Generate a new block of content
             const { element: newBlock } = createContentBlock();
-            
             galleryContainer.appendChild(newBlock);
 
-            // Start lazy loading for the new block
             startLazyLoading(newBlock);
 
-            // Setup IntersectionObserver for the last section of the newly added block
+            // Start the step animation for all new tracks
+            newBlock.querySelectorAll('.ticker-track').forEach(track => {
+                const direction = parseInt(track.getAttribute('data-direction'));
+                startStepper(track, direction);
+            });
+
             const lastSection = newBlock.querySelector('.project-section:last-child');
             if (lastSection) {
                 if (intersectionObserverAppend) {
                     intersectionObserverAppend.disconnect();
                 }
 
-                // Load next block when this block's last section is 500px from viewport
                 intersectionObserverAppend = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
@@ -677,22 +764,28 @@
                 intersectionObserverAppend.observe(lastSection);
             }
             
-            // Start observing the first section of the new block for removal
             const firstSection = newBlock.querySelector('.js-first-section');
             if(firstSection) {
                 intersectionObserverRemove.observe(firstSection);
             }
         }
 
-        // --- TICKET REMOVAL/CLEANUP ---
+        // --- TICKET REMOVAL/CLEANUP (Unchanged) ---
         function setupRemovalObserver() {
-            // Observer to remove content blocks that have scrolled far off screen
             intersectionObserverRemove = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (!entry.isIntersecting && entry.boundingClientRect.top < 0) {
-                        // Element has scrolled completely out of view above the screen
                         const blockToRemove = entry.target.closest('.gallery-block');
                         if (blockToRemove) {
+                             // Clear intervals for all tickers in the removed block
+                            blockToRemove.querySelectorAll('.ticker-track').forEach(track => {
+                                const state = stepperStates.get(track);
+                                if (state && state.intervalId) {
+                                    clearInterval(state.intervalId);
+                                }
+                                stepperStates.delete(track);
+                            });
+                            
                             blockToRemove.remove();
                             intersectionObserverRemove.unobserve(entry.target);
                         }
@@ -701,7 +794,7 @@
             }, { rootMargin: '0px 0px -200% 0px' }); 
         }
 
-        // --- LAZY LOAD IMAGE HANDLING ---
+        // --- LAZY LOAD IMAGE HANDLING (Unchanged) ---
         function startLazyLoading(rootElement = document) {
             const images = rootElement.querySelectorAll('.gallery-img');
             const imageObserver = new IntersectionObserver((entries, observer) => {
@@ -713,7 +806,6 @@
                             img.src = src;
                             img.onload = () => {
                                 img.classList.add('loaded');
-                                // Remove the skeleton loader 
                                 const loader = img.previousElementSibling;
                                 if (loader && loader.classList.contains('skeleton-loader')) {
                                     loader.remove();
@@ -724,13 +816,13 @@
                         observer.unobserve(img);
                     }
                 });
-            }, { rootMargin: '0px 0px 300px 0px' }); // Load when 300px away
+            }, { rootMargin: '0px 0px 300px 0px' }); 
             
             images.forEach(img => imageObserver.observe(img));
         }
 
         
-        // --- LIGHTBOX GLOBAL HANDLERS ---
+        // --- LIGHTBOX GLOBAL HANDLERS (Unchanged) ---
         const closeLightbox = () => lightbox.classList.remove('active');
         lightboxClose.addEventListener('click', closeLightbox);
         lightbox.addEventListener('click', (e) => {
@@ -747,10 +839,9 @@
         };
 
         
-        // --- FETCH & INIT GALLERY ---
+        // --- FETCH & INIT GALLERY (Unchanged) ---
         async function initGallery() {
             try {
-                // Fetch data with exponential backoff for robustness
                 const fetchWithRetry = async (url, retries = 3, delay = 1000) => {
                     for (let i = 0; i < retries; i++) {
                         try {
@@ -768,12 +859,9 @@
                 
                 if (data.gallery_projects && Array.isArray(data.gallery_projects) && data.gallery_projects.length > 0) {
                     allProjectsData = data.gallery_projects;
-                    galleryContainer.innerHTML = ''; // Clear loading message
+                    galleryContainer.innerHTML = ''; 
 
-                    // Initialize the removal observer before appending content
                     setupRemovalObserver();
-
-                    // Start infinite scrolling by appending the first block
                     appendNewContent();
                 } else {
                     galleryContainer.innerHTML = '<div class="text-center py-20 text-red-500">Error loading projects. No data found.</div>';
