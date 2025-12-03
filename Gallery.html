@@ -378,6 +378,26 @@
             .lightbox-nav-right { right: 10px; }
             .lightbox-close { top: 10px; right: 10px; }
         }
+        
+        /* --- NEW LIGHTBOX CTA STYLES --- */
+        .lightbox-cta-container {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 10002;
+            width: max-content;
+        }
+        .lightbox-cta-container.visible {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        .lightbox-btn {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            border: 1px solid var(--color-primary);
+        }
 
         .gallery-block { position: relative; }
 
@@ -421,6 +441,13 @@
             <button id="lightbox-next" class="lightbox-nav lightbox-nav-right" onclick="navigateLightbox(1)">
                 <i data-lucide="chevron-right" class="w-8 h-8"></i>
             </button>
+        </div>
+        
+        <!-- NEW CTA CONTAINER -->
+        <div id="lightbox-cta-container" class="lightbox-cta-container">
+            <a href="https://wikdwraps.com/pages/estimate-configurator" id="lightbox-cta-btn" class="btn-wikd lightbox-btn">
+                GET A QUOTE
+            </a>
         </div>
     </div>
 
@@ -639,11 +666,15 @@
                 const title = cleanTitle(project.title);
                 const subtitle = cleanTitle(project.subtitle);
                 
+                // Safe strings for onclick
+                const safeTitle = title.replace(/'/g, "\\'");
+                const safeSubtitle = subtitle.replace(/'/g, "\\'");
+                
                 // Collect image URLs in a JSON string attribute
                 const imageUrls = project.images.map(imgUrl => imgUrl).join('|');
 
                 const imagesHtml = project.images.map((imgUrl, index) => `
-                    <div class="gallery-item" onclick="openLightbox('${imgUrl}', '${imageUrls}', ${index})">
+                    <div class="gallery-item" onclick="openLightbox('${imgUrl}', '${imageUrls}', ${index}, '${safeTitle}', '${safeSubtitle}')">
                         <div class="skeleton-loader"></div>
                         <img data-src="${imgUrl}" class="gallery-img">
                     </div>
@@ -673,7 +704,7 @@
                 const mixedImageUrls = mixedBagImages.map(imgUrl => imgUrl).join('|');
                 
                 const imagesHtml = mixedBagImages.map((imgUrl, index) => `
-                    <div class="gallery-item" onclick="openLightbox('${imgUrl}', '${mixedImageUrls}', ${index})">
+                    <div class="gallery-item" onclick="openLightbox('${imgUrl}', '${mixedImageUrls}', ${index}, 'Mixed Gallery', 'Recent Works')">
                         <div class="skeleton-loader"></div>
                         <img data-src="${imgUrl}" class="gallery-img">
                     </div>
@@ -740,16 +771,6 @@
                 const { stepSize, visibleCount, totalItems } = getMetrics();
                 if (stepSize === 0) return;
 
-                // Max valid index to prevent empty space at end
-                // E.g. 10 items, 3 visible. Last index should be 7.
-                // If we go to index 8, we see items 8, 9, [empty].
-                // We want to stop where the last item aligns with right edge? 
-                // Simplified: stop when last item is visible.
-                
-                // Let's rely on simple index clamping first
-                // If view allows partial items, simple clamping is usually fine.
-                // We'll treat it as "slides"
-                
                 // Clamp index
                 const maxIndex = Math.max(0, totalItems - 1); 
                 if (currentIndex < 0) currentIndex = 0;
@@ -768,8 +789,6 @@
                 if (trackWidth > viewWidth) {
                     if (currentTranslate < maxTranslate) {
                         currentTranslate = maxTranslate;
-                         // Adjust index backwards so next 'left' click makes sense?
-                         // Actually, just visual clamp is safer for now.
                     }
                 } else {
                     currentTranslate = 0; // Content fits, no scroll needed
@@ -937,12 +956,35 @@
 
         const closeLightbox = () => {
             lightbox.classList.remove('active');
+            // Remove CTA visible class
+            document.getElementById('lightbox-cta-container').classList.remove('visible');
             // Re-enable keyboard scroll after closing
             document.removeEventListener('keydown', handleLightboxKeyboardNav);
         };
         
+        // NEW Helper: Determine CTA Text
+        function updateLightboxCTA(title, subtitle) {
+            const text = (title + " " + subtitle).toLowerCase();
+            const btn = document.getElementById('lightbox-cta-btn');
+            
+            // Logic for "most expensive" service priority
+            // Priority: PPF > Wrap > Coating > Tint
+            
+            if (text.includes('ppf') || text.includes('protection film') || text.includes('clear bra')) {
+                btn.textContent = "Get a PPF Quote";
+            } else if (text.includes('wrap') || text.includes('vinyl') || text.includes('color change')) {
+                btn.textContent = "Customize Your Ride";
+            } else if (text.includes('ceramic') || text.includes('coating')) {
+                btn.textContent = "Get Ceramic Coating";
+            } else if (text.includes('tint')) {
+                btn.textContent = "Get Window Tint";
+            } else {
+                btn.textContent = "Get an Instant Quote";
+            }
+        }
+
         // Global function to open lightbox (called from onclick in generated HTML)
-        window.openLightbox = (src, imageUrlsString, initialIndex) => {
+        window.openLightbox = (src, imageUrlsString, initialIndex, title, subtitle) => {
             // Parse image URLs from the string attribute
             currentLightboxImages = imageUrlsString.split('|');
             currentImageIndex = initialIndex;
@@ -950,6 +992,14 @@
             lightboxImg.src = src;
             lightbox.classList.add('active');
             updateNavButtons();
+            
+            // Update CTA text
+            updateLightboxCTA(title || '', subtitle || '');
+            
+            // Trigger Fade In for CTA after a small delay
+            setTimeout(() => {
+                 document.getElementById('lightbox-cta-container').classList.add('visible');
+            }, 100);
             
             // Add keyboard navigation handler
             document.addEventListener('keydown', handleLightboxKeyboardNav);
