@@ -1910,9 +1910,34 @@
 
             function getBusinessStatus() {
                 const now = new Date();
-                const dayIndex = now.getDay();
+                const BUSINESS_TIMEZONE = 'America/Chicago';
+
+                // Convert current time to 'America/Chicago' (Central Time)
+                const formatter = new Intl.DateTimeFormat('en-US', {
+                    timeZone: BUSINESS_TIMEZONE,
+                    weekday: 'short',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    hour12: false
+                });
+
+                const parts = formatter.formatToParts(now);
+                const partMap = {};
+                parts.forEach(p => partMap[p.type] = p.value);
+
+                const dayStr = partMap['weekday'];
+                let dayIndex = DAYS.indexOf(dayStr);
+
+                // Safety check: Fallback to local day if parsing fails (though unlikely with en-US/short)
+                if (dayIndex === -1) {
+                    dayIndex = now.getDay();
+                }
+
+                const hour = parseInt(partMap['hour'], 10);
+                const minute = parseInt(partMap['minute'], 10);
+
                 const currentDay = DAYS[dayIndex];
-                const currentHourFloat = now.getHours() + now.getMinutes() / 60;
+                const currentHourFloat = hour + minute / 60;
                 
                 const todayHours = hours[currentDay];
                 const isOpen = todayHours.open !== null && 
