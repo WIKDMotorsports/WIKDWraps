@@ -314,20 +314,19 @@
             z-index: 1000;
             color: white;
             cursor: pointer;
-            padding: 1rem 0.5rem; /* Reduced padding for cleaner look */
-            background: transparent; /* No background color */
+            padding: 1rem 0.5rem; 
+            background: transparent; 
             border: none;
-            transition: color 0.3s ease, opacity 0.3s ease, background-color 0.3s ease;
+            transition: color 0.3s ease, opacity 0.3s ease;
             opacity: 0.7;
-            /* Applying shadow directly to the arrow icon via text-shadow */
-            text-shadow: 0 0 5px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.5);
+            /* Applying heavy text-shadow for drop shadow effect */
+            text-shadow: 0 0 10px rgba(0, 0, 0, 1), 0 0 20px rgba(0, 0, 0, 0.8);
         }
         .lightbox-nav:hover {
             color: var(--color-primary);
             opacity: 1;
-            /* Optional: subtle background flash on hover */
-            background-color: rgba(255, 255, 255, 0.05); 
-            border-radius: 4px;
+            background-color: transparent; /* Ensure no background shape on hover */
+            border-radius: 0;
         }
         .lightbox-nav i {
             /* Ensure the icon size is correct */
