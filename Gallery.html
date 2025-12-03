@@ -238,7 +238,7 @@
             border: 1px solid var(--color-border); background: var(--color-surface);
             transition: border-color 0.3s ease, transform 0.3s ease;
         }
-        .gallery-item:hover { border-color: var(--color-primary); }
+        .gallery-item:hover { cursor: pointer; border-color: var(--color-primary); }
         
         @media (min-width: 768px) { .gallery-item { flex: 0 0 40vw; } }
         @media (min-width: 1024px) { .gallery-item { flex: 0 0 28vw; } }
@@ -259,29 +259,94 @@
             z-index: -1;
         }
 
-        /* --- LIGHTBOX (Unchanged) --- */
+        /* --- LIGHTBOX STYLES --- */
         #lightbox {
             position: fixed; inset: 0; z-index: 10000;
-            background: rgba(0,0,0,0.9); backdrop-filter: blur(15px);
+            background: rgba(0,0,0,0.95); backdrop-filter: blur(15px);
             display: flex; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none;
             transition: opacity 0.3s ease;
         }
         #lightbox.active { opacity: 1; pointer-events: all; }
-        #lightbox img {
-            max-width: 90vw; max-height: 90vh;
+        
+        .lightbox-content {
+            position: relative;
+            max-width: 90vw; 
+            max-height: 90vh;
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+        }
+        
+        #lightbox-img {
+            max-width: 100%; 
+            max-height: 100%;
+            object-fit: contain;
             border: 1px solid var(--color-border);
             box-shadow: 0 0 50px rgba(0,0,0,0.8);
-            transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transform: scale(0.95); 
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
-        #lightbox.active img { transform: scale(1); }
-        .lightbox-close {
-            position: absolute; top: 2rem; right: 2rem;
-            color: white; font-family: var(--font-heading); font-size: 1.5rem;
-            cursor: pointer; transition: color 0.3s;
+        #lightbox.active #lightbox-img { 
+            transform: scale(1); 
         }
-        .lightbox-close:hover { color: var(--color-primary); }
         
+        .lightbox-close {
+            position: absolute; top: 1rem; right: 1rem;
+            color: white; 
+            cursor: pointer; 
+            z-index: 10001;
+            transition: color 0.3s;
+            opacity: 0.8;
+            padding: 0.5rem 1rem;
+            background-color: rgba(17, 17, 17, 0.5);
+            border-radius: 4px;
+            font-family: var(--font-heading); font-size: 0.9rem;
+            letter-spacing: 0.05em;
+        }
+        .lightbox-close:hover { color: var(--color-primary); opacity: 1; }
+
+        /* --- UPDATED LIGHTBOX NAV STYLES --- */
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+            color: white;
+            cursor: pointer;
+            padding: 1rem 0.5rem; /* Reduced padding for cleaner look */
+            background: transparent; /* No background color */
+            border: none;
+            transition: color 0.3s ease, opacity 0.3s ease, background-color 0.3s ease;
+            opacity: 0.7;
+            /* Applying shadow directly to the arrow icon via text-shadow */
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+        .lightbox-nav:hover {
+            color: var(--color-primary);
+            opacity: 1;
+            /* Optional: subtle background flash on hover */
+            background-color: rgba(255, 255, 255, 0.05); 
+            border-radius: 4px;
+        }
+        .lightbox-nav i {
+            /* Ensure the icon size is correct */
+            width: 2.5rem; 
+            height: 2.5rem;
+        }
+        .lightbox-nav-left { left: -40px; }
+        .lightbox-nav-right { right: -40px; }
+        
+        @media (max-width: 768px) {
+            .lightbox-nav { 
+                padding: 0.5rem 0.25rem; /* Smaller target area for mobile */
+            }
+            .lightbox-nav-left { left: 10px; }
+            .lightbox-nav-right { right: 10px; }
+            .lightbox-close { top: 10px; right: 10px; }
+        }
+        /* --- END UPDATED LIGHTBOX NAV STYLES --- */
+
         .gallery-block {
             position: relative;
         }
@@ -315,10 +380,18 @@
 </head>
 <body>
 
-    <!-- Lightbox Component -->
+    <!-- Lightbox Component with Navigation -->
     <div id="lightbox">
         <div class="lightbox-close">CLOSE [ESC]</div>
-        <img id="lightbox-img" src="" alt="Full View">
+        <div class="lightbox-content">
+            <button id="lightbox-prev" class="lightbox-nav lightbox-nav-left" onclick="navigateLightbox(-1)">
+                <i data-lucide="chevron-left" class="w-8 h-8"></i>
+            </button>
+            <img id="lightbox-img" src="" alt="Full View">
+            <button id="lightbox-next" class="lightbox-nav lightbox-nav-right" onclick="navigateLightbox(1)">
+                <i data-lucide="chevron-right" class="w-8 h-8"></i>
+            </button>
+        </div>
     </div>
 
     <!-- Navigation Bar (Unchanged) -->
@@ -494,6 +567,12 @@
         const lightboxImg = document.getElementById('lightbox-img');
         const lightboxClose = document.querySelector('.lightbox-close');
         
+        // --- Lightbox state for gallery navigation ---
+        let currentLightboxImages = []; // Array of image URLs for the current section
+        let currentImageIndex = 0;
+        const lightboxPrevBtn = document.getElementById('lightbox-prev');
+        const lightboxNextBtn = document.getElementById('lightbox-next');
+        
         // State for infinite scrolling and data
         const DATA_URL = "https://cdn.shopify.com/s/files/1/0648/4826/5421/files/GallerydataWraps.json?v=1764691746";
         let allProjectsData = [];
@@ -522,9 +601,6 @@
             const gap = parseFloat(trackStyle.gap) || 0; 
             const stepSize = itemWidth + gap;
             
-            // The number of original images (half of the cloned set)
-            // We use the full count to prevent errors if the content hasn't fully loaded/cloned yet, 
-            // but rely on the fact that there are always two sets for loop calculation.
             const totalItems = track.children.length;
             const setSize = totalItems / 2; 
 
@@ -543,7 +619,6 @@
             // Immediate initial positioning for Right-moving rows
             if (direction === -1) {
                 // Start by showing the first item of the second (cloned) set. 
-                // Index 'setSize' is the first cloned item.
                 state.currentIndex = setSize;
                 const startPos = -state.currentIndex * state.stepSize;
                 track.style.transform = `translateX(${startPos}px)`;
@@ -551,7 +626,7 @@
 
             const step = () => {
                 // If the track is currently hovered, pause the step iteration
-                if (track.parentElement.matches(':hover')) {
+                if (track.parentElement.matches(':hover') || lightbox.classList.contains('active')) {
                     return; 
                 }
 
@@ -559,13 +634,11 @@
                 
                 if (state.direction === 1) { // Moving Left: index increments
                     state.currentIndex += 1;
-                    // Snap when the movement would start displaying the first image of the cloned set
                     if (state.currentIndex > state.totalSteps) {
                         shouldSnap = true;
                     }
                 } else { // Moving Right: index decrements
                     state.currentIndex -= 1;
-                    // Snap when the movement would display the last image of the first set (index -1 in our logic)
                     if (state.currentIndex < 0) {
                         shouldSnap = true;
                     }
@@ -589,13 +662,10 @@
                     // 2. Re-enable the smooth transition for the next movement
                     setTimeout(() => {
                         track.classList.remove('snap');
-                        // Crucially, immediately perform the first *visible* step here (0.5s move)
                         
                         if (state.direction === 1) {
-                            // After snapping to 0, the next step should go to 1 (Index 1)
                             state.currentIndex = 1; 
                         } else {
-                            // After snapping to setSize, the next step should go to setSize - 1
                             state.currentIndex = state.totalSteps - 1;
                         }
                         
@@ -621,16 +691,14 @@
         }
 
 
-        // --- UTILITY: REMOVE NOISE FROM TITLES ---
+        // --- UTILITY: REMOVE NOISE FROM TITLES (Unchanged) ---
         function cleanTitle(text) {
             let cleaned = text || "";
-            // Specifically remove "(Ryft Edition)" and "Ryft"
             cleaned = cleaned.replace(/\(Ryft Edition\)/gi, "").replace(/Ryft/gi, "");
-            // Cleanup double spaces that might result from removal
             return cleaned.replace(/\s\s+/g, ' ').trim();
         }
 
-        // --- CORE: GENERATE ONE FULL BLOCK OF GALLERY HTML ---
+        // --- CORE: GENERATE ONE FULL BLOCK OF GALLERY HTML (Unchanged) ---
         function createContentBlock() {
             const projects = allProjectsData;
             const tempDiv = document.createElement('div');
@@ -639,9 +707,8 @@
             let html = '';
             const mixedBagImages = [];
             
-            let localProjectCounter = 0; // Local counter for alternation within this block
+            let localProjectCounter = 0; 
 
-            // 1. Generate sections for projects with > 2 images
             projects.forEach(project => {
                 const isStandalone = project.images && project.images.length > 2;
 
@@ -655,16 +722,18 @@
                 const title = cleanTitle(project.title);
                 const subtitle = cleanTitle(project.subtitle);
                 
-                // Direction: Odd/Even rows for alternating movement
-                let direction = 1; // 1 = Left (default), -1 = Right
+                let direction = 1; 
                 if (localProjectCounter % 2 !== 0) { 
                     direction = -1; 
                 }
                 
                 localProjectCounter++;
 
-                const imagesHtml = project.images.map(imgUrl => `
-                    <div class="gallery-item" onclick="openLightbox('${imgUrl}')">
+                // Collect image URLs in a JSON string attribute
+                const imageUrls = project.images.map(imgUrl => imgUrl).join('|');
+
+                const imagesHtml = project.images.map((imgUrl, index) => `
+                    <div class="gallery-item" onclick="openLightbox('${imgUrl}', '${imageUrls}', ${index})">
                         <div class="skeleton-loader"></div>
                         <img data-src="${imgUrl}" class="gallery-img">
                     </div>
@@ -679,7 +748,6 @@
                             </div>
                         </div>
                         <div class="ticker-view">
-                            <!-- Duplicate the content items for smooth transition before loop-back -->
                             <div class="ticker-track" data-direction="${direction}">
                                 ${imagesHtml}
                                 ${imagesHtml} <!-- CLONE FOR SMOOTH LOOP -->
@@ -691,8 +759,10 @@
 
             // 2. Generate Mixed Bag section
             if (mixedBagImages.length > 0) {
-                const imagesHtml = mixedBagImages.map(imgUrl => `
-                    <div class="gallery-item" onclick="openLightbox('${imgUrl}')">
+                const mixedImageUrls = mixedBagImages.map(imgUrl => imgUrl).join('|');
+                
+                const imagesHtml = mixedBagImages.map((imgUrl, index) => `
+                    <div class="gallery-item" onclick="openLightbox('${imgUrl}', '${mixedImageUrls}', ${index})">
                         <div class="skeleton-loader"></div>
                         <img data-src="${imgUrl}" class="gallery-img">
                     </div>
@@ -822,22 +892,81 @@
         }
 
         
-        // --- LIGHTBOX GLOBAL HANDLERS (Unchanged) ---
-        const closeLightbox = () => lightbox.classList.remove('active');
-        lightboxClose.addEventListener('click', closeLightbox);
-        lightbox.addEventListener('click', (e) => {
-            if (e.target === lightbox || e.target === lightboxClose) closeLightbox();
-        });
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeLightbox();
-        });
-
-        // Global function to open lightbox (called from onclick in generated HTML)
-        window.openLightbox = (src) => {
-            lightboxImg.src = src;
-            lightbox.classList.add('active');
+        // --- LIGHTBOX GLOBAL HANDLERS (Unchanged Logic, Updated Styles) ---
+        
+        const updateNavButtons = () => {
+            const total = currentLightboxImages.length;
+            // Hide/show buttons based on image count and index
+            if (total <= 1) {
+                lightboxPrevBtn.style.display = 'none';
+                lightboxNextBtn.style.display = 'none';
+            } else {
+                lightboxPrevBtn.style.display = 'block';
+                lightboxNextBtn.style.display = 'block';
+            }
         };
 
+        const closeLightbox = () => {
+            lightbox.classList.remove('active');
+            // Re-enable keyboard scroll after closing
+            document.removeEventListener('keydown', handleLightboxKeyboardNav);
+        };
+        
+        // Global function to open lightbox (called from onclick in generated HTML)
+        window.openLightbox = (src, imageUrlsString, initialIndex) => {
+            // Parse image URLs from the string attribute
+            currentLightboxImages = imageUrlsString.split('|');
+            currentImageIndex = initialIndex;
+
+            lightboxImg.src = src;
+            lightbox.classList.add('active');
+            updateNavButtons();
+            
+            // Add keyboard navigation handler
+            document.addEventListener('keydown', handleLightboxKeyboardNav);
+
+            // Stop carousels when lightbox is open
+            document.querySelectorAll('.ticker-track').forEach(track => {
+                if (stepperStates.get(track)) {
+                    // Force a check next cycle to ensure step pauses
+                    stepperStates.get(track).isLightboxOpen = true;
+                }
+            });
+        };
+
+        window.navigateLightbox = (direction) => {
+            const total = currentLightboxImages.length;
+            if (total === 0) return;
+
+            // Calculate new index (circular navigation)
+            let newIndex = currentImageIndex + direction;
+            if (newIndex < 0) {
+                newIndex = total - 1; // Loop back to the end
+            } else if (newIndex >= total) {
+                newIndex = 0; // Loop back to the start
+            }
+
+            currentImageIndex = newIndex;
+            lightboxImg.src = currentLightboxImages[currentImageIndex];
+        };
+
+        const handleLightboxKeyboardNav = (e) => {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                navigateLightbox(-1);
+            } else if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                navigateLightbox(1);
+            }
+        };
+
+        lightboxClose.addEventListener('click', closeLightbox);
+        lightbox.addEventListener('click', (e) => {
+            // Close if clicking outside the image or navigation buttons
+            if (e.target === lightbox || e.target === lightboxClose) closeLightbox();
+        });
         
         // --- FETCH & INIT GALLERY (Unchanged) ---
         async function initGallery() {
