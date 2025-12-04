@@ -282,7 +282,8 @@
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        transition: all 0.2s ease;
+        /* Kept transition for hover/active state responsiveness */
+        transition: all 0.2s ease; 
         outline: none;
         
         width: 36px; /* Width set to match height for square icon button */
@@ -299,6 +300,7 @@
         /* Reset clip-path from inheriting the cut shape, add slight rounding */
         clip-path: none; 
         border-radius: 4px; 
+        /* MODIFIED: Initial animation state and transition now managed by container children rules below */
         transform: none; 
         position: relative;
     }
@@ -331,8 +333,8 @@
 
     /* --- GALLERY ITEM STYLES (Unchanged) --- */
     .gallery-item {
-        flex: 0 0 70vw; 
-        position: relative; aspect-ratio: 16/9; 
+        flex: 0 0 70vw;  
+        position: relative; aspect-ratio: 16/9;  
         border-radius: 2px; overflow: hidden;
         border: 1px solid var(--color-border); background: var(--color-surface);
         transition: border-color 0.3s ease, transform 0.3s ease;
@@ -413,27 +415,67 @@
         position: absolute;
         bottom: 2rem;
         left: 50%;
-        transform: translateX(-50%) translateY(20px);
-        opacity: 0;
-        transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        /* MODIFIED: Removed transform: translateY(20px), opacity: 0, and transition to stage children */
+        transform: translateX(-50%); 
+        opacity: 1; 
+        transition: none;
         z-index: 10002;
         width: max-content;
         
         display: flex; 
-        gap: 0.75rem; 
+        gap: 0.75rem;   
         align-items: center;
     }
+    
+    /* * NEW STAGGERED ANIMATION LOGIC 
+     * The container is now only for layout; the children (CTA and Nav buttons) handle their own animation.
+     */
+    .lightbox-cta-container > * {
+        /* Initial hidden state for both CTA and Nav buttons */
+        opacity: 0;
+        transform: translateY(10px);
+        /* Base transition: 0.5s duration, no delay by default (for CTA) */
+        transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .lightbox-cta-container.visible > * {
+        /* Final visible state */
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Apply staggered delay to navigation buttons ONLY */
+    .lightbox-nav {
+        /* Override base transition to add a delay, causing them to load 0.2s after the CTA */
+        transition-delay: 0.2s; 
+    }
+
+    /* .lightbox-btn inherits the 0s delay from .lightbox-cta-container > * */
+    
     .lightbox-cta-container.visible {
-        transform: translateX(-50%) translateY(0);
+        /* This class is now primarily a trigger for the children's transitions */
+        transform: translateX(-50%);
         opacity: 1;
     }
+    
     .lightbox-btn {
+        /* START: Changes for Red Primary CTA */
+        background-color: var(--color-primary) !important;
+        color: white !important;
+        border: 1px solid var(--color-primary); 
+        /* END: Changes for Red Primary CTA */
+        
         /* MODIFIED SHADOW: Normal black drop shadow, matching the navigation buttons */
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
-        border: 1px solid var(--color-primary);
         /* 1. Make center CTA a normal rectangle */
         clip-path: none !important;
         border-radius: 0; /* Removed rounded corners */
+    }
+    
+    /* New hover style for the red CTA to contrast */
+    .lightbox-btn:hover {
+        background-color: #D6342A !important; /* Slightly darker red */
+        border-color: #D6342A !important;
     }
 
     .gallery-block { position: relative; }
@@ -483,7 +525,7 @@
                 <i data-lucide="chevron-left" class="w-8 h-8"></i>
             </button>
             
-            <!-- CTA Button is now a normal rectangle via the modified .lightbox-btn class -->
+            <!-- CTA Button is now a normal rectangle via the modified .lightbox-btn class, and is red -->
             <a href="https://wikdwraps.com/pages/estimate-configurator" id="lightbox-cta-btn" class="btn-wikd lightbox-btn">
                 GET A QUOTE
             </a>
@@ -954,6 +996,7 @@
             
             // Show CTA container if it wasn't already visible
             if (!document.getElementById('lightbox-cta-container').classList.contains('visible')) {
+                // Keeping the timeout to ensure the main lightbox is open before controls start animating.
                 setTimeout(() => {
                         document.getElementById('lightbox-cta-container').classList.add('visible');
                 }, 100);
