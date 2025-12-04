@@ -1,0 +1,170 @@
+This new configurator code is a massive leap forward. It’s moving from a simple form to a **logic-driven application**.
+
+To answer your question: For your gallery to "talk" to this new configurator perfectly, you need to standardize your data tags. You can't rely on "fuzzy" matching (like `if title includes "wrap"`) anymore because your new configurator is precise (it expects `2Door`, `SUV`, `ppf-track`, etc.).
+
+Here is the **"Data Handshake"** strategy. You need to tag your gallery images with the **exact IDs** found in your configurator code.
+
+### 1\. The "Golden Tags" (Data Dictionary)
+
+You need to add these specific properties to your Gallery JSON data. I have extracted these **exact** case-sensitive values from your configurator code.
+
+#### A. `vehicle_type` (Critical for Pricing)
+
+Your gallery images MUST define which of these 4 buckets the car falls into, or the configurator won't know which price to show.
+
+  * `2Door`
+  * `4Door`
+  * `SUV`
+  * `Oversize`
+
+#### B. `package_id` (The "One-Click" Upsell)
+
+If an image shows a full build, tag it with one of these IDs. This is the most powerful link because it pre-selects multiple services (PPF + Tint + Ceramic) in one go.
+
+  * `tint-full`
+  * `tint-complete`
+  * `tint-panoramic`
+  * `coating-essential`
+  * `coating-advanced`
+  * `coating-ultimate`
+  * `ppf-front`
+  * `ppf-track`
+  * `ppf-full`
+  * `bundle-essential`
+  * `bundle-track-pro`
+  * `bundle-gt3`
+  * `bundle-presidential`
+  * `bundle-f1` (Use this for your craziest builds)
+
+#### C. `service_mode` (A La Carte Fallback)
+
+If the image isn't a specific package but just shows off one feature, use these exact pairs:
+
+| Service Tag | Valid Coverage Tags |
+| :--- | :--- |
+| `PPF` | `Partial`, `Full Front`, `Track Pack`, `Full Car` |
+| `Tint` | `Rollups`, `Full Car`, `Windshield` |
+| `Coating` | `Paint`, `Wheels`, `Windshield` |
+| `Vinyl` | `Color Change`, `Custom Graphic` |
+
+-----
+
+### 2\. How Your Gallery JSON Should Look
+
+Update your `GallerydataWraps.json` (or however you are storing the gallery data) to include a `meta` object with these tags.
+
+**Example 1: The Lamborghini Urus (Package approach)**
+
+```json
+{
+  "title": "2018 Lamborghini Urus",
+  "subtitle": "Impact PPF Repair & Paint Correction",
+  "src": "...",
+  "meta": {
+    "vehicle": "SUV",
+    "package": "bundle-gt3" 
+  }
+}
+```
+
+*Why this is sick:* When they click "Get a Quote" on this image, you can pass `?vehicle=SUV&package=bundle-gt3`. The configurator loads, clicks "SUV", clicks "GT3 Package", and boom—they see the exact price (`$9,445`) immediately.
+
+**Example 2: The F450 (A La Carte approach)**
+
+```json
+{
+  "title": "2024 Ford F450 Platinum",
+  "subtitle": "Chrome Delete & Detail",
+  "src": "...",
+  "meta": {
+    "vehicle": "Oversize",
+    "service": "Vinyl", 
+    "coverage": "Color Change" 
+  }
+}
+```
+
+*Why this is sick:* Passes `?vehicle=Oversize&service=Vinyl&coverage=Color%20Change`. The configurator opens the Vinyl tab, selects Oversize, selects Color Change, and calculates `$4,995`.
+
+-----
+
+### 3\. Updating the Gallery Code (The Bridge)
+
+You need to update the `updateLightboxCTA` function in your **Gallery Code** (from the previous step) to read these new tags and build the "Smart URL".
+
+**Replace your old `updateLightboxCTA` with this:**
+
+```javascript
+function updateLightboxCTA(imageIndex) {
+    // 1. Get the current image data object
+    const currentImgData = flatGalleryImages[imageIndex];
+    const btn = document.getElementById('lightbox-cta-btn');
+    
+    // Base Configurator URL
+    let configUrl = "https://wikdwraps.com/pages/estimate-configurator";
+    let params = new URLSearchParams();
+
+    // 2. Check for "Golden Tags" in the image metadata
+    // (Assuming you added the 'meta' object to your flatGalleryImages array during generation)
+    if (currentImgData.meta) {
+        if (currentImgData.meta.vehicle) {
+            params.set('vehicle', currentImgData.meta.vehicle);
+        }
+        
+        if (currentImgData.meta.package) {
+            // PRIORITY 1: It's a known package
+            params.set('package', currentImgData.meta.package);
+            btn.textContent = "Configure This Package";
+        } else if (currentImgData.meta.service) {
+            // PRIORITY 2: It's a specific service
+            params.set('service', currentImgData.meta.service);
+            if (currentImgData.meta.coverage) {
+                params.set('coverage', currentImgData.meta.coverage);
+            }
+            // Dynamic Button Text based on Service
+            const serviceName = currentImgData.meta.service;
+            if (serviceName === 'PPF') btn.textContent = "Price This Protection";
+            else if (serviceName === 'Vinyl') btn.textContent = "Customize Your Look";
+            else if (serviceName === 'Tint') btn.textContent = "Get Tint Pricing";
+            else btn.textContent = "Get an Instant Quote";
+        }
+    } else {
+        // Fallback to your old fuzzy text matching if tags are missing
+        const text = (currentImgData.title + " " + currentImgData.subtitle).toLowerCase();
+        if (text.includes('ppf')) {
+            btn.textContent = "Request PPF Pricing";
+            params.set('service', 'PPF');
+        } else if (text.includes('wrap')) {
+            btn.textContent = "Customize Your Ride";
+            params.set('service', 'Vinyl');
+        } else {
+            btn.textContent = "Get an Instant Quote";
+        }
+    }
+
+    // 3. Set the button link with the smart parameters
+    btn.href = `${configUrl}?${params.toString()}`;
+}
+```
+
+### 4\. Future-Proofing (For when you finish the Configurator)
+
+Since you said the configurator is a WIP, you don't need to write the "receiver" code yet, but just so you know it will work:
+
+When you *do* finish the configurator, you will just add a snippet to `initializeApp()` that reads these params:
+
+```javascript
+// FUTURE CODE SNIPPET (Mental Note)
+const urlParams = new URLSearchParams(window.location.search);
+const preVehicle = urlParams.get('vehicle'); // e.g. "SUV"
+const prePackage = urlParams.get('package'); // e.g. "bundle-gt3"
+
+if (preVehicle) {
+   document.querySelector(`input[name="vehicle"][value="${preVehicle}"]`).click();
+}
+if (prePackage) {
+   selectPackage(prePackage); // Your existing function!
+}
+```
+
+**Verdict:** By tagging your images with these explicit IDs now, you are building a **Tier 1 Ecosystem**. The gallery isn't just showing pictures; it's pre-loading the cash register.
