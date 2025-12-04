@@ -305,6 +305,19 @@
         position: relative;
     }
     
+    /* === NEW: Keep space but hide content for boundary navigation === */
+    .lightbox-nav.hidden-placeholder {
+        visibility: hidden;
+        pointer-events: none;
+        /* NEW: Explicitly set target hidden state to match default hidden state */
+        opacity: 0;
+        transform: translateY(10px);
+        /* FIX: Override slow inherited transition (0.5s) with a fast exit (0.15s) 
+           and ensure visibility switches immediately after the fade (delay 0.15s) */
+        transition: opacity 0.15s ease-out, transform 0.15s ease-out, visibility 0s 0.15s;
+    }
+    /* ============================================================= */
+
     /* Specific clip-path for the PREV button (Left Cut) - Replicating original .btn-wikd cut */
     #lightbox-prev {
         clip-path: polygon(0 0, 100% 0, 100% 100%, 12px 100%, 0 70%); 
@@ -398,20 +411,52 @@
         transform: scale(1); 
     }
     
+    /* MODIFIED LIGHTBOX CLOSE BUTTON
+     * New style to adopt the .btn-wikd custom geometry and match its height (36px)
+     * The position (top: 1rem; right: 1rem;) ensures alignment over the main nav button.
+     */
     .lightbox-close {
+        /* Positioning (Retained) */
         position: absolute; top: 1rem; right: 1rem;
-        color: white; 
-        cursor: pointer; 
+        cursor: pointer;
         z-index: 10001;
-        transition: color 0.3s;
-        opacity: 0.8;
-        padding: 0.5rem 1rem;
-        background-color: rgba(17, 17, 17, 0.5);
-        border-radius: 4px;
-        font-family: var(--font-heading); font-size: 0.9rem;
+        transition: all 0.2s ease;
+        
+        /* Dimensions & Layout (Matching .btn-wikd: 36px height) */
+        display: flex; 
+        align-items: center; 
+        justify-content: center;
+        height: 36px;
+        padding: 0 1.5rem;
+        
+        /* Custom Geometry & Background (From .btn-wikd) */
+        background-color: #FFFFFF; 
+        color: #000000;
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 12px 100%, 0 70%);
+        border: none;
+        line-height: 1;
+        opacity: 1; 
+
+        /* Typography (From .btn-wikd) */
+        font-family: var(--font-heading); 
+        font-size: 14px; /* Changed from 0.9rem to 14px */
+        font-weight: 800; /* Changed from 400/500 */
+        text-transform: uppercase;
         letter-spacing: 0.05em;
+        
+        /* Shadow for prominence */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+        
+        /* Removed old rules: opacity: 0.8; border-radius: 4px; background-color: rgba(17, 17, 17, 0.5); */
     }
-    .lightbox-close:hover { color: var(--color-primary); opacity: 1; }
+    
+    /* New hover state (Matching .btn-wikd hover) */
+    .lightbox-close:hover { 
+        background-color: #EAEAEA; 
+        transform: translateY(-1px);
+        color: #000000;
+        opacity: 1; 
+    }
 
     
     /* --- NEW LIGHTBOX CTA STYLES (MODIFIED to be rectangular) --- */
@@ -1002,21 +1047,23 @@
             if (!document.getElementById('lightbox-cta-container').classList.contains('visible')) {
                 // Keeping the timeout to ensure the main lightbox is open before controls start animating.
                 setTimeout(() => {
-                        document.getElementById('lightbox-cta-container').classList.add('visible');
+                    document.getElementById('lightbox-cta-container').classList.add('visible');
                 }, 100);
             }
         }
 
+        // MODIFIED: Updated to use hidden-placeholder class instead of display: none
         const updateNavButtons = () => {
             const total = flatGalleryImages.length;
+            const placeholderClass = 'hidden-placeholder';
             
             if (total <= 1) {
-                lightboxPrevBtn.style.display = 'none';
-                lightboxNextBtn.style.display = 'none';
+                lightboxPrevBtn.classList.add(placeholderClass);
+                lightboxNextBtn.classList.add(placeholderClass);
             } else {
-                // Non-looping navigation: hide buttons at boundaries
-                lightboxPrevBtn.style.display = currentImageIndex > 0 ? 'flex' : 'none';
-                lightboxNextBtn.style.display = currentImageIndex < total - 1 ? 'flex' : 'none';
+                // Use classList.toggle to add the hidden-placeholder class when we are at the boundary
+                lightboxPrevBtn.classList.toggle(placeholderClass, currentImageIndex === 0);
+                lightboxNextBtn.classList.toggle(placeholderClass, currentImageIndex === total - 1);
             }
         };
 
@@ -1083,7 +1130,7 @@
         lightboxClose.addEventListener('click', closeLightbox);
         
         // MODIFIED: Removed the event listener on the lightbox background.
-        // This prevents closure via clicking outside the image or via the lightbox background.
+        // This prevents closure via clicking outside the image or navigation buttons.
         /*
         lightbox.addEventListener('click', (e) => {
             // Close if clicking outside the image or navigation buttons
