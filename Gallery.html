@@ -423,9 +423,9 @@
     }
     
     /* MODIFIED LIGHTBOX CLOSE BUTTON
-     * Reduced contrast by changing the background to semi-transparent dark gray
-     * with a light border, and using light text.
-     */
+      * Reduced contrast by changing the background to semi-transparent dark gray
+      * with a light border, and using light text.
+      */
     .lightbox-close {
         /* Positioning (Retained) */
         position: absolute; top: 1rem; right: 1rem;
@@ -487,8 +487,8 @@
     }
     
     /* * NEW STAGGERED ANIMATION LOGIC 
-     * The container is now only for layout; the children (CTA and Nav buttons) handle their own animation.
-     */
+      * The container is now only for layout; the children (CTA and Nav buttons) handle their own animation.
+      */
     .lightbox-cta-container > * {
         /* Initial hidden state for both CTA and Nav buttons */
         opacity: 0;
@@ -843,7 +843,8 @@
 
                     finalProjectHTML.push(`
                         <section class="project-section">
-                            <div class="project-header">
+                            <!-- ADDED: max-w-[1400px] mx-auto px-4 mb-4 to align header with navbar content -->
+                            <div class="project-header max-w-[1400px] mx-auto px-4 mb-4">
                                 <div>
                                     <h2 class="text-3xl md:text-5xl text-white font-heading mb-1">${title}</h2>
                                     <p class="text-muted text-lg tracking-wide">${subtitle}</p>
@@ -887,7 +888,8 @@
 
                 mixedHtml = `
                     <section class="project-section">
-                        <div class="project-header">
+                        <!-- ADDED: max-w-[1400px] mx-auto px-4 mb-4 to align header with navbar content -->
+                        <div class="project-header max-w-[1400px] mx-auto px-4 mb-4">
                             <div>
                                 <h2 class="text-3xl md:text-5xl text-white font-heading mb-1">${title}</h2>
                                 <p class="text-muted text-lg tracking-wide">${subtitle}</p>
