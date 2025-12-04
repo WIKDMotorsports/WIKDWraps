@@ -15,439 +15,483 @@
     
     <style>
       :root {
-            --color-background: #050505;
-            --color-text: #EAEAEA;
-            --color-primary: #FF3B30;
-            --color-surface: #111111;
-            --color-border: #2A2A2A;
-            --font-heading: 'Rajdhani', sans-serif;
-            --font-body: 'Inter', sans-serif;
-        }
+        --color-background: #050505;
+        --color-text: #EAEAEA;
+        --color-primary: #FF3B30;
+        --color-surface: #111111;
+        --color-border: #2A2A2A;
+        --font-heading: 'Rajdhani', sans-serif;
+        --font-body: 'Inter', sans-serif;
+    }
 
-        /* --- CORE BASE --- */
-        html { scroll-behavior: smooth; }
-        body {
-            background-color: var(--color-background) !important;
-            color: var(--color-text) !important;
-            font-family: var(--font-body) !important;
-            overflow-x: hidden;
-            position: relative;
-            margin: 0;
-            -webkit-font-smoothing: antialiased;
-        }
+    /* --- CORE BASE --- */
+    html { scroll-behavior: smooth; }
+    body {
+        background-color: var(--color-background) !important;
+        color: var(--color-text) !important;
+        font-family: var(--font-body) !important;
+        overflow-x: hidden;
+        position: relative;
+        margin: 0;
+        -webkit-font-smoothing: antialiased;
+    }
+    
+    /* --- NOISE TEXTURE --- */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        pointer-events: none; 
+        z-index: 40; 
+        opacity: 0.05; 
+        background-repeat: repeat;
+        background-size: 150px 150px; 
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    /* --- TYPOGRAPHY --- */
+    h1, h2, h3, .font-heading {
+        font-family: var(--font-heading) !important;
+        font-weight: 700 !important;
+        line-height: 1.1 !important;
+        text-transform: uppercase !important;
+        color: white !important;
+        letter-spacing: 0.02em;
+    }
+    
+    p, .font-body { 
+      font-family: var(--font-body) !important; 
+      color: var(--color-text) !important; 
+      line-height: 1.6 !important;
+    }
+    .text-muted { color: var(--color-text-muted) !important; }
+
+    /* --- NAVIGATION STYLES --- */
+    .btn-wikd {
+        display: inline-flex; align-items: center; justify-content: center; height: 36px;
+        padding: 0 1.5rem; font-family: var(--font-heading); font-size: 14px;
+        font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;
+        text-decoration: none; cursor: pointer; transition: all 0.2s ease;
+        background-color: #FFFFFF; color: #000000; border: none;
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 12px 100%, 0 70%); line-height: 1;
+    }
+    .btn-wikd:hover { background-color: #EAEAEA; transform: translateY(-1px); }
+
+    .nav-link {
+        position: relative; font-family: var(--font-heading); font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text);
+        transition: color 0.2s ease; font-size: 15px; background: transparent;
+        border: none; cursor: pointer; display: inline-flex; align-items: center;
+        gap: 4px; line-height: 1; padding: 0;
+    }
+    .nav-link:hover { color: var(--color-primary); }
+
+    .dropdown-menu {
+        opacity: 0; visibility: hidden; transform: translateX(-50%) translateY(-15px);
+        transition: opacity 0.15s ease-out, transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.15s;
+        background-color: #050505; border: 1px solid #222; border-top: 2px solid var(--color-primary);
+        clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+        padding: 0.5rem; padding-bottom: 1.5rem; display: flex; flex-direction: column;
+        gap: 4px; z-index: 100; box-shadow: 0 30px 60px -10px rgba(0,0,0,0.8);
+    }
+    .group:hover .dropdown-menu {
+        opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0);
+    }
+    .menu-label {
+        font-family: var(--font-heading); font-size: 0.65rem; font-weight: 800;
+        text-transform: uppercase; letter-spacing: 0.15em; color: #444;
+        padding: 0.75rem 1rem 0.25rem 1rem; pointer-events: none;
+    }
+    .menu-tile {
+        display: flex; align-items: center; gap: 0.75rem; width: 100%;
+        padding: 0.6rem 1rem; font-size: 0.9rem; font-weight: 600; color: #999;
+        background-color: #111; border: 1px solid #1A1A1A; transition: all 0.15s ease-out;
+        text-decoration: none; font-family: var(--font-body); letter-spacing: 0.02em;
+        border-radius: 0; line-height: 1.4;
+    }
+    .menu-tile:hover {
+        background-color: #161616; color: white; border-color: #333;
+        box-shadow: inset 3px 0 0 var(--color-primary); transform: translateX(2px);
+    }
+    .menu-tile i { color: #333; transition: color 0.15s ease; width: 18px; height: 18px; flex-shrink: 0; }
+    .menu-tile:hover i { color: var(--color-primary); }
+    .menu-expand-row {
+        display: flex; flex-direction: column; width: 100%; padding: 0.6rem 1rem;
+        font-size: 0.9rem; font-weight: 600; color: #999; background-color: #111;
+        border: 1px solid #1A1A1A; transition: all 0.2s ease; text-decoration: none;
+        border-radius: 0; min-height: 42px; height: auto;
+    }
+    .menu-expand-row:hover {
+        background-color: #161616; color: white; border-color: #333;
+        box-shadow: inset 3px 0 0 var(--color-primary); transform: translateX(2px);
+    }
+    .menu-expand-description {
+        max-height: 0; opacity: 0; overflow: hidden; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        font-size: 0.75rem; color: #666; font-weight: 400; margin-left: 2rem;
+        line-height: 1.3; padding-top: 0;
+    }
+    .menu-expand-row:hover .menu-expand-description {
+        max-height: 100px; opacity: 1; padding-top: 0.25rem;
+    }
+    .menu-expand-row i { color: #333; transition: color 0.15s ease; }
+    .menu-expand-row:hover i { color: var(--color-primary); }
+    .menu-tile-main {
+        background: linear-gradient(90deg, #161616 0%, #0A0A0A 100%);
+        border: 1px solid #222; color: white; font-family: var(--font-heading);
+        font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+        padding: 0.75rem 1rem; display: flex; justify-content: space-between;
+        align-items: center; margin-bottom: 0.25rem;
+    }
+    .menu-tile-main:hover { border-color: #444; color: var(--color-primary); }
+
+    /* QR TOOLTIP */
+    .qr-tooltip {
+        position: absolute; top: 100%; left: 50%;
+        transform: translateX(-50%) translateY(10px); margin-top: 20px;
+        background-color: #141414; border: 1px solid var(--color-border);
+        border-radius: 12px; padding: 0.75rem; z-index: 2006;
+        text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        opacity: 0; visibility: hidden; transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+        pointer-events: none;
+    }
+    .group\/call:hover .qr-tooltip {
+        opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); pointer-events: auto;
+    }
+    .qr-tooltip::before {
+        content: ''; position: absolute; bottom: 100%; left: 50%;
+        transform: translateX(-50%); border-width: 8px; border-style: solid;
+        border-color: transparent transparent var(--color-border) transparent;
+    }
+
+    /* MOBILE MENU */
+    #mobile-menu {
+        transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+        max-height: 0; opacity: 0; overflow: hidden; background-color: #000;
+        border-bottom: 1px solid #222;
+    }
+    #mobile-menu.open { max-height: 100vh; opacity: 1; }
+    .logo-text { font-family: var(--font-heading); font-weight: 800; text-transform: uppercase; line-height: 1; }
+
+    /* NAVBAR GRADIENT */
+    nav::before {
+        content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100px;
+        background: linear-gradient(
+            to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.8) 40%, transparent 100%
+        );
+        z-index: -1; pointer-events: none;
+    }
+
+    main { padding-top: 8rem; min-height: 80vh; }
+
+    /* --- PROJECT SECTIONS & GALLERY STYLES --- */
+    .project-section {
+        margin-bottom: 2rem; 
+        padding-bottom: 1rem; 
+        contain: content; 
+        position: relative;
+        overflow: hidden;
+        z-index: 1; 
+    }
+    .project-section:last-child { margin-bottom: 0; }
+
+    .project-header {
+        display: flex; justify-content: space-between; align-items: flex-end;
+        margin-bottom: 2rem; padding: 0 5%; flex-wrap: wrap; gap: 1rem;
+        position: relative; z-index: 10; 
+    }
+    
+    /* --- CAROUSEL STYLES --- */
+    .ticker-view {
+        overflow: hidden; 
+        width: 100%; 
+        padding: 1rem 0; 
+        position: relative;
+        /* Fade edges slightly */
+        mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+    }
+
+    .ticker-track {
+        display: flex; 
+        gap: 1.5rem; 
+        width: fit-content; 
+        will-change: transform;
+        transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        transform: translateX(0);
+    }
+    
+    /* --- NAV ARROWS (CAROUSEL) --- */
+    .nav-arrow {
+        /* Carousel Specific Positioning/Transforms */
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 50;
+
+        /* Shared Visual Styles */
+        background-color: rgba(0,0,0,0.8);
+        border: 1px solid #333;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        outline: none;
+        backdrop-filter: blur(4px);
+        opacity: 1;
+        width: 50px;
+        height: 50px;
+        padding: 0;
+
+        /* Unique clip-path shape */
+        clip-path: polygon(20% 0%, 0% 20%, 0% 100%, 80% 100%, 100% 80%, 100% 0%);
+    }
+    
+    .nav-arrow:hover {
+        background-color: var(--color-primary);
+        border-color: var(--color-primary);
+        transform: translateY(-50%) scale(1.1);
+    }
+    .nav-arrow:active {
+        transform: translateY(-50%) scale(0.95);
+    }
+    .nav-arrow-left { 
+        left: 1rem; 
+    }
+    .nav-arrow-right { 
+        right: 1rem; 
+    }
+    
+    .nav-arrow:disabled, .nav-arrow.disabled, .lightbox-nav:disabled, .lightbox-nav.disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    @media (max-width: 768px) {
+        .nav-arrow { width: 40px; height: 40px; }
+        .nav-arrow-left { left: 0.5rem; }
+        .nav-arrow-right { right: 0.5rem; }
+    }
+    
+    /* * --- LIGHTBOX NAV STYLES (MODIFIED) --- * */
+    .lightbox-nav {
+        /* Base styles */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        outline: none;
         
-        /* --- NOISE TEXTURE --- */
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; 
-            z-index: 40; 
-            opacity: 0.05; 
-            background-repeat: repeat;
-            background-size: 150px 150px; 
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-        }
+        width: 36px; /* Width set to match height for square icon button */
+        height: 36px; 
+        background-color: #FFFFFF; 
+        color: #000000; /* Icon color */
+        border: none;
+        padding: 0;
+        z-index: 1000;
 
-        /* --- TYPOGRAPHY --- */
-        h1, h2, h3, .font-heading {
-            font-family: var(--font-heading) !important;
-            font-weight: 700 !important;
-            line-height: 1.1 !important;
-            text-transform: uppercase !important;
-            color: white !important;
-            letter-spacing: 0.02em;
-        }
+        /* MODIFIED SHADOW: Normal black drop shadow */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
         
-        p, .font-body { 
-          font-family: var(--font-body) !important; 
-          color: var(--color-text) !important; 
-          line-height: 1.6 !important;
-        }
-        .text-muted { color: var(--color-text-muted) !important; }
+        /* Reset clip-path from inheriting the cut shape, add slight rounding */
+        clip-path: none; 
+        border-radius: 4px; 
+        transform: none; 
+        position: relative;
+    }
+    
+    /* Specific clip-path for the PREV button (Left Cut) - Replicating original .btn-wikd cut */
+    #lightbox-prev {
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 12px 100%, 0 70%); 
+        border-radius: 0;
+    }
 
-        /* --- NAVIGATION STYLES --- */
-        .btn-wikd {
-            display: inline-flex; align-items: center; justify-content: center; height: 36px;
-            padding: 0 1.5rem; font-family: var(--font-heading); font-size: 14px;
-            font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;
-            text-decoration: none; cursor: pointer; transition: all 0.2s ease;
-            background-color: #FFFFFF; color: #000000; border: none;
-            clip-path: polygon(0 0, 100% 0, 100% 100%, 12px 100%, 0 70%); line-height: 1;
-        }
-        .btn-wikd:hover { background-color: #EAEAEA; transform: translateY(-1px); }
+    /* Specific clip-path for the NEXT button (Right Cut) - Cut off the right bottom corner */
+    #lightbox-next {
+        clip-path: polygon(0 0, 100% 0, 100% 70%, calc(100% - 12px) 100%, 0 100%);
+        border-radius: 0;
+    }
 
-        .nav-link {
-            position: relative; font-family: var(--font-heading); font-weight: 700;
-            text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text);
-            transition: color 0.2s ease; font-size: 15px; background: transparent;
-            border: none; cursor: pointer; display: inline-flex; align-items: center;
-            gap: 4px; line-height: 1; padding: 0;
-        }
-        .nav-link:hover { color: var(--color-primary); }
+    .lightbox-nav:hover {
+        background-color: #EAEAEA;
+        transform: translateY(-1px);
+        color: var(--color-primary); /* Icon changes color on hover */
+    }
 
-        .dropdown-menu {
-            opacity: 0; visibility: hidden; transform: translateX(-50%) translateY(-15px);
-            transition: opacity 0.15s ease-out, transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.15s;
-            background-color: #050505; border: 1px solid #222; border-top: 2px solid var(--color-primary);
-            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
-            padding: 0.5rem; padding-bottom: 1.5rem; display: flex; flex-direction: column;
-            gap: 4px; z-index: 100; box-shadow: 0 30px 60px -10px rgba(0,0,0,0.8);
-        }
-        .group:hover .dropdown-menu {
-            opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0);
-        }
-        .menu-label {
-            font-family: var(--font-heading); font-size: 0.65rem; font-weight: 800;
-            text-transform: uppercase; letter-spacing: 0.15em; color: #444;
-            padding: 0.75rem 1rem 0.25rem 1rem; pointer-events: none;
-        }
-        .menu-tile {
-            display: flex; align-items: center; gap: 0.75rem; width: 100%;
-            padding: 0.6rem 1rem; font-size: 0.9rem; font-weight: 600; color: #999;
-            background-color: #111; border: 1px solid #1A1A1A; transition: all 0.15s ease-out;
-            text-decoration: none; font-family: var(--font-body); letter-spacing: 0.02em;
-            border-radius: 0; line-height: 1.4;
-        }
-        .menu-tile:hover {
-            background-color: #161616; color: white; border-color: #333;
-            box-shadow: inset 3px 0 0 var(--color-primary); transform: translateX(2px);
-        }
-        .menu-tile i { color: #333; transition: color 0.15s ease; width: 18px; height: 18px; flex-shrink: 0; }
-        .menu-tile:hover i { color: var(--color-primary); }
-        .menu-expand-row {
-            display: flex; flex-direction: column; width: 100%; padding: 0.6rem 1rem;
-            font-size: 0.9rem; font-weight: 600; color: #999; background-color: #111;
-            border: 1px solid #1A1A1A; transition: all 0.2s ease; text-decoration: none;
-            border-radius: 0; min-height: 42px; height: auto;
-        }
-        .menu-expand-row:hover {
-            background-color: #161616; color: white; border-color: #333;
-            box-shadow: inset 3px 0 0 var(--color-primary); transform: translateX(2px);
-        }
-        .menu-expand-description {
-            max-height: 0; opacity: 0; overflow: hidden; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            font-size: 0.75rem; color: #666; font-weight: 400; margin-left: 2rem;
-            line-height: 1.3; padding-top: 0;
-        }
-        .menu-expand-row:hover .menu-expand-description {
-            max-height: 100px; opacity: 1; padding-top: 0.25rem;
-        }
-        .menu-expand-row i { color: #333; transition: color 0.15s ease; }
-        .menu-expand-row:hover i { color: var(--color-primary); }
-        .menu-tile-main {
-            background: linear-gradient(90deg, #161616 0%, #0A0A0A 100%);
-            border: 1px solid #222; color: white; font-family: var(--font-heading);
-            font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
-            padding: 0.75rem 1rem; display: flex; justify-content: space-between;
-            align-items: center; margin-bottom: 0.25rem;
-        }
-        .menu-tile-main:hover { border-color: #444; color: var(--color-primary); }
+    .lightbox-nav:active {
+        transform: scale(0.95);
+    }
+    .lightbox-nav i { 
+        width: 1.25rem; 
+        height: 1.25rem; 
+    }
 
-        /* QR TOOLTIP */
-        .qr-tooltip {
-            position: absolute; top: 100%; left: 50%;
-            transform: translateX(-50%) translateY(10px); margin-top: 20px;
-            background-color: #141414; border: 1px solid var(--color-border);
-            border-radius: 12px; padding: 0.75rem; z-index: 2006;
-            text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            opacity: 0; visibility: hidden; transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
-            pointer-events: none;
-        }
-        .group\/call:hover .qr-tooltip {
-            opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); pointer-events: auto;
-        }
-        .qr-tooltip::before {
-            content: ''; position: absolute; bottom: 100%; left: 50%;
-            transform: translateX(-50%); border-width: 8px; border-style: solid;
-            border-color: transparent transparent var(--color-border) transparent;
-        }
+    /* --- GALLERY ITEM STYLES (Unchanged) --- */
+    .gallery-item {
+        flex: 0 0 70vw; 
+        position: relative; aspect-ratio: 16/9; 
+        border-radius: 2px; overflow: hidden;
+        border: 1px solid var(--color-border); background: var(--color-surface);
+        transition: border-color 0.3s ease, transform 0.3s ease;
+    }
+    .gallery-item:hover { cursor: pointer; border-color: var(--color-primary); }
+    
+    @media (min-width: 768px) { .gallery-item { flex: 0 0 40vw; } }
+    @media (min-width: 1024px) { .gallery-item { flex: 0 0 28vw; } }
 
-        /* MOBILE MENU */
-        #mobile-menu {
-            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
-            max-height: 0; opacity: 0; overflow: hidden; background-color: #000;
-            border-bottom: 1px solid #222;
-        }
-        #mobile-menu.open { max-height: 100vh; opacity: 1; }
-        .logo-text { font-family: var(--font-heading); font-weight: 800; text-transform: uppercase; line-height: 1; }
+    /* Image & Skeleton Loading (Unchanged) */
+    .gallery-img {
+        width: 100%; height: 100%; object-fit: cover; opacity: 0;
+        transition: opacity 0.6s ease-out, transform 0.6s ease;
+        transform: scale(1.02); display: block;
+    }
+    .gallery-img.loaded { opacity: 1; transform: scale(1); }
+    .gallery-item:hover .gallery-img { transform: scale(1.05); }
 
-        /* NAVBAR GRADIENT */
-        nav::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100px;
-            background: linear-gradient(
-                to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.8) 40%, transparent 100%
-            );
-            z-index: -1; pointer-events: none;
-        }
+    .skeleton-loader {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background: linear-gradient(90deg, #111 25%, #1a1a1a 50%, #111 75%);
+        background-size: 200% 100%; animation: shimmer 2s infinite;
+        z-index: -1;
+    }
+    
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-        main { padding-top: 8rem; min-height: 80vh; }
+    /* --- LIGHTBOX STYLES (Unchanged) --- */
+    #lightbox {
+        position: fixed; inset: 0; z-index: 10000;
+        background: rgba(0,0,0,0.95); backdrop-filter: blur(15px);
+        display: flex; justify-content: center; align-items: center;
+        opacity: 0; pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+    #lightbox.active { opacity: 1; pointer-events: all; }
+    
+    .lightbox-content {
+        position: relative;
+        max-width: 90vw; 
+        max-height: 90vh;
+        display: flex; 
+        justify-content: center; 
+        align-items: center;
+    }
+    
+    #lightbox-img {
+        max-width: 100%; 
+        max-height: 100%;
+        object-fit: contain;
+        border: 1px solid var(--color-border);
+        box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        transform: scale(0.95); 
+        transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    #lightbox.active #lightbox-img { 
+        transform: scale(1); 
+    }
+    
+    .lightbox-close {
+        position: absolute; top: 1rem; right: 1rem;
+        color: white; 
+        cursor: pointer; 
+        z-index: 10001;
+        transition: color 0.3s;
+        opacity: 0.8;
+        padding: 0.5rem 1rem;
+        background-color: rgba(17, 17, 17, 0.5);
+        border-radius: 4px;
+        font-family: var(--font-heading); font-size: 0.9rem;
+        letter-spacing: 0.05em;
+    }
+    .lightbox-close:hover { color: var(--color-primary); opacity: 1; }
 
-        /* --- PROJECT SECTIONS & GALLERY STYLES --- */
-        .project-section {
-            margin-bottom: 2rem; 
-            padding-bottom: 1rem; 
-            contain: content; 
-            position: relative;
-            overflow: hidden;
-            z-index: 1; 
-        }
-        .project-section:last-child { margin-bottom: 0; }
-
-        .project-header {
-            display: flex; justify-content: space-between; align-items: flex-end;
-            margin-bottom: 2rem; padding: 0 5%; flex-wrap: wrap; gap: 1rem;
-            position: relative; z-index: 10; 
-        }
+    
+    /* --- NEW LIGHTBOX CTA STYLES (MODIFIED to be rectangular) --- */
+    .lightbox-cta-container {
+        position: absolute;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%) translateY(20px);
+        opacity: 0;
+        transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 10002;
+        width: max-content;
         
-        /* --- CAROUSEL STYLES --- */
-        .ticker-view {
-            overflow: hidden; 
-            width: 100%; 
-            padding: 1rem 0; 
-            position: relative;
-            /* Fade edges slightly */
-            mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
-        }
+        display: flex; 
+        gap: 0.75rem; 
+        align-items: center;
+    }
+    .lightbox-cta-container.visible {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+    }
+    .lightbox-btn {
+        /* MODIFIED SHADOW: Normal black drop shadow, matching the navigation buttons */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+        border: 1px solid var(--color-primary);
+        /* 1. Make center CTA a normal rectangle */
+        clip-path: none !important;
+        border-radius: 0; /* Removed rounded corners */
+    }
 
-        .ticker-track {
-            display: flex; 
-            gap: 1.5rem; 
-            width: fit-content; 
-            will-change: transform;
-            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-            transform: translateX(0);
-        }
-        
-        /* --- NAV ARROWS --- */
-        .nav-arrow {
-            position: absolute;
-            top: 50%; /* Center relative to the container */
-            transform: translateY(-50%);
-            z-index: 50;
-            width: 50px;
-            height: 50px;
-            background-color: rgba(0,0,0,0.8);
-            border: 1px solid #333;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            outline: none;
-            backdrop-filter: blur(4px);
-            opacity: 1;
-        }
-        .nav-arrow:hover {
-            background-color: var(--color-primary);
-            border-color: var(--color-primary);
-            transform: translateY(-50%) scale(1.1);
-        }
-        .nav-arrow:active {
-            transform: translateY(-50%) scale(0.95);
-        }
-        .nav-arrow:disabled, .nav-arrow.disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-        
-        .nav-arrow-left { 
-            left: 1rem; 
-            clip-path: polygon(20% 0%, 0% 20%, 0% 100%, 80% 100%, 100% 80%, 100% 0%);
-        }
-        .nav-arrow-right { 
-            right: 1rem; 
-            clip-path: polygon(20% 0%, 0% 20%, 0% 100%, 80% 100%, 100% 80%, 100% 0%);
-        }
+    .gallery-block { position: relative; }
 
-        @media (max-width: 768px) {
-            .nav-arrow { width: 40px; height: 40px; }
-            .nav-arrow-left { left: 0.5rem; }
-            .nav-arrow-right { right: 0.5rem; }
-        }
+    /* --- FOOTER (Unchanged) --- */
+    .wikd-footer {
+        background-color: #080808; border-top: 1px solid var(--color-border);
+        padding: 5rem 0 2rem; position: relative;
+    }
+    .wikd-footer-container { width: 92%; max-width: 1400px; margin: 0 auto; }
+    .wikd-footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; margin-bottom: 4rem; }
+    .wikd-footer-logo { width: 200px; height: auto; opacity: 0.9; }
+    .wikd-footer-links a {
+        color: var(--color-text-muted); text-decoration: none;
+        font-size: 0.9rem; transition: all 0.3s ease; display: block; margin-bottom: 0.8rem;
+    }
+    .wikd-footer-links a:hover { color: var(--color-primary); transform: translateX(5px); }
+    .wikd-footer-column h3 {
+        font-family: var(--font-heading); font-size: 1.2rem; color: white;
+        margin-bottom: 1.5rem; letter-spacing: 1px; border-left: 3px solid var(--color-primary);
+        padding-left: 1rem;
+    }
+    .wikd-footer-bottom {
+        border-top: 1px solid var(--color-border); padding-top: 2rem;
+        display: flex; justify-content: space-between; color: var(--color-text-muted); font-size: 0.85rem;
+    }
 
-        /* --- GALLERY ITEM STYLES --- */
-        .gallery-item {
-            flex: 0 0 70vw; 
-            position: relative; aspect-ratio: 16/9; 
-            border-radius: 2px; overflow: hidden;
-            border: 1px solid var(--color-border); background: var(--color-surface);
-            transition: border-color 0.3s ease, transform 0.3s ease;
-        }
-        .gallery-item:hover { cursor: pointer; border-color: var(--color-primary); }
-        
-        @media (min-width: 768px) { .gallery-item { flex: 0 0 40vw; } }
-        @media (min-width: 1024px) { .gallery-item { flex: 0 0 28vw; } }
-
-        /* Image & Skeleton Loading */
-        .gallery-img {
-            width: 100%; height: 100%; object-fit: cover; opacity: 0;
-            transition: opacity 0.6s ease-out, transform 0.6s ease;
-            transform: scale(1.02); display: block;
-        }
-        .gallery-img.loaded { opacity: 1; transform: scale(1); }
-        .gallery-item:hover .gallery-img { transform: scale(1.05); }
-
-        .skeleton-loader {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(90deg, #111 25%, #1a1a1a 50%, #111 75%);
-            background-size: 200% 100%; animation: shimmer 2s infinite;
-            z-index: -1;
-        }
-        
-        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-
-        /* --- LIGHTBOX STYLES --- */
-        #lightbox {
-            position: fixed; inset: 0; z-index: 10000;
-            background: rgba(0,0,0,0.95); backdrop-filter: blur(15px);
-            display: flex; justify-content: center; align-items: center;
-            opacity: 0; pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-        #lightbox.active { opacity: 1; pointer-events: all; }
-        
-        .lightbox-content {
-            position: relative;
-            max-width: 90vw; 
-            max-height: 90vh;
-            display: flex; 
-            justify-content: center; 
-            align-items: center;
-        }
-        
-        #lightbox-img {
-            max-width: 100%; 
-            max-height: 100%;
-            object-fit: contain;
-            border: 1px solid var(--color-border);
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
-            transform: scale(0.95); 
-            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-        #lightbox.active #lightbox-img { 
-            transform: scale(1); 
-        }
-        
-        .lightbox-close {
-            position: absolute; top: 1rem; right: 1rem;
-            color: white; 
-            cursor: pointer; 
-            z-index: 10001;
-            transition: color 0.3s;
-            opacity: 0.8;
-            padding: 0.5rem 1rem;
-            background-color: rgba(17, 17, 17, 0.5);
-            border-radius: 4px;
-            font-family: var(--font-heading); font-size: 0.9rem;
-            letter-spacing: 0.05em;
-        }
-        .lightbox-close:hover { color: var(--color-primary); opacity: 1; }
-
-        /* --- UPDATED LIGHTBOX NAV STYLES --- */
-        .lightbox-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 1000;
-            color: white;
-            cursor: pointer;
-            padding: 1rem 0.5rem; 
-            background: transparent; 
-            border: none;
-            transition: color 0.3s ease, opacity 0.3s ease;
-            opacity: 0.7;
-            text-shadow: 0 0 10px rgba(0, 0, 0, 1), 0 0 20px rgba(0, 0, 0, 0.8);
-        }
-        .lightbox-nav:hover {
-            color: var(--color-primary);
-            opacity: 1;
-            background-color: transparent; 
-            border-radius: 0;
-        }
-        .lightbox-nav i { width: 2.5rem; height: 2.5rem; }
-        .lightbox-nav-left { left: -40px; }
-        .lightbox-nav-right { right: -40px; }
-        
-        @media (max-width: 768px) {
-            .lightbox-nav { padding: 0.5rem 0.25rem; }
-            .lightbox-nav-left { left: 10px; }
-            .lightbox-nav-right { right: 10px; }
-            .lightbox-close { top: 10px; right: 10px; }
-        }
-        
-        /* --- NEW LIGHTBOX CTA STYLES --- */
-        .lightbox-cta-container {
-            position: absolute;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            opacity: 0;
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-            z-index: 10002;
-            width: max-content;
-        }
-        .lightbox-cta-container.visible {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
-        }
-        .lightbox-btn {
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-            border: 1px solid var(--color-primary);
-        }
-
-        .gallery-block { position: relative; }
-
-        /* --- FOOTER (Unchanged) --- */
-        .wikd-footer {
-            background-color: #080808; border-top: 1px solid var(--color-border);
-            padding: 5rem 0 2rem; position: relative;
-        }
-        .wikd-footer-container { width: 92%; max-width: 1400px; margin: 0 auto; }
-        .wikd-footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; margin-bottom: 4rem; }
-        .wikd-footer-logo { width: 200px; height: auto; opacity: 0.9; }
-        .wikd-footer-links a {
-            color: var(--color-text-muted); text-decoration: none;
-            font-size: 0.9rem; transition: all 0.3s ease; display: block; margin-bottom: 0.8rem;
-        }
-        .wikd-footer-links a:hover { color: var(--color-primary); transform: translateX(5px); }
-        .wikd-footer-column h3 {
-            font-family: var(--font-heading); font-size: 1.2rem; color: white;
-            margin-bottom: 1.5rem; letter-spacing: 1px; border-left: 3px solid var(--color-primary);
-            padding-left: 1rem;
-        }
-        .wikd-footer-bottom {
-            border-top: 1px solid var(--color-border); padding-top: 2rem;
-            display: flex; justify-content: space-between; color: var(--color-text-muted); font-size: 0.85rem;
-        }
-
-        @media (max-width: 992px) { .wikd-footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; margin-bottom: 4rem; } .wikd-footer-brand { grid-column: 1 / 2; } }
-        @media (max-width: 640px) { .wikd-footer-grid { grid-template-columns: 1fr; } .wikd-footer-bottom { flex-direction: column; gap: 1rem; text-align: center; } }
+    @media (max-width: 992px) { .wikd-footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; margin-bottom: 4rem; } .wikd-footer-brand { grid-column: 1 / 2; } }
+    @media (max-width: 640px) { .wikd-footer-grid { grid-template-columns: 1fr; } .wikd-footer-bottom { flex-direction: column; gap: 1rem; text-align: center; } }
     </style>
 </head>
 <body>
 
     <!-- Lightbox Component with Navigation -->
     <div id="lightbox">
-        <div class="lightbox-close">CLOSE [ESC]</div>
+        <!-- MODIFIED: Removed [ESC] text since the keyboard shortcut is disabled -->
+        <div class="lightbox-close">CLOSE</div>
+
         <div class="lightbox-content">
-            <button id="lightbox-prev" class="lightbox-nav lightbox-nav-left" onclick="navigateLightbox(-1)">
-                <i data-lucide="chevron-left" class="w-8 h-8"></i>
-            </button>
             <img id="lightbox-img" src="" alt="Full View">
-            <button id="lightbox-next" class="lightbox-nav lightbox-nav-right" onclick="navigateLightbox(1)">
-                <i data-lucide="chevron-right" class="w-8 h-8"></i>
-            </button>
         </div>
         
-        <!-- NEW CTA CONTAINER -->
+        <!-- CTA Container now hosts the inline navigation buttons -->
         <div id="lightbox-cta-container" class="lightbox-cta-container">
+            <!-- #lightbox-prev will use the left-cut clip-path via its ID -->
+            <button id="lightbox-prev" class="lightbox-nav" onclick="navigateLightbox(-1)">
+                <i data-lucide="chevron-left" class="w-8 h-8"></i>
+            </button>
+            
+            <!-- CTA Button is now a normal rectangle via the modified .lightbox-btn class -->
             <a href="https://wikdwraps.com/pages/estimate-configurator" id="lightbox-cta-btn" class="btn-wikd lightbox-btn">
                 GET A QUOTE
             </a>
+
+            <!-- #lightbox-next will use the right-cut clip-path via its ID -->
+            <button id="lightbox-next" class="lightbox-nav" onclick="navigateLightbox(1)">
+                <i data-lucide="chevron-right" class="w-8 h-8"></i>
+            </button>
         </div>
     </div>
 
@@ -625,62 +669,122 @@
         const lightboxClose = document.querySelector('.lightbox-close');
         
         // --- Lightbox state for gallery navigation ---
-        let currentLightboxImages = []; // Array of image URLs for the current section
+        let flatGalleryImages = []; // Global array of ALL images for sequential lightbox navigation
         let currentImageIndex = 0;
         const lightboxPrevBtn = document.getElementById('lightbox-prev');
         const lightboxNextBtn = document.getElementById('lightbox-next');
         
-        // State for infinite scrolling and data
+        // State for data
         const DATA_URL = "https://cdn.shopify.com/s/files/1/0648/4826/5421/files/GallerydataWraps.json?v=1764691746";
         let allProjectsData = [];
-        let blockIndex = 0;
-        let intersectionObserverAppend = null; 
-        let intersectionObserverRemove = null; 
 
-        // --- UTILITY: REMOVE NOISE FROM TITLES (Unchanged) ---
+        // --- UTILITY: REMOVE NOISE FROM TITLES ---
         function cleanTitle(text) {
             let cleaned = text || "";
+            // Remove variations of "Ryft Edition" from the title for cleaner grouping
             cleaned = cleaned.replace(/\(Ryft Edition\)/gi, "").replace(/Ryft/gi, "");
             return cleaned.replace(/\s\s+/g, ' ').trim();
         }
 
-        // --- CORE: GENERATE ONE FULL BLOCK OF GALLERY HTML ---
-        function createContentBlock() {
-            const projects = allProjectsData;
+        // --- CORE: GENERATE ALL GALLERY HTML CONTENT ---
+        function generateAllGalleryHTML(projects) {
             const tempDiv = document.createElement('div');
-            tempDiv.className = 'gallery-block';
-            tempDiv.setAttribute('data-block-index', blockIndex++);
-            let html = '';
-            const mixedBagImages = [];
+            const finalProjectHTML = [];
+            const finalMixedImages = [];
+            const seenTitles = new Set(); 
             
-            projects.forEach(project => {
-                const isStandalone = project.images && project.images.length > 2;
+            // Clear flat data storage before population
+            flatGalleryImages = [];
 
-                if (!isStandalone) {
-                    if (project.images) {
-                        mixedBagImages.push(...project.images);
-                    }
+            projects.forEach(project => {
+                const title = cleanTitle(project.title);
+                const subtitle = cleanTitle(project.subtitle || '');
+                const images = project.images || [];
+                const isShopLife = title.toLowerCase().includes('shop life');
+                const isStandaloneCandidate = images.length > 2;
+
+                if (isShopLife || !isStandaloneCandidate) {
+                    // Rule: Combine 'Shop Life' and small projects (<= 2 images) into the Mixed Gallery
+                    finalMixedImages.push(...images);
                     return;
                 }
 
-                const title = cleanTitle(project.title);
-                const subtitle = cleanTitle(project.subtitle);
-                
-                // Safe strings for onclick
-                const safeTitle = title.replace(/'/g, "\\'");
-                const safeSubtitle = subtitle.replace(/'/g, "\\'");
-                
-                // Collect image URLs in a JSON string attribute
-                const imageUrls = project.images.map(imgUrl => imgUrl).join('|');
+                if (isStandaloneCandidate) {
+                    // Rule: Deduplicate standalone projects based on the cleaned title
+                    if (seenTitles.has(title)) {
+                        // Skip duplicate section
+                        return;
+                    }
+                    seenTitles.add(title);
 
-                const imagesHtml = project.images.map((imgUrl, index) => `
-                    <div class="gallery-item" onclick="openLightbox('${imgUrl}', '${imageUrls}', ${index}, '${safeTitle}', '${safeSubtitle}')">
-                        <div class="skeleton-loader"></div>
-                        <img data-src="${imgUrl}" class="gallery-img">
-                    </div>
-                `).join('');
+                    // Generate HTML for this standalone section
+                    const safeTitle = title.replace(/'/g, "\\'");
+                    const safeSubtitle = subtitle.replace(/'/g, "\\'");
 
-                html += `
+                    // Generate images and push data to global flat array
+                    const imagesHtml = images.map(imgUrl => {
+                        const globalIndex = flatGalleryImages.length; // Get the index before pushing
+                        
+                        flatGalleryImages.push({
+                            src: imgUrl,
+                            title: title,
+                            subtitle: subtitle
+                        });
+
+                        // Pass only the global index to the onclick handler
+                        return `
+                            <div class="gallery-item" onclick="openLightbox(${globalIndex})">
+                                <div class="skeleton-loader"></div>
+                                <img data-src="${imgUrl}" class="gallery-img">
+                            </div>
+                        `;
+                    }).join('');
+
+                    finalProjectHTML.push(`
+                        <section class="project-section">
+                            <div class="project-header">
+                                <div>
+                                    <h2 class="text-3xl md:text-5xl text-white font-heading mb-1">${title}</h2>
+                                    <p class="text-muted text-lg tracking-wide">${subtitle}</p>
+                                </div>
+                            </div>
+                            <div class="ticker-view relative">
+                                <button class="nav-arrow nav-arrow-left" aria-label="Previous Slide"><i data-lucide="chevron-left"></i></button>
+                                <div class="ticker-track">
+                                    ${imagesHtml}
+                                </div>
+                                <button class="nav-arrow nav-arrow-right" aria-label="Next Slide"><i data-lucide="chevron-right"></i></button>
+                            </div>
+                        </section>
+                    `);
+                }
+            });
+
+            // 2. Generate Merged Mixed Gallery section
+            let mixedHtml = '';
+            if (finalMixedImages.length > 0) {
+                const title = 'SHOP LIFE & RECENT WORKS';
+                const subtitle = 'Behind the Scenes and Quick Snaps';
+                
+                const imagesHtml = finalMixedImages.map(imgUrl => {
+                    const globalIndex = flatGalleryImages.length; // Get the index before pushing
+                    
+                    flatGalleryImages.push({
+                        src: imgUrl,
+                        title: title,
+                        subtitle: subtitle
+                    });
+
+                    // Pass only the global index to the onclick handler
+                    return `
+                        <div class="gallery-item" onclick="openLightbox(${globalIndex})">
+                            <div class="skeleton-loader"></div>
+                            <img data-src="${imgUrl}" class="gallery-img">
+                        </div>
+                    `;
+                }).join('');
+
+                mixedHtml = `
                     <section class="project-section">
                         <div class="project-header">
                             <div>
@@ -697,46 +801,13 @@
                         </div>
                     </section>
                 `;
-            });
-
-            // 2. Generate Mixed Bag section
-            if (mixedBagImages.length > 0) {
-                const mixedImageUrls = mixedBagImages.map(imgUrl => imgUrl).join('|');
-                
-                const imagesHtml = mixedBagImages.map((imgUrl, index) => `
-                    <div class="gallery-item" onclick="openLightbox('${imgUrl}', '${mixedImageUrls}', ${index}, 'Mixed Gallery', 'Recent Works')">
-                        <div class="skeleton-loader"></div>
-                        <img data-src="${imgUrl}" class="gallery-img">
-                    </div>
-                `).join('');
-
-                html += `
-                    <section class="project-section">
-                        <div class="project-header">
-                            <div>
-                                <h2 class="text-3xl md:text-5xl text-white font-heading mb-1">Mixed Gallery</h2>
-                                <p class="text-muted text-lg tracking-wide">Recent Works & Quick Snaps</p>
-                            </div>
-                        </div>
-                        <div class="ticker-view relative">
-                            <button class="nav-arrow nav-arrow-left" aria-label="Previous Slide"><i data-lucide="chevron-left"></i></button>
-                            <div class="ticker-track">
-                                ${imagesHtml}
-                            </div>
-                            <button class="nav-arrow nav-arrow-right" aria-label="Next Slide"><i data-lucide="chevron-right"></i></button>
-                        </div>
-                    </section>
-                `;
             }
-            
-            const firstSection = tempDiv.querySelector('.project-section:first-child');
-            if(firstSection) firstSection.classList.add('js-first-section');
 
-            tempDiv.innerHTML = html;
-            return { element: tempDiv };
+            tempDiv.innerHTML = finalProjectHTML.join('') + mixedHtml;
+            return tempDiv;
         }
 
-        // --- FIXED: MANUAL CAROUSEL LOGIC WITH BOUNDARY CHECKS & TOUCH ---
+        // --- FIXED: MANUAL CAROUSEL LOGIC (Unchanged) ---
         function initManualCarousel(section) {
             const track = section.querySelector('.ticker-track');
             const view = section.querySelector('.ticker-view');
@@ -750,7 +821,6 @@
             let currentTranslate = 0;
             let isDragging = false;
             
-            // --- Helper to calculate metrics ---
             const getMetrics = () => {
                 const firstItem = track.querySelector('.gallery-item');
                 if (!firstItem) return { stepSize: 0, visibleCount: 1, totalItems: 0 };
@@ -761,47 +831,38 @@
                 const stepSize = itemWidth + gap;
                 const viewWidth = view.getBoundingClientRect().width;
                 const visibleCount = Math.floor(viewWidth / stepSize); 
-                // Note: visibleCount might be 1 on mobile, 2 or 3 on desktop
                 const totalItems = track.children.length;
                 
                 return { stepSize, visibleCount, totalItems };
             };
 
             const updateTrack = () => {
-                const { stepSize, visibleCount, totalItems } = getMetrics();
+                const { stepSize, totalItems } = getMetrics();
                 if (stepSize === 0) return;
 
-                // Clamp index
                 const maxIndex = Math.max(0, totalItems - 1); 
-                if (currentIndex < 0) currentIndex = 0;
-                if (currentIndex > maxIndex) currentIndex = maxIndex;
+                currentIndex = Math.max(0, Math.min(currentIndex, maxIndex));
 
-                // Update transform
                 currentTranslate = -(currentIndex * stepSize);
                 
-                // Boundary Check: If the translation goes beyond the track width minus view width
-                // This prevents white space at the end if the math isn't perfect
                 const trackWidth = track.scrollWidth;
                 const viewWidth = view.offsetWidth;
                 const maxTranslate = -(trackWidth - viewWidth);
                 
-                // Only clamp translation if we are actually overflowing
                 if (trackWidth > viewWidth) {
                     if (currentTranslate < maxTranslate) {
                         currentTranslate = maxTranslate;
                     }
                 } else {
-                    currentTranslate = 0; // Content fits, no scroll needed
+                    currentTranslate = 0;
                 }
                 
                 track.style.transform = `translateX(${currentTranslate}px)`;
                 
-                // Button States
-                leftBtn.classList.toggle('disabled', currentIndex === 0 && currentTranslate === 0);
-                rightBtn.classList.toggle('disabled', currentTranslate <= maxTranslate + 5); // +5 for rounding tolerance
+                leftBtn.classList.toggle('disabled', currentTranslate >= 0);
+                rightBtn.classList.toggle('disabled', currentTranslate <= maxTranslate + 5);
             };
             
-            // --- Click Handlers ---
             leftBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 currentIndex--;
@@ -814,12 +875,9 @@
                 updateTrack();
             });
             
-            // --- Touch Swipe Support ---
             view.addEventListener('touchstart', (e) => {
                 startX = e.touches[0].clientX;
                 isDragging = true;
-                // Temporarily remove transition for direct 1:1 movement feel? 
-                // For simplicity, we will just detect swipe direction and trigger step
             }, { passive: true });
             
             view.addEventListener('touchmove', (e) => {
@@ -831,12 +889,10 @@
                 const endX = e.changedTouches[0].clientX;
                 const diff = startX - endX;
                 
-                if (Math.abs(diff) > 50) { // Threshold
+                if (Math.abs(diff) > 50) { 
                     if (diff > 0) {
-                        // Swiped Left -> Next
                         rightBtn.click();
                     } else {
-                        // Swiped Right -> Prev
                         leftBtn.click();
                     }
                 }
@@ -844,72 +900,11 @@
             }, { passive: true });
 
             
-            // Handle Resize
             window.addEventListener('resize', () => {
-                // Reset to 0 or try to maintain? Resetting is safer to prevent layout bugs
-                // currentIndex = 0; 
                 updateTrack();
             });
             
-            // Initial call
-            // Small delay to ensure DOM is painted for width calcs
             setTimeout(updateTrack, 100);
-        }
-
-        // --- CORE: HANDLES CONTENT LOADING AND OBSERVER SETUP (Unchanged) ---
-        function appendNewContent() {
-            if (allProjectsData.length === 0) return;
-
-            const { element: newBlock } = createContentBlock();
-            galleryContainer.appendChild(newBlock);
-
-            startLazyLoading(newBlock);
-
-            // Initialize manual carousel for each section in the new block
-            newBlock.querySelectorAll('.project-section').forEach(section => {
-                initManualCarousel(section);
-            });
-            
-            // Refresh icons for new buttons
-            lucide.createIcons();
-
-            const lastSection = newBlock.querySelector('.project-section:last-child');
-            if (lastSection) {
-                if (intersectionObserverAppend) {
-                    intersectionObserverAppend.disconnect();
-                }
-
-                intersectionObserverAppend = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            appendNewContent();
-                            intersectionObserverAppend.unobserve(entry.target);
-                        }
-                    });
-                }, { rootMargin: '500px' }); 
-
-                intersectionObserverAppend.observe(lastSection);
-            }
-            
-            const firstSection = newBlock.querySelector('.js-first-section');
-            if(firstSection) {
-                intersectionObserverRemove.observe(firstSection);
-            }
-        }
-
-        // --- TICKET REMOVAL/CLEANUP (Unchanged) ---
-        function setupRemovalObserver() {
-            intersectionObserverRemove = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (!entry.isIntersecting && entry.boundingClientRect.top < 0) {
-                        const blockToRemove = entry.target.closest('.gallery-block');
-                        if (blockToRemove) {
-                            blockToRemove.remove();
-                            intersectionObserverRemove.unobserve(entry.target);
-                        }
-                    }
-                });
-            }, { rootMargin: '0px 0px -200% 0px' }); 
         }
 
         // --- LAZY LOAD IMAGE HANDLING (Unchanged) ---
@@ -940,36 +935,57 @@
         }
 
         
-        // --- LIGHTBOX GLOBAL HANDLERS (Unchanged Logic, Updated Styles) ---
+        // --- LIGHTBOX GLOBAL HANDLERS (UPDATED FOR GLOBAL INDEX) ---
         
+        // New helper to set image source and update CTA
+        const showImage = (index) => {
+            const total = flatGalleryImages.length;
+            
+            if (index < 0 || index >= total) {
+                console.error("Attempted to show image out of bounds:", index);
+                return;
+            }
+
+            const image = flatGalleryImages[index];
+            lightboxImg.src = image.src;
+            
+            updateLightboxCTA(image.title || '', image.subtitle || '');
+            updateNavButtons();
+            
+            // Show CTA container if it wasn't already visible
+            if (!document.getElementById('lightbox-cta-container').classList.contains('visible')) {
+                setTimeout(() => {
+                        document.getElementById('lightbox-cta-container').classList.add('visible');
+                }, 100);
+            }
+        }
+
         const updateNavButtons = () => {
-            const total = currentLightboxImages.length;
-            // Hide/show buttons based on image count and index
+            const total = flatGalleryImages.length;
+            
             if (total <= 1) {
                 lightboxPrevBtn.style.display = 'none';
                 lightboxNextBtn.style.display = 'none';
             } else {
-                lightboxPrevBtn.style.display = 'block';
-                lightboxNextBtn.style.display = 'block';
+                // Non-looping navigation: hide buttons at boundaries
+                lightboxPrevBtn.style.display = currentImageIndex > 0 ? 'flex' : 'none';
+                lightboxNextBtn.style.display = currentImageIndex < total - 1 ? 'flex' : 'none';
             }
         };
 
         const closeLightbox = () => {
             lightbox.classList.remove('active');
-            // Remove CTA visible class
             document.getElementById('lightbox-cta-container').classList.remove('visible');
-            // Re-enable keyboard scroll after closing
+            // MODIFIED: We still need to remove the keydown listener when closing, 
+            // even though the Escape key functionality was removed from it.
             document.removeEventListener('keydown', handleLightboxKeyboardNav);
         };
         
-        // NEW Helper: Determine CTA Text
         function updateLightboxCTA(title, subtitle) {
             const text = (title + " " + subtitle).toLowerCase();
             const btn = document.getElementById('lightbox-cta-btn');
             
             // Logic for "most expensive" service priority
-            // Priority: PPF > Wrap > Coating > Tint
-            
             if (text.includes('ppf') || text.includes('protection film') || text.includes('clear bra')) {
                 btn.textContent = "Get a PPF Quote";
             } else if (text.includes('wrap') || text.includes('vinyl') || text.includes('color change')) {
@@ -984,47 +1000,29 @@
         }
 
         // Global function to open lightbox (called from onclick in generated HTML)
-        window.openLightbox = (src, imageUrlsString, initialIndex, title, subtitle) => {
-            // Parse image URLs from the string attribute
-            currentLightboxImages = imageUrlsString.split('|');
-            currentImageIndex = initialIndex;
-
-            lightboxImg.src = src;
+        window.openLightbox = (globalIndex) => {
+            currentImageIndex = globalIndex;
+            showImage(currentImageIndex);
             lightbox.classList.add('active');
-            updateNavButtons();
-            
-            // Update CTA text
-            updateLightboxCTA(title || '', subtitle || '');
-            
-            // Trigger Fade In for CTA after a small delay
-            setTimeout(() => {
-                 document.getElementById('lightbox-cta-container').classList.add('visible');
-            }, 100);
-            
-            // Add keyboard navigation handler
             document.addEventListener('keydown', handleLightboxKeyboardNav);
         };
 
         window.navigateLightbox = (direction) => {
-            const total = currentLightboxImages.length;
-            if (total === 0) return;
-
-            // Calculate new index (circular navigation)
+            const total = flatGalleryImages.length;
             let newIndex = currentImageIndex + direction;
-            if (newIndex < 0) {
-                newIndex = total - 1; // Loop back to the end
-            } else if (newIndex >= total) {
-                newIndex = 0; // Loop back to the start
-            }
 
+            if (newIndex < 0 || newIndex >= total) {
+                // Stop navigation at boundaries (non-looping)
+                return; 
+            }
+            
             currentImageIndex = newIndex;
-            lightboxImg.src = currentLightboxImages[currentImageIndex];
+            showImage(currentImageIndex);
         };
 
         const handleLightboxKeyboardNav = (e) => {
-            if (e.key === 'Escape') {
-                closeLightbox();
-            } else if (e.key === 'ArrowLeft') {
+            // MODIFIED: Removed Escape key closure logic as requested.
+            if (e.key === 'ArrowLeft') {
                 e.preventDefault();
                 navigateLightbox(-1);
             } else if (e.key === 'ArrowRight') {
@@ -1034,12 +1032,17 @@
         };
 
         lightboxClose.addEventListener('click', closeLightbox);
+        
+        // MODIFIED: Removed the event listener on the lightbox background.
+        // This prevents closure via clicking outside the image or via the lightbox background.
+        /*
         lightbox.addEventListener('click', (e) => {
             // Close if clicking outside the image or navigation buttons
             if (e.target === lightbox || e.target === lightboxClose) closeLightbox();
         });
+        */
         
-        // --- FETCH & INIT GALLERY (Unchanged) ---
+        // --- FETCH & INIT GALLERY ---
         async function initGallery() {
             try {
                 const fetchWithRetry = async (url, retries = 3, delay = 1000) => {
@@ -1061,8 +1064,19 @@
                     allProjectsData = data.gallery_projects;
                     galleryContainer.innerHTML = ''; 
 
-                    setupRemovalObserver();
-                    appendNewContent();
+                    // --- RENDER ALL CONTENT AT ONCE ---
+                    const contentBlock = generateAllGalleryHTML(allProjectsData);
+                    galleryContainer.appendChild(contentBlock);
+                    
+                    // Initialize carousels and lazy loading for the entire content block
+                    contentBlock.querySelectorAll('.project-section').forEach(section => {
+                        initManualCarousel(section);
+                    });
+                    startLazyLoading(contentBlock);
+
+                    // Refresh icons for new buttons
+                    lucide.createIcons();
+
                 } else {
                     galleryContainer.innerHTML = '<div class="text-center py-20 text-red-500">Error loading projects. No data found.</div>';
                 }
