@@ -375,7 +375,7 @@
     
     @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-    /* --- LIGHTBOX STYLES (Unchanged) --- */
+    /* --- LIGHTBOX STYLES (MODIFIED) --- */
     #lightbox {
         position: fixed; inset: 0; z-index: 10000;
         background: rgba(0,0,0,0.95); backdrop-filter: blur(15px);
@@ -397,7 +397,7 @@
     #lightbox-img {
         max-width: 100%; 
         max-height: 100%;
-        object-fit: contain;
+        /* REMOVED: object-fit: contain; to allow height/width overrides */
         border: 1px solid var(--color-border);
         box-shadow: 0 0 50px rgba(0,0,0,0.8);
         transform: scale(0.95); 
@@ -407,6 +407,17 @@
         -webkit-user-drag: none;
         /* END: Fix to disable image highlighting/selection on double-click */
     }
+    
+    /* NEW: Dynamic scaling classes for aspect ratio matching the bounds of .lightbox-content (90vw/90vh) */
+    #lightbox-img.scale-portrait {
+        width: auto !important;
+        height: 100% !important; /* Scales height to 90vh */
+    }
+    #lightbox-img.scale-landscape {
+        width: 100% !important;
+        height: auto !important; /* Scales width to 90vw */
+    }
+    
     #lightbox.active #lightbox-img { 
         transform: scale(1); 
     }
@@ -1025,7 +1036,7 @@
         }
 
         
-        // --- LIGHTBOX GLOBAL HANDLERS (UPDATED FOR GLOBAL INDEX) ---
+        // --- LIGHTBOX GLOBAL HANDLERS (UPDATED FOR DYNAMIC SCALING) ---
         
         // New helper to set image source and update CTA
         const showImage = (index) => {
@@ -1041,6 +1052,36 @@
             
             updateLightboxCTA(image.title || '', image.subtitle || '');
             updateNavButtons();
+            
+            // --- NEW DYNAMIC SCALING LOGIC ---
+            
+            // 1. Clear previous scaling classes
+            lightboxImg.classList.remove('scale-portrait', 'scale-landscape'); 
+            
+            // 2. Define logic to apply new scaling class based on natural aspect ratio (AR)
+            const applyScaling = () => {
+                if (lightboxImg.naturalWidth && lightboxImg.naturalHeight) {
+                    const aspectRatio = lightboxImg.naturalWidth / lightboxImg.naturalHeight;
+                    // AR < 1 means portrait (taller than wide), prioritize height
+                    if (aspectRatio < 1) { 
+                        lightboxImg.classList.add('scale-portrait');
+                    } else { // AR >= 1 means landscape or square, prioritize width
+                        lightboxImg.classList.add('scale-landscape');
+                    }
+                } else {
+                    // Fallback in case dimensions are not immediately available
+                    lightboxImg.classList.add('scale-landscape');
+                }
+            };
+            
+            // 3. Attach handler for when the image is fully loaded
+            lightboxImg.onload = applyScaling;
+            
+            // 4. Handle images already in cache (onload might not fire)
+            if (lightboxImg.complete) {
+                applyScaling();
+            }
+            // --- END NEW DYNAMIC SCALING LOGIC ---
             
             // Show CTA container if it wasn't already visible
             if (!document.getElementById('lightbox-cta-container').classList.contains('visible')) {
@@ -1069,9 +1110,9 @@
         const closeLightbox = () => {
             lightbox.classList.remove('active');
             document.getElementById('lightbox-cta-container').classList.remove('visible');
-            // MODIFIED: We still need to remove the keydown listener when closing, 
-            // even though the Escape key functionality was removed from it.
             document.removeEventListener('keydown', handleLightboxKeyboardNav);
+            // NEW: Clear scaling classes on close
+            lightboxImg.classList.remove('scale-portrait', 'scale-landscape');
         };
         
         function updateLightboxCTA(title, subtitle) {
@@ -1129,7 +1170,6 @@
         lightboxClose.addEventListener('click', closeLightbox);
         
         // MODIFIED: Removed the event listener on the lightbox background.
-        // This prevents closure via clicking outside the image or navigation buttons.
         /*
         lightbox.addEventListener('click', (e) => {
             // Close if clicking outside the image or navigation buttons
