@@ -74,6 +74,12 @@
         text-decoration: none; cursor: pointer; transition: all 0.2s ease;
         background-color: #FFFFFF; color: #000000; border: none;
         clip-path: polygon(0 0, 100% 0, 100% 100%, 12px 100%, 0 70%); line-height: 1;
+        /* START: Added to disable text selection on buttons */
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        /* END: Added to disable text selection on buttons */
     }
     .btn-wikd:hover { background-color: #EAEAEA; transform: translateY(-1px); }
 
@@ -194,12 +200,6 @@
     }
     .project-section:last-child { margin-bottom: 0; }
 
-    .project-header {
-        display: flex; justify-content: space-between; align-items: flex-end;
-        margin-bottom: 2rem; padding: 0 5%; flex-wrap: wrap; gap: 1rem;
-        position: relative; z-index: 10; 
-    }
-    
     /* --- CAROUSEL STYLES --- */
     .ticker-view {
         overflow: hidden; 
