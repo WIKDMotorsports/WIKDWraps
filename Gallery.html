@@ -412,8 +412,8 @@
     }
     
     /* MODIFIED LIGHTBOX CLOSE BUTTON
-     * New style to adopt the .btn-wikd custom geometry and match its height (36px)
-     * The position (top: 1rem; right: 1rem;) ensures alignment over the main nav button.
+     * Reduced contrast by changing the background to semi-transparent dark gray
+     * with a light border, and using light text.
      */
     .lightbox-close {
         /* Positioning (Retained) */
@@ -429,32 +429,31 @@
         height: 36px;
         padding: 0 1.5rem;
         
-        /* Custom Geometry & Background (From .btn-wikd) */
-        background-color: #FFFFFF; 
-        color: #000000;
+        /* Custom Geometry & Background (MODIFIED) */
+        background-color: rgba(17, 17, 17, 0.6); /* Semi-transparent dark gray */
+        color: var(--color-text); /* Light text color */
         clip-path: polygon(0 0, 100% 0, 100% 100%, 12px 100%, 0 70%);
-        border: none;
+        border: 1px solid var(--color-border); /* Subtle border */
         line-height: 1;
-        opacity: 1; 
+        opacity: 0.8; 
 
         /* Typography (From .btn-wikd) */
         font-family: var(--font-heading); 
-        font-size: 14px; /* Changed from 0.9rem to 14px */
-        font-weight: 800; /* Changed from 400/500 */
+        font-size: 14px; 
+        font-weight: 800; 
         text-transform: uppercase;
         letter-spacing: 0.05em;
         
         /* Shadow for prominence */
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
-        
-        /* Removed old rules: opacity: 0.8; border-radius: 4px; background-color: rgba(17, 17, 17, 0.5); */
     }
     
-    /* New hover state (Matching .btn-wikd hover) */
+    /* New hover state (MODIFIED to use primary red border/text) */
     .lightbox-close:hover { 
-        background-color: #EAEAEA; 
+        background-color: rgba(17, 17, 17, 0.9); /* Slightly more opaque dark background on hover */
         transform: translateY(-1px);
-        color: #000000;
+        color: var(--color-primary); /* Primary red text on hover */
+        border-color: var(--color-primary); /* Primary red border on hover */
         opacity: 1; 
     }
 
@@ -472,7 +471,7 @@
         width: max-content;
         
         display: flex; 
-        gap: 0.75rem;    
+        gap: 0.75rem;     
         align-items: center;
     }
     
