@@ -387,8 +387,9 @@
     
     .lightbox-content {
         position: relative;
-        max-width: 90vw; 
-        max-height: 90vh;
+        /* Removed fixed max-width/height to allow w-full/h-full from Tailwind classes */
+        /* max-width: 90vw; */ 
+        /* max-height: 90vh; */
         display: flex; 
         justify-content: center; 
         align-items: center;
@@ -427,7 +428,7 @@
       * with a light border, and using light text.
       */
     .lightbox-close {
-        /* Positioning (Retained) */
+        /* Positioning relative to the new constrained wrapper */
         position: absolute; top: 1rem; right: 1rem;
         cursor: pointer;
         z-index: 10001;
@@ -570,29 +571,34 @@
 
     <!-- Lightbox Component with Navigation -->
     <div id="lightbox">
-        <!-- MODIFIED: Removed [ESC] text since the keyboard shortcut is disabled -->
-        <div class="lightbox-close">CLOSE</div>
-
-        <div class="lightbox-content">
-            <img id="lightbox-img" src="" alt="Full View">
-        </div>
-        
-        <!-- CTA Container now hosts the inline navigation buttons -->
-        <div id="lightbox-cta-container" class="lightbox-cta-container">
-            <!-- #lightbox-prev will use the left-cut clip-path via its ID -->
-            <button id="lightbox-prev" class="lightbox-nav" onclick="navigateLightbox(-1)">
-                <i data-lucide="chevron-left" class="w-8 h-8"></i>
-            </button>
+        <!-- NEW WRAPPER: Constrains all internal lightbox elements to match the max-width of the navbar -->
+        <div class="max-w-[1400px] mx-auto h-full relative px-4 pointer-events-none">
             
-            <!-- CTA Button is now a normal rectangle via the modified .lightbox-btn class, and is red -->
-            <a href="https://wikdwraps.com/pages/estimate-configurator" id="lightbox-cta-btn" class="btn-wikd lightbox-btn">
-                GET AN INSTANT QUOTE
-            </a>
+            <!-- Close button positioning is now relative to this contained wrapper -->
+            <div class="lightbox-close pointer-events-auto">CLOSE</div>
 
-            <!-- #lightbox-next will use the right-cut clip-path via its ID -->
-            <button id="lightbox-next" class="lightbox-nav" onclick="navigateLightbox(1)">
-                <i data-lucide="chevron-right" class="w-8 h-8"></i>
-            </button>
+            <!-- Lightbox Content fills the wrapper area -->
+            <div class="lightbox-content w-full h-full flex justify-center items-center pointer-events-auto">
+                <img id="lightbox-img" src="" alt="Full View">
+            </div>
+            
+            <!-- CTA Container now hosts the inline navigation buttons, centered within the wrapper -->
+            <div id="lightbox-cta-container" class="lightbox-cta-container pointer-events-auto">
+                <!-- #lightbox-prev will use the left-cut clip-path via its ID -->
+                <button id="lightbox-prev" class="lightbox-nav" onclick="navigateLightbox(-1)">
+                    <i data-lucide="chevron-left" class="w-8 h-8"></i>
+                </button>
+                
+                <!-- CTA Button is now a normal rectangle via the modified .lightbox-btn class, and is red -->
+                <a href="https://wikdwraps.com/pages/estimate-configurator" id="lightbox-cta-btn" class="btn-wikd lightbox-btn">
+                    GET AN INSTANT QUOTE
+                </a>
+
+                <!-- #lightbox-next will use the right-cut clip-path via its ID -->
+                <button id="lightbox-next" class="lightbox-nav" onclick="navigateLightbox(1)">
+                    <i data-lucide="chevron-right" class="w-8 h-8"></i>
+                </button>
+            </div>
         </div>
     </div>
 
