@@ -187,8 +187,8 @@
         z-index: -1; pointer-events: none;
     }
 
-    main { padding-top: 8rem; min-height: 80vh; }
-
+    /* REMOVED original main block - styles moved inline on <main> tag for layout control */
+    
     /* --- PROJECT SECTIONS & GALLERY STYLES --- */
     .project-section {
         margin-bottom: 2rem; 
@@ -313,7 +313,7 @@
         opacity: 0;
         transform: translateY(10px);
         /* FIX: Override slow inherited transition (0.5s) with a fast exit (0.15s) 
-           and ensure visibility switches immediately after the fade (delay 0.15s) */
+            and ensure visibility switches immediately after the fade (delay 0.15s) */
         transition: opacity 0.15s ease-out, transform 0.15s ease-out, visibility 0s 0.15s;
     }
     /* ============================================================= */
@@ -379,15 +379,31 @@
     #lightbox {
         position: fixed; inset: 0; z-index: 10000;
         background: rgba(0,0,0,0.95); backdrop-filter: blur(15px);
-        display: flex; justify-content: center; align-items: center;
+        /* MODIFIED: Centering is now handled by inner wrapper, so this is display: block */
+        display: block; 
         opacity: 0; pointer-events: none;
         transition: opacity 0.3s ease;
     }
     #lightbox.active { opacity: 1; pointer-events: all; }
+
+    /* NEW: Wrapper to align content and controls to 1400px max-width */
+    .lightbox-content-aligner {
+        position: relative; /* For absolutely positioned children */
+        width: 100%;
+        max-width: 1400px; /* Constrain to 1400px, matching navbar */
+        height: 100vh;
+        margin: 0 auto; /* Center the container */
+        display: flex; /* Re-enable flex to center image inside the 1400px box */
+        justify-content: center;
+        align-items: center;
+        padding: 4rem 1rem; /* Add padding for image/controls safety on mobile/edges */
+        box-sizing: border-box;
+    }
     
     .lightbox-content {
         position: relative;
-        max-width: 90vw; 
+        /* MODIFIED: Max width is controlled by the parent aligner now, but clamp to max 90% of aligner width */
+        max-width: 90vw;
         max-height: 90vh;
         display: flex; 
         justify-content: center; 
@@ -423,12 +439,11 @@
     }
     
     /* MODIFIED LIGHTBOX CLOSE BUTTON
-     * Reduced contrast by changing the background to semi-transparent dark gray
-     * with a light border, and using light text.
+     * The positioning (top/right) is now handled via inline styles on the element relative to its new parent.
      */
     .lightbox-close {
-        /* Positioning (Retained) */
-        position: absolute; top: 1rem; right: 1rem;
+        /* Positioning (Retained) - Must keep position: absolute for z-index stack, but removed top/right values. */
+        position: absolute; 
         cursor: pointer;
         z-index: 10001;
         transition: all 0.2s ease;
@@ -570,29 +585,33 @@
 
     <!-- Lightbox Component with Navigation -->
     <div id="lightbox">
-        <!-- MODIFIED: Removed [ESC] text since the keyboard shortcut is disabled -->
-        <div class="lightbox-close">CLOSE</div>
-
-        <div class="lightbox-content">
-            <img id="lightbox-img" src="" alt="Full View">
-        </div>
-        
-        <!-- CTA Container now hosts the inline navigation buttons -->
-        <div id="lightbox-cta-container" class="lightbox-cta-container">
-            <!-- #lightbox-prev will use the left-cut clip-path via its ID -->
-            <button id="lightbox-prev" class="lightbox-nav" onclick="navigateLightbox(-1)">
-                <i data-lucide="chevron-left" class="w-8 h-8"></i>
-            </button>
+        <!-- NEW: Wrapper to constrain all lightbox content (image + controls) to 1400px max width and center it -->
+        <div class="lightbox-content-aligner">
             
-            <!-- CTA Button is now a normal rectangle via the modified .lightbox-btn class, and is red -->
-            <a href="https://wikdwraps.com/pages/estimate-configurator" id="lightbox-cta-btn" class="btn-wikd lightbox-btn">
-                GET AN INSTANT QUOTE
-            </a>
+            <!-- CLOSE Button: Positioned relative to the lightbox-content-aligner's top/right -->
+            <div class="lightbox-close" style="position: absolute; top: 1rem; right: 1rem; pointer-events: auto;">CLOSE</div>
 
-            <!-- #lightbox-next will use the right-cut clip-path via its ID -->
-            <button id="lightbox-next" class="lightbox-nav" onclick="navigateLightbox(1)">
-                <i data-lucide="chevron-right" class="w-8 h-8"></i>
-            </button>
+            <div class="lightbox-content">
+                <img id="lightbox-img" src="" alt="Full View">
+            </div>
+            
+            <!-- CTA Container: Centered via left: 50% / transform: translateX(-50%) relative to the lightbox-content-aligner -->
+            <div id="lightbox-cta-container" class="lightbox-cta-container" style="pointer-events: auto;">
+                <!-- #lightbox-prev will use the left-cut clip-path via its ID -->
+                <button id="lightbox-prev" class="lightbox-nav" onclick="navigateLightbox(-1)">
+                    <i data-lucide="chevron-left" class="w-8 h-8"></i>
+                </button>
+                
+                <!-- CTA Button is now a normal rectangle via the modified .lightbox-btn class, and is red -->
+                <a href="https://wikdwraps.com/pages/estimate-configurator" id="lightbox-cta-btn" class="btn-wikd lightbox-btn">
+                    GET AN INSTANT QUOTE
+                </a>
+
+                <!-- #lightbox-next will use the right-cut clip-path via its ID -->
+                <button id="lightbox-next" class="lightbox-nav" onclick="navigateLightbox(1)">
+                    <i data-lucide="chevron-right" class="w-8 h-8"></i>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -716,9 +735,13 @@
     </nav>
     <!-- End Nav -->
 
-    <main id="gallery-container">
-        <div class="text-center w-full py-20 text-gray-500 font-heading text-lg tracking-widest animate-pulse">
-            LOADING GALLERY...
+    <!-- Main Content Area: Use inline styles for spacing and wrap content for max-width constraint -->
+    <main class="w-full relative" style="padding-top: 8rem; min-height: 80vh;">
+        <!-- NEW: Inject the max-width container, matching the nav's width and padding, targeting JS to the inner div -->
+        <div id="gallery-container" class="max-w-[1400px] mx-auto px-4">
+            <div class="text-center w-full py-20 text-gray-500 font-heading text-lg tracking-widest animate-pulse">
+                LOADING GALLERY...
+            </div>
         </div>
     </main>
 
