@@ -382,180 +382,146 @@
     
     @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-    /* --- LIGHTBOX STYLES (MODIFIED) --- */
+    /* --- LIGHTBOX STYLES (CRITICALLY FIXED FOR MAXIMIZATION) --- */
     #lightbox {
         position: fixed; inset: 0; z-index: 10000;
         background: rgba(0,0,0,0.95); backdrop-filter: blur(15px);
-        /* MODIFIED: Centering is now handled by inner wrapper, so this is display: block */
         display: block; 
         opacity: 0; pointer-events: none;
         transition: opacity 0.3s ease;
     }
     #lightbox.active { opacity: 1; pointer-events: all; }
 
-    /* NEW: Wrapper to align content and controls to 1400px max-width */
+    /* CRITICAL FIX: The Wrapper */
+    /* By using 100dvh we respect mobile browser bars. 
+       By removing the 4rem padding, we allow the image to use the full height. */
     .lightbox-content-aligner {
-        position: relative; /* For absolutely positioned children */
+        position: relative;
         width: 100%;
-        max-width: 1400px; /* Constrain to 1400px, matching navbar */
+        max-width: 1400px;
+        /* Use dvh for better mobile support, fallback to vh */
         height: 100vh;
-        margin: 0 auto; /* Center the container */
-        display: flex; /* Re-enable flex to center image inside the 1400px box */
+        height: 100dvh; 
+        margin: 0 auto;
+        display: flex;
         justify-content: center;
         align-items: center;
-        padding: 4rem 1rem; /* Add padding for image/controls safety on mobile/edges */
+        /* Padding removed to ensure full-bleed capability within the 1400px container.
+           We add a tiny safety buffer on width so it doesn't touch the exact edge on mobile. */
+        padding: 0 0.5rem; 
         box-sizing: border-box;
     }
     
     .lightbox-content {
         position: relative;
-        /* MODIFIED: Max width is controlled by the parent aligner now, but clamp to max 90% of aligner width */
-        max-width: 90vw;
-        max-height: 90vh;
+        /* Force the content box to fill the aligner completely */
+        width: 100%;
+        height: 100%;
         display: flex; 
         justify-content: center; 
         align-items: center;
+        /* Ensure no overflow clips the shadows, but contain the image */
+        overflow: hidden; 
     }
     
     #lightbox-img {
-        max-width: 100%; 
-        max-height: 100%;
-        /* REMOVED: object-fit: contain; to allow height/width overrides */
-        border: 1px solid var(--color-border);
+        /* CRITICAL FIX:
+           object-fit: contain ensures the image is never cropped.
+           width/height: 100% ensures it expands to hit the boundaries of the parent
+           (which is now the full 1400px/100vh container). */
+        width: 100%; 
+        height: 100%; 
+        object-fit: contain; 
+        max-width: none; /* Remove conflicting max-widths */
+        max-height: none;
+        
+        border: none; /* Remove border as it messes with exact edge calculations sometimes */
         box-shadow: 0 0 50px rgba(0,0,0,0.8);
         transform: scale(0.95); 
         transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-        /* START: Fix to disable image highlighting/selection on double-click */
         user-select: none;
         -webkit-user-drag: none;
-        /* END: Fix to disable image highlighting/selection on double-click */
-    }
-    
-    /* NEW: Dynamic scaling classes for aspect ratio matching the bounds of .lightbox-content (90vw/90vh) */
-    #lightbox-img.scale-portrait {
-        width: auto !important;
-        height: 100% !important; /* Scales height to 90vh */
-    }
-    #lightbox-img.scale-landscape {
-        width: 100% !important;
-        height: auto !important; /* Scales width to 90vw */
     }
     
     #lightbox.active #lightbox-img { 
         transform: scale(1); 
     }
     
-    /* MODIFIED LIGHTBOX CLOSE BUTTON
-     * The positioning (top/right) is now handled via inline styles on the element relative to its new parent.
-     */
+    /* MODIFIED LIGHTBOX CLOSE BUTTON */
     .lightbox-close {
-        /* Positioning (Retained) - Must keep position: absolute for z-index stack, but removed top/right values. */
         position: absolute; 
         cursor: pointer;
         z-index: 10001;
         transition: all 0.2s ease;
-        
-        /* Dimensions & Layout (Matching .btn-wikd: 36px height) */
         display: flex; 
         align-items: center; 
         justify-content: center;
         height: 36px;
         padding: 0 1.5rem;
-        
-        /* Custom Geometry & Background (MODIFIED) */
-        background-color: rgba(17, 17, 17, 0.6); /* Semi-transparent dark gray */
-        color: var(--color-text); /* Light text color */
+        background-color: rgba(17, 17, 17, 0.6); 
+        color: var(--color-text); 
         clip-path: polygon(0 0, 100% 0, 100% 100%, 12px 100%, 0 70%);
-        border: 1px solid var(--color-border); /* Subtle border */
+        border: 1px solid var(--color-border);
         line-height: 1;
         opacity: 0.8; 
-
-        /* Typography (From .btn-wikd) */
         font-family: var(--font-heading); 
         font-size: 14px; 
         font-weight: 800; 
         text-transform: uppercase;
         letter-spacing: 0.05em;
-        
-        /* Shadow for prominence */
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
     }
     
-    /* New hover state (MODIFIED to use primary red border/text) */
     .lightbox-close:hover { 
-        background-color: rgba(17, 17, 17, 0.9); /* Slightly more opaque dark background on hover */
+        background-color: rgba(17, 17, 17, 0.9);
         transform: translateY(-1px);
-        color: var(--color-primary); /* Primary red text on hover */
-        border-color: var(--color-primary); /* Primary red border on hover */
+        color: var(--color-primary); 
+        border-color: var(--color-primary); 
         opacity: 1; 
     }
 
     
-    /* --- NEW LIGHTBOX CTA STYLES (MODIFIED to be rectangular) --- */
+    /* --- NEW LIGHTBOX CTA STYLES --- */
     .lightbox-cta-container {
         position: absolute;
-        bottom: 2rem;
+        bottom: 2rem; /* Positioned near bottom, sits on TOP of image if image is full height */
         left: 50%;
-        /* MODIFIED: Removed transform: translateY(20px), opacity: 0, and transition to stage children */
         transform: translateX(-50%); 
         opacity: 1; 
         transition: none;
         z-index: 10002;
         width: max-content;
-        
         display: flex; 
-        gap: 0.75rem;     
+        gap: 0.75rem;      
         align-items: center;
     }
     
-    /* * NEW STAGGERED ANIMATION LOGIC 
-     * The container is now only for layout; the children (CTA and Nav buttons) handle their own animation.
-     */
     .lightbox-cta-container > * {
-        /* Initial hidden state for both CTA and Nav buttons */
         opacity: 0;
         transform: translateY(10px);
-        /* Base transition: 0.5s duration, no delay by default (for CTA) */
         transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .lightbox-cta-container.visible > * {
-        /* Final visible state */
         opacity: 1;
         transform: translateY(0);
     }
 
-    /* Apply staggered delay to navigation buttons ONLY */
     .lightbox-nav {
-        /* Override base transition to add a delay, causing them to load 0.2s after the CTA */
         transition-delay: 0.2s; 
     }
 
-    /* .lightbox-btn inherits the 0s delay from .lightbox-cta-container > * */
-    
-    .lightbox-cta-container.visible {
-        /* This class is now primarily a trigger for the children's transitions */
-        transform: translateX(-50%);
-        opacity: 1;
-    }
-    
     .lightbox-btn {
-        /* START: Changes for Red Primary CTA */
         background-color: var(--color-primary) !important;
         color: white !important;
         border: 1px solid var(--color-primary); 
-        /* END: Changes for Red Primary CTA */
-        
-        /* MODIFIED SHADOW: Normal black drop shadow, matching the navigation buttons */
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
-        /* 1. Make center CTA a normal rectangle */
         clip-path: none !important;
-        border-radius: 0; /* Removed rounded corners */
+        border-radius: 0; 
     }
     
-    /* New hover style for the red CTA to contrast */
     .lightbox-btn:hover {
-        background-color: #D6342A !important; /* Slightly darker red */
+        background-color: #D6342A !important; 
         border-color: #D6342A !important;
     }
 
@@ -1066,7 +1032,7 @@
         }
 
         
-        // --- LIGHTBOX GLOBAL HANDLERS (UPDATED FOR DYNAMIC SCALING) ---
+        // --- LIGHTBOX GLOBAL HANDLERS (CLEANED UP FOR PURE CSS SCALING) ---
         
         // New helper to set image source and update CTA
         const showImage = (index) => {
@@ -1083,35 +1049,9 @@
             updateLightboxCTA(image.title || '', image.subtitle || '');
             updateNavButtons();
             
-            // --- NEW DYNAMIC SCALING LOGIC ---
-            
-            // 1. Clear previous scaling classes
-            lightboxImg.classList.remove('scale-portrait', 'scale-landscape'); 
-            
-            // 2. Define logic to apply new scaling class based on natural aspect ratio (AR)
-            const applyScaling = () => {
-                if (lightboxImg.naturalWidth && lightboxImg.naturalHeight) {
-                    const aspectRatio = lightboxImg.naturalWidth / lightboxImg.naturalHeight;
-                    // AR < 1 means portrait (taller than wide), prioritize height
-                    if (aspectRatio < 1) { 
-                        lightboxImg.classList.add('scale-portrait');
-                    } else { // AR >= 1 means landscape or square, prioritize width
-                        lightboxImg.classList.add('scale-landscape');
-                    }
-                } else {
-                    // Fallback in case dimensions are not immediately available
-                    lightboxImg.classList.add('scale-landscape');
-                }
-            };
-            
-            // 3. Attach handler for when the image is fully loaded
-            lightboxImg.onload = applyScaling;
-            
-            // 4. Handle images already in cache (onload might not fire)
-            if (lightboxImg.complete) {
-                applyScaling();
-            }
-            // --- END NEW DYNAMIC SCALING LOGIC ---
+            // --- REMOVED JS DYNAMIC SCALING LOGIC ---
+            // The image scaling is now handled purely by CSS using object-fit: contain.
+            // We no longer need to check aspect ratio and apply classes here.
             
             // Show CTA container if it wasn't already visible
             if (!document.getElementById('lightbox-cta-container').classList.contains('visible')) {
@@ -1141,8 +1081,7 @@
             lightbox.classList.remove('active');
             document.getElementById('lightbox-cta-container').classList.remove('visible');
             document.removeEventListener('keydown', handleLightboxKeyboardNav);
-            // NEW: Clear scaling classes on close
-            lightboxImg.classList.remove('scale-portrait', 'scale-landscape');
+            // OLD LOGIC REMOVED: NEW: Clear scaling classes on close
         };
         
         function updateLightboxCTA(title, subtitle) {
