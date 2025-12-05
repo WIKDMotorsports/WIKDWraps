@@ -387,9 +387,8 @@
     
     .lightbox-content {
         position: relative;
-        /* Removed fixed max-width/height to allow w-full/h-full from Tailwind classes */
-        /* max-width: 90vw; */ 
-        /* max-height: 90vh; */
+        max-width: 90vw; 
+        max-height: 90vh;
         display: flex; 
         justify-content: center; 
         align-items: center;
@@ -424,11 +423,11 @@
     }
     
     /* MODIFIED LIGHTBOX CLOSE BUTTON
-      * Reduced contrast by changing the background to semi-transparent dark gray
-      * with a light border, and using light text.
-      */
+     * Reduced contrast by changing the background to semi-transparent dark gray
+     * with a light border, and using light text.
+     */
     .lightbox-close {
-        /* Positioning relative to the new constrained wrapper */
+        /* Positioning (Retained) */
         position: absolute; top: 1rem; right: 1rem;
         cursor: pointer;
         z-index: 10001;
@@ -488,8 +487,8 @@
     }
     
     /* * NEW STAGGERED ANIMATION LOGIC 
-      * The container is now only for layout; the children (CTA and Nav buttons) handle their own animation.
-      */
+     * The container is now only for layout; the children (CTA and Nav buttons) handle their own animation.
+     */
     .lightbox-cta-container > * {
         /* Initial hidden state for both CTA and Nav buttons */
         opacity: 0;
@@ -571,34 +570,29 @@
 
     <!-- Lightbox Component with Navigation -->
     <div id="lightbox">
-        <!-- NEW WRAPPER: Constrains all internal lightbox elements to match the max-width of the navbar -->
-        <div class="max-w-[1400px] mx-auto h-full relative px-4 pointer-events-none">
-            
-            <!-- Close button positioning is now relative to this contained wrapper -->
-            <div class="lightbox-close pointer-events-auto">CLOSE</div>
+        <!-- MODIFIED: Removed [ESC] text since the keyboard shortcut is disabled -->
+        <div class="lightbox-close">CLOSE</div>
 
-            <!-- Lightbox Content fills the wrapper area -->
-            <div class="lightbox-content w-full h-full flex justify-center items-center pointer-events-auto">
-                <img id="lightbox-img" src="" alt="Full View">
-            </div>
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="" alt="Full View">
+        </div>
+        
+        <!-- CTA Container now hosts the inline navigation buttons -->
+        <div id="lightbox-cta-container" class="lightbox-cta-container">
+            <!-- #lightbox-prev will use the left-cut clip-path via its ID -->
+            <button id="lightbox-prev" class="lightbox-nav" onclick="navigateLightbox(-1)">
+                <i data-lucide="chevron-left" class="w-8 h-8"></i>
+            </button>
             
-            <!-- CTA Container now hosts the inline navigation buttons, centered within the wrapper -->
-            <div id="lightbox-cta-container" class="lightbox-cta-container pointer-events-auto">
-                <!-- #lightbox-prev will use the left-cut clip-path via its ID -->
-                <button id="lightbox-prev" class="lightbox-nav" onclick="navigateLightbox(-1)">
-                    <i data-lucide="chevron-left" class="w-8 h-8"></i>
-                </button>
-                
-                <!-- CTA Button is now a normal rectangle via the modified .lightbox-btn class, and is red -->
-                <a href="https://wikdwraps.com/pages/estimate-configurator" id="lightbox-cta-btn" class="btn-wikd lightbox-btn">
-                    GET AN INSTANT QUOTE
-                </a>
+            <!-- CTA Button is now a normal rectangle via the modified .lightbox-btn class, and is red -->
+            <a href="https://wikdwraps.com/pages/estimate-configurator" id="lightbox-cta-btn" class="btn-wikd lightbox-btn">
+                GET AN INSTANT QUOTE
+            </a>
 
-                <!-- #lightbox-next will use the right-cut clip-path via its ID -->
-                <button id="lightbox-next" class="lightbox-nav" onclick="navigateLightbox(1)">
-                    <i data-lucide="chevron-right" class="w-8 h-8"></i>
-                </button>
-            </div>
+            <!-- #lightbox-next will use the right-cut clip-path via its ID -->
+            <button id="lightbox-next" class="lightbox-nav" onclick="navigateLightbox(1)">
+                <i data-lucide="chevron-right" class="w-8 h-8"></i>
+            </button>
         </div>
     </div>
 
@@ -849,8 +843,7 @@
 
                     finalProjectHTML.push(`
                         <section class="project-section">
-                            <!-- ADDED: max-w-[1400px] mx-auto px-4 mb-4 to align header with navbar content -->
-                            <div class="project-header max-w-[1400px] mx-auto px-4 mb-4">
+                            <div class="project-header">
                                 <div>
                                     <h2 class="text-3xl md:text-5xl text-white font-heading mb-1">${title}</h2>
                                     <p class="text-muted text-lg tracking-wide">${subtitle}</p>
@@ -894,8 +887,7 @@
 
                 mixedHtml = `
                     <section class="project-section">
-                        <!-- ADDED: max-w-[1400px] mx-auto px-4 mb-4 to align header with navbar content -->
-                        <div class="project-header max-w-[1400px] mx-auto px-4 mb-4">
+                        <div class="project-header">
                             <div>
                                 <h2 class="text-3xl md:text-5xl text-white font-heading mb-1">${title}</h2>
                                 <p class="text-muted text-lg tracking-wide">${subtitle}</p>
