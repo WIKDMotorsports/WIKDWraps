@@ -63,7 +63,7 @@
   }
 
   /* =========================================
-     HOTSPOT STYLES (CIRCLE & TRIANGLE)
+      HOTSPOT STYLES (CIRCLE & TRIANGLE)
      ========================================= */
 
   /* 1. SHARED BASE */
@@ -159,7 +159,7 @@
 
 
   /* =========================================
-     TOOLTIP STYLES
+      TOOLTIP STYLES
      ========================================= */
   .tune-tooltip {
     position: absolute; 
@@ -170,7 +170,7 @@
     box-shadow: 0 20px 40px -10px rgba(0,0,0,0.9), 0 0 0 1px rgba(0,0,0,0.5);
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.2s ease-out, transform 0.2s ease-out, visibility 0.2s; /* Standard CSS transition */
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out, visibility 0.2s;
     z-index: 9999; 
     visibility: hidden;
     transform: translateX(-50%) translateY(calc(-100% - 24px)) scale(0.95);
@@ -202,18 +202,55 @@
   .tt-title { flex-grow: 1; min-width: 0; }
   .tt-title h4 { margin: 0; font-family: var(--font-heading); font-size: 20px; font-weight: 700; text-transform: uppercase; color: #fff; line-height: 1; margin-bottom: 2px; white-space: nowrap; }
   .tt-title span { font-size: 11px; color: var(--color-text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+  
   .tt-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-  .stat-item { background: rgba(255,255,255,0.02); padding: 8px 10px; border-radius: 2px; border: 1px solid transparent; text-align: center; transition: border-color 0.3s; }
+
+  /* UPDATED STAT ITEM CONTAINER FOR FLIP */
+  .stat-item { 
+    background: rgba(255,255,255,0.02); 
+    border-radius: 2px; 
+    border: 1px solid transparent; 
+    text-align: center; 
+    transition: border-color 0.3s; 
+    position: relative; /* Essential for overlap */
+    height: 44px; /* Fixed height to prevent jumping */
+    overflow: hidden; /* Hide the sliding text */
+    cursor: help;
+  }
+  
   .tune-tooltip:hover .stat-item { border-color: rgba(255,255,255,0.05); }
+
+  /* THE TWO FACES */
+  .stat-face {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+    backface-visibility: hidden;
+  }
+
+  /* Default State */
+  .stat-face.front { opacity: 1; transform: translateY(0); }
+  .stat-face.back { opacity: 0; transform: translateY(100%); }
+
+  /* Hover State */
+  .stat-item:hover .stat-face.front { opacity: 0; transform: translateY(-100%); }
+  .stat-item:hover .stat-face.back { opacity: 1; transform: translateY(0); }
+
   .stat-val { display: block; font-family: var(--font-heading); font-size: 18px; font-weight: 700; color: var(--theme-color); line-height: 1.1; }
   .type-nano .stat-val { font-size: 20px; }
   .stat-label { font-size: 10px; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+  
   .btn-learn { display: block; width: 100%; padding: 8px; text-align: center; background: rgba(255,255,255,0.05); color: var(--color-text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; border-radius: 2px; transition: all 0.2s; font-family: var(--font-heading); font-weight: 600; box-sizing: border-box; }
   .btn-learn:hover { background: var(--theme-color); color: #000; }
+  
   .nano-chart-wrap { width: 100px; height: 40px; position: relative; flex-shrink: 0; margin-left: auto; }
   canvas { width: 100% !important; height: 100% !important; }
   .tune-bar-wrap { width: 100%; height: 4px; background: rgba(255,255,255,0.1); overflow: hidden; position: relative; margin-top: 4px; }
-  .tune-bar-fill { height: 100%; width: 0; background: var(--theme-color); box-shadow: 0 0 10px var(--theme-color); transition: width 1s cubic-bezier(0.22, 1, 0.36, 1); } /* 1s DURATION MATCHES JS */
+  .tune-bar-fill { height: 100%; width: 0; background: var(--theme-color); box-shadow: 0 0 10px var(--theme-color); transition: width 1s cubic-bezier(0.22, 1, 0.36, 1); }
 
 </style>
 </head>
@@ -240,11 +277,31 @@
 
 <script>
   const SERVICE_DATA = {
-    "ppf": { title: "Paint Protection Film", desc: "Ultimate Shield", color: "#536DFE", url: "https://wikdwraps.com/pages/paint-protection-film", iconName: "Security", iconToken: "af857f3d-6096-42d0-9f04-a9ee72f54aa4", stat1Val: "10–12 Yrs", stat1Label: "Warranty", stat2Val: "Certified", stat2Label: "Installers" },
-    "ceramic": { title: "Ceramic Coating", desc: "Liquid Glass", color: "#00E676", url: "https://wikdwraps.com/pages/ceramic-coatings", iconName: "Chemist", iconToken: "153ce80d-3f45-4dc6-b13a-40ea011dbbfe", stat1Val: "9H", stat1Label: "Hardness", stat2Val: "High", stat2Label: "Hydrophobic" },
-    "vinyl": { title: "Vinyl Wraps", desc: "Instant Transformation", color: "#FFD600", url: "https://wikdwraps.com/pages/vinyl-wraps", iconName: "Palette", iconToken: "6defc96c-bfac-4d99-bc45-98649e19863b", stat1Val: "300+", stat1Label: "Colors", stat2Val: "Custom", stat2Label: "Graphics" },
-    "tint": { title: "Window Tint", desc: "Heat Rejection", color: "#2979FF", url: "https://wikdwraps.com/pages/window-tint", iconName: "Sunglasses", iconToken: "af857f3d-6096-42d0-9f04-a9ee72f54aa4", stat1Val: "99%", stat1Label: "UV Block", stat2Val: "Lifetime", stat2Label: "Warranty" },
-    "detail": { title: "Detailing", desc: "Restore & Maintain", color: "#FF3B30", url: "https://wikdwraps.com/pages/detailing", iconName: "Mop", iconToken: "86b68190-0253-4375-8994-96f5611b9f19", stat1Val: "Clean", stat1Label: "& Seal", stat2Val: "Showroom", stat2Label: "Finish" }
+    "ppf": { 
+      title: "Paint Protection Film", desc: "Ultimate Shield", color: "#536DFE", url: "https://wikdwraps.com/pages/paint-protection-film", iconName: "Security", iconToken: "af857f3d-6096-42d0-9f04-a9ee72f54aa4", 
+      stat1: { val: "10–12 Yrs", label: "Warranty", altVal: "STEK", altLabel: "Authorized" },
+      stat2: { val: "Certified", label: "Installers", altVal: "Precision", altLabel: "Cut Patterns" }
+    },
+    "ceramic": { 
+      title: "Ceramic Coating", desc: "Liquid Glass", color: "#00E676", url: "https://wikdwraps.com/pages/ceramic-coatings", iconName: "Chemist", iconToken: "153ce80d-3f45-4dc6-b13a-40ea011dbbfe", 
+      stat1: { val: "9H", label: "Hardness", altVal: "Anti", altLabel: "Scratch" },
+      stat2: { val: "High", label: "Hydrophobic", altVal: "Self", altLabel: "Cleaning" }
+    },
+    "vinyl": { 
+      title: "Vinyl Wraps", desc: "Instant Transformation", color: "#FFD600", url: "https://wikdwraps.com/pages/vinyl-wraps", iconName: "Palette", iconToken: "6defc96c-bfac-4d99-bc45-98649e19863b", 
+      stat1: { val: "300+", label: "Colors", altVal: "Matte/Gloss", altLabel: "Finishes" },
+      stat2: { val: "Custom", label: "Graphics", altVal: "Fleet", altLabel: "Branding" }
+    },
+    "tint": { 
+      title: "Window Tint", desc: "Heat Rejection", color: "#2979FF", url: "https://wikdwraps.com/pages/window-tint", iconName: "Sunglasses", iconToken: "af857f3d-6096-42d0-9f04-a9ee72f54aa4", 
+      stat1: { val: "99%", label: "UV Block", altVal: "Max", altLabel: "IR Rejection" },
+      stat2: { val: "Lifetime", label: "Warranty", altVal: "Color", altLabel: "Stable" }
+    },
+    "detail": { 
+      title: "Detailing", desc: "Restore & Maintain", color: "#FF3B30", url: "https://wikdwraps.com/pages/detailing", iconName: "Mop", iconToken: "86b68190-0253-4375-8994-96f5611b9f19", 
+      stat1: { val: "Clean", label: "& Seal", altVal: "Deep", altLabel: "Decon" },
+      stat2: { val: "Showroom", label: "Finish", altVal: "Paint", altLabel: "Correction" }
+    }
   };
 
   const TUNING_DATA = {
@@ -390,8 +447,6 @@
       animationFrameId = requestAnimationFrame(drawStep);
   };
 
-  // Removed fadeInGradient as its logic is now merged into drawChartEased
-
   document.addEventListener("DOMContentLoaded", () => {
     const demoContainer = document.querySelector('.demo-container');
     const chartInstances = {};
@@ -419,14 +474,22 @@
         data = SERVICE_DATA[id];
         if(!data) return;
         const iconAttrs = JSON.stringify({ variationThumbColour: data.color, variationName: "Two Tone", variationNumber: 2, numberOfGroups: 2, backgroundIsGroup: false, strokeWidth: 1, defaultColours: { "group-1": data.color, "group-2": data.color, "background": "#141414" } });
+        
+        // NEW FLIP STRUCTURE
         htmlContent = `
           <div class="tt-header">
              <animated-icons src="https://animatedicons.co/get-icon?name=${data.iconName}&style=minimalistic&token=${data.iconToken}" trigger="loop" attributes='${iconAttrs.replace(/'/g, "&apos;")}' height="38" width="38"></animated-icons>
             <div class="tt-title"><h4>${data.title}</h4><span>${data.desc}</span></div>
           </div>
           <div class="tt-stats">
-            <div class="stat-item"><span class="stat-val">${data.stat1Val}</span><span class="stat-label">${data.stat1Label}</span></div>
-            <div class="stat-item"><span class="stat-val">${data.stat2Val}</span><span class="stat-label">${data.stat2Label}</span></div>
+            <div class="stat-item">
+                <div class="stat-face front"><span class="stat-val">${data.stat1.val}</span><span class="stat-label">${data.stat1.label}</span></div>
+                <div class="stat-face back"><span class="stat-val">${data.stat1.altVal}</span><span class="stat-label">${data.stat1.altLabel}</span></div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-face front"><span class="stat-val">${data.stat2.val}</span><span class="stat-label">${data.stat2.label}</span></div>
+                <div class="stat-face back"><span class="stat-val">${data.stat2.altVal}</span><span class="stat-label">${data.stat2.altLabel}</span></div>
+            </div>
           </div>
           <a href="${data.url}" target="_blank" class="btn-learn">View Service Details</a>
         `;
@@ -435,6 +498,8 @@
         if(!data) return;
         const iconAttrs = JSON.stringify({ variationThumbColour: data.color, variationName: "Two Tone", variationNumber: 2, numberOfGroups: 2, backgroundIsGroup: false, strokeWidth: 2, defaultColours: { "group-1": "#EAEAEA", "group-2": data.color, "background": "#141414" } });
         chartId = `nano-chart-${id}`;
+        
+        // STATIC STRUCTURE FOR NANO (Wrapped in 'front' face to respect layout)
         htmlContent = `
           <div class="tt-header">
              <animated-icons src="https://animatedicons.co/get-icon?name=${data.iconName}&style=minimalistic&token=${data.iconToken}" trigger="loop" attributes='${iconAttrs.replace(/'/g, "&apos;")}' height="32" width="32"></animated-icons>
@@ -442,8 +507,16 @@
             <div class="nano-chart-wrap"><canvas id="${chartId}"></canvas></div>
           </div>
           <div class="tt-stats">
-            <div class="stat-item"><span class="stat-val">${data.hp}</span><span class="stat-label">Horsepower</span></div>
-            <div class="stat-item"><span class="stat-val">${data.tq}</span><span class="stat-label">Torque</span></div>
+            <div class="stat-item">
+                <div class="stat-face front">
+                    <span class="stat-val">${data.hp}</span><span class="stat-label">Horsepower</span>
+                </div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-face front">
+                    <span class="stat-val">${data.tq}</span><span class="stat-label">Torque</span>
+                </div>
+            </div>
           </div>
           <div class="tune-bar-wrap"><div class="tune-bar-fill"></div></div>
         `;
@@ -463,10 +536,10 @@
       }
 
       const updatePosition = () => {
-         const cx = hotspot.offsetLeft + (hotspot.offsetWidth / 2);
-         const cy = hotspot.offsetTop + (hotspot.offsetHeight / 2);
-         tt.style.left = cx + 'px';
-         tt.style.top = cy + 'px';
+          const cx = hotspot.offsetLeft + (hotspot.offsetWidth / 2);
+          const cy = hotspot.offsetTop + (hotspot.offsetHeight / 2);
+          tt.style.left = cx + 'px';
+          tt.style.top = cy + 'px';
       }
       
       tt.innerHTML = htmlContent;
