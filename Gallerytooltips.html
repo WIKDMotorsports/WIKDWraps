@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WIKD Wraps - Master Build</title>
+<script src="https://animatedicons.co/scripts/embed-animated-icons.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Import WIKD Fonts: Rajdhani & Inter -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --color-background: #0A0A0A;
+    --color-surface: #141414;
+    --color-border: #2A2A2A;
+    --color-text: #EAEAEA;
+    --color-text-muted: #888888;
+    
+    --font-heading: 'Rajdhani', sans-serif;
+    --font-body: 'Inter', sans-serif;
+  }
+
+  /* * CORE PAGE SETUP * */
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+
+  /* Noise Texture Overlay */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.08;
+    background-size: 100px 100px;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  }
+
+  /* * CONTAINER * */
+  .demo-container {
+    position: relative; 
+    width: 900px; 
+    height: 600px; 
+    border: 1px dashed var(--color-border); 
+    border-radius: 20px;
+    z-index: 1;
+    background: radial-gradient(circle at center, rgba(20,20,20,0.5), transparent 70%);
+  }
+
+  /* =========================================
+     HOTSPOT STYLES (CIRCLE & TRIANGLE)
+     ========================================= */
+
+  /* 1. SHARED BASE */
+  .tune-hotspot {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    box-sizing: border-box; 
+    cursor: pointer;
+    z-index: 100; 
+    transform: none; 
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  
+  .tune-hotspot:hover {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+  }
+
+  /* 2. CIRCLE (SERVICE) SPECIFIC - "The Original" */
+  .tune-hotspot[data-type="service"] {
+    border-radius: 50%;
+    background: rgba(20, 20, 20, 0.4); /* Glassy Body */
+    border: 2px solid rgba(255, 255, 255, 0.9); /* Ring */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+  }
+
+  .tune-hotspot[data-type="service"]::before {
+    /* Inner Dot */
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    background: currentColor;
+    border-radius: 50%;
+    box-shadow: 0 0 10px currentColor;
+  }
+
+  .tune-hotspot[data-type="service"]::after {
+    /* Pulse Ring */
+    content: '';
+    position: absolute;
+    top: -4px; left: -4px; right: -4px; bottom: -4px;
+    border-radius: 50%;
+    border: 1px solid currentColor;
+    opacity: 0;
+    animation: pulse-ring-circle 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+  }
+
+  @keyframes pulse-ring-circle {
+    0% { transform: scale(0.8); opacity: 0.6; }
+    100% { transform: scale(2.0); opacity: 0; }
+  }
+
+
+  /* 3. TRIANGLE (NANO) SPECIFIC - SVG Based */
+  /* Container sizing */
+  .tune-hotspot[data-type="nano"] {
+    width: 30px; 
+    height: 26px;
+    border: none;
+    box-shadow: none;
+    background: none; 
+    /* No clip-path or overflow:hidden on the container, so pulse can expand */
+  }
+
+  /* SVG Styling */
+  .tune-hotspot[data-type="nano"] svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    /* Optional: subtle drop shadow for the triangle itself */
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
+  }
+
+  /* The Pulse Ring (Triangle Shape via CSS) */
+  /* We use ::after on the container, which is NOT clipped, so it expands */
+  .tune-hotspot[data-type="nano"]::after {
+    content: '';
+    position: absolute;
+    /* Start inset slightly so it grows from the "border" */
+    top: -2px; left: -2px; right: -2px; bottom: -2px;
+    z-index: -1; /* Behind the SVG */
+    background: currentColor;
+    
+    /* Hollow Triangle Clip Path */
+    /* Outer Triangle followed by Inner Triangle (Hole) */
+    clip-path: polygon(
+      50% 0%, 0% 100%, 100% 100%, 50% 0%, 
+      50% 2px, 98% 98%, 2% 98%, 50% 2px
+    );
+    
+    opacity: 0;
+    /* Scale from the visual center of the triangle (approx 62% down) */
+    transform-origin: 50% 62%;
+    animation: pulse-ring-triangle 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+  }
+
+  @keyframes pulse-ring-triangle {
+    0% { transform: scale(0.8); opacity: 0.6; }
+    100% { transform: scale(2.0); opacity: 0; }
+  }
+
+
+  /* =========================================
+     TOOLTIP STYLES
+     ========================================= */
+  .tune-tooltip {
+    position: absolute; 
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-left: 3px solid var(--theme-color, #fff); 
+    border-radius: 4px; 
+    box-shadow: 0 20px 40px -10px rgba(0,0,0,0.9), 0 0 0 1px rgba(0,0,0,0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+    z-index: 9999; 
+    visibility: hidden;
+    transform: translateX(-50%) translateY(calc(-100% - 24px)) scale(0.95);
+  }
+
+  .tune-tooltip.type-service { width: 260px; padding: 16px; }
+  .tune-tooltip.type-nano { width: 280px; padding: 16px; }
+
+  .tune-tooltip.visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(calc(-100% - 12px)) scale(1);
+  }
+
+  .tune-tooltip.flip { transform: translateX(-50%) translateY(24px) scale(0.95); }
+  .tune-tooltip.flip.visible { transform: translateX(-50%) translateY(12px) scale(1); }
+
+  .tune-tooltip::after {
+    content: ''; position: absolute; left: 50%; width: 12px; height: 12px;
+    background: var(--color-surface); border-right: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border);
+    transition: all 0.25s; top: 100%; transform: translateX(-50%) translateY(-6px) rotate(45deg); 
+  }
+
+  .tune-tooltip.flip::after { top: -6px; transform: translateX(-50%) rotate(225deg); }
+
+  /* CONTENT */
+  .tt-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--color-border); height: 50px; }
+  .tt-title { flex-grow: 1; min-width: 0; }
+  .tt-title h4 { margin: 0; font-family: var(--font-heading); font-size: 20px; font-weight: 700; text-transform: uppercase; color: #fff; line-height: 1; margin-bottom: 2px; white-space: nowrap; }
+  .tt-title span { font-size: 11px; color: var(--color-text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+  .tt-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .stat-item { background: rgba(255,255,255,0.02); padding: 8px 10px; border-radius: 2px; border: 1px solid transparent; text-align: center; transition: border-color 0.3s; }
+  .tune-tooltip:hover .stat-item { border-color: rgba(255,255,255,0.05); }
+  .stat-val { display: block; font-family: var(--font-heading); font-size: 18px; font-weight: 700; color: var(--theme-color); line-height: 1.1; }
+  .type-nano .stat-val { font-size: 20px; }
+  .stat-label { font-size: 10px; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+  .btn-learn { display: block; width: 100%; padding: 8px; text-align: center; background: rgba(255,255,255,0.05); color: var(--color-text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; border-radius: 2px; transition: all 0.2s; font-family: var(--font-heading); font-weight: 600; box-sizing: border-box; }
+  .btn-learn:hover { background: var(--theme-color); color: #000; }
+  .nano-chart-wrap { width: 100px; height: 40px; position: relative; flex-shrink: 0; margin-left: auto; }
+  canvas { width: 100% !important; height: 100% !important; }
+  .tune-bar-wrap { width: 100%; height: 4px; background: rgba(255,255,255,0.1); overflow: hidden; position: relative; margin-top: 4px; }
+  .tune-bar-fill { height: 100%; width: 0; background: var(--theme-color); box-shadow: 0 0 10px var(--theme-color); transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+
+</style>
+</head>
+<body>
+
+  <div class="demo-container">
+    <div style="position:absolute; bottom: 20px; left: 20px; color: var(--color-text-muted); font-family: var(--font-body); font-size: 12px; letter-spacing: 1px; text-transform: uppercase;">
+      WIKD // Service & Nano Tech
+    </div>
+    
+    <!-- SERVICE HOTSPOTS -->
+    <div class="tune-hotspot" data-id="ppf" data-type="service" style="top: 40%; left: 15%; color: #536DFE;"></div>
+    <div class="tune-hotspot" data-id="ceramic" data-type="service" style="top: 55%; left: 40%; color: #00E676;"></div>
+    <div class="tune-hotspot" data-id="vinyl" data-type="service" style="top: 45%; left: 60%; color: #FFD600;"></div>
+    <div class="tune-hotspot" data-id="tint" data-type="service" style="top: 25%; left: 55%; color: #2979FF;"></div>
+    <div class="tune-hotspot" data-id="detail" data-type="service" style="top: 70%; left: 75%; color: #FF3B30;"></div>
+
+    <!-- NANO HOTSPOTS (Triangles) -->
+    <!-- Content injected via JS -->
+    <div class="tune-hotspot" data-id="stage1" data-type="nano" style="top: 15%; left: 20%; color: #ffffff;"></div>
+    <div class="tune-hotspot" data-id="stage2" data-type="nano" style="top: 65%; left: 30%; color: #FDE047;"></div>
+    <div class="tune-hotspot" data-id="stage3" data-type="nano" style="top: 35%; left: 75%; color: #f97316;"></div>
+    <div class="tune-hotspot" data-id="wikd" data-type="nano" style="top: 50%; left: 50%; color: #FF3B30;"></div>
+  </div>
+
+<script>
+  const SERVICE_DATA = {
+    "ppf": { title: "Paint Protection Film", desc: "Ultimate Shield", color: "#536DFE", url: "https://wikdwraps.com/pages/paint-protection-film", iconName: "Security", iconToken: "af857f3d-6096-42d0-9f04-a9ee72f54aa4", stat1Val: "10–12 Yrs", stat1Label: "Warranty", stat2Val: "Certified", stat2Label: "Installers" },
+    "ceramic": { title: "Ceramic Coating", desc: "Liquid Glass", color: "#00E676", url: "https://wikdwraps.com/pages/ceramic-coatings", iconName: "Chemist", iconToken: "153ce80d-3f45-4dc6-b13a-40ea011dbbfe", stat1Val: "9H", stat1Label: "Hardness", stat2Val: "High", stat2Label: "Hydrophobic" },
+    "vinyl": { title: "Vinyl Wraps", desc: "Instant Transformation", color: "#FFD600", url: "https://wikdwraps.com/pages/vinyl-wraps", iconName: "Palette", iconToken: "6defc96c-bfac-4d99-bc45-98649e19863b", stat1Val: "300+", stat1Label: "Colors", stat2Val: "Custom", stat2Label: "Graphics" },
+    "tint": { title: "Window Tint", desc: "Heat Rejection", color: "#2979FF", url: "https://wikdwraps.com/pages/window-tint", iconName: "Sunglasses", iconToken: "af857f3d-6096-42d0-9f04-a9ee72f54aa4", stat1Val: "99%", stat1Label: "UV Block", stat2Val: "Lifetime", stat2Label: "Warranty" },
+    "detail": { title: "Detailing", desc: "Restore & Maintain", color: "#FF3B30", url: "https://wikdwraps.com/pages/detailing", iconName: "Mop", iconToken: "86b68190-0253-4375-8994-96f5611b9f19", stat1Val: "Clean", stat1Label: "& Seal", stat2Val: "Showroom", stat2Label: "Finish" }
+  };
+
+  const TUNING_DATA = {
+    "stage1": { label:"Stage 1", desc: "Street Tuned", hp:650, tq:650, percent:45, color:"#ffffff", curveType: "roots", fillOpacity: 0.1, strokeWidth: 1.5, iconName: "KM", iconToken: "5729fdff-2cfc-4b8b-9952-2ff7da52563d" },
+    "stage2": { label:"Stage 2", desc: "Sport Tuned", hp:950, tq:800, percent:65, color:"#FDE047", curveType: "sport", fillOpacity: 0.25, strokeWidth: 2, iconName: "KM", iconToken: "5729fdff-2cfc-4b8b-9952-2ff7da52563d" },
+    "stage3": { label:"Stage 3", desc: "Track Ready", hp:1150, tq:950, percent:85, color:"#f97316", curveType: "track", fillOpacity: 0.4, strokeWidth: 2, iconName: "KM", iconToken: "5729fdff-2cfc-4b8b-9952-2ff7da52563d" },
+    "wikd": { label:"WIKD", desc: "Unleashed", hp:1315, tq:1045, percent:100, color:"#FF3B30", curveType: "procharger", fillOpacity: 0.65, strokeWidth: 3, iconName: "KM", iconToken: "5729fdff-2cfc-4b8b-9952-2ff7da52563d" }
+  };
+
+  const BASE_DYNO_DATA = [
+    { rpm: 3000, horsepower: 380, torque: 670 }, { rpm: 3100, horsepower: 410, torque: 690 }, { rpm: 3200, horsepower: 440, torque: 720 }, { rpm: 3300, horsepower: 480, torque: 760 },
+    { rpm: 3400, horsepower: 530, torque: 815 }, { rpm: 3500, horsepower: 580, torque: 870 }, { rpm: 3600, horsepower: 620, torque: 900 }, { rpm: 3700, horsepower: 650, torque: 920 },
+    { rpm: 3800, horsepower: 670, torque: 925 }, { rpm: 3900, horsepower: 690, torque: 930 }, { rpm: 4000, horsepower: 710, torque: 935 }, { rpm: 4100, horsepower: 735, torque: 940 },
+    { rpm: 4200, horsepower: 760, torque: 950 }, { rpm: 4300, horsepower: 785, torque: 960 }, { rpm: 4400, horsepower: 810, torque: 965 }, { rpm: 4500, horsepower: 830, torque: 970 },
+    { rpm: 4600, horsepower: 855, torque: 975 }, { rpm: 4700, horsepower: 880, torque: 980 }, { rpm: 4800, horsepower: 910, torque: 995 }, { rpm: 4900, horsepower: 940, torque: 1010 },
+    { rpm: 5000, horsepower: 970, torque: 1020 }, { rpm: 5100, horsepower: 995, torque: 1025 }, { rpm: 5200, horsepower: 1020, torque: 1030 }, { rpm: 5300, horsepower: 1050, torque: 1035 },
+    { rpm: 5400, horsepower: 1080, torque: 1040 }, { rpm: 5500, horsepower: 1110, torque: 1045 }, { rpm: 5600, horsepower: 1140, torque: 1045 }, { rpm: 5700, horsepower: 1170, torque: 1040 },
+    { rpm: 5800, horsepower: 1200, torque: 1038 }, { rpm: 5900, horsepower: 1225, torque: 1035 }, { rpm: 6000, horsepower: 1250, torque: 1030 }, { rpm: 6100, horsepower: 1270, torque: 1025 },
+    { rpm: 6200, horsepower: 1285, torque: 1020 }, { rpm: 6300, horsepower: 1300, torque: 1015 }, { rpm: 6400, horsepower: 1310, torque: 1010 }, { rpm: 6500, horsepower: 1315, torque: 1005 },
+    { rpm: 6600, horsepower: 1310, torque: 990 }, { rpm: 6700, horsepower: 1300, torque: 970 }, { rpm: 6800, horsepower: 1280, torque: 930 }
+  ];
+
+  const hexToRgba = (hex, alpha) => {
+    let r = 0, g = 0, b = 0;
+    if (hex.length === 4) { r = parseInt(hex[1]+hex[1],16); g = parseInt(hex[2]+hex[2],16); b = parseInt(hex[3]+hex[3],16); }
+    else if (hex.length === 7) { r = parseInt(hex.substring(1,3),16); g = parseInt(hex.substring(3,5),16); b = parseInt(hex.substring(5,7),16); }
+    return `rgba(${r},${g},${b},${alpha})`;
+  };
+
+  const generateCurveData = (curveType) => {
+     return BASE_DYNO_DATA.map(d => {
+        let hp = d.horsepower, tq = d.torque, rpm = d.rpm;
+        if (curveType === "roots") { tq = 650; if (rpm > 4500) tq -= (rpm - 4500) * 0.15; hp = (tq * rpm) / 5252; } 
+        else if (curveType === "sport") { tq = 800; if (rpm > 5500) tq -= (rpm - 5500) * 0.2; hp = (tq * rpm) / 5252; }
+        else if (curveType === "track") { tq = 900; if (rpm > 6000) tq -= (rpm - 6000) * 0.1; hp = (tq * rpm) / 5252; }
+        return { rpm, horsepower: hp, torque: tq };
+     });
+  };
+
+  const createNanoChart = (canvasId, tune) => {
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    const dataSet = generateCurveData(tune.curveType);
+    const gradient = ctx.createLinearGradient(0, 0, 0, 40);
+    gradient.addColorStop(0, hexToRgba(tune.color, tune.fillOpacity));
+    gradient.addColorStop(1, 'rgba(0,0,0,0)');
+
+    return new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: dataSet.map(d => d.rpm),
+        datasets: [
+          { label: 'HP', data: dataSet.map(d => d.horsepower), borderColor: tune.color, backgroundColor: gradient, fill: true, borderWidth: tune.strokeWidth, pointRadius: 0, tension: 0.4, yAxisID: 'y' },
+          { label: 'TQ', data: dataSet.map(d => d.torque), borderColor: 'rgba(255, 165, 0, 0.5)', borderWidth: 1, borderDash: [2, 2], pointRadius: 0, tension: 0.4, yAxisID: 'y' }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+        scales: { x: { display: false }, y: { display: false, min: 0, max: 1400 } },
+        animation: { duration: 1200, easing: 'easeOutQuart' }
+      }
+    });
+  };
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const demoContainer = document.querySelector('.demo-container');
+    const chartInstances = {};
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.tune-hotspot') && !e.target.closest('.tune-tooltip')) closeAllTooltips();
+    });
+
+    function closeAllTooltips() {
+      document.querySelectorAll('.tune-tooltip.visible').forEach(tt => {
+         tt.classList.remove('visible');
+         tt.classList.remove('locked');
+         tt.classList.remove('flip');
+         const bar = tt.querySelector(".tune-bar-fill");
+         if(bar) bar.style.width = "0%";
+      });
+    }
+
+    document.querySelectorAll(".tune-hotspot").forEach(hotspot => {
+      const id = hotspot.dataset.id;
+      const type = hotspot.dataset.type;
+      let data, htmlContent, chartId;
+
+      if (type === 'service') {
+        data = SERVICE_DATA[id];
+        if(!data) return;
+        const iconAttrs = JSON.stringify({ variationThumbColour: data.color, variationName: "Two Tone", variationNumber: 2, numberOfGroups: 2, backgroundIsGroup: false, strokeWidth: 1, defaultColours: { "group-1": data.color, "group-2": data.color, "background": "#141414" } });
+        htmlContent = `
+          <div class="tt-header">
+             <animated-icons src="https://animatedicons.co/get-icon?name=${data.iconName}&style=minimalistic&token=${data.iconToken}" trigger="loop" attributes='${iconAttrs.replace(/'/g, "&apos;")}' height="38" width="38"></animated-icons>
+            <div class="tt-title"><h4>${data.title}</h4><span>${data.desc}</span></div>
+          </div>
+          <div class="tt-stats">
+            <div class="stat-item"><span class="stat-val">${data.stat1Val}</span><span class="stat-label">${data.stat1Label}</span></div>
+            <div class="stat-item"><span class="stat-val">${data.stat2Val}</span><span class="stat-label">${data.stat2Label}</span></div>
+          </div>
+          <a href="${data.url}" target="_blank" class="btn-learn">View Service Details</a>
+        `;
+      } else if (type === 'nano') {
+        data = TUNING_DATA[id];
+        if(!data) return;
+        const iconAttrs = JSON.stringify({ variationThumbColour: data.color, variationName: "Two Tone", variationNumber: 2, numberOfGroups: 2, backgroundIsGroup: false, strokeWidth: 2, defaultColours: { "group-1": "#EAEAEA", "group-2": data.color, "background": "#141414" } });
+        chartId = `nano-chart-${id}`;
+        htmlContent = `
+          <div class="tt-header">
+             <animated-icons src="https://animatedicons.co/get-icon?name=${data.iconName}&style=minimalistic&token=${data.iconToken}" trigger="loop" attributes='${iconAttrs.replace(/'/g, "&apos;")}' height="32" width="32"></animated-icons>
+            <div class="tt-title"><h4>${data.label}</h4><span>${data.desc}</span></div>
+            <div class="nano-chart-wrap"><canvas id="${chartId}"></canvas></div>
+          </div>
+          <div class="tt-stats">
+            <div class="stat-item"><span class="stat-val">${data.hp}</span><span class="stat-label">Horsepower</span></div>
+            <div class="stat-item"><span class="stat-val">${data.tq}</span><span class="stat-label">Torque</span></div>
+          </div>
+          <div class="tune-bar-wrap"><div class="tune-bar-fill"></div></div>
+        `;
+      }
+
+      const tt = document.createElement("div");
+      tt.className = `tune-tooltip type-${type}`;
+      tt.style.setProperty('--theme-color', data.color);
+      
+      // REPLACED CLIPPED DIVS WITH INLINE SVG FOR PERFECT STROKE CONSISTENCY
+      if (type === 'nano') {
+          hotspot.innerHTML = `
+            <svg width="30" height="26" viewBox="0 0 30 26" fill="none" style="display:block;">
+              <!-- 
+                 Triangle Body + White Stroke (Stroke Width = 2)
+                 Coordinates optimized to keep stroke fully within bounds 
+                 Points: Top(15,2) BottomRight(27,24) BottomLeft(3,24)
+              -->
+              <path d="M15 2 L27 24 L3 24 Z" fill="rgba(20,20,20,0.4)" stroke="rgba(255,255,255,0.9)" stroke-width="2" stroke-linejoin="round"/>
+              
+              <!-- Inner Dot (Triangle) - Centered at ~62% (y=16) -->
+              <path d="M15 13 L19 19 L11 19 Z" fill="${data.color}" />
+            </svg>
+          `;
+          // Pulse effect is handled by CSS ::after on the parent .tune-hotspot
+      }
+
+
+      const updatePosition = () => {
+         const cx = hotspot.offsetLeft + (hotspot.offsetWidth / 2);
+         const cy = hotspot.offsetTop + (hotspot.offsetHeight / 2);
+         tt.style.left = cx + 'px';
+         tt.style.top = cy + 'px';
+      }
+      
+      tt.innerHTML = htmlContent;
+      demoContainer.appendChild(tt);
+      updatePosition(); 
+
+      if (type === 'nano' && chartId) chartInstances[id] = createNanoChart(chartId, data);
+
+      let hideTimeout;
+      const bar = tt.querySelector(".tune-bar-fill");
+
+      const show = (lock = false) => {
+        clearTimeout(hideTimeout);
+        updatePosition(); 
+
+        const hotspotRect = hotspot.getBoundingClientRect();
+        const ttHeight = tt.offsetHeight;
+        const PADDING = 40;
+        
+        if (hotspotRect.top - ttHeight - 12 < PADDING) tt.classList.add('flip'); 
+        else tt.classList.remove('flip'); 
+
+        tt.classList.add('visible');
+        
+        if(type === 'nano') {
+          if(chartInstances[id]) { chartInstances[id].reset(); chartInstances[id].update(); }
+          requestAnimationFrame(() => bar.style.width = data.percent + "%");
+        }
+
+        if (lock) {
+          closeAllTooltips();
+          tt.classList.add('locked');
+          tt.classList.add('visible'); 
+           if(type === 'nano' && bar) requestAnimationFrame(() => bar.style.width = data.percent + "%");
+        }
+      };
+
+      const hide = () => {
+        if (tt.classList.contains('locked')) return;
+        hideTimeout = setTimeout(() => {
+           if (!hotspot.matches(':hover') && !tt.matches(':hover')) {
+             tt.classList.remove("visible");
+             if(bar) bar.style.width = "0%";
+           }
+        }, 100);
+      };
+
+      hotspot.addEventListener("mouseenter", () => show(false));
+      hotspot.addEventListener("mouseleave", hide);
+      tt.addEventListener("mouseenter", () => show(false));
+      tt.addEventListener("mouseleave", hide);
+      
+      hotspot.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (tt.classList.contains('locked')) { tt.classList.remove('locked'); hide(); } 
+        else { show(true); }
+      });
+    });
+  });
+</script>
+</body>
+</html>
