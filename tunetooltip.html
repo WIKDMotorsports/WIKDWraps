@@ -474,3 +474,548 @@
 </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WIKD Wraps - Service Tech</title>
+<script src="https://animatedicons.co/scripts/embed-animated-icons.js"></script>
+<!-- Chart.js import is no longer needed -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Import WIKD Fonts: Rajdhani & Inter -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --color-background: #0A0A0A;
+    --color-surface: #141414;
+    --color-border: #2A2A2A;
+    --color-text: #EAEAEA;
+    --color-text-muted: #888888;
+    
+    --font-heading: 'Rajdhani', sans-serif;
+    --font-body: 'Inter', sans-serif;
+  }
+
+  /* * CORE PAGE SETUP * */
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+
+  /* Noise Texture Overlay */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.08;
+    background-size: 100px 100px;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  }
+  
+  .demo-container {
+    position:relative; 
+    width: 800px; 
+    height: 600px; 
+    border: 1px dashed var(--color-border); 
+    border-radius: 20px;
+    z-index: 1;
+    background: radial-gradient(circle at center, rgba(20,20,20,0.5), transparent 70%);
+  }
+
+
+  /* * THE HOTSPOT (PING) * */
+  .tune-hotspot {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    /* FIX: Force border-box so size includes border (Total 24px) */
+    box-sizing: border-box; 
+    border-radius: 50%;
+    cursor: pointer;
+    background: rgba(20, 20, 20, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+    /* Hotspot Z-Index: Below tooltip, but above everything else in the container */
+    z-index: 1000; 
+    
+    /* FIX: Remove translation. Hotspot sits at top/left coordinate naturally. 
+       We will adjust the Tooltip to match this center in JS. */
+    transform: none; 
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .tune-hotspot::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    background: currentColor;
+    border-radius: 50%;
+    box-shadow: 0 0 10px currentColor;
+  }
+
+  .tune-hotspot::after {
+    content: '';
+    position: absolute;
+    top: -4px; left: -4px; right: -4px; bottom: -4px;
+    border-radius: 50%;
+    border: 1px solid currentColor;
+    opacity: 0;
+    animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+  }
+
+  .tune-hotspot:hover {
+    /* FIX: Simple scale on hover, no translation needed */
+    transform: scale(1.1);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: currentColor;
+  }
+
+  @keyframes pulse-ring {
+    0% { transform: scale(0.8); opacity: 0.6; }
+    100% { transform: scale(2.0); opacity: 0; }
+  }
+
+  /* * THE TOOLTIP CONTAINER * */
+  .tune-tooltip {
+    /* Positioning is set by JS to match hotspot top/left */
+    position: absolute; 
+    
+    width: 260px;
+    padding: 16px;
+    
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-left: 3px solid var(--theme-color, #fff); 
+    border-radius: 4px; 
+    
+    box-shadow: 
+      0 20px 40px -10px rgba(0,0,0,0.9),
+      0 0 0 1px rgba(0,0,0,0.5);
+    
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+    /* Tooltip Z-Index: Highest layer guaranteed to overlay everything */
+    z-index: 9999; 
+    visibility: hidden;
+
+    /* Default (Above Hotspot) Hidden State: Centers horizontally, moves up by full height + 24px space */
+    transform: translateX(-50%) translateY(calc(-100% - 24px)) scale(0.95);
+  }
+
+  .tune-tooltip.visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    /* Default (Above Hotspot) Visible State: Moves up by full height + 12px space (12px is the desired gap) */
+    transform: translateX(-50%) translateY(calc(-100% - 12px)) scale(1);
+  }
+
+  /* Flipped state (Tooltip below the hotspot) */
+  .tune-tooltip.flip {
+    /* Flipped Hidden State: Centers horizontally, moves down by 24px space */
+    transform: translateX(-50%) translateY(24px) scale(0.95);
+  }
+  
+  .tune-tooltip.flip.visible {
+    /* Flipped Visible State: Moves down by 12px space */
+    transform: translateX(-50%) translateY(12px) scale(1);
+  }
+
+  /* Triangle Pointer (Default: Points Down when Tooltip is ABOVE) */
+  .tune-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%; /* Anchor to the bottom edge of the tooltip */
+    bottom: auto;
+    left: 50%;
+    /* Move up 6px (half the 12px size) to overlap the tooltip's bottom border and rotate */
+    transform: translateX(-50%) translateY(-6px) rotate(45deg); 
+    width: 12px;
+    height: 12px;
+    background: var(--color-surface);
+    border: none;
+    border-right: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+    transition: all 0.25s;
+  }
+
+  /* Triangle Pointer (Flipped: Points Up when Tooltip is BELOW) */
+  .tune-tooltip.flip::after {
+    top: -6px; /* Anchor to the top edge, moving up 6px for overlap */
+    bottom: auto;
+    /* Rotation for pointing up */
+    transform: translateX(-50%) rotate(225deg); 
+    border-right: 1px solid var(--color-border); 
+    border-bottom: 1px solid var(--color-border); 
+  }
+
+  /* * TOOLTIP CONTENT * */
+  .tt-header {
+    display: flex;
+    align-items: center; 
+    gap: 12px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--color-border);
+    height: 50px; 
+  }
+
+  .tt-title {
+    flex-grow: 1; 
+    min-width: 0; 
+  }
+
+  .tt-title h4 {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 2px;
+    white-space: nowrap;
+  }
+
+  .tt-title span {
+    font-size: 11px;
+    color: var(--color-text-muted);
+    font-weight: 500;
+    font-family: var(--font-body);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .tt-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .stat-item {
+    background: rgba(255,255,255,0.02);
+    padding: 8px 10px;
+    border-radius: 2px;
+    border: 1px solid transparent;
+    text-align: center;
+    transition: border-color 0.3s;
+  }
+  
+  .tune-tooltip:hover .stat-item {
+      border-color: rgba(255,255,255,0.05);
+  }
+
+  .stat-val {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--theme-color);
+    line-height: 1.1;
+  }
+
+  .stat-label {
+    font-size: 10px;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+  }
+
+  .btn-learn {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    text-align: center;
+    background: rgba(255,255,255,0.05);
+    color: var(--color-text-muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-decoration: none;
+    border-radius: 2px;
+    transition: all 0.2s;
+    font-family: var(--font-heading);
+    font-weight: 600;
+  }
+  
+  .btn-learn:hover {
+    background: var(--theme-color);
+    color: #000;
+  }
+
+  /* Progress Bar */
+  .tune-bar-wrap {
+    width: 100%;
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    overflow: hidden;
+    position: relative;
+    margin-top: 10px;
+  }
+
+  .tune-bar-fill {
+    height: 100%;
+    width: 0;
+    background: var(--theme-color);
+    box-shadow: 0 0 10px var(--theme-color);
+    transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+</style>
+</head>
+<body>
+
+  <div class="demo-container">
+    <div style="position:absolute; bottom: 20px; left: 20px; color: var(--color-text-muted); font-family: var(--font-body); font-size: 12px; letter-spacing: 1px; text-transform: uppercase;">
+      Hover or Click hotspots
+    </div>
+    
+    <!-- HOTSPOT: PPF (Nose/Hood area) -->
+    <div class="tune-hotspot" data-service="ppf" style="top: 40%; left: 15%; color: #536DFE;"></div>
+
+    <!-- HOTSPOT: CERAMIC (Fender/Body area) -->
+    <div class="tune-hotspot" data-service="ceramic" style="top: 55%; left: 40%; color: #00E676;"></div>
+
+    <!-- HOTSPOT: VINYL (Side Body) -->
+    <div class="tune-hotspot" data-service="vinyl" style="top: 45%; left: 60%; color: #FFD600;"></div>
+
+    <!-- HOTSPOT: TINT (Glass area) -->
+    <div class="tune-hotspot" data-service="tint" style="top: 25%; left: 55%; color: #2979FF;"></div>
+
+    <!-- HOTSPOT: DETAIL (Wheel/General) -->
+    <div class="tune-hotspot" data-service="detail" style="top: 70%; left: 75%; color: #FF3B30;"></div>
+
+  </div>
+
+<script>
+  // 1. DATA SOURCE - WIKD SERVICES
+  const WIKD_SERVICES = {
+    "ppf": { 
+      title: "Paint Protection Film", 
+      desc: "Ultimate Shield", 
+      color: "#536DFE",
+      url: "https://wikdwraps.com/pages/paint-protection-film",
+      iconName: "Security",
+      iconToken: "af857f3d-6096-42d0-9f04-a9ee72f54aa4",
+      iconTrigger: "loop",
+      stat1Val: "10–12 Yrs", stat1Label: "Warranty",
+      stat2Val: "Certified", stat2Label: "Installers",
+      chartType: "shield" 
+    },
+    "ceramic": { 
+      title: "Ceramic Coating", 
+      desc: "Liquid Glass", 
+      color: "#00E676",
+      url: "https://wikdwraps.com/pages/ceramic-coatings",
+      iconName: "Chemist",
+      iconToken: "153ce80d-3f45-4dc6-b13a-40ea011dbbfe",
+      iconTrigger: "loop", 
+      stat1Val: "9H", stat1Label: "Hardness",
+      stat2Val: "High", stat2Label: "Hydrophobic",
+      chartType: "fade"
+    },
+    "vinyl": { 
+      title: "Vinyl Wraps", 
+      desc: "Instant Transformation", 
+      color: "#FFD600",
+      url: "https://wikdwraps.com/pages/vinyl-wraps",
+      iconName: "Palette",
+      iconToken: "6defc96c-bfac-4d99-bc45-98649e19863b",
+      iconTrigger: "loop",
+      stat1Val: "300+", stat1Label: "Colors",
+      stat2Val: "Custom", stat2Label: "Graphics", 
+      chartType: "linear_drop"
+    },
+    "tint": { 
+      title: "Window Tint", 
+      desc: "Heat Rejection", 
+      color: "#2979FF",
+      url: "https://wikdwraps.com/pages/window-tint",
+      iconName: "Sunglasses",
+      iconToken: "af857f3d-6096-42d0-9f04-a9ee72f54aa4",
+      iconTrigger: "loop",
+      stat1Val: "99%", stat1Label: "UV Block",
+      stat2Val: "Lifetime", stat2Label: "Warranty",
+      chartType: "stable"
+    },
+    "detail": { 
+      title: "Detailing", 
+      desc: "Restore & Maintain", 
+      color: "#FF3B30",
+      url: "https://wikdwraps.com/pages/detailing",
+      iconName: "Mop",
+      iconToken: "86b68190-0253-4375-8994-96f5611b9f19",
+      iconTrigger: "loop",
+      stat1Val: "Clean", stat1Label: "& Seal", 
+      stat2Val: "Showroom", stat2Label: "Finish", 
+      chartType: "spike"
+    }
+  };
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const demoContainer = document.querySelector('.demo-container');
+
+    // Close tooltips on outside click
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.tune-hotspot') && !e.target.closest('.tune-tooltip')) {
+        document.querySelectorAll('.tune-tooltip.visible').forEach(tt => {
+           tt.classList.remove('visible');
+           tt.classList.remove('locked');
+           tt.classList.remove('flip'); // Reset flip state on close
+           const bar = tt.querySelector(".tune-bar-fill");
+           if(bar) bar.style.width = "0%";
+        });
+      }
+    });
+
+    // Initialize Hotspots
+    document.querySelectorAll("[data-service]").forEach(hotspot => {
+      const id = hotspot.dataset.service;
+      const service = WIKD_SERVICES[id];
+      if (!service) return;
+
+      const tt = document.createElement("div");
+      tt.className = "tune-tooltip";
+      tt.style.setProperty('--theme-color', service.color);
+
+      // --- CRITICAL FIX: Offset Tooltip by 12px (half of 24px hotspot width) ---
+      // Instead of fighting transforms, we keep the hotspot at Top/Left and
+      // move the tooltip to the Mathematical Center (Top/Left + 12px).
+      tt.style.top = `calc(${hotspot.style.top} + 12px)`;
+      tt.style.left = `calc(${hotspot.style.left} + 12px)`;
+
+
+      // Construct Icon Attributes JSON (Dynamic Colors)
+      const iconAttrs = JSON.stringify({
+        variationThumbColour: service.color,
+        variationName: "Two Tone",
+        variationNumber: 2,
+        numberOfGroups: 2,
+        backgroundIsGroup: false,
+        strokeWidth: 1, 
+        // Icon colors: lines (groups 1 & 2) use service color, background uses tooltip background color (#141414)
+        defaultColours: { "group-1": service.color, "group-2": service.color, "background": "#141414" }
+      });
+      
+      tt.innerHTML = `
+        <div class="tt-header">
+           <animated-icons
+             src="https://animatedicons.co/get-icon?name=${service.iconName}&style=minimalistic&token=${service.iconToken}"
+             trigger="${service.iconTrigger}"
+             attributes='${iconAttrs.replace(/'/g, "&apos;")}'
+             height="38"
+             width="38"
+           ></animated-icons>
+          <div class="tt-title">
+            <h4>${service.title}</h4>
+            <span>${service.desc}</span>
+          </div>
+        </div>
+        <div class="tt-stats">
+          <div class="stat-item"><span class="stat-val">${service.stat1Val}</span><span class="stat-label">${service.stat1Label}</span></div>
+          <div class="stat-item"><span class="stat-val">${service.stat2Val}</span><span class="stat-label">${service.stat2Label}</span></div>
+        </div>
+        <a href="${service.url}" target="_blank" class="btn-learn">View Service Details</a>
+        <div class="tune-bar-wrap"><div class="tune-bar-fill"></div></div>
+      `;
+
+      demoContainer.appendChild(tt);
+
+      const bar = tt.querySelector(".tune-bar-fill");
+      let hideTimeout;
+
+      const show = (lock = false) => {
+        clearTimeout(hideTimeout);
+        
+        // 1. Ensure the tooltip uses the offset calculated position
+        // Re-apply in case of dynamic changes, though strict calc above should hold.
+        tt.style.top = `calc(${hotspot.style.top} + 12px)`;
+        tt.style.left = `calc(${hotspot.style.left} + 12px)`;
+
+        // 2. Determine if flip is needed based on viewport position
+        const hotspotRect = hotspot.getBoundingClientRect();
+        const ttHeight = tt.offsetHeight;
+        const PADDING = 40; // Buffer from the top of the viewport
+        const SpaceBetween = 12; // Gap between tooltip and hotspot
+
+        // Calculate if the tooltip (when placed above) would hit the top edge
+        // Top of tooltip = hotspotRect.top - ttHeight - SpaceBetween
+        if (hotspotRect.top - ttHeight - SpaceBetween < PADDING) {
+          tt.classList.add('flip'); 
+        } else {
+          tt.classList.remove('flip'); 
+        }
+
+        tt.classList.add('visible'); 
+        
+        if (lock) {
+          // Close others
+          document.querySelectorAll('.tune-tooltip.locked').forEach(other => {
+             if(other !== tt) {
+               other.classList.remove('locked');
+               other.classList.remove('visible');
+               other.classList.remove('flip');
+               const otherBar = other.querySelector(".tune-bar-fill");
+               if(otherBar) otherBar.style.width = "0%";
+             }
+          });
+          tt.classList.add('locked');
+        }
+        requestAnimationFrame(() => bar.style.width = "100%");
+      };
+
+      const hide = () => {
+        if (tt.classList.contains('locked')) return;
+        hideTimeout = setTimeout(() => {
+           if (!hotspot.matches(':hover') && !tt.matches(':hover')) {
+             tt.classList.remove("visible");
+             // tt.classList.remove("flip"); // Keep flip state if mouseout is transient
+             bar.style.width = "0%";
+           }
+        }, 100);
+      };
+      
+      const toggleLock = (e) => {
+        e.stopPropagation();
+        if (tt.classList.contains('locked')) {
+           tt.classList.remove('locked');
+           tt.classList.remove('visible');
+           tt.classList.remove('flip');
+           bar.style.width = "0%";
+        } else {
+           show(true);
+        }
+      };
+
+      hotspot.addEventListener("mouseenter", () => show(false));
+      hotspot.addEventListener("mouseleave", hide);
+      tt.addEventListener("mouseenter", () => show(false));
+      tt.addEventListener("mouseleave", hide);
+      hotspot.addEventListener("click", toggleLock);
+    });
+  });
+</script>
+</body>
+</html>
