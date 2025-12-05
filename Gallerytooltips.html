@@ -48,7 +48,7 @@
     z-index: 0;
     opacity: 0.08;
     background-size: 100px 100px;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%E3%8E%3C/svg%3E");
   }
 
   /* * CONTAINER * */
@@ -83,16 +83,15 @@
     filter: brightness(1.2);
   }
 
-  /* 2. CIRCLE (SERVICE) SPECIFIC - "The Original" */
+  /* 2. CIRCLE (SERVICE) SPECIFIC */
   .tune-hotspot[data-type="service"] {
     border-radius: 50%;
-    background: rgba(20, 20, 20, 0.4); /* Glassy Body */
-    border: 2px solid rgba(255, 255, 255, 0.9); /* Ring */
+    background: rgba(20, 20, 20, 0.4); 
+    border: 2px solid rgba(255, 255, 255, 0.9); 
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
   }
 
   .tune-hotspot[data-type="service"]::before {
-    /* Inner Dot */
     content: '';
     position: absolute;
     top: 50%; left: 50%;
@@ -105,7 +104,6 @@
   }
 
   .tune-hotspot[data-type="service"]::after {
-    /* Pulse Ring */
     content: '';
     position: absolute;
     top: -4px; left: -4px; right: -4px; bottom: -4px;
@@ -121,15 +119,13 @@
   }
 
 
-  /* 3. TRIANGLE (NANO) SPECIFIC - SVG Based */
-  /* Container sizing */
+  /* 3. TRIANGLE (NANO) SPECIFIC */
   .tune-hotspot[data-type="nano"] {
     width: 30px; 
     height: 26px;
     border: none;
     box-shadow: none;
     background: none; 
-    /* No clip-path or overflow:hidden on the container, so pulse can expand */
   }
 
   /* SVG Styling */
@@ -137,29 +133,21 @@
     display: block;
     width: 100%;
     height: 100%;
-    /* Optional: subtle drop shadow for the triangle itself */
     filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
   }
 
   /* The Pulse Ring (Triangle Shape via CSS) */
-  /* We use ::after on the container, which is NOT clipped, so it expands */
   .tune-hotspot[data-type="nano"]::after {
     content: '';
     position: absolute;
-    /* Start inset slightly so it grows from the "border" */
     top: -2px; left: -2px; right: -2px; bottom: -2px;
-    z-index: -1; /* Behind the SVG */
+    z-index: 0; 
     background: currentColor;
-    
-    /* Hollow Triangle Clip Path */
-    /* Outer Triangle followed by Inner Triangle (Hole) */
     clip-path: polygon(
       50% 0%, 0% 100%, 100% 100%, 50% 0%, 
       50% 2px, 98% 98%, 2% 98%, 50% 2px
     );
-    
     opacity: 0;
-    /* Scale from the visual center of the triangle (approx 62% down) */
     transform-origin: 50% 62%;
     animation: pulse-ring-triangle 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
   }
@@ -182,7 +170,7 @@
     box-shadow: 0 20px 40px -10px rgba(0,0,0,0.9), 0 0 0 1px rgba(0,0,0,0.5);
     opacity: 0;
     pointer-events: none;
-    transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out, visibility 0.2s; /* Standard CSS transition */
     z-index: 9999; 
     visibility: hidden;
     transform: translateX(-50%) translateY(calc(-100% - 24px)) scale(0.95);
@@ -225,7 +213,7 @@
   .nano-chart-wrap { width: 100px; height: 40px; position: relative; flex-shrink: 0; margin-left: auto; }
   canvas { width: 100% !important; height: 100% !important; }
   .tune-bar-wrap { width: 100%; height: 4px; background: rgba(255,255,255,0.1); overflow: hidden; position: relative; margin-top: 4px; }
-  .tune-bar-fill { height: 100%; width: 0; background: var(--theme-color); box-shadow: 0 0 10px var(--theme-color); transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+  .tune-bar-fill { height: 100%; width: 0; background: var(--theme-color); box-shadow: 0 0 10px var(--theme-color); transition: width 1s cubic-bezier(0.22, 1, 0.36, 1); } /* 1s DURATION MATCHES JS */
 
 </style>
 </head>
@@ -244,7 +232,6 @@
     <div class="tune-hotspot" data-id="detail" data-type="service" style="top: 70%; left: 75%; color: #FF3B30;"></div>
 
     <!-- NANO HOTSPOTS (Triangles) -->
-    <!-- Content injected via JS -->
     <div class="tune-hotspot" data-id="stage1" data-type="nano" style="top: 15%; left: 20%; color: #ffffff;"></div>
     <div class="tune-hotspot" data-id="stage2" data-type="nano" style="top: 65%; left: 30%; color: #FDE047;"></div>
     <div class="tune-hotspot" data-id="stage3" data-type="nano" style="top: 35%; left: 75%; color: #f97316;"></div>
@@ -297,30 +284,113 @@
      });
   };
 
+  // STORE CURVE DATA GLOBALLY FOR REUSE
+  const CURVE_CACHE = {};
+
   const createNanoChart = (canvasId, tune) => {
     const ctx = document.getElementById(canvasId).getContext('2d');
-    const dataSet = generateCurveData(tune.curveType);
-    const gradient = ctx.createLinearGradient(0, 0, 0, 40);
-    gradient.addColorStop(0, hexToRgba(tune.color, tune.fillOpacity));
-    gradient.addColorStop(1, 'rgba(0,0,0,0)');
-
+    // Pre-calculate full data set but don't give it to chart yet
+    CURVE_CACHE[canvasId] = generateCurveData(tune.curveType);
+    
+    // Initialize with EMPTY data for manual drawing
     return new Chart(ctx, {
       type: 'line',
       data: {
-        labels: dataSet.map(d => d.rpm),
+        labels: CURVE_CACHE[canvasId].map(d => d.rpm), // Labels are fine to have
         datasets: [
-          { label: 'HP', data: dataSet.map(d => d.horsepower), borderColor: tune.color, backgroundColor: gradient, fill: true, borderWidth: tune.strokeWidth, pointRadius: 0, tension: 0.4, yAxisID: 'y' },
-          { label: 'TQ', data: dataSet.map(d => d.torque), borderColor: 'rgba(255, 165, 0, 0.5)', borderWidth: 1, borderDash: [2, 2], pointRadius: 0, tension: 0.4, yAxisID: 'y' }
+          { 
+            label: 'HP', 
+            data: [], // START EMPTY
+            borderColor: tune.color, 
+            backgroundColor: 'transparent',
+            fill: true, 
+            borderWidth: tune.strokeWidth, 
+            pointRadius: 0, 
+            tension: 0.4, 
+            yAxisID: 'y' 
+          },
+          { 
+            label: 'TQ', 
+            data: [], // START EMPTY
+            borderColor: 'rgba(255, 165, 0, 0.5)', 
+            borderWidth: 1, 
+            borderDash: [2, 2], 
+            pointRadius: 0, 
+            tension: 0.4, 
+            yAxisID: 'y' 
+          }
         ]
       },
       options: {
         responsive: true, maintainAspectRatio: false,
         plugins: { legend: { display: false }, tooltip: { enabled: false } },
         scales: { x: { display: false }, y: { display: false, min: 0, max: 1400 } },
-        animation: { duration: 1200, easing: 'easeOutQuart' }
+        animation: false // DISABLE CHARTJS ANIMATION ENGINE COMPLETELY
       }
     });
   };
+
+  // Easing function: Cubic smoothing (matching a classic CSS ease)
+  function easeInOutCubic(t) {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  }
+  
+  const drawChartEased = (chartInstance, canvasId, tune) => {
+      const fullData = CURVE_CACHE[canvasId];
+      if(!fullData) return;
+
+      const hpDataset = chartInstance.data.datasets[0];
+      const tqDataset = chartInstance.data.datasets[1];
+      
+      // Reset State
+      hpDataset.data = [];
+      tqDataset.data = [];
+      hpDataset.backgroundColor = 'transparent';
+      chartInstance.stop(); // Stop any competing internal animations
+      
+      const duration = 1000; // 1 second duration, synchronized with CSS bar
+      const startTime = performance.now();
+      const totalPoints = fullData.length;
+      const ctx = chartInstance.ctx;
+      
+      let animationFrameId; // To hold the RAF ID
+
+      const drawStep = (currentTime) => {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          
+          // Easing for the draw and fade
+          const easedProgress = easeInOutCubic(progress);
+
+          // 1. Line Drawing
+          const pointsToRender = Math.floor(totalPoints * easedProgress);
+          
+          if (pointsToRender > hpDataset.data.length) {
+              hpDataset.data = fullData.slice(0, pointsToRender).map(p => p.horsepower);
+              tqDataset.data = fullData.slice(0, pointsToRender).map(p => p.torque);
+          }
+
+          // 2. Gradient Fading (Runs simultaneously with the line draw)
+          const opacity = easedProgress * tune.fillOpacity;
+
+          const gradient = ctx.createLinearGradient(0, 0, 0, 40);
+          gradient.addColorStop(0, hexToRgba(tune.color, opacity));
+          gradient.addColorStop(1, 'rgba(0,0,0,0)');
+          chartInstance.data.datasets[0].backgroundColor = gradient;
+          
+          chartInstance.update('none'); // Render frame without internal animation
+
+          if (progress < 1) {
+              animationFrameId = requestAnimationFrame(drawStep);
+          } else {
+              // Animation finished cleanly.
+          }
+      };
+      
+      animationFrameId = requestAnimationFrame(drawStep);
+  };
+
+  // Removed fadeInGradient as its logic is now merged into drawChartEased
 
   document.addEventListener("DOMContentLoaded", () => {
     const demoContainer = document.querySelector('.demo-container');
@@ -383,24 +453,14 @@
       tt.className = `tune-tooltip type-${type}`;
       tt.style.setProperty('--theme-color', data.color);
       
-      // REPLACED CLIPPED DIVS WITH INLINE SVG FOR PERFECT STROKE CONSISTENCY
       if (type === 'nano') {
           hotspot.innerHTML = `
             <svg width="30" height="26" viewBox="0 0 30 26" fill="none" style="display:block;">
-              <!-- 
-                 Triangle Body + White Stroke (Stroke Width = 2)
-                 Coordinates optimized to keep stroke fully within bounds 
-                 Points: Top(15,2) BottomRight(27,24) BottomLeft(3,24)
-              -->
               <path d="M15 2 L27 24 L3 24 Z" fill="rgba(20,20,20,0.4)" stroke="rgba(255,255,255,0.9)" stroke-width="2" stroke-linejoin="round"/>
-              
-              <!-- Inner Dot (Triangle) - Centered at ~62% (y=16) -->
               <path d="M15 13 L19 19 L11 19 Z" fill="${data.color}" />
             </svg>
           `;
-          // Pulse effect is handled by CSS ::after on the parent .tune-hotspot
       }
-
 
       const updatePosition = () => {
          const cx = hotspot.offsetLeft + (hotspot.offsetWidth / 2);
@@ -429,18 +489,35 @@
         if (hotspotRect.top - ttHeight - 12 < PADDING) tt.classList.add('flip'); 
         else tt.classList.remove('flip'); 
 
+        const isAlreadyVisible = tt.classList.contains('visible');
         tt.classList.add('visible');
         
         if(type === 'nano') {
-          if(chartInstances[id]) { chartInstances[id].reset(); chartInstances[id].update(); }
-          requestAnimationFrame(() => bar.style.width = data.percent + "%");
+          // MANUAL DRAW TRIGGER
+          // Only draw if NOT already visible AND NOT locked.
+          if(!isAlreadyVisible && !tt.classList.contains('locked')) {
+              // Start smooth eased draw (1000ms sync with bar)
+              drawChartEased(chartInstances[id], chartId, data);
+              
+              // FIX: The bar fill MUST be reset before the requestAnimationFrame to ensure the CSS transition runs.
+              bar.style.width = "0%"; 
+              // Now trigger the actual transition to the final width
+              requestAnimationFrame(() => {
+                requestAnimationFrame(() => { // Double RAF for guaranteed transition start
+                    bar.style.width = data.percent + "%"; 
+                });
+              });
+          }
         }
 
         if (lock) {
           closeAllTooltips();
           tt.classList.add('locked');
           tt.classList.add('visible'); 
-           if(type === 'nano' && bar) requestAnimationFrame(() => bar.style.width = data.percent + "%");
+           if(type === 'nano' && bar) {
+             // If locked, ensure the bar is already at final state if re-locking.
+             bar.style.width = data.percent + "%";
+           }
         }
       };
 
