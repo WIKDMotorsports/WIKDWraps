@@ -583,6 +583,9 @@
   document.addEventListener("DOMContentLoaded", () => {
     const demoContainer = document.querySelector('.demo-container');
     const chartInstances = {};
+    
+    // Z-Index Manager: Starts high to ensure tooltips overlay everything else
+    let globalZIndex = 10000; 
 
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.tune-hotspot') && !e.target.closest('.tune-tooltip')) closeAllTooltips();
@@ -699,6 +702,12 @@
 
       const show = (lock = false) => {
         clearTimeout(hideTimeout);
+        
+        // Z-INDEX UPDATE: Increment global counter and assign to this tooltip
+        // This ensures the most recently hovered/clicked tooltip is always on top
+        globalZIndex++;
+        tt.style.zIndex = globalZIndex;
+
         updatePosition(); 
 
         const hotspotRect = hotspot.getBoundingClientRect();
