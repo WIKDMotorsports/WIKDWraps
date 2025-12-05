@@ -344,9 +344,10 @@
         height: 1.25rem; 
     }
 
-    /* --- GALLERY ITEM STYLES (Unchanged) --- */
+    /* --- GALLERY ITEM STYLES (MODIFIED to use percentage widths based on desired columns) --- */
     .gallery-item {
-        flex: 0 0 70vw;  
+        /* Mobile: Show ~1.5 items visible (66.66%) - Replaces 70vw */
+        flex: 0 0 calc(66.66% - 1rem); 
         position: relative; aspect-ratio: 16/9;  
         border-radius: 2px; overflow: hidden;
         border: 1px solid var(--color-border); background: var(--color-surface);
@@ -354,8 +355,14 @@
     }
     .gallery-item:hover { cursor: pointer; border-color: var(--color-primary); }
     
-    @media (min-width: 768px) { .gallery-item { flex: 0 0 40vw; } }
-    @media (min-width: 1024px) { .gallery-item { flex: 0 0 28vw; } }
+    @media (min-width: 768px) { 
+        /* Tablet: Show ~2.5 items visible (38%) - Replaces 40vw */
+        .gallery-item { flex: 0 0 calc(38% - 1rem); } 
+    }
+    @media (min-width: 1024px) { 
+        /* Desktop: Show ~3.5 items visible (26%) - Replaces 28vw */
+        .gallery-item { flex: 0 0 calc(26% - 1rem); } 
+    }
 
     /* Image & Skeleton Loading (Unchanged) */
     .gallery-img {
