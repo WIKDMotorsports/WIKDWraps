@@ -101,7 +101,11 @@
         border-radius: 50%; border: 1px solid currentColor; opacity: 0;
         animation: pulse-ring-circle 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
       }
-      @keyframes pulse-ring-circle { 0% { transform: scale(0.8); opacity: 0.6; } 100% { transform: scale(2.0); opacity: 0; } }
+      @keyframes pulse-ring-circle { 
+        0% { transform: scale(0.8); opacity: 0; } 
+        25% { opacity: 0.6; } 
+        100% { transform: scale(2.0); opacity: 0; } 
+      }
 
       /* Nano (Triangle) */
       .tune-hotspot[data-type="nano"] {
@@ -117,7 +121,11 @@
         opacity: 0; transform-origin: 50% 62%;
         animation: pulse-ring-triangle 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
       }
-      @keyframes pulse-ring-triangle { 0% { transform: scale(0.8); opacity: 0.6; } 100% { transform: scale(2.0); opacity: 0; } }
+      @keyframes pulse-ring-triangle { 
+        0% { transform: scale(0.8); opacity: 0; } 
+        25% { opacity: 0.6; } 
+        100% { transform: scale(2.0); opacity: 0; } 
+      }
 
       /* Ping (Square) */
       .tune-hotspot[data-type="ping"] {
@@ -136,7 +144,11 @@
         border: 1px solid currentColor; border-radius: 2px; opacity: 0;
         animation: pulse-ring-square 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
       }
-      @keyframes pulse-ring-square { 0% { transform: scale(0.8); opacity: 0.6; } 100% { transform: scale(2.0); opacity: 0; } }
+      @keyframes pulse-ring-square { 
+        0% { transform: scale(0.8); opacity: 0; } 
+        25% { opacity: 0.6; } 
+        100% { transform: scale(2.0); opacity: 0; } 
+      }
 
       /* Tooltip Popup Base */
       .tune-tooltip {
@@ -588,20 +600,20 @@
 
     <script>
     // --- 1. TOOLTIP DATA DEFINITIONS ---
-    const SERVICE_DATA = {
+    let SERVICE_DATA = {
        "ppf": { title: "Paint Protection Film", desc: "Ultimate Shield", color: "#536DFE", url: "https://wikdwraps.com/pages/paint-protection-film", iconName: "Security", iconToken: "af857f3d-6096-42d0-9f04-a9ee72f54aa4", stat1: { val: "10–12 Yrs", label: "Warranty", altVal: "STEK", altLabel: "Authorized" }, stat2: { val: "Certified", label: "Installers", altVal: "Precision", altLabel: "Cut Patterns" } },
        "ceramic": { title: "Ceramic Coating", desc: "Liquid Glass", color: "#00E676", url: "https://wikdwraps.com/pages/ceramic-coatings", iconName: "Chemist", iconToken: "153ce80d-3f45-4dc6-b13a-40ea011dbbfe", stat1: { val: "9H", label: "Hardness", altVal: "Anti", altLabel: "Scratch" }, stat2: { val: "High", label: "Hydrophobic", altVal: "Self", altLabel: "Cleaning" } },
        "vinyl": { title: "Vinyl Wraps", desc: "Instant Transformation", color: "#FFD600", url: "https://wikdwraps.com/pages/vinyl-wraps", iconName: "Palette", iconToken: "6defc96c-bfac-4d99-bc45-98649e19863b", stat1: { val: "300+", label: "Colors", altVal: "Matte/Gloss", altLabel: "Finishes" }, stat2: { val: "Custom", label: "Graphics", altVal: "Fleet", altLabel: "Branding" } },
        "tint": { title: "Window Tint", desc: "Heat Rejection", color: "#D500F9", url: "https://wikdwraps.com/pages/window-tint", iconName: "Sunglasses", iconToken: "af857f3d-6096-42d0-9f04-a9ee72f54aa4", stat1: { val: "99%", label: "UV Block", altVal: "Max", altLabel: "IR Rejection" }, stat2: { val: "Lifetime", label: "Warranty", altVal: "Color", altLabel: "Stable" } },
        "detail": { title: "Detailing", desc: "Restore & Maintain", color: "#FF3B30", url: "https://wikdwraps.com/pages/detailing", iconName: "Mop", iconToken: "86b68190-0253-4375-8994-96f5611b9f19", stat1: { val: "Clean", label: "& Seal", altVal: "Deep", altLabel: "Decon" }, stat2: { val: "Showroom", label: "Finish", altVal: "Paint", altLabel: "Correction" } }
     };
-    const TUNING_DATA = {
+    let TUNING_DATA = {
        "stage1": { label:"Stage 1", desc: "Stock to Bolt-Ons", stat1: { val: "< 500", label: "WHP", altVal: "$1000+", altLabel: "Starting" }, stat2: { val: "Street", label: "Application", altVal: "ECU / TCU", altLabel: "Tuning" }, percent:45, color:"#ffffff", curveType: "roots", fillOpacity: 0.1, strokeWidth: 1.5, iconName: "KM", iconToken: "5729fdff-2cfc-4b8b-9952-2ff7da52563d" },
        "stage2": { label:"Stage 2", desc: "Alternative Fuels", stat1: { val: "500+", label: "WHP", altVal: "$1250+", altLabel: "Starting" }, stat2: { val: "E85 / Meth", label: "Fuels", altVal: "Trans", altLabel: "Tuning" }, percent:65, color:"#FDE047", curveType: "sport", fillOpacity: 0.25, strokeWidth: 2, iconName: "KM", iconToken: "5729fdff-2cfc-4b8b-9952-2ff7da52563d" },
        "stage3": { label:"Stage 3", desc: "Power Adders", stat1: { val: "800+", label: "WHP", altVal: "$1500+", altLabel: "Starting" }, stat2: { val: "Turbo / SC", label: "Boost", altVal: "Multi", altLabel: "Fuel" }, percent:85, color:"#f97316", curveType: "track", fillOpacity: 0.4, strokeWidth: 2, iconName: "KM", iconToken: "5729fdff-2cfc-4b8b-9952-2ff7da52563d" },
        "wikd": { label:"WIKD", desc: "Race Applications", stat1: { val: "1000+", label: "WHP", altVal: "$1750+", altLabel: "Starting" }, stat2: { val: "Comp", label: "Builds", altVal: "Track", altLabel: "Support" }, percent:100, color:"#FF3B30", curveType: "procharger", fillOpacity: 0.65, strokeWidth: 3, iconName: "KM", iconToken: "5729fdff-2cfc-4b8b-9952-2ff7da52563d" }
     };
-    const PING_DATA = {
+    let PING_DATA = {
        "mclaren": { label: "McLaren 720S", desc: "Ti Decat Downpipe", percent: 100, color: "#9370DB", embedUrl: "https://playcanv.as/b/7ae24e57?noui", url: "https://www.wikdmotorsports.com/pages/mclaren-720s-decat-titanium-downpipe-2018-brushed-purple" },
        "mclaren_catback": { label: "McLaren 720S", desc: "Ti Cat-Back Exhaust", percent: 100, color: "#9370DB", embedUrl: "https://playcanv.as/b/f471d70a?noui", url: "https://www.wikdmotorsports.com/pages/mclaren-720s-titanium-catback-2018" }
     };
@@ -1126,6 +1138,13 @@
                 const response = await fetch(JSON_URL);
                 if (!response.ok) throw new Error("JSON Fetch Failed");
                 const data = await response.json();
+
+                // Dynamic Tooltip Refactor
+                if (data.tooltip_definitions) {
+                    if (data.tooltip_definitions.services) SERVICE_DATA = data.tooltip_definitions.services;
+                    if (data.tooltip_definitions.tuning) TUNING_DATA = data.tooltip_definitions.tuning;
+                    if (data.tooltip_definitions.products) PING_DATA = data.tooltip_definitions.products;
+                }
 
                 if (data.gallery_projects) {
                    galleryContainer.innerHTML = ''; 
