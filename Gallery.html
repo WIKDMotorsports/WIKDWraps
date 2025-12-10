@@ -880,7 +880,13 @@
               const isStandaloneCandidate = images.length >= 2; 
 
               if (isShopLife || !isStandaloneCandidate) {
-                 finalMixedImages.push(...images);
+                 // UPDATED: Push object with hotspots instead of just string URL
+                 images.forEach(imgUrl => {
+                     finalMixedImages.push({ 
+                         src: imgUrl, 
+                         hotspots: project.hotspots // Pass the project's hotspot data
+                     });
+                 });
                  return;
               }
 
@@ -915,10 +921,11 @@
           if (finalMixedImages.length > 0) {
               const title = 'SHOP LIFE & RECENT WORKS';
               const subtitle = 'Behind the Scenes and Quick Snaps';
-              const imagesHtml = finalMixedImages.map(imgUrl => {
+              // UPDATED: Handle object structure for mixed images
+              const imagesHtml = finalMixedImages.map(item => {
                  const globalIndex = flatGalleryImages.length;
-                 flatGalleryImages.push({ src: imgUrl, title: title, subtitle: subtitle, hotspots: null });
-                 return `<div class="gallery-item" onclick="openLightbox(${globalIndex})"><div class="skeleton-loader"></div><img data-src="${imgUrl}" class="gallery-img"></div>`;
+                 flatGalleryImages.push({ src: item.src, title: title, subtitle: subtitle, hotspots: item.hotspots });
+                 return `<div class="gallery-item" onclick="openLightbox(${globalIndex})"><div class="skeleton-loader"></div><img data-src="${item.src}" class="gallery-img"></div>`;
               }).join('');
 
               finalProjectHTML.push(`
