@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>WIKD Rapid Tagger</title>
+  <title>Rapid Tagger</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   
@@ -20,6 +20,8 @@
       --c-service: #536DFE;
       --c-nano: #FFFFFF;
       --c-ping: #9370DB;
+      --c-danger: #ef4444;
+      --c-success: #00E676; /* Green for Bake */
     }
 
     body {
@@ -45,6 +47,25 @@
       color: #666; font-weight: 700; margin-bottom: 10px; display: block;
     }
 
+    /* TUTORIAL COLLAPSIBLE */
+    details.tutorial {
+        background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+        border-radius: 4px; font-size: 11px; color: #aaa;
+    }
+    details.tutorial summary {
+        padding: 10px; cursor: pointer; font-weight: 600; color: #ddd;
+        display: flex; justify-content: space-between; align-items: center;
+        user-select: none;
+    }
+    details.tutorial summary:hover { background: rgba(255,255,255,0.05); }
+    details.tutorial summary::after { content: '+'; font-size: 14px; color: #666; }
+    details.tutorial[open] summary::after { content: '−'; }
+    details.tutorial[open] { background: rgba(255,255,255,0.05); }
+    
+    .tut-content { padding: 0 10px 12px 10px; line-height: 1.6; }
+    .tut-step { display: flex; gap: 8px; margin-bottom: 4px; }
+    .tut-num { color: var(--accent); font-weight: bold; }
+
     /* GRID FOR BUTTONS */
     .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
@@ -63,6 +84,14 @@
     .tool-btn[data-type="service"].active { color: var(--c-service); border-color: var(--c-service); }
     .tool-btn[data-type="nano"].active { color: var(--c-nano); border-color: var(--c-nano); }
     .tool-btn[data-type="ping"].active { color: var(--c-ping); border-color: var(--c-ping); }
+    
+    /* Delete Button Specifics */
+    .tool-btn[data-type="delete"] { border-color: rgba(239, 68, 68, 0.3); color: var(--c-danger); }
+    .tool-btn[data-type="delete"]:hover { background: rgba(239, 68, 68, 0.1); }
+    .tool-btn[data-type="delete"].active { background: var(--c-danger); color: #fff; border-color: var(--c-danger); }
+
+    /* Clear Button Specifics (Non-toggle) */
+    .tool-btn[data-type="clear"]:hover { background: rgba(255,255,255,0.1); border-color: #666; color: #fff; }
 
     /* INPUTS */
     input[type="text"] {
@@ -72,6 +101,20 @@
     }
     input:focus { outline: none; border-color: var(--accent); }
 
+    /* BAKE BUTTON */
+    .bake-btn {
+        width: 100%; padding: 16px; 
+        background: linear-gradient(135deg, #00C853, #00E676);
+        border: none; border-radius: 6px;
+        color: #000; font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 800;
+        text-transform: uppercase; cursor: pointer; letter-spacing: 1px;
+        box-shadow: 0 4px 15px rgba(0, 230, 118, 0.3);
+        transition: transform 0.1s, filter 0.2s;
+        margin-top: 10px;
+    }
+    .bake-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+    .bake-btn:active { transform: translateY(1px); }
+
     /* OUTPUT AREA */
     .output-area { padding: 20px; border-top: 1px solid var(--border); background: #080808; }
     textarea {
@@ -79,6 +122,8 @@
       color: #0f0; font-family: monospace; font-size: 11px; padding: 10px;
       box-sizing: border-box; resize: none; border-radius: 4px;
     }
+    
+    .list-stats { font-size: 10px; color: #666; margin-bottom: 4px; display: flex; justify-content: space-between; }
 
     /* --- CANVAS AREA --- */
     .canvas-area {
@@ -115,6 +160,10 @@
         transform: translate(-50%, -50%) scale(1.2);
         z-index: 30;
     }
+    
+    /* Delete Mode Marker Style */
+    body.mode-delete .marker { cursor: alias; }
+    body.mode-delete .marker:hover { opacity: 0.5; transform: translate(-50%, -50%) scale(0.9); }
 
     /* Marker Shapes matching WIKD CSS */
     .marker[data-type="service"] { border-radius: 50%; border: 2px solid #fff; background: rgba(0,0,0,0.5); box-shadow: 0 0 10px #000; }
@@ -145,15 +194,29 @@
   <!-- LEFT PANEL -->
   <div class="sidebar">
     <div class="sidebar-header">
-      <h2>WIKD Tagger</h2>
+      <h2>Rapid Tagger</h2>
     </div>
 
     <div class="sidebar-content">
       
+      <!-- TUTORIAL SECTION -->
+      <details class="tutorial">
+          <summary>How To Use</summary>
+          <div class="tut-content">
+              <div class="tut-step"><span class="tut-num">1.</span> Paste Shopify CDN URL for the image.</div>
+              <div class="tut-step"><span class="tut-num">2.</span> Click a tag type (e.g. PPF, Stage 1).</div>
+              <div class="tut-step"><span class="tut-num">3.</span> Click the image to place the tag.</div>
+              <div class="tut-step"><span class="tut-num">4.</span> Drag dots to adjust position.</div>
+              <div class="tut-step"><span class="tut-num">5.</span> Click <strong style="color:#00E676">BAKE</strong> to save and clear.</div>
+              <div class="tut-step"><span class="tut-num">6.</span> Repeat for next image.</div>
+              <div class="tut-step"><span class="tut-num">7.</span> Copy final JSON list at the bottom.</div>
+          </div>
+      </details>
+      
       <!-- 1. CDN LINK -->
       <div>
         <span class="section-label">1. Source Image URL</span>
-        <input type="text" id="cdnInput" placeholder="Paste Shopify CDN URL here..." oninput="updateJSON()">
+        <input type="text" id="cdnInput" placeholder="Paste Shopify CDN URL here...">
       </div>
 
       <!-- 2. SELECT TOOL -->
@@ -185,17 +248,34 @@
           <div class="tool-btn" onclick="setTool('mclaren', 'ping')">720s Downpipe</div>
           <div class="tool-btn" onclick="setTool('mclaren_catback', 'ping')">720s Catback</div>
         </div>
+
+        <!-- Tools / Delete -->
+        <div style="margin-top:16px; margin-bottom:6px; font-size:11px; color:#444; font-weight:bold;">TOOLS</div>
+        <div class="btn-grid">
+          <div class="tool-btn" onclick="setTool('delete', 'delete')" data-type="delete">TRASH / DELETE</div>
+          <div class="tool-btn" onclick="clearTags()" data-type="clear">CLEAR ALL</div>
+        </div>
       </div>
       
-      <!-- Clear Button -->
-      <button onclick="clearTags()" style="background:#222; border:1px solid #333; color:#aaa; padding:8px; cursor:pointer; width:100%">Clear All Tags</button>
+      <!-- BAKE BUTTON -->
+      <div style="margin-top:auto">
+        <button class="bake-btn" onclick="bakeEntry()">BAKE TO LIST</button>
+      </div>
+      
     </div>
 
     <!-- 3. OUTPUT -->
     <div class="output-area">
+      <div class="list-stats">
+          <span>RUNNING LIST</span>
+          <span id="listCount">0 Baked Images</span>
+      </div>
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
         <span class="section-label" style="margin:0">3. JSON Export</span>
-        <button onclick="copyJSON()" style="background:var(--accent); border:none; color:#fff; font-size:10px; padding:4px 8px; cursor:pointer; border-radius:2px; font-weight:bold;">COPY</button>
+        <div style="display:flex; gap:6px;">
+            <button onclick="clearList()" style="background:#222; border:1px solid #333; color:#aaa; font-size:10px; padding:4px 8px; cursor:pointer; border-radius:2px;">RESET</button>
+            <button onclick="copyJSON()" style="background:var(--accent); border:none; color:#fff; font-size:10px; padding:4px 8px; cursor:pointer; border-radius:2px; font-weight:bold;">COPY</button>
+        </div>
       </div>
       <textarea id="output" readonly></textarea>
     </div>
@@ -204,8 +284,8 @@
   <!-- RIGHT PANEL (CANVAS) -->
   <div class="canvas-area">
     <div class="upload-prompt" id="prompt">
-      <h1>Drop Image Here</h1>
-      <span style="font-size:12px; color:#666">Drag & Drop file to start</span>
+      <h1>Paste URL or Drop File</h1>
+      <span style="font-size:12px; color:#666">Enter link in sidebar to start</span>
     </div>
     
     <div class="img-wrap" id="imgWrap" style="display:none">
@@ -220,8 +300,10 @@
 <script>
   // --- STATE ---
   let activeTool = null; // { id: 'ppf', type: 'service' }
-  let tags = [];         // Array of placed tags
+  let currentTags = [];  // Tags for current image
+  let masterList = [];   // Baked list of images
   let currentImageName = "";
+  let debounceTimer;
 
   // --- DOM ---
   const els = {
@@ -233,25 +315,52 @@
     clickLayer: document.getElementById('clickLayer'),
     markerContainer: document.getElementById('markerContainer'),
     output: document.getElementById('output'),
-    cdnInput: document.getElementById('cdnInput')
+    cdnInput: document.getElementById('cdnInput'),
+    listCount: document.getElementById('listCount')
   };
 
   // --- INIT ---
   els.drop.addEventListener('dragover', e => e.preventDefault());
   els.drop.addEventListener('drop', handleDrop);
   els.drop.addEventListener('click', (e) => {
-    if(els.imgWrap.style.display === 'none') els.fileInput.click();
+    // Only trigger file upload if clicking background and no image loaded yet
+    if(els.imgWrap.style.display === 'none' && e.target === els.drop) els.fileInput.click();
   });
   els.fileInput.addEventListener('change', e => loadFile(e.target.files[0]));
   
   els.clickLayer.addEventListener('mousedown', handleCanvasClick);
+  
+  // Initial JSON render
+  renderJSON();
+
+  // --- URL AUTO-LOADER ---
+  els.cdnInput.addEventListener('input', (e) => {
+    const val = e.target.value.trim();
+    
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+        if(val.length > 8) { 
+            loadImageFromUrl(val);
+        }
+    }, 500);
+  });
+
+  function loadImageFromUrl(url) {
+      const tempImg = new Image();
+      tempImg.onload = () => {
+          els.img.src = url;
+          els.imgWrap.style.display = 'block';
+          els.prompt.style.display = 'none';
+      };
+      tempImg.onerror = () => { console.log("Waiting for valid URL..."); };
+      tempImg.src = url;
+  }
 
   // --- FUNCTIONS ---
 
   function setTool(id, type) {
     activeTool = { id, type };
     
-    // UI Update
     document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
     const btns = document.querySelectorAll('.tool-btn');
     btns.forEach(btn => {
@@ -259,6 +368,9 @@
         btn.classList.add('active');
       }
     });
+
+    if(type === 'delete') document.body.classList.add('mode-delete');
+    else document.body.classList.remove('mode-delete');
   }
 
   function handleDrop(e) {
@@ -274,9 +386,7 @@
       els.imgWrap.style.display = 'block';
       els.prompt.style.display = 'none';
       currentImageName = file.name;
-      // Auto-fill CDN input with fake path if empty, just as hint
       if(!els.cdnInput.value) els.cdnInput.value = `https://cdn.shopify.com/s/files/1/0000/0000/files/${file.name}`;
-      updateJSON();
     };
     reader.readAsDataURL(file);
   }
@@ -286,8 +396,9 @@
       alert("Please select a tag from the left sidebar first.");
       return;
     }
+    
+    if (activeTool.id === 'delete') return;
 
-    // Calculate % position
     const rect = els.img.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -295,7 +406,6 @@
     const pctX = (x / rect.width) * 100;
     const pctY = (y / rect.height) * 100;
 
-    // Add Tag
     const tag = {
       id: activeTool.id,
       type: activeTool.type,
@@ -303,31 +413,33 @@
       y: parseFloat(pctY.toFixed(2))
     };
 
-    // Remove existing tag if ID already exists (enforces 1 tag per ID per image)
-    tags = tags.filter(t => t.id !== tag.id);
-    tags.push(tag);
+    // Remove existing tag if ID already exists
+    currentTags = currentTags.filter(t => t.id !== tag.id);
+    currentTags.push(tag);
 
     renderMarkers();
-    updateJSON();
+  }
+
+  function deleteTag(index) {
+      currentTags.splice(index, 1);
+      renderMarkers();
   }
 
   function renderMarkers() {
     els.markerContainer.innerHTML = '';
-    tags.forEach((t, index) => {
+    currentTags.forEach((t, index) => {
       const el = document.createElement('div');
       el.className = 'marker';
       el.dataset.type = t.type;
       el.style.left = t.x + '%';
       el.style.top = t.y + '%';
       
-      // Color coding logic
       let color = '#fff';
       if(t.type === 'service') color = '#536DFE';
       if(t.type === 'nano') color = '#FFFFFF';
       if(t.type === 'ping') color = '#9370DB';
       el.style.color = color;
 
-      // Special inner HTML for Triangle (Nano)
       let innerHTML = '';
       if(t.type === 'nano') {
         innerHTML = `
@@ -336,83 +448,106 @@
           <path d="M15 13 L19 19 L11 19 Z" fill="${t.id === 'stage2' ? '#FDE047' : t.id === 'stage3' ? '#f97316' : t.id === 'wikd' ? '#FF3B30' : '#ffffff'}" />
         </svg>`;
       }
-
-      // Add Tooltip
       innerHTML += `<div class="tooltip">${t.id}</div>`;
       el.innerHTML = innerHTML;
 
-      // START DRAG LOGIC
       el.addEventListener('mousedown', (e) => {
+        if(activeTool && activeTool.id === 'delete') return;
         startDrag(e, index);
+      });
+
+      el.addEventListener('click', (e) => {
+        if(activeTool && activeTool.id === 'delete') {
+            e.stopPropagation();
+            deleteTag(index);
+        }
       });
 
       els.markerContainer.appendChild(el);
     });
   }
 
-  // --- DRAG FUNCTIONALITY ---
+  // --- DRAG ---
   let isDragging = false;
   let draggedTagIndex = -1;
 
   function startDrag(e, index) {
-    e.preventDefault(); // Prevent text selection
-    e.stopPropagation(); // Stop click-to-add logic
-    isDragging = true;
-    draggedTagIndex = index;
-    
+    e.preventDefault(); e.stopPropagation();
+    isDragging = true; draggedTagIndex = index;
     document.addEventListener('mousemove', onDrag);
     document.addEventListener('mouseup', endDrag);
   }
 
   function onDrag(e) {
     if (!isDragging) return;
-    
     const rect = els.img.getBoundingClientRect();
     let x = e.clientX - rect.left;
     let y = e.clientY - rect.top;
 
-    // Constrain to image bounds
     x = Math.max(0, Math.min(x, rect.width));
     y = Math.max(0, Math.min(y, rect.height));
 
     const pctX = (x / rect.width) * 100;
     const pctY = (y / rect.height) * 100;
 
-    // Update tag data
-    tags[draggedTagIndex].x = parseFloat(pctX.toFixed(2));
-    tags[draggedTagIndex].y = parseFloat(pctY.toFixed(2));
+    currentTags[draggedTagIndex].x = parseFloat(pctX.toFixed(2));
+    currentTags[draggedTagIndex].y = parseFloat(pctY.toFixed(2));
 
-    // Update marker visual position immediately (without full re-render for performance)
     const markers = els.markerContainer.children;
     if (markers[draggedTagIndex]) {
-        markers[draggedTagIndex].style.left = tags[draggedTagIndex].x + '%';
-        markers[draggedTagIndex].style.top = tags[draggedTagIndex].y + '%';
+        markers[draggedTagIndex].style.left = currentTags[draggedTagIndex].x + '%';
+        markers[draggedTagIndex].style.top = currentTags[draggedTagIndex].y + '%';
     }
-
-    // Update JSON immediately for feedback
-    updateJSON();
   }
 
   function endDrag() {
-    isDragging = false;
-    draggedTagIndex = -1;
+    isDragging = false; draggedTagIndex = -1;
     document.removeEventListener('mousemove', onDrag);
     document.removeEventListener('mouseup', endDrag);
   }
 
-  function updateJSON() {
-    const data = {
-      cdnUrl: els.cdnInput.value.trim(),
-      tags: tags
+  // --- BAKING & LIST LOGIC ---
+
+  function bakeEntry() {
+    const url = els.cdnInput.value.trim();
+    if(!url) return alert("No image URL provided.");
+    if(currentTags.length === 0) return alert("No tags placed. Please tag the image first.");
+
+    // Add to Master List
+    const entry = {
+        cdnUrl: url,
+        tags: [...currentTags]
     };
-    els.output.value = JSON.stringify(data, null, 2);
+    masterList.push(entry);
+
+    // Update Output
+    renderJSON();
+
+    // Reset Workspace
+    currentTags = [];
+    renderMarkers();
+    els.cdnInput.value = '';
+    els.img.src = '';
+    els.imgWrap.style.display = 'none';
+    els.prompt.style.display = 'block';
+  }
+
+  function renderJSON() {
+    els.output.value = JSON.stringify(masterList, null, 2);
+    els.listCount.textContent = `${masterList.length} Baked Images`;
   }
 
   function clearTags() {
-    if(confirm("Clear all tags?")) {
-      tags = [];
-      renderMarkers();
-      updateJSON();
+    if(confirm("Clear current workspace tags?")) {
+        currentTags = [];
+        renderMarkers();
+    }
+  }
+
+  function clearList() {
+    if(confirm("Delete entire running list? This cannot be undone.")) {
+      masterList = [];
+      renderJSON();
     }
   }
 
