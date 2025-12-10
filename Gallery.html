@@ -2,585 +2,482 @@
 <html class="js" lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Gallery | WIKD Wraps</title>
+    <title>WIKD Wraps - Interactive Gallery</title>
+    
+    <!-- DEPENDENCIES -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://animatedicons.co/scripts/embed-animated-icons.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
     
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
     <style>
       :root {
-        --color-background: #050505;
+       --color-background: #050505;
         --color-text: #EAEAEA;
-        --color-primary: #FF3B30;
-        --color-surface: #111111;
+       --color-primary: #FF3B30;
+       --color-surface: #111111;
         --color-border: #2A2A2A;
+       --color-text-muted: #888888;
         --font-heading: 'Rajdhani', sans-serif;
         --font-body: 'Inter', sans-serif;
-    }
+      }
 
-    /* --- CORE BASE --- */
-    html { scroll-behavior: smooth; }
-    body {
-        background-color: var(--color-background) !important;
-        color: var(--color-text) !important;
-        font-family: var(--font-body) !important;
-        overflow-x: hidden;
-        position: relative;
-        margin: 0;
-        -webkit-font-smoothing: antialiased;
-    }
-    
-    /* --- NOISE TEXTURE --- */
-    body::before {
-        content: "";
-        position: fixed;
-        top: 0; left: 0; width: 100%; height: 100%;
-        pointer-events: none; 
-        z-index: 40; 
-        opacity: 0.05; 
-        background-repeat: repeat;
-        background-size: 150px 150px; 
-        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    }
+      /* --- CORE BASE --- */
+      html { scroll-behavior: smooth; }
+      body {
+          background-color: var(--color-background) !important;
+           color: var(--color-text) !important;
+          font-family: var(--font-body) !important;
+           overflow-x: hidden;
+           position: relative;
+           margin: 0;
+          -webkit-font-smoothing: antialiased;
+      }
+      
+      /* NOISE TEXTURE */
+      body::before {
+           content: "";
+           position: fixed;
+           top: 0; left: 0; width: 100%; height: 100%;
+          pointer-events: none; 
+           z-index: 40; 
+           opacity: 0.05;
+          background-repeat: repeat;
+          background-size: 150px 150px; 
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      }
 
-    /* --- TYPOGRAPHY --- */
-    h1, h2, h3, .font-heading {
-        font-family: var(--font-heading) !important;
-        font-weight: 700 !important;
-        line-height: 1.1 !important;
-        text-transform: uppercase !important;
-        color: white !important;
-        letter-spacing: 0.02em;
-    }
-    
-    p, .font-body { 
-      font-family: var(--font-body) !important; 
-      color: var(--color-text) !important; 
-      line-height: 1.6 !important;
-    }
-    .text-muted { color: var(--color-text-muted) !important; }
+      /* --- TYPOGRAPHY --- */
+      h1, h2, h3, .font-heading {
+          font-family: var(--font-heading) !important;
+          font-weight: 700 !important;
+          line-height: 1.1 !important;
+          text-transform: uppercase !important;
+           color: white !important;
+          letter-spacing: 0.02em;
+      }
+      p, .font-body { 
+          font-family: var(--font-body) !important; 
+          color: var(--color-text) !important; 
+          line-height: 1.6 !important;
+      }
+      .text-muted { color: var(--color-text-muted) !important; }
 
-    /* --- NAVIGATION STYLES --- */
-    .btn-wikd {
-        display: inline-flex; align-items: center; justify-content: center; height: 36px;
-        padding: 0 1.5rem; font-family: var(--font-heading); font-size: 14px;
-        font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;
-        text-decoration: none; cursor: pointer; transition: all 0.2s ease;
-        background-color: #FFFFFF; color: #000000; border: none;
-        clip-path: polygon(0 0, 100% 0, 100% 100%, 12px 100%, 0 70%); line-height: 1;
-        /* START: Added to disable text selection on buttons */
-        user-select: none;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        /* END: Added to disable text selection on buttons */
-    }
-    .btn-wikd:hover { background-color: #EAEAEA; transform: translateY(-1px); }
-
-    .nav-link {
-        position: relative; font-family: var(--font-heading); font-weight: 700;
-        text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text);
-        transition: color 0.2s ease; font-size: 15px; background: transparent;
-        border: none; cursor: pointer; display: inline-flex; align-items: center;
-        gap: 4px; line-height: 1; padding: 0;
-    }
-    .nav-link:hover { color: var(--color-primary); }
-
-    .dropdown-menu {
-        opacity: 0; visibility: hidden; transform: translateX(-50%) translateY(-15px);
-        transition: opacity 0.15s ease-out, transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.15s;
-        background-color: #050505; border: 1px solid #222; border-top: 2px solid var(--color-primary);
-        clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
-        padding: 0.5rem; padding-bottom: 1.5rem; display: flex; flex-direction: column;
-        gap: 4px; z-index: 100; box-shadow: 0 30px 60px -10px rgba(0,0,0,0.8);
-    }
-    .group:hover .dropdown-menu {
-        opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0);
-    }
-    .menu-label {
-        font-family: var(--font-heading); font-size: 0.65rem; font-weight: 800;
-        text-transform: uppercase; letter-spacing: 0.15em; color: #444;
-        padding: 0.75rem 1rem 0.25rem 1rem; pointer-events: none;
-    }
-    .menu-tile {
-        display: flex; align-items: center; gap: 0.75rem; width: 100%;
-        padding: 0.6rem 1rem; font-size: 0.9rem; font-weight: 600; color: #999;
-        background-color: #111; border: 1px solid #1A1A1A; transition: all 0.15s ease-out;
-        text-decoration: none; font-family: var(--font-body); letter-spacing: 0.02em;
-        border-radius: 0; line-height: 1.4;
-    }
-    .menu-tile:hover {
-        background-color: #161616; color: white; border-color: #333;
-        box-shadow: inset 3px 0 0 var(--color-primary); transform: translateX(2px);
-    }
-    .menu-tile i { color: #333; transition: color 0.15s ease; width: 18px; height: 18px; flex-shrink: 0; }
-    .menu-tile:hover i { color: var(--color-primary); }
-    .menu-expand-row {
-        display: flex; flex-direction: column; width: 100%; padding: 0.6rem 1rem;
-        font-size: 0.9rem; font-weight: 600; color: #999; background-color: #111;
-        border: 1px solid #1A1A1A; transition: all 0.2s ease; text-decoration: none;
-        border-radius: 0; min-height: 42px; height: auto;
-    }
-    .menu-expand-row:hover {
-        background-color: #161616; color: white; border-color: #333;
-        box-shadow: inset 3px 0 0 var(--color-primary); transform: translateX(2px);
-    }
-    .menu-expand-description {
-        max-height: 0; opacity: 0; overflow: hidden; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        font-size: 0.75rem; color: #666; font-weight: 400; margin-left: 2rem;
-        line-height: 1.3; padding-top: 0;
-    }
-    .menu-expand-row:hover .menu-expand-description {
-        max-height: 100px; opacity: 1; padding-top: 0.25rem;
-    }
-    .menu-expand-row i { color: #333; transition: color 0.15s ease; }
-    .menu-expand-row:hover i { color: var(--color-primary); }
-    .menu-tile-main {
-        background: linear-gradient(90deg, #161616 0%, #0A0A0A 100%);
-        border: 1px solid #222; color: white; font-family: var(--font-heading);
-        font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
-        padding: 0.75rem 1rem; display: flex; justify-content: space-between;
-        align-items: center; margin-bottom: 0.25rem;
-    }
-    .menu-tile-main:hover { border-color: #444; color: var(--color-primary); }
-
-    /* QR TOOLTIP */
-    .qr-tooltip {
-        position: absolute; top: 100%; left: 50%;
-        transform: translateX(-50%) translateY(10px); margin-top: 20px;
-        background-color: #141414; border: 1px solid var(--color-border);
-        border-radius: 12px; padding: 0.75rem; z-index: 2006;
-        text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-        opacity: 0; visibility: hidden; transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
-        pointer-events: none;
-    }
-    .group\/call:hover .qr-tooltip {
-        opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); pointer-events: auto;
-    }
-    .qr-tooltip::before {
-        content: ''; position: absolute; bottom: 100%; left: 50%;
-        transform: translateX(-50%); border-width: 8px; border-style: solid;
-        border-color: transparent transparent var(--color-border) transparent;
-    }
-
-    /* MOBILE MENU */
-    #mobile-menu {
-        transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
-        max-height: 0; opacity: 0; overflow: hidden; background-color: #000;
-        border-bottom: 1px solid #222;
-    }
-    #mobile-menu.open { max-height: 100vh; opacity: 1; }
-    .logo-text { font-family: var(--font-heading); font-weight: 800; text-transform: uppercase; line-height: 1; }
-
-    /* NAVBAR GRADIENT */
-    nav::before {
-        content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100px;
-        background: linear-gradient(
-            to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.8) 40%, transparent 100%
-        );
-        z-index: -1; pointer-events: none;
-    }
-
-    /* REMOVED original main block - styles moved inline on <main> tag for layout control */
-    
-    /* --- PROJECT SECTIONS & GALLERY STYLES --- */
-    .project-section {
-        margin-bottom: 2rem; 
-        padding-bottom: 1rem; 
-        contain: content; 
-        position: relative;
-        overflow: hidden;
-        z-index: 1; 
-    }
-    .project-section:last-child { margin-bottom: 0; }
-
-    /* --- CAROUSEL STYLES --- */
-    .ticker-view {
-        overflow: hidden; 
-        width: 100%; 
-        padding: 1rem 0; 
-        position: relative;
-        /* Fade edges slightly */
-        mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
-        -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
-    }
-
-    .ticker-track {
-        display: flex; 
-        gap: 1.5rem; 
-        width: fit-content; 
-        will-change: transform;
-        transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-        transform: translateX(0);
-    }
-    
-    /* --- NAV ARROWS (CAROUSEL) --- */
-    .nav-arrow {
-        /* Carousel Specific Positioning/Transforms */
+      /* --- TOOLTIP & HOTSPOT CSS --- */
+      
+      .tune-hotspot {
         position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        z-index: 50;
-
-        /* Shared Visual Styles */
-        background-color: rgba(0,0,0,0.8);
-        border: 1px solid #333;
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        width: 24px; height: 24px;
+        box-sizing: border-box; 
         cursor: pointer;
-        transition: all 0.2s ease;
-        outline: none;
-        backdrop-filter: blur(4px);
-        opacity: 1;
-        width: 50px;
-        height: 50px;
-        padding: 0;
+        z-index: 20010; /* Above overlay layer */
+        transform: translate(-50%, -50%); /* Center on coordinate */
+        transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        pointer-events: auto; /* CRITICAL: Re-enable clicks */
+      }
+      .tune-hotspot:hover { transform: translate(-50%, -50%) scale(1.1); filter: brightness(1.2); }
 
-        /* Unique clip-path shape */
-        clip-path: polygon(20% 0%, 0% 20%, 0% 100%, 80% 100%, 100% 80%, 100% 0%);
-    }
-    
-    .nav-arrow:hover {
-        background-color: var(--color-primary);
-        border-color: var(--color-primary);
-        transform: translateY(-50%) scale(1.1);
-    }
-    .nav-arrow:active {
-        transform: translateY(-50%) scale(0.95);
-    }
-    .nav-arrow-left { 
-        left: 1rem; 
-    }
-    .nav-arrow-right { 
-        right: 1rem; 
-    }
-    
-    .nav-arrow:disabled, .nav-arrow.disabled, .lightbox-nav:disabled, .lightbox-nav.disabled {
-        opacity: 0.3;
-        cursor: not-allowed;
-        pointer-events: none;
-    }
+      /* Service (Circle) */
+      .tune-hotspot[data-type="service"] {
+        border-radius: 50%;
+        background: rgba(20, 20, 20, 0.4); 
+        border: 2px solid rgba(255, 255, 255, 0.9); 
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+      }
+      .tune-hotspot[data-type="service"]::before {
+        content: ''; position: absolute; top: 50%; left: 50%;
+        transform: translate(-50%, -50%); width: 8px; height: 8px;
+        background: currentColor; border-radius: 50%; box-shadow: 0 0 10px currentColor;
+      }
+      .tune-hotspot[data-type="service"]::after {
+        content: ''; position: absolute; top: -4px; left: -4px; right: -4px; bottom: -4px;
+        border-radius: 50%; border: 1px solid currentColor; opacity: 0;
+        animation: pulse-ring-circle 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+      }
+      @keyframes pulse-ring-circle { 0% { transform: scale(0.8); opacity: 0.6; } 100% { transform: scale(2.0); opacity: 0; } }
 
-    @media (max-width: 768px) {
-        .nav-arrow { width: 40px; height: 40px; }
-        .nav-arrow-left { left: 0.5rem; }
-        .nav-arrow-right { right: 0.5rem; }
-    }
-    
-    /* * --- LIGHTBOX NAV STYLES (MODIFIED) --- * */
-    .lightbox-nav {
-        /* Base styles */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        /* Kept transition for hover/active state responsiveness */
-        transition: all 0.2s ease; 
-        outline: none;
-        
-        width: 36px; /* Width set to match height for square icon button */
-        height: 36px; 
-        background-color: #FFFFFF; 
-        color: #000000; /* Icon color */
-        border: none;
-        padding: 0;
-        z-index: 1000;
+      /* Nano (Triangle) */
+      .tune-hotspot[data-type="nano"] {
+        width: 30px; height: 26px; border: none; box-shadow: none; background: none; 
+      }
+      .tune-hotspot[data-type="nano"] svg {
+        display: block; width: 100%; height: 100%; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
+      }
+      .tune-hotspot[data-type="nano"]::after {
+        content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
+        z-index: 0; background: currentColor;
+        clip-path: polygon(50% 0%, 0% 100%, 100% 100%, 50% 0%, 50% 2px, 98% 98%, 2% 98%, 50% 2px);
+        opacity: 0; transform-origin: 50% 62%;
+        animation: pulse-ring-triangle 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+      }
+      @keyframes pulse-ring-triangle { 0% { transform: scale(0.8); opacity: 0.6; } 100% { transform: scale(2.0); opacity: 0; } }
 
-        /* MODIFIED SHADOW: Normal black drop shadow */
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
-        
-        /* Reset clip-path from inheriting the cut shape, add slight rounding */
-        clip-path: none; 
-        border-radius: 4px; 
-        /* MODIFIED: Initial animation state and transition now managed by container children rules below */
-        transform: none; 
-        position: relative;
-    }
-    
-    /* === NEW: Keep space but hide content for boundary navigation === */
-    .lightbox-nav.hidden-placeholder {
-        visibility: hidden;
-        pointer-events: none;
-        /* NEW: Explicitly set target hidden state to match default hidden state */
-        opacity: 0;
-        transform: translateY(10px);
-        /* FIX: Override slow inherited transition (0.5s) with a fast exit (0.15s) 
-            and ensure visibility switches immediately after the fade (delay 0.15s) */
-        transition: opacity 0.15s ease-out, transform 0.15s ease-out, visibility 0s 0.15s;
-    }
-    /* ============================================================= */
+      /* Ping (Square) */
+      .tune-hotspot[data-type="ping"] {
+        width: 24px; height: 24px;
+        background: rgba(20, 20, 20, 0.6);
+        border: 2px solid rgba(255, 255, 255, 0.9);
+        border-radius: 2px; box-shadow: 0 0 10px rgba(0,0,0,0.8);
+      }
+      .tune-hotspot[data-type="ping"]::before {
+        content: ''; position: absolute; top: 50%; left: 50%;
+        transform: translate(-50%, -50%); width: 8px; height: 8px;
+        background: currentColor; border-radius: 1px; box-shadow: 0 0 8px currentColor;
+      }
+      .tune-hotspot[data-type="ping"]::after {
+        content: ''; position: absolute; top: -4px; left: -4px; right: -4px; bottom: -4px;
+        border: 1px solid currentColor; border-radius: 2px; opacity: 0;
+        animation: pulse-ring-square 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+      }
+      @keyframes pulse-ring-square { 0% { transform: scale(0.8); opacity: 0.6; } 100% { transform: scale(2.0); opacity: 0; } }
 
-    /* Specific clip-path for the PREV button (Left Cut) - Replicating original .btn-wikd cut */
-    #lightbox-prev {
-        clip-path: polygon(0 0, 100% 0, 100% 100%, 12px 100%, 0 70%); 
-        border-radius: 0;
-    }
-
-    /* Specific clip-path for the NEXT button (Right Cut) - Cut off the right bottom corner */
-    #lightbox-next {
-        clip-path: polygon(0 0, 100% 0, 100% 70%, calc(100% - 12px) 100%, 0 100%);
-        border-radius: 0;
-    }
-
-    .lightbox-nav:hover {
-        background-color: #EAEAEA;
-        transform: translateY(-1px);
-        color: var(--color-primary); /* Icon changes color on hover */
-    }
-
-    .lightbox-nav:active {
-        transform: scale(0.95);
-    }
-    .lightbox-nav i { 
-        width: 1.25rem; 
-        height: 1.25rem; 
-    }
-
-    /* --- GALLERY ITEM STYLES (MODIFIED to use percentage widths based on desired columns) --- */
-    .gallery-item {
-        /* Mobile: Show ~1.5 items visible (66.66%) - Replaces 70vw */
-        flex: 0 0 calc(66.66% - 1rem); 
-        position: relative; aspect-ratio: 16/9;  
-        border-radius: 2px; overflow: hidden;
-        border: 1px solid var(--color-border); background: var(--color-surface);
-        transition: border-color 0.3s ease, transform 0.3s ease;
-    }
-    .gallery-item:hover { cursor: pointer; border-color: var(--color-primary); }
-    
-    @media (min-width: 768px) { 
-        /* Tablet: Show ~2.5 items visible (38%) - Replaces 40vw */
-        .gallery-item { flex: 0 0 calc(38% - 1rem); } 
-    }
-    @media (min-width: 1024px) { 
-        /* Desktop: Show ~3.5 items visible (26%) - Replaces 28vw */
-        .gallery-item { flex: 0 0 calc(26% - 1rem); } 
-    }
-
-    /* Image & Skeleton Loading (Unchanged) */
-    .gallery-img {
-        width: 100%; height: 100%; object-fit: cover; opacity: 0;
-        transition: opacity 0.6s ease-out, transform 0.6s ease;
-        transform: scale(1.02); display: block;
-    }
-    .gallery-img.loaded { opacity: 1; transform: scale(1); }
-    .gallery-item:hover .gallery-img { transform: scale(1.05); }
-
-    .skeleton-loader {
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        background: linear-gradient(90deg, #111 25%, #1a1a1a 50%, #111 75%);
-        background-size: 200% 100%; animation: shimmer 2s infinite;
-        z-index: -1;
-    }
-    
-    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-
-    /* --- LIGHTBOX STYLES (CRITICALLY FIXED FOR MAXIMIZATION) --- */
-    #lightbox {
-        position: fixed; inset: 0; z-index: 10000;
-        background: rgba(0,0,0,0.95); backdrop-filter: blur(15px);
-        display: block; 
-        opacity: 0; pointer-events: none;
-        transition: opacity 0.3s ease;
-    }
-    #lightbox.active { opacity: 1; pointer-events: all; }
-
-    /* CRITICAL FIX: The Wrapper */
-    /* By using 100dvh we respect mobile browser bars. 
-       By removing the 4rem padding, we allow the image to use the full height. */
-    .lightbox-content-aligner {
-        position: relative;
-        width: 100%;
-        max-width: 1400px;
-        /* Use dvh for better mobile support, fallback to vh */
-        height: 100vh;
-        height: 100dvh; 
-        margin: 0 auto;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        /* Padding removed to ensure full-bleed capability within the 1400px container.
-           We add a tiny safety buffer on width so it doesn't touch the exact edge on mobile. */
-        padding: 0 0.5rem; 
-        box-sizing: border-box;
-    }
-    
-    .lightbox-content {
-        position: relative;
-        /* Force the content box to fill the aligner completely */
-        width: 100%;
-        height: 100%;
-        display: flex; 
-        justify-content: center; 
-        align-items: center;
-        /* Ensure no overflow clips the shadows, but contain the image */
-        overflow: hidden; 
-    }
-    
-    #lightbox-img {
-        /* CRITICAL FIX:
-           object-fit: contain ensures the image is never cropped.
-           width/height: 100% ensures it expands to hit the boundaries of the parent
-           (which is now the full 1400px/100vh container). */
-        width: 100%; 
-        height: 100%; 
-        object-fit: contain; 
-        max-width: none; /* Remove conflicting max-widths */
-        max-height: none;
-        
-        border: none; /* Remove border as it messes with exact edge calculations sometimes */
-        box-shadow: 0 0 50px rgba(0,0,0,0.8);
-        transform: scale(0.95); 
-        transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-        user-select: none;
-        -webkit-user-drag: none;
-    }
-    
-    #lightbox.active #lightbox-img { 
-        transform: scale(1); 
-    }
-    
-    /* MODIFIED LIGHTBOX CLOSE BUTTON */
-    .lightbox-close {
+      /* Tooltip Popup */
+      .tune-tooltip {
         position: absolute; 
-        cursor: pointer;
-        z-index: 10001;
-        transition: all 0.2s ease;
-        display: flex; 
-        align-items: center; 
-        justify-content: center;
-        height: 36px;
-        padding: 0 1.5rem;
-        background-color: rgba(17, 17, 17, 0.6); 
-        color: var(--color-text); 
-        clip-path: polygon(0 0, 100% 0, 100% 100%, 12px 100%, 0 70%);
+        background: var(--color-surface);
         border: 1px solid var(--color-border);
-        line-height: 1;
-        opacity: 0.8; 
-        font-family: var(--font-heading); 
-        font-size: 14px; 
-        font-weight: 800; 
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
-    }
-    
-    .lightbox-close:hover { 
-        background-color: rgba(17, 17, 17, 0.9);
-        transform: translateY(-1px);
-        color: var(--color-primary); 
-        border-color: var(--color-primary); 
-        opacity: 1; 
-    }
+        border-left: 3px solid var(--theme-color, #fff); 
+        border-radius: 4px; 
+        box-shadow: 0 20px 40px -10px rgba(0,0,0,0.9), 0 0 0 1px rgba(0,0,0,0.5);
+        opacity: 0; pointer-events: none; 
+        z-index: 20020; /* Highest Z-Index */
+        visibility: hidden;
+        transform: translateX(-50%) translateY(-100%) scale(0.5);
+        transform-origin: bottom center; 
+        transition: opacity 0.2s, transform 0.2s, visibility 0.2s;
+        
+        /* Tailwind Reset Overrides for Tooltip Content */
+        text-align: left;
+        line-height: 1.4;
+        color: var(--color-text);
+      }
+      .tune-tooltip.visible {
+        opacity: 1; visibility: visible; pointer-events: auto;
+        transform: translateX(-50%) translateY(calc(-100% - 12px)) scale(1);
+      }
+      .tune-tooltip.type-service { width: 260px; padding: 16px; }
+      .tune-tooltip.type-nano { width: 280px; padding: 16px; }
+      .tune-tooltip.type-ping { width: 320px; height: 320px; padding: 0; display: flex; flex-direction: column; overflow: hidden; background: #000; }
 
-    
-    /* --- NEW LIGHTBOX CTA STYLES --- */
-    .lightbox-cta-container {
-        position: absolute;
-        bottom: 2rem; /* Positioned near bottom, sits on TOP of image if image is full height */
-        left: 50%;
-        transform: translateX(-50%); 
-        opacity: 1; 
-        transition: none;
-        z-index: 10002;
-        width: max-content;
-        display: flex; 
-        gap: 0.75rem;      
-        align-items: center;
-    }
-    
-    .lightbox-cta-container > * {
-        opacity: 0;
-        transform: translateY(10px);
-        transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    }
+      .tune-tooltip.flip { transform: translateX(-50%) translateY(0px) scale(0.5); transform-origin: top center; }
+      .tune-tooltip.flip.visible { transform: translateX(-50%) translateY(12px) scale(1); }
+      
+      .tune-tooltip::after {
+        content: ''; position: absolute; left: 50%; width: 12px; height: 12px;
+        background: var(--color-surface); border-right: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border);
+        transition: all 0.25s; top: 100%; transform: translateX(-50%) translateY(-6px) rotate(45deg); 
+      }
+      .tune-tooltip.type-ping::after { background: #000; }
+      .tune-tooltip.flip::after { top: -6px; transform: translateX(-50%) rotate(225deg); }
 
-    .lightbox-cta-container.visible > * {
-        opacity: 1;
-        transform: translateY(0);
-    }
+      /* Tooltip Content Styles */
+      .tt-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--color-border); height: 50px; }
+      .tt-title { flex-grow: 1; min-width: 0; }
+      
+      /* Explicitly fix Headings overridden by Tailwind */
+      .tt-title h4 { 
+          margin: 0; font-family: var(--font-heading); font-size: 20px; font-weight: 700; 
+          text-transform: uppercase; color: #fff; line-height: 1; margin-bottom: 2px; white-space: nowrap; 
+      }
+      .tt-title span { 
+          font-size: 11px; color: var(--color-text-muted); font-weight: 500; 
+          text-transform: uppercase; letter-spacing: 0.5px; display: block;
+      }
+      
+      .tt-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+      .stat-item { 
+        background: rgba(255,255,255,0.02); border-radius: 2px; border: 1px solid transparent; 
+        text-align: center; transition: border-color 0.3s; position: relative; height: 44px; overflow: hidden; display: block; 
+      }
+      .tune-tooltip:hover .stat-item { border-color: rgba(255,255,255,0.05); }
+      
+      .stat-face {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        display: flex; flex-direction: column; justify-content: center; align-items: center;
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+        backface-visibility: hidden;
+      }
+      .stat-face.front { opacity: 1; transform: translateY(0); }
+      .stat-face.back { opacity: 0; transform: translateY(100%); }
+      .stat-item:hover .stat-face.front { opacity: 0; transform: translateY(-100%); }
+      .stat-item:hover .stat-face.back { opacity: 1; transform: translateY(0); }
+      
+      .stat-val { display: block; font-family: var(--font-heading); font-size: 18px; font-weight: 700; color: var(--theme-color); line-height: 1.1; }
+      .type-nano .stat-val, .type-ping .stat-val { font-size: 20px; }
+      .stat-label { font-size: 10px; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; display: block;}
+      
+      .btn-learn {
+        display: block; width: 100%; padding: 8px; text-align: center; background: rgba(255,255,255,0.05); color: var(--color-text-muted); font-size: 11px;
+        text-transform: uppercase; letter-spacing: 1px; text-decoration: none; border-radius: 2px; transition: all 0.2s; font-family: var(--font-heading); font-weight: 600; box-sizing: border-box; 
+      }
+      .btn-learn:hover { background: var(--theme-color); color: #000; }
+      
+      .nano-chart-wrap { width: 100px; height: 40px; position: relative; flex-shrink: 0; margin-left: auto; }
+      
+      /* PING Content */
+      .ping-iframe-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+      .ping-iframe-layer iframe { width: 100%; height: 100%; border: none; }
+      .ping-content-layer {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;
+        pointer-events: none; display: flex; flex-direction: column; justify-content: space-between;
+        padding: 24px; box-sizing: border-box;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, transparent 40%, transparent 60%, rgba(0,0,0,0.9) 100%);
+      }
+      .ping-header-text h4 { margin: 0; font-family: var(--font-heading); font-size: 24px; font-weight: 700; text-transform: uppercase; color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,0.8); line-height: 1; margin-bottom: 4px; }
+      .ping-header-text span { font-size: 12px; color: rgba(255,255,255,0.9); font-weight: 500; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+      .ping-content-layer .btn-learn { pointer-events: auto; background: var(--theme-color); color: #000; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border: none; font-weight: 700; }
+      .ping-content-layer .btn-learn:hover { filter: brightness(1.15); }
+      
+      canvas { width: 100% !important; height: 100% !important; }
+      .tune-bar-wrap { width: 100%; height: 4px; background: rgba(255,255,255,0.1); overflow: hidden; position: relative; margin-top: 4px; }
+      .tune-bar-fill { height: 100%; width: 0; background: var(--theme-color); box-shadow: 0 0 10px var(--theme-color); transition: width 1s cubic-bezier(0.22, 1, 0.36, 1); }
 
-    .lightbox-nav {
-        transition-delay: 0.2s; 
-    }
 
-    .lightbox-btn {
-        background-color: var(--color-primary) !important;
-        color: white !important;
-        border: 1px solid var(--color-primary); 
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
-        clip-path: none !important;
-        border-radius: 0; 
-    }
-    
-    .lightbox-btn:hover {
-        background-color: #D6342A !important; 
-        border-color: #D6342A !important;
-    }
+      /* --- GALLERY & NAV STYLES --- */
+      .btn-wikd {
+           display: inline-flex; align-items: center; justify-content: center; height: 36px;
+           padding: 0 1.5rem; font-family: var(--font-heading); font-size: 14px;
+          font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;
+          text-decoration: none; cursor: pointer; transition: all 0.2s ease;
+          background-color: #FFFFFF; color: #000000; border: none;
+           clip-path: polygon(0 0, 100% 0, 100% 100%, 12px 100%, 0 70%); line-height: 1;
+          user-select: none;
+      }
+      .btn-wikd:hover { background-color: #EAEAEA; transform: translateY(-1px); }
 
-    .gallery-block { position: relative; }
+      .nav-link {
+           position: relative; font-family: var(--font-heading); font-weight: 700;
+          text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text);
+           transition: color 0.2s ease; font-size: 15px; background: transparent;
+           border: none; cursor: pointer; display: inline-flex; align-items: center;
+           gap: 4px; line-height: 1; padding: 0;
+      }
+      .nav-link:hover { color: var(--color-primary); }
 
-    /* --- FOOTER (Unchanged) --- */
-    .wikd-footer {
-        background-color: #080808; border-top: 1px solid var(--color-border);
-        padding: 5rem 0 2rem; position: relative;
-    }
-    .wikd-footer-container { width: 92%; max-width: 1400px; margin: 0 auto; }
-    .wikd-footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; margin-bottom: 4rem; }
-    .wikd-footer-logo { width: 200px; height: auto; opacity: 0.9; }
-    .wikd-footer-links a {
-        color: var(--color-text-muted); text-decoration: none;
-        font-size: 0.9rem; transition: all 0.3s ease; display: block; margin-bottom: 0.8rem;
-    }
-    .wikd-footer-links a:hover { color: var(--color-primary); transform: translateX(5px); }
-    .wikd-footer-column h3 {
-        font-family: var(--font-heading); font-size: 1.2rem; color: white;
-        margin-bottom: 1.5rem; letter-spacing: 1px; border-left: 3px solid var(--color-primary);
-        padding-left: 1rem;
-    }
-    .wikd-footer-bottom {
-        border-top: 1px solid var(--color-border); padding-top: 2rem;
-        display: flex; justify-content: space-between; color: var(--color-text-muted); font-size: 0.85rem;
-    }
+      /* DROPDOWNS */
+      .dropdown-menu {
+           opacity: 0; visibility: hidden; transform: translateX(-50%) translateY(-15px);
+           transition: opacity 0.15s ease-out, transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.15s;
+          background-color: #050505; border: 1px solid #222; border-top: 2px solid var(--color-primary);
+           clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+           padding: 0.5rem; padding-bottom: 1.5rem; display: flex; flex-direction: column;
+           gap: 4px; z-index: 100; box-shadow: 0 30px 60px -10px rgba(0,0,0,0.8);
+      }
+      .group:hover .dropdown-menu { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+      .menu-label { font-family: var(--font-heading); font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.15em; color: #444; padding: 0.75rem 1rem 0.25rem 1rem; pointer-events: none; }
+      .menu-tile {
+           display: flex; align-items: center; gap: 0.75rem; width: 100%;
+           padding: 0.6rem 1rem; font-size: 0.9rem; font-weight: 600; color: #999;
+          background-color: #111; border: 1px solid #1A1A1A; transition: all 0.15s ease-out;
+          text-decoration: none; font-family: var(--font-body); letter-spacing: 0.02em;
+          border-radius: 0; line-height: 1.4;
+      }
+      .menu-tile:hover {
+          background-color: #161616; color: white; border-color: #333;
+           box-shadow: inset 3px 0 0 var(--color-primary); transform: translateX(2px);
+      }
+      .menu-tile i { color: #333; transition: color 0.15s ease; width: 18px; height: 18px; flex-shrink: 0; }
+      .menu-tile:hover i { color: var(--color-primary); }
+      .menu-tile-main {
+           background: linear-gradient(90deg, #161616 0%, #0A0A0A 100%);
+           border: 1px solid #222; color: white; font-family: var(--font-heading);
+          font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+           padding: 0.75rem 1rem; display: flex; justify-content: space-between;
+          align-items: center; margin-bottom: 0.25rem;
+      }
+      .menu-tile-main:hover { border-color: #444; color: var(--color-primary); }
 
-    @media (max-width: 992px) { .wikd-footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; margin-bottom: 4rem; } .wikd-footer-brand { grid-column: 1 / 2; } }
-    @media (max-width: 640px) { .wikd-footer-grid { grid-template-columns: 1fr; } .wikd-footer-bottom { flex-direction: column; gap: 1rem; text-align: center; } }
+      /* QR TOOLTIP */
+      .qr-tooltip {
+           position: absolute; top: 100%; left: 50%;
+           transform: translateX(-50%) translateY(10px); margin-top: 20px;
+          background-color: #141414; border: 1px solid var(--color-border);
+          border-radius: 12px; padding: 0.75rem; z-index: 2006;
+           text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+           opacity: 0; visibility: hidden; transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+          pointer-events: none;
+      }
+      .group\/call:hover .qr-tooltip { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+      .qr-tooltip::before {
+           content: ''; position: absolute; bottom: 100%; left: 50%;
+           transform: translateX(-50%); border-width: 8px; border-style: solid;
+          border-color: transparent transparent var(--color-border) transparent;
+      }
+
+      /* MOBILE MENU */
+      #mobile-menu {
+           transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+           max-height: 0; opacity: 0; overflow: hidden; background-color: #000;
+          border-bottom: 1px solid #222;
+      }
+      #mobile-menu.open { max-height: 100vh; opacity: 1; }
+      .logo-text { font-family: var(--font-heading); font-weight: 800; text-transform: uppercase; line-height: 1; }
+      nav::before {
+           content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100px;
+           background: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.8) 40%, transparent 100%);
+           z-index: -1; pointer-events: none;
+      }
+
+      /* GALLERY LAYOUT */
+      .project-section { margin-bottom: 2rem; padding-bottom: 1rem; contain: content; position: relative; overflow: hidden; z-index: 1; }
+      .project-section:last-child { margin-bottom: 0; }
+
+      .ticker-view {
+           overflow: hidden; width: 100%; padding: 1rem 0; position: relative;
+           mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+          -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+      }
+      .ticker-track { display: flex; gap: 1.5rem; width: fit-content; will-change: transform; transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); transform: translateX(0); }
+      
+      .nav-arrow {
+           position: absolute; top: 50%; transform: translateY(-50%); z-index: 50;
+          background-color: rgba(0,0,0,0.8); border: 1px solid #333; color: white;
+           display: flex; align-items: center; justify-content: center; cursor: pointer;
+           transition: all 0.2s ease; outline: none; backdrop-filter: blur(4px);
+           opacity: 1; width: 50px; height: 50px; padding: 0;
+           clip-path: polygon(20% 0%, 0% 20%, 0% 100%, 80% 100%, 100% 80%, 100% 0%);
+      }
+      .nav-arrow:hover { background-color: var(--color-primary); border-color: var(--color-primary); transform: translateY(-50%) scale(1.1); }
+      .nav-arrow:active { transform: translateY(-50%) scale(0.95); }
+      .nav-arrow-left { left: 1rem; }
+      .nav-arrow-right { right: 1rem; }
+      .nav-arrow:disabled, .nav-arrow.disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
+      
+      .gallery-item {
+           flex: 0 0 calc(66.66% - 1rem); position: relative; aspect-ratio: 16/9;   
+          border-radius: 2px; overflow: hidden;
+           border: 1px solid var(--color-border); background: var(--color-surface);
+           transition: border-color 0.3s ease, transform 0.3s ease;
+      }
+      .gallery-item:hover { cursor: pointer; border-color: var(--color-primary); }
+      @media (min-width: 768px) { .gallery-item { flex: 0 0 calc(38% - 1rem); } }
+      @media (min-width: 1024px) { .gallery-item { flex: 0 0 calc(26% - 1rem); } }
+
+      .gallery-img { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.6s ease-out, transform 0.6s ease; transform: scale(1.02); display: block; }
+      .gallery-img.loaded { opacity: 1; transform: scale(1); }
+      .gallery-item:hover .gallery-img { transform: scale(1.05); }
+
+      .skeleton-loader {
+           position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+           background: linear-gradient(90deg, #111 25%, #1a1a1a 50%, #111 75%);
+          background-size: 200% 100%; animation: shimmer 2s infinite; z-index: -1;
+      }
+      @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+      /* --- LIGHTBOX (MODIFIED FOR HOTSPOTS) --- */
+      #lightbox {
+           position: fixed; inset: 0; z-index: 10000;
+           background: rgba(0,0,0,0.95); backdrop-filter: blur(15px);
+           display: block; opacity: 0; pointer-events: none;
+           transition: opacity 0.3s ease;
+      }
+      #lightbox.active { opacity: 1; pointer-events: all; }
+
+      .lightbox-content-aligner {
+           position: relative; width: 100%; max-width: 1400px; height: 100dvh;
+           margin: 0 auto; display: flex; justify-content: center; align-items: center;
+           padding: 0 0.5rem; box-sizing: border-box;
+      }
+      .lightbox-content {
+           position: relative; width: 100%; height: 100%; display: flex;
+          justify-content: center; align-items: center; 
+          /* FIX: Removed overflow:hidden to allow tooltips to extend beyond bounds */
+          overflow: visible;
+      }
+      
+      #lightbox-img {
+           width: 100%; height: 100%; object-fit: contain;
+           max-width: none; max-height: none; border: none;
+           box-shadow: 0 0 50px rgba(0,0,0,0.8);
+           transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+          user-select: none; -webkit-user-drag: none;
+      }
+      #lightbox.active #lightbox-img { transform: scale(1); }
+      
+      /* HOTSPOT LAYER OVERLAY - CRITICAL: Absolute position, zero dimensions initially. JS will size it. */
+      #lightbox-hotspots-layer {
+          position: absolute;
+          pointer-events: none; /* Allows clicks to pass through to image unless hitting a tag */
+          z-index: 10005; 
+          /* Top/Left/Width/Height calculated by JS */
+      }
+
+      .lightbox-close {
+           position: absolute; cursor: pointer; z-index: 10001;
+           transition: all 0.2s ease; display: flex; align-items: center; justify-content: center;
+           height: 36px; padding: 0 1.5rem; background-color: rgba(17, 17, 17, 0.6);
+           color: var(--color-text); clip-path: polygon(0 0, 100% 0, 100% 100%, 12px 100%, 0 70%);
+           border: 1px solid var(--color-border); line-height: 1; opacity: 0.8;
+          font-family: var(--font-heading); font-size: 14px; font-weight: 800;
+          text-transform: uppercase; letter-spacing: 0.05em; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+      }
+      .lightbox-close:hover { background-color: rgba(17, 17, 17, 0.9); transform: translateY(-1px); color: var(--color-primary); border-color: var(--color-primary); opacity: 1; }
+
+      .lightbox-cta-container {
+           position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+           opacity: 1; transition: none; z-index: 10002; width: max-content;
+           display: flex; gap: 0.75rem; align-items: center;
+      }
+      .lightbox-cta-container > * { opacity: 0; transform: translateY(10px); transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+      .lightbox-cta-container.visible > * { opacity: 1; transform: translateY(0); }
+
+      .lightbox-nav {
+           display: flex; align-items: center; justify-content: center; cursor: pointer;
+           transition: all 0.2s ease; outline: none; width: 36px; height: 36px;
+          background-color: #FFFFFF; color: #000000; border: none; padding: 0; z-index: 1000;
+           box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8); border-radius: 4px; transform: none; position: relative;
+      }
+      .lightbox-nav.hidden-placeholder { visibility: hidden; pointer-events: none; opacity: 0; transform: translateY(10px); transition: opacity 0.15s ease-out, transform 0.15s ease-out, visibility 0s 0.15s; }
+      #lightbox-prev { clip-path: polygon(0 0, 100% 0, 100% 100%, 12px 100%, 0 70%); border-radius: 0; }
+      #lightbox-next { clip-path: polygon(0 0, 100% 0, 100% 70%, calc(100% - 12px) 100%, 0 100%); border-radius: 0; }
+      .lightbox-nav:hover { background-color: #EAEAEA; transform: translateY(-1px); color: var(--color-primary); }
+      
+      .lightbox-btn {
+          background-color: var(--color-primary) !important; color: white !important;
+           border: 1px solid var(--color-primary); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+           clip-path: none !important; border-radius: 0;
+      }
+      .lightbox-btn:hover { background-color: #D6342A !important; border-color: #D6342A !important; }
+
+      /* FOOTER */
+      .wikd-footer { background-color: #080808; border-top: 1px solid var(--color-border); padding: 5rem 0 2rem; position: relative; }
+      .wikd-footer-container { width: 92%; max-width: 1400px; margin: 0 auto; }
+      .wikd-footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; margin-bottom: 4rem; }
+      .wikd-footer-logo { width: 200px; height: auto; opacity: 0.9; }
+      .wikd-footer-links a { color: var(--color-text-muted); text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease; display: block; margin-bottom: 0.8rem; }
+      .wikd-footer-links a:hover { color: var(--color-primary); transform: translateX(5px); }
+      .wikd-footer-column h3 { font-family: var(--font-heading); font-size: 1.2rem; color: white; margin-bottom: 1.5rem; letter-spacing: 1px; border-left: 3px solid var(--color-primary); padding-left: 1rem; }
+      .wikd-footer-bottom { border-top: 1px solid var(--color-border); padding-top: 2rem; display: flex; justify-content: space-between; color: var(--color-text-muted); font-size: 0.85rem; }
+      @media (max-width: 992px) { .wikd-footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; margin-bottom: 4rem; } }
+      @media (max-width: 640px) { .wikd-footer-grid { grid-template-columns: 1fr; } .wikd-footer-bottom { flex-direction: column; gap: 1rem; text-align: center; } }
     </style>
 </head>
 <body>
 
-    <!-- Lightbox Component with Navigation -->
+    <!-- LIGHTBOX -->
     <div id="lightbox">
-        <!-- NEW: Wrapper to constrain all lightbox content (image + controls) to 1400px max width and center it -->
         <div class="lightbox-content-aligner">
-            
-            <!-- CLOSE Button: Positioned relative to the lightbox-content-aligner's top/right -->
             <div class="lightbox-close" style="position: absolute; top: 1rem; right: 1rem; pointer-events: auto;">CLOSE</div>
-
             <div class="lightbox-content">
                 <img id="lightbox-img" src="" alt="Full View">
+                <!-- HOTSPOT LAYER: Dynamically resized via JS to match image dimensions -->
+                <div id="lightbox-hotspots-layer"></div>
             </div>
             
-            <!-- CTA Container: Centered via left: 50% / transform: translateX(-50%) relative to the lightbox-content-aligner -->
             <div id="lightbox-cta-container" class="lightbox-cta-container" style="pointer-events: auto;">
-                <!-- #lightbox-prev will use the left-cut clip-path via its ID -->
                 <button id="lightbox-prev" class="lightbox-nav" onclick="navigateLightbox(-1)">
                     <i data-lucide="chevron-left" class="w-8 h-8"></i>
                 </button>
-                
-                <!-- CTA Button is now a normal rectangle via the modified .lightbox-btn class, and is red -->
                 <a href="https://wikdwraps.com/pages/estimate-configurator" id="lightbox-cta-btn" class="btn-wikd lightbox-btn">
                     GET AN INSTANT QUOTE
                 </a>
-
-                <!-- #lightbox-next will use the right-cut clip-path via its ID -->
                 <button id="lightbox-next" class="lightbox-nav" onclick="navigateLightbox(1)">
                     <i data-lucide="chevron-right" class="w-8 h-8"></i>
                 </button>
@@ -588,129 +485,49 @@
         </div>
     </div>
 
-    <!-- Navigation Bar (Unchanged) -->
+    <!-- NAV -->
     <nav class="fixed top-0 w-full z-50 bg-transparent h-16">
         <div class="max-w-[1400px] mx-auto px-4 h-full">
             <div class="flex justify-between items-center h-full">
-                <!-- Logo -->
                 <a href="https://wikdwraps.com/" class="flex items-center">
                     <span class="logo-text text-2xl tracking-tight text-white hover:text-[#FF3B30] transition-colors">
                         WIKD<span class="font-semibold text-[#666]">WRAPS</span>
                     </span>
                 </a>
-                <!-- Desktop Menu -->
                 <div class="hidden lg:flex items-center h-full gap-12">
-                    <!-- Navigation Links -->
                     <div class="flex items-center gap-8 h-full">
-                        <!-- Services Dropdown (Content omitted for brevity but structure is there) -->
                         <div class="relative group h-full flex items-center">
-                            <button class="nav-link">
-                                SERVICES
-                                <i data-lucide="chevron-down" class="w-3 h-3"></i>
-                            </button>
+                            <button class="nav-link">SERVICES <i data-lucide="chevron-down" class="w-3 h-3"></i></button>
                             <div class="dropdown-menu absolute top-[64px] left-1/2 w-80">
-                                <a href="https://wikdwraps.com/pages/our-services" class="menu-tile-main">
-                                    <span>View All Services</span>
-                                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                                </a>
+                                <a href="https://wikdwraps.com/pages/our-services" class="menu-tile-main"><span>View All Services</span> <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
                                 <div class="menu-label">Protect</div>
                                 <a href="https://wikdwraps.com/pages/paint-protection-film" class="menu-tile"><i data-lucide="shield" class="w-4 h-4"></i>Paint Protection Film</a>
                                 <a href="https://wikdwraps.com/pages/ceramic-coatings" class="menu-tile"><i data-lucide="droplets" class="w-4 h-4"></i>Ceramic Coatings</a>
-                                <a href="https://wikdwraps.com/pages/window-tint" class="menu-tile"><i data-lucide="sun" class="w-4 h-4"></i>Window Tint</a>
                                 <div class="menu-label mt-1">Customize</div>
                                 <a href="https://wikdwraps.com/pages/vinyl-wraps" class="menu-tile"><i data-lucide="palette" class="w-4 h-4"></i>Vinyl Wraps</a>
-                                <div class="menu-label mt-1">Maintain</div>
-                                <a href="https://wikdwraps.com/pages/detailing" class="menu-tile"><i data-lucide="sparkles" class="w-4 h-4"></i>Detailing</a>
-                                <a href="https://wikdwraps.com/pages/maintenance-plans" class="menu-tile"><i data-lucide="calendar-check" class="w-4 h-4"></i>Maintenance Plans</a>
-                                <div class="menu-label mt-1">Tools</div>
-                                <a href="https://wikdwraps.com/pages/estimate-configurator" class="menu-tile"><i data-lucide="calculator" class="w-4 h-4"></i>Estimate Configurator</a>
                             </div>
                         </div>
-
-                        <!-- Company Dropdown (Content omitted for brevity but structure is there) -->
-                        <div class="relative group h-full flex items-center">
-                            <button class="nav-link">
-                                COMPANY
-                                <i data-lucide="chevron-down" class="w-3 h-3"></i>
-                            </button>
-                            <div class="dropdown-menu absolute top-[64px] left-1/2 w-64">
-                                <div class="menu-label">Information</div>
-                                <a href="https://wikdwraps.com/pages/about-us-1" class="menu-tile"><i data-lucide="info" class="w-4 h-4"></i>About Us</a>
-                                <a href="https://wikdwraps.com/pages/contact" class="menu-tile"><i data-lucide="mail" class="w-4 h-4"></i>Contact</a>
-                                <a href="https://wikdwraps.com/pages/careers" class="menu-tile"><i data-lucide="briefcase" class="w-4 h-4"></i>Careers</a>
-                                <a href="https://wikdwraps.com/pages/dealers" class="menu-tile"><i data-lucide="users" class="w-4 h-4"></i>Dealers</a>
-                                <div class="menu-label mt-1">Our Ecosystem</div>
-                                <a href="https://www.wikdmotorsports.com/" target="_blank" class="menu-expand-row">
-                                    <div class="flex items-center justify-between w-full">
-                                        <div class="flex items-center gap-3"><i data-lucide="gauge" class="w-4 h-4"></i><span>WIKD</span></div>
-                                        <i data-lucide="external-link" class="w-3 h-3 opacity-50"></i>
-                                    </div>
-                                    <div class="menu-expand-description">Tuning, Fabrication & Custom Builds</div>
-                                </a>
-                                <a href="https://boltmotorsports.com/" target="_blank" class="menu-expand-row">
-                                    <div class="flex items-center justify-between w-full">
-                                        <div class="flex items-center gap-3"><i data-lucide="zap" class="w-4 h-4"></i><span>Bolt</span></div>
-                                        <i data-lucide="external-link" class="w-3 h-3 opacity-50"></i>
-                                    </div>
-                                    <div class="menu-expand-description">Premium Performance Parts</div>
-                                </a>
-                            </div>
-                        </div>
-                        
-                        <!-- Gallery Link -->
                         <a href="https://wikdwraps.com/pages/gallery" class="nav-link">GALLERY</a>
                     </div>
-
-                    <!-- Action Buttons -->
                     <div class="flex items-center gap-5 h-full">
-                        <!-- Call Icon with QR -->
-                        <div class="relative group/call flex items-center h-full">
-                            <a href="tel:469-625-1127" id="nav-call-link" class="flex items-center justify-center" title="Click to call or scan QR code on desktop">
-                                <div style="width: 24px; height: 24px;">
-                                    <animated-icons src="https://animatedicons.co/get-icon?name=Calling%20V3&style=minimalistic&token=66ff3706-138c-41fa-a993-dee03566e48c" trigger="loop" attributes='{"variationThumbColour":"#FF3B30","variationName":"Dark","variationNumber":4,"numberOfGroups":2,"strokeWidth":1.5,"background":"#000000","defaultColours":{"group-1":"#FF3B30","group-2":"#EAEAEA","background":"#000000"}}' height="24" width="24"></animated-icons>
-                                </div>
-                            </a>
-                            <div id="nav-qr-tooltip" class="qr-tooltip">
-                                <canvas id="qr-code-canvas" class="w-24 h-24"></canvas>
-                                <p class="mt-2 text-xs text-gray-300 font-bold uppercase tracking-wider">Scan to call</p>
-                            </div>
-                        </div>
-                        <!-- Quote Button -->
                         <a href="https://wikdwraps.com/pages/estimate-configurator" class="btn-wikd">INSTANT QUOTE</a>
                     </div>
                 </div>
-
                 <!-- Mobile Actions -->
                 <div class="flex items-center gap-4 lg:hidden">
-                    <a href="tel:469-625-1127" class="text-white hover:text-[#FF3B30] transition-colors"><i data-lucide="phone" class="w-5 h-5"></i></a>
-                    <a href="https://wikdwraps.com/pages/estimate-configurator" class="text-white hover:text-[#FF3B30] transition-colors"><i data-lucide="file-text" class="w-5 h-5"></i></a>
                     <button id="mobile-menu-btn" class="text-white hover:text-[#FF3B30] focus:outline-none transition-colors"><i data-lucide="menu" class="w-7 h-7"></i></button>
                 </div>
             </div>
         </div>
-
-        <!-- Mobile Menu -->
         <div id="mobile-menu" class="lg:hidden mt-[64px]">
             <div class="px-4 py-4 space-y-2 bg-black border-b border-[#333]">
-                <div class="space-y-1">
-                    <div class="text-[10px] text-[#555] font-bold uppercase tracking-widest font-heading px-3 mb-1">Services</div>
-                    <a href="https://wikdwraps.com/pages/paint-protection-film" class="block px-3 py-2 text-sm text-[#CCC] hover:text-white hover:bg-[#111]">Paint Protection</a>
-                    <a href="https://wikdwraps.com/pages/ceramic-coatings" class="block px-3 py-2 text-sm text-[#CCC] hover:text-white hover:bg-[#111]">Ceramic Coatings</a>
-                    <a href="https://wikdwraps.com/pages/vinyl-wraps" class="block px-3 py-2 text-sm text-[#CCC] hover:text-white hover:bg-[#111]">Vinyl Wraps</a>
-                    <a href="https://wikdwraps.com/pages/window-tint" class="block px-3 py-2 text-sm text-[#CCC] hover:text-white hover:bg-[#111]">Window Tint</a>
-                    <a href="https://wikdwraps.com/pages/detailing" class="block px-3 py-2 text-sm text-[#CCC] hover:text-white hover:bg-[#111]">Detailing</a>
-                </div>
-                <div class="pt-2">
-                    <a href="https://wikdwraps.com/pages/estimate-configurator" class="block w-full text-center bg-white text-black font-bold uppercase tracking-wider py-3 text-sm" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 12px 100%, 0 80%);">Instant Quote</a>
-                </div>
+                <a href="https://wikdwraps.com/pages/estimate-configurator" class="block w-full text-center bg-white text-black font-bold uppercase tracking-wider py-3 text-sm">Instant Quote</a>
             </div>
         </div>
     </nav>
-    <!-- End Nav -->
 
-    <!-- Main Content Area: Use inline styles for spacing and wrap content for max-width constraint -->
+    <!-- MAIN GALLERY CONTAINER -->
     <main class="w-full relative" style="padding-top: 8rem; min-height: 80vh;">
-        <!-- NEW: Inject the max-width container, matching the nav's width and padding, targeting JS to the inner div -->
         <div id="gallery-container" class="max-w-[1400px] mx-auto px-4">
             <div class="text-center w-full py-20 text-gray-500 font-heading text-lg tracking-widest animate-pulse">
                 LOADING GALLERY...
@@ -718,79 +535,361 @@
         </div>
     </main>
 
-    <!-- Footer (Unchanged) -->
+    <!-- FOOTER -->
     <footer class="wikd-footer">
         <div class="wikd-footer-container">
             <div class="wikd-footer-grid">
-                <!-- Brand Column -->
                 <div class="wikd-footer-brand">
                     <img src="https://wikdwraps.com/cdn/shop/files/output-onlinepngtools_3.png?v=1737407428&width=300" alt="WIKD Wraps" class="wikd-footer-logo">
                     <p class="text-muted mt-4">Uncompromised Protection. WIKD Craftsmanship.</p>
                 </div>
-                <!-- Links -->
                 <div class="wikd-footer-column">
                     <h3>Services</h3>
                     <div class="wikd-footer-links">
                         <a href="#">Paint Protection Film</a>
                         <a href="#">Ceramic Coatings</a>
-                        <a href="#">Vinyl Wraps</a>
-                        <a href="#">Window Tint</a>
-                        <a href="#">Detailing</a>
-                    </div>
-                </div>
-                <div class="wikd-footer-column">
-                    <h3>Company</h3>
-                    <div class="wikd-footer-links">
-                        <a href="#">About Us</a>
-                        <a href="#">Gallery</a>
-                        <a href="#">Contact</a>
-                        <a href="#">Careers</a>
                     </div>
                 </div>
             </div>
             <div class="wikd-footer-bottom">
                 <div>© 2025 WIKD Wraps. All rights reserved.</div>
-                <div class="flex gap-4">
-                    <a href="#" class="text-muted hover:text-white transition-colors">Privacy</a>
-                    <a href="#" class="text-muted hover:text-white transition-colors">Terms</a>
-                </div>
             </div>
         </div>
     </footer>
-    
+
     <script>
+    // --- 1. TOOLTIP DATA DEFINITIONS ---
+    const SERVICE_DATA = {
+       "ppf": { title: "Paint Protection Film", desc: "Ultimate Shield", color: "#536DFE", url: "https://wikdwraps.com/pages/paint-protection-film", iconName: "Security", iconToken: "af857f3d-6096-42d0-9f04-a9ee72f54aa4", stat1: { val: "10–12 Yrs", label: "Warranty", altVal: "STEK", altLabel: "Authorized" }, stat2: { val: "Certified", label: "Installers", altVal: "Precision", altLabel: "Cut Patterns" } },
+       "ceramic": { title: "Ceramic Coating", desc: "Liquid Glass", color: "#00E676", url: "https://wikdwraps.com/pages/ceramic-coatings", iconName: "Chemist", iconToken: "153ce80d-3f45-4dc6-b13a-40ea011dbbfe", stat1: { val: "9H", label: "Hardness", altVal: "Anti", altLabel: "Scratch" }, stat2: { val: "High", label: "Hydrophobic", altVal: "Self", altLabel: "Cleaning" } },
+       "vinyl": { title: "Vinyl Wraps", desc: "Instant Transformation", color: "#FFD600", url: "https://wikdwraps.com/pages/vinyl-wraps", iconName: "Palette", iconToken: "6defc96c-bfac-4d99-bc45-98649e19863b", stat1: { val: "300+", label: "Colors", altVal: "Matte/Gloss", altLabel: "Finishes" }, stat2: { val: "Custom", label: "Graphics", altVal: "Fleet", altLabel: "Branding" } },
+       "tint": { title: "Window Tint", desc: "Heat Rejection", color: "#D500F9", url: "https://wikdwraps.com/pages/window-tint", iconName: "Sunglasses", iconToken: "af857f3d-6096-42d0-9f04-a9ee72f54aa4", stat1: { val: "99%", label: "UV Block", altVal: "Max", altLabel: "IR Rejection" }, stat2: { val: "Lifetime", label: "Warranty", altVal: "Color", altLabel: "Stable" } },
+       "detail": { title: "Detailing", desc: "Restore & Maintain", color: "#FF3B30", url: "https://wikdwraps.com/pages/detailing", iconName: "Mop", iconToken: "86b68190-0253-4375-8994-96f5611b9f19", stat1: { val: "Clean", label: "& Seal", altVal: "Deep", altLabel: "Decon" }, stat2: { val: "Showroom", label: "Finish", altVal: "Paint", altLabel: "Correction" } }
+    };
+    const TUNING_DATA = {
+       "stage1": { label:"Stage 1", desc: "Stock to Bolt-Ons", stat1: { val: "< 500", label: "WHP", altVal: "$1000+", altLabel: "Starting" }, stat2: { val: "Street", label: "Application", altVal: "ECU / TCU", altLabel: "Tuning" }, percent:45, color:"#ffffff", curveType: "roots", fillOpacity: 0.1, strokeWidth: 1.5, iconName: "KM", iconToken: "5729fdff-2cfc-4b8b-9952-2ff7da52563d" },
+       "stage2": { label:"Stage 2", desc: "Alternative Fuels", stat1: { val: "500+", label: "WHP", altVal: "$1250+", altLabel: "Starting" }, stat2: { val: "E85 / Meth", label: "Fuels", altVal: "Trans", altLabel: "Tuning" }, percent:65, color:"#FDE047", curveType: "sport", fillOpacity: 0.25, strokeWidth: 2, iconName: "KM", iconToken: "5729fdff-2cfc-4b8b-9952-2ff7da52563d" },
+       "stage3": { label:"Stage 3", desc: "Power Adders", stat1: { val: "800+", label: "WHP", altVal: "$1500+", altLabel: "Starting" }, stat2: { val: "Turbo / SC", label: "Boost", altVal: "Multi", altLabel: "Fuel" }, percent:85, color:"#f97316", curveType: "track", fillOpacity: 0.4, strokeWidth: 2, iconName: "KM", iconToken: "5729fdff-2cfc-4b8b-9952-2ff7da52563d" },
+       "wikd": { label:"WIKD", desc: "Race Applications", stat1: { val: "1000+", label: "WHP", altVal: "$1750+", altLabel: "Starting" }, stat2: { val: "Comp", label: "Builds", altVal: "Track", altLabel: "Support" }, percent:100, color:"#FF3B30", curveType: "procharger", fillOpacity: 0.65, strokeWidth: 3, iconName: "KM", iconToken: "5729fdff-2cfc-4b8b-9952-2ff7da52563d" }
+    };
+    const PING_DATA = {
+       "mclaren": { label: "McLaren 720S", desc: "Ti Decat Downpipe", percent: 100, color: "#9370DB", embedUrl: "https://playcanv.as/b/7ae24e57?noui", url: "https://www.wikdmotorsports.com/pages/mclaren-720s-decat-titanium-downpipe-2018-brushed-purple" },
+       "mclaren_catback": { label: "McLaren 720S", desc: "Ti Cat-Back Exhaust", percent: 100, color: "#9370DB", embedUrl: "https://playcanv.as/b/f471d70a?noui", url: "https://www.wikdmotorsports.com/pages/mclaren-720s-titanium-catback-2018" }
+    };
+
+    // --- 2. FETCH DATA FROM URL ---
+    const JSON_URL = "https://cdn.shopify.com/s/files/1/0648/4826/5421/files/NewGAlleryDatawithhotspots.json?v=1764974410";
+
+    // --- 3. CHART & ANIMATION UTILS (FROM TOOLTIPS) ---
+    const BASE_DYNO_DATA = [
+        { rpm: 3000, horsepower: 380, torque: 670 }, { rpm: 3100, horsepower: 410, torque: 690 }, { rpm: 3200, horsepower: 440, torque: 720 }, 
+        { rpm: 3300, horsepower: 480, torque: 760 }, { rpm: 3400, horsepower: 530, torque: 815 }, { rpm: 3500, horsepower: 580, torque: 870 }, 
+        { rpm: 3600, horsepower: 620, torque: 900 }, { rpm: 3700, horsepower: 650, torque: 920 }, { rpm: 3800, horsepower: 670, torque: 925 }, 
+        { rpm: 3900, horsepower: 690, torque: 930 }, { rpm: 4000, horsepower: 710, torque: 935 }, { rpm: 4100, horsepower: 735, torque: 940 }, 
+        { rpm: 4200, horsepower: 760, torque: 950 }, { rpm: 4300, horsepower: 785, torque: 960 }, { rpm: 4400, horsepower: 810, torque: 965 }, 
+        { rpm: 4500, horsepower: 830, torque: 970 }, { rpm: 4600, horsepower: 855, torque: 975 }, { rpm: 4700, horsepower: 880, torque: 980 }, 
+        { rpm: 4800, horsepower: 910, torque: 995 }, { rpm: 4900, horsepower: 940, torque: 1010 }, { rpm: 5000, horsepower: 970, torque: 1020 },
+        { rpm: 5100, horsepower: 995, torque: 1025 }, { rpm: 5200, horsepower: 1020, torque: 1030 }, { rpm: 5300, horsepower: 1050, torque: 1035 }, 
+        { rpm: 5400, horsepower: 1080, torque: 1040 }, { rpm: 5500, horsepower: 1110, torque: 1045 }, { rpm: 5600, horsepower: 1140, torque: 1045 }, 
+        { rpm: 5700, horsepower: 1170, torque: 1040 }, { rpm: 5800, horsepower: 1200, torque: 1038 }, { rpm: 5900, horsepower: 1225, torque: 1035 }, 
+        { rpm: 6000, horsepower: 1250, torque: 1030 }, { rpm: 6100, horsepower: 1270, torque: 1025 }, { rpm: 6200, horsepower: 1285, torque: 1020 },
+        { rpm: 6300, horsepower: 1300, torque: 1015 }, { rpm: 6400, horsepower: 1310, torque: 1010 }, { rpm: 6500, horsepower: 1315, torque: 1005 }, 
+        { rpm: 6600, horsepower: 1310, torque: 990 }, { rpm: 6700, horsepower: 1300, torque: 970 }, { rpm: 6800, horsepower: 1280, torque: 930 }
+    ];
+
+    const hexToRgba = (hex, alpha) => {
+        let r = 0, g = 0, b = 0;
+        if (hex.length === 4) { r = parseInt(hex[1]+hex[1],16); g = parseInt(hex[2]+hex[2],16); b = parseInt(hex[3]+hex[3],16); }
+        else if (hex.length === 7) { r = parseInt(hex.substring(1,3),16); g = parseInt(hex.substring(3,5),16); b = parseInt(hex.substring(5,7),16); }
+        return `rgba(${r},${g},${b},${alpha})`;
+    };
+
+    const generateCurveData = (curveType) => {
+        return BASE_DYNO_DATA.map(d => {
+            let hp = d.horsepower, tq = d.torque, rpm = d.rpm;
+            if (curveType === "roots") { tq = 650; if (rpm > 4500) tq -= (rpm - 4500) * 0.15; hp = (tq * rpm) / 5252; } 
+            else if (curveType === "sport") { tq = 800; if (rpm > 5500) tq -= (rpm - 5500) * 0.2; hp = (tq * rpm) / 5252; }
+            else if (curveType === "track") { tq = 900; if (rpm > 6000) tq -= (rpm - 6000) * 0.1; hp = (tq * rpm) / 5252; }
+            return { rpm, horsepower: hp, torque: tq };
+        });
+    };
+
+    const CURVE_CACHE = {};
+    const chartInstances = {};
+
+    const createNanoChart = (canvasId, tune) => {
+        const ctx = document.getElementById(canvasId).getContext('2d');
+       CURVE_CACHE[canvasId] = generateCurveData(tune.curveType);
+        return new Chart(ctx, {
+            type: 'line',
+            data: {
+               labels: CURVE_CACHE[canvasId].map(d => d.rpm),
+               datasets: [
+                    { label: 'HP', data: [], borderColor: tune.color, backgroundColor: 'transparent', fill: true, borderWidth: tune.strokeWidth, pointRadius: 0, tension: 0.4, yAxisID: 'y' },
+                    { label: 'TQ', data: [], borderColor: 'rgba(255, 165, 0, 0.5)', borderWidth: 1, borderDash: [2, 2], pointRadius: 0, tension: 0.4, yAxisID: 'y' }
+                ]
+            },
+            options: {
+               responsive: true, maintainAspectRatio: false,
+               plugins: { legend: { display: false }, tooltip: { enabled: false } },
+               scales: { x: { display: false }, y: { display: false, min: 0, max: 1400 } },
+               animation: false
+            }
+        });
+    };
+
+    function easeInOutCubic(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+    
+    const drawChartEased = (chartInstance, canvasId, tune) => {
+        const fullData = CURVE_CACHE[canvasId];
+        if(!fullData) return;
+        const hpDataset = chartInstance.data.datasets[0];
+        const tqDataset = chartInstance.data.datasets[1];
+        hpDataset.data = []; tqDataset.data = []; hpDataset.backgroundColor = 'transparent';
+       chartInstance.stop();
+        
+        const duration = 1000; const startTime = performance.now(); const totalPoints = fullData.length; const ctx = chartInstance.ctx;
+        
+        const drawStep = (currentTime) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const easedProgress = easeInOutCubic(progress);
+            const pointsToRender = Math.floor(totalPoints * easedProgress);
+            
+            if (pointsToRender > hpDataset.data.length) {
+               hpDataset.data = fullData.slice(0, pointsToRender).map(p => p.horsepower);
+               tqDataset.data = fullData.slice(0, pointsToRender).map(p => p.torque);
+            }
+            const opacity = easedProgress * tune.fillOpacity;
+            const gradient = ctx.createLinearGradient(0, 0, 0, 40);
+           gradient.addColorStop(0, hexToRgba(tune.color, opacity));
+           gradient.addColorStop(1, 'rgba(0,0,0,0)');
+           chartInstance.data.datasets[0].backgroundColor = gradient;
+           chartInstance.update('none');
+            if (progress < 1) requestAnimationFrame(drawStep);
+        };
+       requestAnimationFrame(drawStep);
+    };
+
+    // --- 4. MAIN GALLERY LOGIC ---
     document.addEventListener('DOMContentLoaded', () => {
         const galleryContainer = document.getElementById('gallery-container');
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightbox-img');
         const lightboxClose = document.querySelector('.lightbox-close');
+        const hotspotLayer = document.getElementById('lightbox-hotspots-layer');
         
-        // --- Lightbox state for gallery navigation ---
-        let flatGalleryImages = []; // Global array of ALL images for sequential lightbox navigation
+        let flatGalleryImages = [];
         let currentImageIndex = 0;
+        let globalZIndex = 20000; 
         const lightboxPrevBtn = document.getElementById('lightbox-prev');
         const lightboxNextBtn = document.getElementById('lightbox-next');
-        
-        // State for data
-        const DATA_URL = "https://cdn.shopify.com/s/files/1/0648/4826/5421/files/GallerydataWraps.json?v=1764691746";
-        let allProjectsData = [];
 
-        // --- UTILITY: REMOVE NOISE FROM TITLES ---
         function cleanTitle(text) {
             let cleaned = text || "";
-            // Remove variations of "Ryft Edition" from the title for cleaner grouping
             cleaned = cleaned.replace(/\(Ryft Edition\)/gi, "").replace(/Ryft/gi, "");
             return cleaned.replace(/\s\s+/g, ' ').trim();
         }
 
-        // --- CORE: GENERATE ALL GALLERY HTML CONTENT ---
+        // --- CORE: HOTSPOT RENDERING ---
+        function closeAllTooltips() {
+            document.querySelectorAll('.tune-tooltip.visible').forEach(tt => {
+               tt.classList.remove('visible'); tt.classList.remove('locked'); tt.classList.remove('flip');
+                const bar = tt.querySelector(".tune-bar-fill"); if(bar) bar.style.width = "0%";
+            });
+        }
+
+        // Detect clicks outside hotspots to close tooltips
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.tune-hotspot') && !e.target.closest('.tune-tooltip')) closeAllTooltips();
+        });
+
+        function renderHotspotsForImage(imageData) {
+            hotspotLayer.innerHTML = ''; // Clear previous
+            if(!imageData.hotspots || !imageData.hotspots.tags) return;
+
+            imageData.hotspots.tags.forEach(tag => {
+                const id = tag.id;
+                const type = tag.type;
+                let data, htmlContent, chartId;
+
+                // DATA LOOKUP
+                if (type === 'service') data = SERVICE_DATA[id];
+                else if (type === 'nano') data = TUNING_DATA[id];
+                else if (type === 'ping') data = PING_DATA[id];
+
+               if(!data) return;
+
+                // BUILD HTML CONTENT
+                if (type === 'service') {
+                   const iconAttrs = JSON.stringify({ variationThumbColour: data.color, variationName: "Two Tone", variationNumber: 2, numberOfGroups: 2, backgroundIsGroup: false, strokeWidth: 1, defaultColours: { "group-1": data.color, "group-2": data.color, "background": "#141414" } });
+                   htmlContent = `
+                        <div class="tt-header">
+                            <animated-icons src="https://animatedicons.co/get-icon?name=${data.iconName}&style=minimalistic&token=${data.iconToken}" trigger="loop" attributes='${iconAttrs.replace(/'/g, "&apos;")}' height="38" width="38"></animated-icons>
+                            <div class="tt-title"><h4>${data.title}</h4><span>${data.desc}</span></div>
+                        </div>
+                        <div class="tt-stats">
+                            <div class="stat-item"><div class="stat-face front"><span class="stat-val">${data.stat1.val}</span><span class="stat-label">${data.stat1.label}</span></div><div class="stat-face back"><span class="stat-val">${data.stat1.altVal}</span><span class="stat-label">${data.stat1.altLabel}</span></div></div>
+                            <div class="stat-item"><div class="stat-face front"><span class="stat-val">${data.stat2.val}</span><span class="stat-label">${data.stat2.label}</span></div><div class="stat-face back"><span class="stat-val">${data.stat2.altVal}</span><span class="stat-label">${data.stat2.altLabel}</span></div></div>
+                        </div>
+                        <a href="${data.url}" target="_blank" class="btn-learn">View Service Details</a>`;
+                } else if (type === 'nano') {
+                   const iconAttrs = JSON.stringify({ variationThumbColour: data.color, variationName: "Two Tone", variationNumber: 2, numberOfGroups: 2, backgroundIsGroup: false, strokeWidth: 2, defaultColours: { "group-1": "#EAEAEA", "group-2": data.color, "background": "#141414" } });
+                   chartId = `nano-chart-${id}`;
+                   htmlContent = `
+                        <div class="tt-header">
+                            <animated-icons src="https://animatedicons.co/get-icon?name=${data.iconName}&style=minimalistic&token=${data.iconToken}" trigger="loop" attributes='${iconAttrs.replace(/'/g, "&apos;")}' height="32" width="32"></animated-icons>
+                            <div class="tt-title"><h4>${data.label}</h4><span>${data.desc}</span></div>
+                            <div class="nano-chart-wrap"><canvas id="${chartId}"></canvas></div>
+                        </div>
+                        <div class="tt-stats">
+                            <a href="https://www.wikdmotorsports.com/pages/tuning" target="_blank" class="stat-item"><div class="stat-face front"><span class="stat-val">${data.stat1.val}</span><span class="stat-label">${data.stat1.label}</span></div><div class="stat-face back"><span class="stat-val">${data.stat1.altVal}</span><span class="stat-label">${data.stat1.altLabel}</span></div></a>
+                            <a href="https://www.wikdmotorsports.com/pages/tuning" target="_blank" class="stat-item"><div class="stat-face front"><span class="stat-val">${data.stat2.val}</span><span class="stat-label">${data.stat2.label}</span></div><div class="stat-face back"><span class="stat-val">${data.stat2.altVal}</span><span class="stat-label">${data.stat2.altLabel}</span></div></a>
+                        </div>
+                        <div class="tune-bar-wrap"><div class="tune-bar-fill"></div></div>
+                        <a href="https://www.wikdmotorsports.com/pages/tuning" target="_blank" class="btn-learn" style="margin-top:12px;">View Tuning Packages</a>`;
+                } else if (type === 'ping') {
+                   htmlContent = `
+                        <div class="ping-iframe-layer"><iframe src="${data.embedUrl}" allowfullscreen></iframe></div>
+                        <div class="ping-content-layer">
+                            <div class="ping-header-text"><h4>${data.label}</h4><span>${data.desc}</span></div>
+                            <a href="${data.url}" target="_blank" class="btn-learn">View Product</a>
+                        </div>`;
+                }
+
+                // CREATE ELEMENTS
+                const hotspot = document.createElement("div");
+               hotspot.className = `tune-hotspot`;
+               hotspot.dataset.id = id;
+               hotspot.dataset.type = type;
+               hotspot.style.left = tag.x + '%';
+               hotspot.style.top = tag.y + '%';
+               hotspot.style.color = data.color;
+
+                if (type === 'nano') {
+                   hotspot.innerHTML = `<svg width="30" height="26" viewBox="0 0 30 26" fill="none" style="display:block;"><path d="M15 2 L27 24 L3 24 Z" fill="rgba(20,20,20,0.4)" stroke="rgba(255,255,255,0.9)" stroke-width="2" stroke-linejoin="round"/><path d="M15 13 L19 19 L11 19 Z" fill="${data.color}" /></svg>`;
+                }
+
+                const tt = document.createElement("div");
+               tt.className = `tune-tooltip type-${type}`;
+               tt.style.setProperty('--theme-color', data.color);
+               tt.innerHTML = htmlContent;
+
+               hotspotLayer.appendChild(hotspot);
+               hotspotLayer.appendChild(tt);
+
+                // --- TOOLTIP LOGIC ---
+                const updatePosition = () => {
+                    tt.style.left = tag.x + '%';
+                    tt.style.top = tag.y + '%';
+                }
+               updatePosition();
+
+                if (type === 'nano' && chartId) chartInstances[id] = createNanoChart(chartId, data);
+
+                let hideTimeout;
+                const bar = tt.querySelector(".tune-bar-fill");
+
+                const show = (lock = false) => {
+                    clearTimeout(hideTimeout);
+                    globalZIndex++; tt.style.zIndex = globalZIndex;
+                    updatePosition();
+                    
+                    if (tag.y < 20) tt.classList.add('flip'); else tt.classList.remove('flip');
+
+                   const isAlreadyVisible = tt.classList.contains('visible');
+                   tt.classList.add('visible');
+
+                   if(type === 'nano') {
+                       if(!isAlreadyVisible && !tt.classList.contains('locked')) {
+                           drawChartEased(chartInstances[id], chartId, data);
+                           if(bar) { bar.style.width = "0%"; requestAnimationFrame(() => { requestAnimationFrame(() => { bar.style.width = data.percent + "%"; }); }); }
+                       }
+                    }
+
+                    if (lock) {
+                        closeAllTooltips();
+                        tt.classList.add('locked'); tt.classList.add('visible'); 
+                        if(type === 'nano' && bar) bar.style.width = data.percent + "%";
+                    }
+                };
+
+                const hide = () => {
+                    if (tt.classList.contains('locked')) return;
+                   hideTimeout = setTimeout(() => {
+                        if (!hotspot.matches(':hover') && !tt.matches(':hover')) {
+                            tt.classList.remove("visible");
+                            if(bar) bar.style.width = "0%";
+                        }
+                    }, 100);
+                };
+
+               hotspot.addEventListener("mouseenter", () => show(false));
+               hotspot.addEventListener("mouseleave", hide);
+               tt.addEventListener("mouseenter", () => show(false));
+               tt.addEventListener("mouseleave", hide);
+               hotspot.addEventListener("click", (e) => { e.stopPropagation(); if (tt.classList.contains('locked')) { tt.classList.remove('locked'); hide(); } else { show(true); } });
+            });
+        }
+
+        // --- CRITICAL: MATCH HOTSPOT LAYER TO IMAGE DISPLAY DIMENSIONS ---
+        // This calculates exactly where the image pixels are within the container, avoiding black bars.
+        function updateHotspotOverlayDimensions() {
+            if (!lightbox.classList.contains('active')) return;
+            
+            const img = document.getElementById('lightbox-img');
+            const layer = document.getElementById('lightbox-hotspots-layer');
+            const container = document.querySelector('.lightbox-content');
+            
+            if(!img || !layer || !container) return;
+
+            // Get dimensions of the container
+            const cw = container.clientWidth;
+            const ch = container.clientHeight;
+            
+            // Get natural dimensions of the image
+            const nw = img.naturalWidth;
+            const nh = img.naturalHeight;
+            
+            // Avoid division by zero
+            if (nw === 0 || nh === 0) return;
+
+            const imgRatio = nw / nh;
+            const containerRatio = cw / ch;
+
+            let renderWidth, renderHeight, topOffset, leftOffset;
+
+            // Calculate 'contain' logic
+            if (containerRatio > imgRatio) {
+                // Container is wider than image (pillarbox - black bars on sides)
+                renderHeight = ch;
+                renderWidth = ch * imgRatio;
+                topOffset = 0;
+                leftOffset = (cw - renderWidth) / 2;
+            } else {
+                // Container is taller than image (letterbox - black bars on top/bottom)
+                renderWidth = cw;
+                renderHeight = cw / imgRatio;
+                leftOffset = 0;
+                topOffset = (ch - renderHeight) / 2;
+            }
+
+            // Apply calculated dimensions to the overlay layer
+            layer.style.width = `${renderWidth}px`;
+            layer.style.height = `${renderHeight}px`;
+            layer.style.top = `${topOffset}px`;
+            layer.style.left = `${leftOffset}px`;
+        }
+
+        window.addEventListener('resize', updateHotspotOverlayDimensions);
+
+        // --- GALLERY GENERATION ---
         function generateAllGalleryHTML(projects) {
             const tempDiv = document.createElement('div');
             const finalProjectHTML = [];
             const finalMixedImages = [];
             const seenTitles = new Set(); 
             
-            // Clear flat data storage before population
             flatGalleryImages = [];
 
             projects.forEach(project => {
@@ -801,423 +900,209 @@
                 const isStandaloneCandidate = images.length > 2;
 
                 if (isShopLife || !isStandaloneCandidate) {
-                    // Rule: Combine 'Shop Life' and small projects (<= 2 images) into the Mixed Gallery
-                    finalMixedImages.push(...images);
-                    return;
+                   finalMixedImages.push(...images);
+                   return;
                 }
 
                 if (isStandaloneCandidate) {
-                    // Rule: Deduplicate standalone projects based on the cleaned title
-                    if (seenTitles.has(title)) {
-                        // Skip duplicate section
-                        return;
-                    }
-                    seenTitles.add(title);
+                    if (seenTitles.has(title)) return;
+                   seenTitles.add(title);
+                   
+                   const imagesHtml = images.map((imgUrl, idx) => {
+                       const globalIndex = flatGalleryImages.length;
+                       // CHECK FOR HOTSPOTS: If this is the first image of the project, use project hotspots
+                       let hotspots = null;
+                       if(idx === 0 && project.hotspots) hotspots = project.hotspots;
 
-                    // Generate HTML for this standalone section
-                    const safeTitle = title.replace(/'/g, "\\'");
-                    const safeSubtitle = subtitle.replace(/'/g, "\\'");
+                       flatGalleryImages.push({ src: imgUrl, title: title, subtitle: subtitle, hotspots: hotspots });
 
-                    // Generate images and push data to global flat array
-                    const imagesHtml = images.map(imgUrl => {
-                        const globalIndex = flatGalleryImages.length; // Get the index before pushing
-                        
-                        flatGalleryImages.push({
-                            src: imgUrl,
-                            title: title,
-                            subtitle: subtitle
-                        });
+                       return `<div class="gallery-item" onclick="openLightbox(${globalIndex})">
+                                   <div class="skeleton-loader"></div>
+                                   <img data-src="${imgUrl}" class="gallery-img">
+                               </div>`;
+                   }).join('');
 
-                        // Pass only the global index to the onclick handler
-                        return `
-                            <div class="gallery-item" onclick="openLightbox(${globalIndex})">
-                                <div class="skeleton-loader"></div>
-                                <img data-src="${imgUrl}" class="gallery-img">
-                            </div>
-                        `;
-                    }).join('');
-
-                    finalProjectHTML.push(`
-                        <section class="project-section">
-                            <div class="project-header">
-                                <div>
-                                    <h2 class="text-3xl md:text-5xl text-white font-heading mb-1">${title}</h2>
-                                    <p class="text-muted text-lg tracking-wide">${subtitle}</p>
-                                </div>
-                            </div>
-                            <div class="ticker-view relative">
-                                <button class="nav-arrow nav-arrow-left" aria-label="Previous Slide"><i data-lucide="chevron-left"></i></button>
-                                <div class="ticker-track">
-                                    ${imagesHtml}
-                                </div>
-                                <button class="nav-arrow nav-arrow-right" aria-label="Next Slide"><i data-lucide="chevron-right"></i></button>
-                            </div>
-                        </section>
-                    `);
+                   finalProjectHTML.push(`
+                       <section class="project-section">
+                           <div class="project-header">
+                               <div><h2 class="text-3xl md:text-5xl text-white font-heading mb-1">${title}</h2><p class="text-muted text-lg tracking-wide">${subtitle}</p></div>
+                           </div>
+                           <div class="ticker-view relative">
+                               <button class="nav-arrow nav-arrow-left" aria-label="Previous Slide"><i data-lucide="chevron-left"></i></button>
+                               <div class="ticker-track">${imagesHtml}</div>
+                               <button class="nav-arrow nav-arrow-right" aria-label="Next Slide"><i data-lucide="chevron-right"></i></button>
+                           </div>
+                       </section>`);
                 }
             });
 
-            // 2. Generate Merged Mixed Gallery section
-            let mixedHtml = '';
             if (finalMixedImages.length > 0) {
                 const title = 'SHOP LIFE & RECENT WORKS';
                 const subtitle = 'Behind the Scenes and Quick Snaps';
-                
                 const imagesHtml = finalMixedImages.map(imgUrl => {
-                    const globalIndex = flatGalleryImages.length; // Get the index before pushing
-                    
-                    flatGalleryImages.push({
-                        src: imgUrl,
-                        title: title,
-                        subtitle: subtitle
-                    });
-
-                    // Pass only the global index to the onclick handler
-                    return `
-                        <div class="gallery-item" onclick="openLightbox(${globalIndex})">
-                            <div class="skeleton-loader"></div>
-                            <img data-src="${imgUrl}" class="gallery-img">
-                        </div>
-                    `;
+                   const globalIndex = flatGalleryImages.length;
+                   flatGalleryImages.push({ src: imgUrl, title: title, subtitle: subtitle, hotspots: null });
+                   return `<div class="gallery-item" onclick="openLightbox(${globalIndex})"><div class="skeleton-loader"></div><img data-src="${imgUrl}" class="gallery-img"></div>`;
                 }).join('');
 
-                mixedHtml = `
+                finalProjectHTML.push(`
                     <section class="project-section">
-                        <div class="project-header">
-                            <div>
-                                <h2 class="text-3xl md:text-5xl text-white font-heading mb-1">${title}</h2>
-                                <p class="text-muted text-lg tracking-wide">${subtitle}</p>
-                            </div>
-                        </div>
-                        <div class="ticker-view relative">
-                            <button class="nav-arrow nav-arrow-left" aria-label="Previous Slide"><i data-lucide="chevron-left"></i></button>
-                            <div class="ticker-track">
-                                ${imagesHtml}
-                            </div>
-                            <button class="nav-arrow nav-arrow-right" aria-label="Next Slide"><i data-lucide="chevron-right"></i></button>
-                        </div>
-                    </section>
-                `;
+                        <div class="project-header"><div><h2 class="text-3xl md:text-5xl text-white font-heading mb-1">${title}</h2><p class="text-muted text-lg tracking-wide">${subtitle}</p></div></div>
+                        <div class="ticker-view relative"><button class="nav-arrow nav-arrow-left"><i data-lucide="chevron-left"></i></button><div class="ticker-track">${imagesHtml}</div><button class="nav-arrow nav-arrow-right"><i data-lucide="chevron-right"></i></button></div>
+                    </section>`);
             }
-
-            tempDiv.innerHTML = finalProjectHTML.join('') + mixedHtml;
+            tempDiv.innerHTML = finalProjectHTML.join('');
             return tempDiv;
         }
 
-        // --- FIXED: MANUAL CAROUSEL LOGIC (Unchanged) ---
+        // --- CAROUSEL & LAZY LOADING ---
         function initManualCarousel(section) {
             const track = section.querySelector('.ticker-track');
             const view = section.querySelector('.ticker-view');
             const leftBtn = section.querySelector('.nav-arrow-left');
             const rightBtn = section.querySelector('.nav-arrow-right');
-            
             if(!track || !leftBtn || !rightBtn || !view) return;
             
-            let currentIndex = 0;
-            let startX = 0;
-            let currentTranslate = 0;
-            let isDragging = false;
+            let currentIndex = 0; let startX = 0; let currentTranslate = 0; let isDragging = false;
             
-            const getMetrics = () => {
-                const firstItem = track.querySelector('.gallery-item');
-                if (!firstItem) return { stepSize: 0, visibleCount: 1, totalItems: 0 };
-                
-                const itemWidth = firstItem.getBoundingClientRect().width;
-                const style = getComputedStyle(track);
-                const gap = parseFloat(style.gap) || 0;
-                const stepSize = itemWidth + gap;
-                const viewWidth = view.getBoundingClientRect().width;
-                const visibleCount = Math.floor(viewWidth / stepSize); 
-                const totalItems = track.children.length;
-                
-                return { stepSize, visibleCount, totalItems };
-            };
-
             const updateTrack = () => {
-                const { stepSize, totalItems } = getMetrics();
-                if (stepSize === 0) return;
-
-                const maxIndex = Math.max(0, totalItems - 1); 
-                currentIndex = Math.max(0, Math.min(currentIndex, maxIndex));
-
-                currentTranslate = -(currentIndex * stepSize);
-                
-                const trackWidth = track.scrollWidth;
+                const firstItem = track.querySelector('.gallery-item');
+                if (!firstItem) return;
+                const stepSize = firstItem.getBoundingClientRect().width + parseFloat(getComputedStyle(track).gap || 0);
+                const totalItems = track.children.length;
                 const viewWidth = view.offsetWidth;
+                const trackWidth = track.scrollWidth;
                 const maxTranslate = -(trackWidth - viewWidth);
+
+               currentIndex = Math.max(0, Math.min(currentIndex, totalItems - 1));
+               currentTranslate = -(currentIndex * stepSize);
+                if (trackWidth > viewWidth && currentTranslate < maxTranslate) currentTranslate = maxTranslate;
+                else if (trackWidth <= viewWidth) currentTranslate = 0;
                 
-                if (trackWidth > viewWidth) {
-                    if (currentTranslate < maxTranslate) {
-                        currentTranslate = maxTranslate;
-                    }
-                } else {
-                    currentTranslate = 0;
-                }
-                
-                track.style.transform = `translateX(${currentTranslate}px)`;
-                
-                leftBtn.classList.toggle('disabled', currentTranslate >= 0);
-                rightBtn.classList.toggle('disabled', currentTranslate <= maxTranslate + 5);
+               track.style.transform = `translateX(${currentTranslate}px)`;
+               leftBtn.classList.toggle('disabled', currentTranslate >= 0);
+               rightBtn.classList.toggle('disabled', currentTranslate <= maxTranslate + 5);
             };
             
-            leftBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                currentIndex--;
-                updateTrack();
-            });
-            
-            rightBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                currentIndex++;
-                updateTrack();
-            });
-            
-            view.addEventListener('touchstart', (e) => {
-                startX = e.touches[0].clientX;
-                isDragging = true;
+           leftBtn.addEventListener('click', (e) => { e.stopPropagation(); currentIndex--; updateTrack(); });
+           rightBtn.addEventListener('click', (e) => { e.stopPropagation(); currentIndex++; updateTrack(); });
+           view.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; isDragging = true; }, { passive: true });
+           view.addEventListener('touchend', (e) => { 
+                if (!isDragging) return; 
+                if (Math.abs(startX - e.changedTouches[0].clientX) > 50) startX - e.changedTouches[0].clientX > 0 ? rightBtn.click() : leftBtn.click();
+               isDragging = false; 
             }, { passive: true });
-            
-            view.addEventListener('touchmove', (e) => {
-                if (!isDragging) return;
-            }, { passive: true });
-            
-            view.addEventListener('touchend', (e) => {
-                if (!isDragging) return;
-                const endX = e.changedTouches[0].clientX;
-                const diff = startX - endX;
-                
-                if (Math.abs(diff) > 50) { 
-                    if (diff > 0) {
-                        rightBtn.click();
-                    } else {
-                        leftBtn.click();
-                    }
-                }
-                isDragging = false;
-            }, { passive: true });
-
-            
-            window.addEventListener('resize', () => {
-                updateTrack();
-            });
-            
-            setTimeout(updateTrack, 100);
+           window.addEventListener('resize', updateTrack);
+           setTimeout(updateTrack, 100);
         }
 
-        // --- LAZY LOAD IMAGE HANDLING (Unchanged) ---
         function startLazyLoading(rootElement = document) {
             const images = rootElement.querySelectorAll('.gallery-img');
             const imageObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
+               entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        const img = entry.target;
-                        const src = img.getAttribute('data-src');
-                        if (src) {
-                            img.src = src;
-                            img.onload = () => {
-                                img.classList.add('loaded');
-                                const loader = img.previousElementSibling;
-                                if (loader && loader.classList.contains('skeleton-loader')) {
-                                    loader.remove();
-                                }
-                            };
-                            img.removeAttribute('data-src');
-                        }
-                        observer.unobserve(img);
+                       const img = entry.target; const src = img.getAttribute('data-src');
+                       if (src) { img.src = src; img.onload = () => { img.classList.add('loaded'); const l = img.previousElementSibling; if (l) l.remove(); }; img.removeAttribute('data-src'); }
+                       observer.unobserve(img);
                     }
                 });
-            }, { rootMargin: '0px 0px 300px 0px' }); 
-            
-            images.forEach(img => imageObserver.observe(img));
+            }, { rootMargin: '0px 0px 300px 0px' });
+           images.forEach(img => imageObserver.observe(img));
         }
 
-        
-        // --- LIGHTBOX GLOBAL HANDLERS (CLEANED UP FOR PURE CSS SCALING) ---
-        
-        // New helper to set image source and update CTA
+        // --- LIGHTBOX CONTROL ---
         const showImage = (index) => {
-            const total = flatGalleryImages.length;
-            
-            if (index < 0 || index >= total) {
-                console.error("Attempted to show image out of bounds:", index);
-                return;
-            }
-
+            if (index < 0 || index >= flatGalleryImages.length) return;
             const image = flatGalleryImages[index];
-            lightboxImg.src = image.src;
             
-            updateLightboxCTA(image.title || '', image.subtitle || '');
-            updateNavButtons();
+            // 1. Set Image
+           lightboxImg.src = image.src;
             
-            // --- REMOVED JS DYNAMIC SCALING LOGIC ---
-            // The image scaling is now handled purely by CSS using object-fit: contain.
-            // We no longer need to check aspect ratio and apply classes here.
+            // 2. Render Hotspots
+           renderHotspotsForImage(image);
             
-            // Show CTA container if it wasn't already visible
+            // 3. Update Text
+           updateLightboxCTA(image.title || '', image.subtitle || '');
+           updateNavButtons();
+
+            // 4. Force Update Dimensions after a brief delay AND on load to allow image to layout
+            // This is the fix for alignment
+            setTimeout(updateHotspotOverlayDimensions, 50);
+            lightboxImg.onload = updateHotspotOverlayDimensions;
+
             if (!document.getElementById('lightbox-cta-container').classList.contains('visible')) {
-                // Keeping the timeout to ensure the main lightbox is open before controls start animating.
-                setTimeout(() => {
-                    document.getElementById('lightbox-cta-container').classList.add('visible');
-                }, 100);
+               setTimeout(() => { document.getElementById('lightbox-cta-container').classList.add('visible'); }, 100);
             }
         }
 
-        // MODIFIED: Updated to use hidden-placeholder class instead of display: none
         const updateNavButtons = () => {
             const total = flatGalleryImages.length;
             const placeholderClass = 'hidden-placeholder';
-            
-            if (total <= 1) {
-                lightboxPrevBtn.classList.add(placeholderClass);
-                lightboxNextBtn.classList.add(placeholderClass);
-            } else {
-                // Use classList.toggle to add the hidden-placeholder class when we are at the boundary
-                lightboxPrevBtn.classList.toggle(placeholderClass, currentImageIndex === 0);
-                lightboxNextBtn.classList.toggle(placeholderClass, currentImageIndex === total - 1);
-            }
+            if (total <= 1) { lightboxPrevBtn.classList.add(placeholderClass); lightboxNextBtn.classList.add(placeholderClass); } 
+            else { lightboxPrevBtn.classList.toggle(placeholderClass, currentImageIndex === 0); lightboxNextBtn.classList.toggle(placeholderClass, currentImageIndex === total - 1); }
         };
 
         const closeLightbox = () => {
-            lightbox.classList.remove('active');
-            document.getElementById('lightbox-cta-container').classList.remove('visible');
-            document.removeEventListener('keydown', handleLightboxKeyboardNav);
-            // OLD LOGIC REMOVED: NEW: Clear scaling classes on close
+           lightbox.classList.remove('active');
+           document.getElementById('lightbox-cta-container').classList.remove('visible');
+           closeAllTooltips(); // Hide tooltips on close
         };
         
         function updateLightboxCTA(title, subtitle) {
             const text = (title + " " + subtitle).toLowerCase();
             const btn = document.getElementById('lightbox-cta-btn');
-            
-            // Logic for "most expensive" service priority
-            if (text.includes('ppf') || text.includes('protection film') || text.includes('clear bra')) {
-                // MODIFIED: Changed text to be longer for consistent button width (19 chars)
-                btn.textContent = "Request PPF Pricing";
-            } else if (text.includes('wrap') || text.includes('vinyl') || text.includes('color change')) {
-                btn.textContent = "Customize Your Ride"; // (19 chars) - Keep
-            } else if (text.includes('ceramic') || text.includes('coating')) {
-                btn.textContent = "Get Ceramic Coating"; // (19 chars) - Keep
-            } else if (text.includes('tint')) {
-                // MODIFIED: Changed text to be longer for consistent button width (19 chars)
-                btn.textContent = "View Window Tinting";
-            } else {
-                btn.textContent = "Get an Instant Quote"; // (20 chars) - Keep as fallback default
-            }
+            if (text.includes('ppf') || text.includes('protection')) btn.textContent = "Request PPF Pricing";
+            else if (text.includes('wrap') || text.includes('vinyl')) btn.textContent = "Customize Your Ride";
+            else if (text.includes('ceramic')) btn.textContent = "Get Ceramic Coating";
+            else if (text.includes('tint')) btn.textContent = "View Window Tinting";
+            else btn.textContent = "Get an Instant Quote";
         }
 
-        // Global function to open lightbox (called from onclick in generated HTML)
-        window.openLightbox = (globalIndex) => {
-            currentImageIndex = globalIndex;
-            showImage(currentImageIndex);
-            lightbox.classList.add('active');
-            document.addEventListener('keydown', handleLightboxKeyboardNav);
+       window.openLightbox = (globalIndex) => { currentImageIndex = globalIndex; showImage(currentImageIndex); lightbox.classList.add('active'); };
+       window.navigateLightbox = (direction) => { 
+            const newIndex = currentImageIndex + direction;
+            if (newIndex >= 0 && newIndex < flatGalleryImages.length) { currentImageIndex = newIndex; showImage(currentImageIndex); }
         };
-
-        window.navigateLightbox = (direction) => {
-            const total = flatGalleryImages.length;
-            let newIndex = currentImageIndex + direction;
-
-            if (newIndex < 0 || newIndex >= total) {
-                // Stop navigation at boundaries (non-looping)
-                return; 
-            }
-            
-            currentImageIndex = newIndex;
-            showImage(currentImageIndex);
-        };
-
-        const handleLightboxKeyboardNav = (e) => {
-            // MODIFIED: Removed Escape key closure logic as requested.
-            if (e.key === 'ArrowLeft') {
-                e.preventDefault();
-                navigateLightbox(-1);
-            } else if (e.key === 'ArrowRight') {
-                e.preventDefault();
-                navigateLightbox(1);
-            }
-        };
-
-        lightboxClose.addEventListener('click', closeLightbox);
-        
-        // MODIFIED: Removed the event listener on the lightbox background.
-        /*
-        lightbox.addEventListener('click', (e) => {
-            // Close if clicking outside the image or navigation buttons
-            if (e.target === lightbox || e.target === lightboxClose) closeLightbox();
+       lightboxClose.addEventListener('click', closeLightbox);
+       document.addEventListener('keydown', (e) => { 
+           if(!lightbox.classList.contains('active')) return;
+            if (e.key === 'ArrowLeft') navigateLightbox(-1); 
+            if (e.key === 'ArrowRight') navigateLightbox(1); 
+            if (e.key === 'Escape') closeLightbox();
         });
-        */
-        
-        // --- FETCH & INIT GALLERY ---
+
+        // --- FETCH JSON AND INIT ---
         async function initGallery() {
             try {
-                const fetchWithRetry = async (url, retries = 3, delay = 1000) => {
-                    for (let i = 0; i < retries; i++) {
-                        try {
-                            const response = await fetch(url);
-                            if (response.ok) return response.json();
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        } catch (error) {
-                            if (i === retries - 1) throw error;
-                            await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
-                        }
-                    }
-                };
+                const response = await fetch(JSON_URL);
+                if (!response.ok) throw new Error("JSON Fetch Failed");
+                const data = await response.json();
 
-                const data = await fetchWithRetry(DATA_URL);
-                
-                if (data.gallery_projects && Array.isArray(data.gallery_projects) && data.gallery_projects.length > 0) {
-                    allProjectsData = data.gallery_projects;
-                    galleryContainer.innerHTML = ''; 
-
-                    // --- RENDER ALL CONTENT AT ONCE ---
-                    const contentBlock = generateAllGalleryHTML(allProjectsData);
-                    galleryContainer.appendChild(contentBlock);
-                    
-                    // Initialize carousels and lazy loading for the entire content block
-                    contentBlock.querySelectorAll('.project-section').forEach(section => {
-                        initManualCarousel(section);
-                    });
-                    startLazyLoading(contentBlock);
-
-                    // Refresh icons for new buttons
-                    lucide.createIcons();
-
-                } else {
-                    galleryContainer.innerHTML = '<div class="text-center py-20 text-red-500">Error loading projects. No data found.</div>';
+                if (data.gallery_projects) {
+                   galleryContainer.innerHTML = ''; 
+                    const contentBlock = generateAllGalleryHTML(data.gallery_projects);
+                   galleryContainer.appendChild(contentBlock);
+                   contentBlock.querySelectorAll('.project-section').forEach(section => initManualCarousel(section));
+                   startLazyLoading(contentBlock);
+                   lucide.createIcons();
                 }
             } catch (error) {
-                console.error("Gallery Fetch Error:", error);
-                galleryContainer.innerHTML = '<div class="text-center py-20 text-red-500">Unable to load gallery data. Please try again later.</div>';
+                console.error("Gallery Error:", error);
+                galleryContainer.innerHTML = '<div style="color:red; text-align:center; padding: 20px;">Failed to load Gallery Data</div>';
             }
         }
-        
-        // --- QR CODE SETUP (Unchanged) ---
-        const qrCanvas = document.getElementById('qr-code-canvas');
-        if (qrCanvas) {
-            QRCode.toCanvas(qrCanvas, 'tel:469-625-1127', {
-                width: 100,
-                color: {
-                    dark: '#FFFFFF',
-                    light: '#00000000'
-                }
-            }, function (error) {
-                if (error) console.error(error)
-            });
-        }
-        
-        // --- MOBILE MENU SETUP (Unchanged) ---
+
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
-        if(mobileMenuBtn) {
-            mobileMenuBtn.addEventListener('click', () => {
-                mobileMenu.classList.toggle('open');
-                mobileMenuBtn.querySelector('i').setAttribute('data-lucide', mobileMenu.classList.contains('open') ? 'x' : 'menu');
-                lucide.createIcons();
+       if(mobileMenuBtn) {
+           mobileMenuBtn.addEventListener('click', () => {
+               mobileMenu.classList.toggle('open');
+               mobileMenuBtn.querySelector('i').setAttribute('data-lucide', mobileMenu.classList.contains('open') ? 'x' : 'menu');
+               lucide.createIcons();
             });
         }
         
-        // --- FINALIZE: INITIALIZE GALLERY ---
         initGallery();
-        lucide.createIcons();
     });
     </script>
 </body>
