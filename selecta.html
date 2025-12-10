@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WIKD Rapid Tagger</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg: #050505; 
+      --panel: #111; 
+      --border: #333;
+      --text: #eee; 
+      --accent: #536DFE;
+      --highlight: #222;
+      
+      /* WIKD Colors */
+      --c-service: #536DFE;
+      --c-nano: #FFFFFF;
+      --c-ping: #9370DB;
+    }
+
+    body {
+      margin: 0; height: 100vh; background: var(--bg); color: var(--text);
+      font-family: 'Inter', sans-serif; display: grid; grid-template-columns: 320px 1fr;
+      overflow: hidden;
+    }
+
+    /* --- SIDEBAR --- */
+    .sidebar {
+      background: var(--panel); border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      height: 100vh;
+    }
+
+    .sidebar-header { padding: 20px; border-bottom: 1px solid var(--border); }
+    .sidebar-header h2 { margin: 0; font-family: 'Rajdhani', sans-serif; text-transform: uppercase; color: #fff; letter-spacing: 1px; }
+    
+    .sidebar-content { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 24px; }
+
+    .section-label { 
+      font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; 
+      color: #666; font-weight: 700; margin-bottom: 10px; display: block;
+    }
+
+    /* GRID FOR BUTTONS */
+    .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+    /* TOOL BUTTONS */
+    .tool-btn {
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+      color: #999; padding: 12px 8px; border-radius: 4px;
+      cursor: pointer; font-size: 12px; font-weight: 600; text-align: center;
+      transition: all 0.1s; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 4px;
+    }
+    .tool-btn:hover { background: rgba(255,255,255,0.08); color: #fff; }
+
+    /* ACTIVE STATES */
+    .tool-btn.active { box-shadow: inset 0 0 0 1px currentColor; background: rgba(255,255,255,0.05); }
+    
+    .tool-btn[data-type="service"].active { color: var(--c-service); border-color: var(--c-service); }
+    .tool-btn[data-type="nano"].active { color: var(--c-nano); border-color: var(--c-nano); }
+    .tool-btn[data-type="ping"].active { color: var(--c-ping); border-color: var(--c-ping); }
+
+    /* INPUTS */
+    input[type="text"] {
+      width: 100%; background: #000; border: 1px solid var(--border); color: var(--c-service);
+      padding: 10px; font-family: monospace; font-size: 12px; border-radius: 4px;
+      box-sizing: border-box; margin-bottom: 5px;
+    }
+    input:focus { outline: none; border-color: var(--accent); }
+
+    /* OUTPUT AREA */
+    .output-area { padding: 20px; border-top: 1px solid var(--border); background: #080808; }
+    textarea {
+      width: 100%; height: 120px; background: #000; border: 1px solid var(--border);
+      color: #0f0; font-family: monospace; font-size: 11px; padding: 10px;
+      box-sizing: border-box; resize: none; border-radius: 4px;
+    }
+
+    /* --- CANVAS AREA --- */
+    .canvas-area {
+      position: relative; background: #050505; 
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    
+    /* Upload Prompt */
+    .upload-prompt {
+      position: absolute; text-align: center; pointer-events: none;
+      color: #444; font-family: 'Rajdhani', sans-serif;
+    }
+    .upload-prompt h1 { margin: 0; font-size: 24px; text-transform: uppercase; }
+
+    /* The Image Container */
+    .img-wrap { position: relative; box-shadow: 0 0 50px #000; max-width: 90%; max-height: 90%; }
+    img#targetImg { display: block; max-width: 100%; max-height: 90vh; pointer-events: none; }
+    
+    /* Click Layer */
+    .click-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: crosshair; z-index: 10; }
+
+    /* MARKERS */
+    .marker {
+      position: absolute; width: 24px; height: 24px; transform: translate(-50%, -50%);
+      pointer-events: auto; 
+      cursor: grab;
+      z-index: 20; display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: bold; text-shadow: 0 1px 2px #000;
+      transition: transform 0.1s;
+    }
+    .marker:active { cursor: grabbing; }
+    .marker:hover {
+        transform: translate(-50%, -50%) scale(1.2);
+        z-index: 30;
+    }
+
+    /* Marker Shapes matching WIKD CSS */
+    .marker[data-type="service"] { border-radius: 50%; border: 2px solid #fff; background: rgba(0,0,0,0.5); box-shadow: 0 0 10px #000; }
+    .marker[data-type="service"]::after { content:''; width: 6px; height: 6px; background: currentColor; border-radius: 50%; }
+
+    /* Fixed Nano styling to ensure it has size */
+    .marker[data-type="nano"] { width: 30px; height: 26px; border: none; background: none; }
+    .marker[data-type="nano"] svg { display:block; width: 100%; height: 100%; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); }
+
+    .marker[data-type="ping"] { width: 20px; height: 20px; border: 2px solid #fff; background: rgba(0,0,0,0.6); border-radius: 2px; }
+    .marker[data-type="ping"]::after { content:''; width: 6px; height: 6px; background: currentColor; }
+
+    /* TOOLTIP */
+    .tooltip {
+        position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+        background: #141414; border: 1px solid #333; color: #fff;
+        padding: 4px 8px; font-size: 11px; white-space: nowrap;
+        border-radius: 4px; pointer-events: none; opacity: 0; transition: opacity 0.2s;
+        font-family: 'Rajdhani', sans-serif; font-weight: 700; letter-spacing: 1px;
+        margin-bottom: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+    .marker:hover .tooltip { opacity: 1; }
+
+  </style>
+</head>
+<body>
+
+  <!-- LEFT PANEL -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h2>WIKD Tagger</h2>
+    </div>
+
+    <div class="sidebar-content">
+      
+      <!-- 1. CDN LINK -->
+      <div>
+        <span class="section-label">1. Source Image URL</span>
+        <input type="text" id="cdnInput" placeholder="Paste Shopify CDN URL here..." oninput="updateJSON()">
+      </div>
+
+      <!-- 2. SELECT TOOL -->
+      <div>
+        <span class="section-label">2. Select Tag</span>
+        
+        <!-- Services -->
+        <div style="margin-bottom:6px; font-size:11px; color:#444; font-weight:bold;">SERVICES</div>
+        <div class="btn-grid">
+          <div class="tool-btn" onclick="setTool('ppf', 'service')">PPF</div>
+          <div class="tool-btn" onclick="setTool('ceramic', 'service')">Ceramic</div>
+          <div class="tool-btn" onclick="setTool('vinyl', 'service')">Vinyl</div>
+          <div class="tool-btn" onclick="setTool('tint', 'service')">Tint</div>
+          <div class="tool-btn" onclick="setTool('detail', 'service')">Detailing</div>
+        </div>
+
+        <!-- Tuning -->
+        <div style="margin-top:16px; margin-bottom:6px; font-size:11px; color:#444; font-weight:bold;">TUNING / NANO</div>
+        <div class="btn-grid">
+          <div class="tool-btn" onclick="setTool('stage1', 'nano')">Stage 1</div>
+          <div class="tool-btn" onclick="setTool('stage2', 'nano')">Stage 2</div>
+          <div class="tool-btn" onclick="setTool('stage3', 'nano')">Stage 3</div>
+          <div class="tool-btn" onclick="setTool('wikd', 'nano')">WIKD</div>
+        </div>
+
+        <!-- Products -->
+        <div style="margin-top:16px; margin-bottom:6px; font-size:11px; color:#444; font-weight:bold;">PRODUCTS / PING</div>
+        <div class="btn-grid">
+          <div class="tool-btn" onclick="setTool('mclaren', 'ping')">720s Downpipe</div>
+          <div class="tool-btn" onclick="setTool('mclaren_catback', 'ping')">720s Catback</div>
+        </div>
+      </div>
+      
+      <!-- Clear Button -->
+      <button onclick="clearTags()" style="background:#222; border:1px solid #333; color:#aaa; padding:8px; cursor:pointer; width:100%">Clear All Tags</button>
+    </div>
+
+    <!-- 3. OUTPUT -->
+    <div class="output-area">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <span class="section-label" style="margin:0">3. JSON Export</span>
+        <button onclick="copyJSON()" style="background:var(--accent); border:none; color:#fff; font-size:10px; padding:4px 8px; cursor:pointer; border-radius:2px; font-weight:bold;">COPY</button>
+      </div>
+      <textarea id="output" readonly></textarea>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL (CANVAS) -->
+  <div class="canvas-area">
+    <div class="upload-prompt" id="prompt">
+      <h1>Drop Image Here</h1>
+      <span style="font-size:12px; color:#666">Drag & Drop file to start</span>
+    </div>
+    
+    <div class="img-wrap" id="imgWrap" style="display:none">
+      <img id="targetImg">
+      <div class="click-layer" id="clickLayer"></div>
+      <div id="markerContainer"></div>
+    </div>
+    
+    <input type="file" id="fileInput" style="display:none" accept="image/*">
+  </div>
+
+<script>
+  // --- STATE ---
+  let activeTool = null; // { id: 'ppf', type: 'service' }
+  let tags = [];         // Array of placed tags
+  let currentImageName = "";
+
+  // --- DOM ---
+  const els = {
+    drop: document.querySelector('.canvas-area'),
+    fileInput: document.getElementById('fileInput'),
+    imgWrap: document.getElementById('imgWrap'),
+    img: document.getElementById('targetImg'),
+    prompt: document.getElementById('prompt'),
+    clickLayer: document.getElementById('clickLayer'),
+    markerContainer: document.getElementById('markerContainer'),
+    output: document.getElementById('output'),
+    cdnInput: document.getElementById('cdnInput')
+  };
+
+  // --- INIT ---
+  els.drop.addEventListener('dragover', e => e.preventDefault());
+  els.drop.addEventListener('drop', handleDrop);
+  els.drop.addEventListener('click', (e) => {
+    if(els.imgWrap.style.display === 'none') els.fileInput.click();
+  });
+  els.fileInput.addEventListener('change', e => loadFile(e.target.files[0]));
+  
+  els.clickLayer.addEventListener('mousedown', handleCanvasClick);
+
+  // --- FUNCTIONS ---
+
+  function setTool(id, type) {
+    activeTool = { id, type };
+    
+    // UI Update
+    document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+    const btns = document.querySelectorAll('.tool-btn');
+    btns.forEach(btn => {
+      if (btn.getAttribute('onclick').includes(`'${id}'`)) {
+        btn.classList.add('active');
+      }
+    });
+  }
+
+  function handleDrop(e) {
+    e.preventDefault();
+    if(e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]);
+  }
+
+  function loadFile(file) {
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      els.img.src = e.target.result;
+      els.imgWrap.style.display = 'block';
+      els.prompt.style.display = 'none';
+      currentImageName = file.name;
+      // Auto-fill CDN input with fake path if empty, just as hint
+      if(!els.cdnInput.value) els.cdnInput.value = `https://cdn.shopify.com/s/files/1/0000/0000/files/${file.name}`;
+      updateJSON();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function handleCanvasClick(e) {
+    if (!activeTool) {
+      alert("Please select a tag from the left sidebar first.");
+      return;
+    }
+
+    // Calculate % position
+    const rect = els.img.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    const pctX = (x / rect.width) * 100;
+    const pctY = (y / rect.height) * 100;
+
+    // Add Tag
+    const tag = {
+      id: activeTool.id,
+      type: activeTool.type,
+      x: parseFloat(pctX.toFixed(2)),
+      y: parseFloat(pctY.toFixed(2))
+    };
+
+    // Remove existing tag if ID already exists (enforces 1 tag per ID per image)
+    tags = tags.filter(t => t.id !== tag.id);
+    tags.push(tag);
+
+    renderMarkers();
+    updateJSON();
+  }
+
+  function renderMarkers() {
+    els.markerContainer.innerHTML = '';
+    tags.forEach((t, index) => {
+      const el = document.createElement('div');
+      el.className = 'marker';
+      el.dataset.type = t.type;
+      el.style.left = t.x + '%';
+      el.style.top = t.y + '%';
+      
+      // Color coding logic
+      let color = '#fff';
+      if(t.type === 'service') color = '#536DFE';
+      if(t.type === 'nano') color = '#FFFFFF';
+      if(t.type === 'ping') color = '#9370DB';
+      el.style.color = color;
+
+      // Special inner HTML for Triangle (Nano)
+      let innerHTML = '';
+      if(t.type === 'nano') {
+        innerHTML = `
+        <svg viewBox="0 0 30 26" fill="none">
+          <path d="M15 2 L27 24 L3 24 Z" fill="rgba(20,20,20,0.4)" stroke="rgba(255,255,255,0.9)" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M15 13 L19 19 L11 19 Z" fill="${t.id === 'stage2' ? '#FDE047' : t.id === 'stage3' ? '#f97316' : t.id === 'wikd' ? '#FF3B30' : '#ffffff'}" />
+        </svg>`;
+      }
+
+      // Add Tooltip
+      innerHTML += `<div class="tooltip">${t.id}</div>`;
+      el.innerHTML = innerHTML;
+
+      // START DRAG LOGIC
+      el.addEventListener('mousedown', (e) => {
+        startDrag(e, index);
+      });
+
+      els.markerContainer.appendChild(el);
+    });
+  }
+
+  // --- DRAG FUNCTIONALITY ---
+  let isDragging = false;
+  let draggedTagIndex = -1;
+
+  function startDrag(e, index) {
+    e.preventDefault(); // Prevent text selection
+    e.stopPropagation(); // Stop click-to-add logic
+    isDragging = true;
+    draggedTagIndex = index;
+    
+    document.addEventListener('mousemove', onDrag);
+    document.addEventListener('mouseup', endDrag);
+  }
+
+  function onDrag(e) {
+    if (!isDragging) return;
+    
+    const rect = els.img.getBoundingClientRect();
+    let x = e.clientX - rect.left;
+    let y = e.clientY - rect.top;
+
+    // Constrain to image bounds
+    x = Math.max(0, Math.min(x, rect.width));
+    y = Math.max(0, Math.min(y, rect.height));
+
+    const pctX = (x / rect.width) * 100;
+    const pctY = (y / rect.height) * 100;
+
+    // Update tag data
+    tags[draggedTagIndex].x = parseFloat(pctX.toFixed(2));
+    tags[draggedTagIndex].y = parseFloat(pctY.toFixed(2));
+
+    // Update marker visual position immediately (without full re-render for performance)
+    const markers = els.markerContainer.children;
+    if (markers[draggedTagIndex]) {
+        markers[draggedTagIndex].style.left = tags[draggedTagIndex].x + '%';
+        markers[draggedTagIndex].style.top = tags[draggedTagIndex].y + '%';
+    }
+
+    // Update JSON immediately for feedback
+    updateJSON();
+  }
+
+  function endDrag() {
+    isDragging = false;
+    draggedTagIndex = -1;
+    document.removeEventListener('mousemove', onDrag);
+    document.removeEventListener('mouseup', endDrag);
+  }
+
+  function updateJSON() {
+    const data = {
+      cdnUrl: els.cdnInput.value.trim(),
+      tags: tags
+    };
+    els.output.value = JSON.stringify(data, null, 2);
+  }
+
+  function clearTags() {
+    if(confirm("Clear all tags?")) {
+      tags = [];
+      renderMarkers();
+      updateJSON();
+    }
+  }
+
+  function copyJSON() {
+    els.output.select();
+    document.execCommand('copy');
+    const btn = document.querySelector('button[onclick="copyJSON()"]');
+    const prev = btn.innerText;
+    btn.innerText = "COPIED!";
+    setTimeout(() => btn.innerText = prev, 1500);
+  }
+
+</script>
+</body>
+</html>
