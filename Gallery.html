@@ -138,7 +138,7 @@
       }
       @keyframes pulse-ring-square { 0% { transform: scale(0.8); opacity: 0.6; } 100% { transform: scale(2.0); opacity: 0; } }
 
-      /* Tooltip Popup */
+      /* Tooltip Popup Base */
       .tune-tooltip {
         position: absolute; 
         background: var(--color-surface);
@@ -149,46 +149,75 @@
         opacity: 0; pointer-events: none; 
         z-index: 20020; /* Highest Z-Index */
         visibility: hidden;
-        transform: translateX(-50%) translateY(-100%) scale(0.5);
-        transform-origin: bottom center; 
         transition: opacity 0.2s, transform 0.2s, visibility 0.2s;
         
         /* Tailwind Reset Overrides for Tooltip Content */
         text-align: left;
         line-height: 1.4;
         color: var(--color-text);
+        
+        /* Layout Safety */
+        max-width: 90vw; /* Prevent screen overflow on mobile */
       }
-      .tune-tooltip.visible {
-        opacity: 1; visibility: visible; pointer-events: auto;
-        transform: translateX(-50%) translateY(calc(-100% - 12px)) scale(1);
+
+      /* === 1. DEFAULT: Center Top (Standard) === */
+      .tune-tooltip { transform: translateX(-50%) translateY(-100%) scale(0.5); transform-origin: bottom center; }
+      .tune-tooltip.visible { opacity: 1; visibility: visible; pointer-events: auto; transform: translateX(-50%) translateY(calc(-100% - 12px)) scale(1); }
+      .tune-tooltip::after {
+        content: ''; position: absolute; left: 50%; top: 100%; width: 12px; height: 12px;
+        background: var(--color-surface); border-right: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border);
+        transition: all 0.25s; transform: translateX(-50%) translateY(-6px) rotate(45deg); 
       }
+
+      /* === 2. FLIP: Center Bottom (If too high) === */
+      .tune-tooltip.flip { transform: translateX(-50%) translateY(0px) scale(0.5); transform-origin: top center; }
+      .tune-tooltip.flip.visible { transform: translateX(-50%) translateY(12px) scale(1); }
+      .tune-tooltip.flip::after { top: -6px; transform: translateX(-50%) rotate(225deg); }
+
+      /* === 3. ALIGN LEFT (If hotspot near Left edge) === */
+      /* Shifts box right, arrow stays left */
+      .tune-tooltip.align-left { transform: translateX(-15%) translateY(-100%) scale(0.5); transform-origin: bottom left; }
+      .tune-tooltip.align-left.visible { transform: translateX(-15%) translateY(calc(-100% - 12px)) scale(1); }
+      .tune-tooltip.align-left::after { left: 15%; }
+      /* Align Left + Flip */
+      .tune-tooltip.align-left.flip { transform: translateX(-15%) translateY(0px) scale(0.5); transform-origin: top left; }
+      .tune-tooltip.align-left.flip.visible { transform: translateX(-15%) translateY(12px) scale(1); }
+
+      /* === 4. ALIGN RIGHT (If hotspot near Right edge) === */
+      /* Shifts box left, arrow stays right */
+      .tune-tooltip.align-right { transform: translateX(-85%) translateY(-100%) scale(0.5); transform-origin: bottom right; }
+      .tune-tooltip.align-right.visible { transform: translateX(-85%) translateY(calc(-100% - 12px)) scale(1); }
+      .tune-tooltip.align-right::after { left: 85%; }
+      /* Align Right + Flip */
+      .tune-tooltip.align-right.flip { transform: translateX(-85%) translateY(0px) scale(0.5); transform-origin: top right; }
+      .tune-tooltip.align-right.flip.visible { transform: translateX(-85%) translateY(12px) scale(1); }
+
+      /* Widths */
       .tune-tooltip.type-service { width: 260px; padding: 16px; }
       .tune-tooltip.type-nano { width: 280px; padding: 16px; }
       .tune-tooltip.type-ping { width: 320px; height: 320px; padding: 0; display: flex; flex-direction: column; overflow: hidden; background: #000; }
-
-      .tune-tooltip.flip { transform: translateX(-50%) translateY(0px) scale(0.5); transform-origin: top center; }
-      .tune-tooltip.flip.visible { transform: translateX(-50%) translateY(12px) scale(1); }
-      
-      .tune-tooltip::after {
-        content: ''; position: absolute; left: 50%; width: 12px; height: 12px;
-        background: var(--color-surface); border-right: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border);
-        transition: all 0.25s; top: 100%; transform: translateX(-50%) translateY(-6px) rotate(45deg); 
-      }
       .tune-tooltip.type-ping::after { background: #000; }
-      .tune-tooltip.flip::after { top: -6px; transform: translateX(-50%) rotate(225deg); }
 
       /* Tooltip Content Styles */
-      .tt-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--color-border); height: 50px; }
+      /* UPDATED: flex-start alignment prevents vertical centering of small content, auto height allows wrapping */
+      .tt-header { 
+          display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; 
+          padding-bottom: 12px; border-bottom: 1px solid var(--color-border); 
+          min-height: 50px; height: auto;
+      }
       .tt-title { flex-grow: 1; min-width: 0; }
       
-      /* Explicitly fix Headings overridden by Tailwind */
+      /* Explicitly fix Headings overridden by Tailwind & Enable Wrapping */
       .tt-title h4 { 
           margin: 0; font-family: var(--font-heading); font-size: 20px; font-weight: 700; 
-          text-transform: uppercase; color: #fff; line-height: 1; margin-bottom: 2px; white-space: nowrap; 
+          text-transform: uppercase; color: #fff; line-height: 1.1; margin-bottom: 4px; 
+          white-space: normal; /* Allow Wrapping */
+          word-wrap: break-word;
       }
       .tt-title span { 
           font-size: 11px; color: var(--color-text-muted); font-weight: 500; 
           text-transform: uppercase; letter-spacing: 0.5px; display: block;
+          line-height: 1.2;
       }
       
       .tt-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
@@ -681,7 +710,7 @@
         
         let flatGalleryImages = [];
         let currentImageIndex = 0;
-        let globalZIndex = 20000; 
+        let globalZIndex = 30000; 
         const lightboxPrevBtn = document.getElementById('lightbox-prev');
         const lightboxNextBtn = document.getElementById('lightbox-next');
 
@@ -740,7 +769,7 @@
                         <div class="tt-header">
                             <animated-icons src="https://animatedicons.co/get-icon?name=${data.iconName}&style=minimalistic&token=${data.iconToken}" trigger="loop" attributes='${iconAttrs.replace(/'/g, "&apos;")}' height="32" width="32"></animated-icons>
                             <div class="tt-title"><h4>${data.label}</h4><span>${data.desc}</span></div>
-                            <div class="nano-chart-wrap"><canvas id="${chartId}"></canvas></div>
+                            <div class="nano-chart-wrap"><canvas id="${chartId}" width="100" height="40"></canvas></div>
                         </div>
                         <div class="tt-stats">
                             <a href="https://www.wikdmotorsports.com/pages/tuning" target="_blank" class="stat-item"><div class="stat-face front"><span class="stat-val">${data.stat1.val}</span><span class="stat-label">${data.stat1.label}</span></div><div class="stat-face back"><span class="stat-val">${data.stat1.altVal}</span><span class="stat-label">${data.stat1.altLabel}</span></div></a>
@@ -782,10 +811,30 @@
                 const updatePosition = () => {
                     tt.style.left = tag.x + '%';
                     tt.style.top = tag.y + '%';
+                    
+                    // Reset Classes
+                    tt.classList.remove('align-left', 'align-right', 'flip');
+                    
+                    // Horizontal Edge Detection
+                    if (tag.x < 15) {
+                        tt.classList.add('align-left');
+                    } else if (tag.x > 85) {
+                        tt.classList.add('align-right');
+                    }
+                    
+                    // Vertical Edge Detection
+                    if (tag.y < 20) {
+                        tt.classList.add('flip');
+                    }
                 }
                updatePosition();
 
-                if (type === 'nano' && chartId) chartInstances[id] = createNanoChart(chartId, data);
+                if (type === 'nano' && chartId) {
+                    // FIX: Force explicit canvas sizing for ChartJS to render correctly in hidden container
+                    const canvas = tt.querySelector('canvas');
+                    if(canvas) { canvas.style.width = '100px'; canvas.style.height = '40px'; }
+                    chartInstances[id] = createNanoChart(chartId, data);
+                }
 
                 let hideTimeout;
                 const bar = tt.querySelector(".tune-bar-fill");
@@ -795,8 +844,6 @@
                     globalZIndex++; tt.style.zIndex = globalZIndex;
                     updatePosition();
                     
-                    if (tag.y < 20) tt.classList.add('flip'); else tt.classList.remove('flip');
-
                    const isAlreadyVisible = tt.classList.contains('visible');
                    tt.classList.add('visible');
 
@@ -844,8 +891,10 @@
             if(!img || !layer || !container) return;
 
             // Get dimensions of the container
-            const cw = container.clientWidth;
-            const ch = container.clientHeight;
+            // USE getBoundingClientRect for float precision
+            const cRect = container.getBoundingClientRect();
+            const cw = cRect.width;
+            const ch = cRect.height;
             
             // Get natural dimensions of the image
             const nw = img.naturalWidth;
