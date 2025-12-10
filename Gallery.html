@@ -619,7 +619,8 @@
     };
 
     // --- 2. FETCH DATA FROM URL ---
-    const JSON_URL = "https://cdn.shopify.com/s/files/1/0648/4826/5421/files/NewGAlleryDatawithhotspots.json?v=1764974410";
+    // Added timestamp to bust cache
+    const JSON_URL = "https://cdn.shopify.com/s/files/1/0648/4826/5421/files/NewGAlleryDatawithhotspots.json?v=1764974410&t=" + new Date().getTime();
 
     // --- 3. CHART & ANIMATION UTILS (FROM TOOLTIPS) ---
     const BASE_DYNO_DATA = [
@@ -732,6 +733,19 @@
             return cleaned.replace(/\s\s+/g, ' ').trim();
         }
 
+        function getCleanFilename(url) {
+            // 1. Remove query string
+            let path = url.split('?')[0];
+            // 2. Extract just the filename from the path
+            let filename = path.substring(path.lastIndexOf('/') + 1);
+            // 3. Remove extension
+            if (filename.lastIndexOf('.') !== -1) {
+                filename = filename.substring(0, filename.lastIndexOf('.'));
+            }
+            // 4. Remove Shopify size suffix (e.g. _800x800, _1024x1024, _2048x)
+            return filename.replace(/_\d+x\d+$/, '').replace(/_\d+x$/, ''); 
+        }
+
         // --- CORE: HOTSPOT RENDERING ---
         function closeAllTooltips() {
             document.querySelectorAll('.tune-tooltip.visible').forEach(tt => {
@@ -747,9 +761,30 @@
 
         function renderHotspotsForImage(imageData) {
             hotspotLayer.innerHTML = ''; // Clear previous
-            if(!imageData.hotspots || !imageData.hotspots.tags) return;
+            if(!imageData.hotspots) return;
 
-            imageData.hotspots.tags.forEach(tag => {
+            let tagsToRender = [];
+
+            // Handle Array Format (New JSON structure)
+            if (Array.isArray(imageData.hotspots)) {
+                // Robust Match: Compare strictly on filename, ignoring path and size suffixes
+                const currentFilename = getCleanFilename(imageData.src);
+                
+                const match = imageData.hotspots.find(h => {
+                    const hotspotFilename = getCleanFilename(h.cdnUrl);
+                    return currentFilename === hotspotFilename;
+                });
+                
+                if (match && match.tags) tagsToRender = match.tags;
+            } 
+            // Handle Legacy Object Format (Backwards compatibility)
+            else if (imageData.hotspots.tags) {
+                 tagsToRender = imageData.hotspots.tags;
+            }
+
+            if (!tagsToRender || tagsToRender.length === 0) return;
+
+            tagsToRender.forEach(tag => {
                 const id = tag.id;
                 const type = tag.type;
                 let data, htmlContent, chartId;
@@ -971,11 +1006,9 @@
                    
                    const imagesHtml = images.map((imgUrl, idx) => {
                        const globalIndex = flatGalleryImages.length;
-                       // CHECK FOR HOTSPOTS: If this is the first image of the project, use project hotspots
-                       let hotspots = null;
-                       if(idx === 0 && project.hotspots) hotspots = project.hotspots;
-
-                       flatGalleryImages.push({ src: imgUrl, title: title, subtitle: subtitle, hotspots: hotspots });
+                       // CHECK FOR HOTSPOTS: Pass full project hotspots to EVERY image. 
+                       // The renderHotspotsForImage function will filter for the specific image URL.
+                       flatGalleryImages.push({ src: imgUrl, title: title, subtitle: subtitle, hotspots: project.hotspots });
 
                        return `<div class="gallery-item" onclick="openLightbox(${globalIndex})">
                                    <div class="skeleton-loader"></div>
@@ -1002,6 +1035,7 @@
                 const subtitle = 'Behind the Scenes and Quick Snaps';
                 const imagesHtml = finalMixedImages.map(imgUrl => {
                    const globalIndex = flatGalleryImages.length;
+                   // Also pass null or check if mixed images have hotspots (usually not, but safe to pass null)
                    flatGalleryImages.push({ src: imgUrl, title: title, subtitle: subtitle, hotspots: null });
                    return `<div class="gallery-item" onclick="openLightbox(${globalIndex})"><div class="skeleton-loader"></div><img data-src="${imgUrl}" class="gallery-img"></div>`;
                 }).join('');
