@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Rapid Tagger (Manual Export)</title>
+  <title>Rapid Tagger (Pro Cockpit)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   
@@ -57,7 +57,7 @@
         border-bottom: 1px solid var(--border); 
         display: flex; justify-content: space-between; align-items: center; 
         background: #0f0f0f;
-        position: relative; 
+        position: relative; /* For Guide Absolute Positioning */
     }
     
     .sidebar-scroll { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 24px; }
@@ -77,8 +77,22 @@
     }
     .section-header::after { content:''; flex:1; height:1px; background: #222; }
 
+    /* STATUS BADGE */
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #333; box-shadow: 0 0 5px rgba(0,0,0,0.5); transition: 0.3s; cursor: pointer; }
+    .status-dot.online { background: var(--c-success); box-shadow: 0 0 8px var(--c-success); }
+    .status-dot.offline { background: var(--c-danger); box-shadow: 0 0 8px var(--c-danger); }
+
     /* INPUTS */
     .input-group { position: relative; }
+    
+    textarea.batch-input {
+      width: 100%; background: #141414; border: 1px solid #2a2a2a; color: #fff;
+      padding: 8px 10px; /* Reduced Padding */
+      font-family: monospace; 
+      height: 34px; /* Reduced Height */
+      resize: none; font-size: 12px; border-radius: 6px;
+      transition: all 0.2s;
+    }
     
     input.info-input {
       width: 100%; 
@@ -89,13 +103,30 @@
       transition: all 0.2s;
     }
     
-    input.info-input:focus { 
+    textarea.batch-input:focus, input.info-input:focus { 
         border-color: var(--accent); background: #1a1a1a; 
         box-shadow: 0 0 0 1px rgba(83, 109, 254, 0.2);
     }
     
     .input-label { font-size: 10px; color: var(--text-muted); margin-bottom: 4px; display: block; font-weight: 500; transition: color 0.2s; }
 
+    /* LOCKED STATE (Orange Theme) */
+    .locked-ui { 
+        pointer-events: none; 
+    }
+    .locked-ui input.info-input {
+        border-color: #ffa500;
+        color: #ffa500;
+        background: rgba(255, 165, 0, 0.08);
+        box-shadow: 0 0 8px rgba(255, 165, 0, 0.1);
+    }
+    .locked-ui .input-label {
+        color: #ffa500;
+    }
+    .locked-ui #refreshTagsBtn {
+        opacity: 0.3;
+        pointer-events: none;
+    }
 
     /* GUIDE PANEL */
     .guide-btn { background:none; border:none; color:#666; font-size:10px; font-weight:700; cursor:pointer; letter-spacing:1px; text-transform:uppercase; transition: color 0.2s; }
@@ -121,6 +152,88 @@
     .guide-item strong { color: #e0e0e0; display: block; margin-bottom: 2px; font-size: 12px; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.5px; }
     .k-bd { display: inline-block; padding: 0 4px; background: #222; border: 1px solid #333; border-radius: 3px; color: var(--accent); font-family: monospace; font-size: 10px; margin: 0 2px; }
 
+    /* QUEUE LIST */
+    .queue-container {
+        background: #050505; border: 1px solid var(--border); border-radius: 6px; overflow: hidden;
+        margin-bottom: 10px;
+    }
+    .queue-list { max-height: 80px; overflow-y: auto; }
+    .queue-list:empty { padding: 10px; text-align: center; color: #444; font-style: italic; font-size: 10px; }
+    .queue-list:empty::after { content: 'Upload Queue Empty'; }
+    
+    .q-item {
+        padding: 4px 10px; border-bottom: 1px solid #1a1a1a; font-size: 10px;
+        color: #888; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+        cursor: pointer; transition: 0.1s;
+    }
+    .q-item:hover { background: #111; color: #ccc; }
+    .q-del { width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; border-radius: 4px; }
+    .q-del:hover { background: rgba(239, 68, 68, 0.2); color: var(--c-danger); }
+
+    /* CLOUD GALLERY (THUMBNAILS) */
+    .gallery-grid {
+        display: grid; 
+        grid-template-columns: repeat(3, 1fr); 
+        gap: 8px; 
+        margin-top: 10px;
+        padding: 8px;
+        background: #050505;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        max-height: 350px;
+        overflow-y: auto;
+    }
+    .gallery-item {
+        aspect-ratio: 1;
+        background: #111;
+        border-radius: 4px;
+        overflow: hidden;
+        cursor: pointer;
+        border: 2px solid transparent; /* Colored by JS */
+        position: relative;
+        transition: transform 0.1s;
+    }
+    .gallery-item:hover { transform: scale(1.05); z-index: 10; filter: brightness(1.2); }
+    .gallery-item img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+    
+    /* Indicator for currently editing item */
+    .gallery-item.editing { 
+        box-shadow: 0 0 0 2px #fff, 0 0 15px rgba(255, 255, 255, 0.3); 
+        z-index: 5; 
+        transform: scale(0.95);
+    }
+
+    /* QUICK GROUP MODES */
+    /* 1. Picking Source */
+    body.mode-pick-source .gallery-item { cursor: crosshair !important; opacity: 0.5; }
+    body.mode-pick-source .gallery-item:hover { opacity: 1; transform: scale(1.1); box-shadow: 0 0 0 2px var(--accent); }
+    
+    /* 2. Applying Target */
+    body.mode-apply-group .gallery-item { cursor: copy !important; }
+    body.mode-apply-group .gallery-item:hover { filter: brightness(1.3); }
+    
+    /* GREEN OVERLAY FOR SOURCE */
+    .gallery-item.source-selected {
+        opacity: 1 !important;
+        z-index: 20;
+        transform: scale(0.95);
+    }
+    .gallery-item.source-selected::after {
+        content: 'SOURCE';
+        position: absolute;
+        inset: 0;
+        background-color: rgba(0, 230, 118, 0.65); /* Strong Green Overlay */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 800;
+        font-family: 'Rajdhani', sans-serif;
+        letter-spacing: 1px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        pointer-events: none;
+        border: 2px solid #fff;
+    }
     
     /* TOOL GRID */
     .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -139,23 +252,42 @@
     .tool-btn[data-type="service"].active { color: var(--c-service); }
     .tool-btn[data-type="nano"].active { color: var(--c-nano); }
     .tool-btn[data-type="ping"].active { color: var(--c-ping); }
+    .tool-btn[data-type="quickgroup"].active { color: var(--c-success); border-color: var(--c-success); background: rgba(0, 230, 118, 0.1); }
     
     .tool-btn[data-type="delete"]:hover { border-color: var(--c-danger); color: var(--c-danger); }
     .tool-btn[data-type="delete"].active { background: var(--c-danger); color: #fff; border-color: var(--c-danger); }
     
     .hk { position: absolute; top: 3px; right: 5px; font-size: 8px; opacity: 0.3; font-family: monospace; }
 
-    /* COPY BUTTON (Replaces Bake) */
-    .copy-btn {
+    /* BAKE BUTTON */
+    .bake-btn {
         width: 100%; padding: 14px; 
-        background: var(--accent); /* Use primary accent color */
+        background: var(--c-success);
         border: none; border-radius: 6px;
         color: #000; font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 800;
         text-transform: uppercase; cursor: pointer; letter-spacing: 1px;
         transition: 0.2s;
     }
-    .copy-btn:hover { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(83, 109, 254, 0.2); }
-    .copy-btn:active { transform: translateY(1px); }
+    .bake-btn:hover { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0, 230, 118, 0.2); }
+    .bake-btn:active { transform: translateY(1px); }
+    
+    .bake-btn.update-mode { background: #FFA500; color: #000; box-shadow: 0 4px 12px rgba(255, 165, 0, 0.2); }
+    
+    .cancel-btn {
+        width: 100%; padding: 8px; background: #222; border: 1px solid #333; color: #888;
+        border-radius: 4px; margin-top: 8px; font-size: 10px; cursor: pointer; text-transform: uppercase;
+    }
+    .cancel-btn:hover { background: #333; color: #fff; }
+
+    /* DELETE BUTTON */
+    .delete-btn {
+        width: 100%; padding: 8px; background: rgba(239, 68, 68, 0.1); 
+        border: 1px solid rgba(239, 68, 68, 0.3); color: var(--c-danger);
+        border-radius: 4px; margin-top: 4px; font-size: 10px; cursor: pointer; text-transform: uppercase; font-weight: 700;
+        transition: 0.2s;
+    }
+    .delete-btn:hover { background: var(--c-danger); color: #fff; }
+    .delete-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
     /* CANVAS AREA */
     .canvas-area {
@@ -177,7 +309,7 @@
       font-size: 10px; font-weight: bold; text-shadow: 0 1px 2px #000; transition: transform 0.1s;
     }
     .marker:hover {
-        z-index: 1000 !important; 
+        z-index: 1000 !important; /* Bring to front on hover */
     }
     .marker[data-type="service"] { border-radius: 50%; border: 2px solid #fff; background: rgba(0,0,0,0.5); }
     .marker[data-type="service"]::after { content:''; width: 6px; height: 6px; background: currentColor; border-radius: 50%; }
@@ -220,6 +352,11 @@
     .output-bar {
         font-size: 10px; color: #555; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;
     }
+    .lock-toggle {
+        font-size: 10px; color: #555; background: none; border: 1px solid #333; padding: 2px 6px; border-radius: 3px; cursor: pointer;
+    }
+    .lock-toggle.active { color: #ffa500; border-color: #ffa500; background: rgba(255, 165, 0, 0.1); }
+    /* .locked-ui styled above */
 
     @media (max-width: 1000px) {
         body { grid-template-columns: 240px 1fr 240px; }
@@ -232,6 +369,7 @@
   <div class="sidebar sidebar-left">
     <div class="sidebar-header">
       <div style="display:flex; align-items:center; gap:10px;">
+          <div id="statusDot" class="status-dot offline" title="Click to Reconnect" onclick="initAuth()"></div>
           <h2 style="margin:0">RAPID TAGGER</h2>
       </div>
       <button onclick="toggleGuide()" class="guide-btn">QUICK GUIDE ▼</button>
@@ -240,43 +378,70 @@
       <div id="quickGuide" class="guide-panel">
           <div class="guide-item">
               <strong>1. ADD SOURCE</strong>
-              Paste Image URL (or Base64 data) into the field below and press <span class="k-bd">ENTER</span> to load it.
+              Paste Image URL or click <span class="k-bd">📷</span> to upload local files.
           </div>
           <div class="guide-item">
-              <strong>2. TAGGING</strong>
-              Select a tool (Right Panel) and click on the image to place a marker.<br>
-              <br>
-              Shortcuts:<br>
-              Services: <span class="k-bd">1-5</span>, Tuning: <span class="k-bd">QWER</span>, Parts: <span class="k-bd">AS</span><br>
-              Remove: <span class="k-bd">D</span> (then click marker)
+              <strong>2. METADATA & GROUPING</strong>
+              Enter Project Title. Subtitle auto-fills. Use <span class="k-bd">🔒</span> to lock metadata when adding multiple images to the same project.
           </div>
           <div class="guide-item">
-              <strong>3. EXPORT</strong>
-              Click 'COPY JSON' to get the tags, metadata, and image URL in a JSON format.
+              <strong>3. TAGGING SHORTCUTS</strong>
+              Select tool (Right Panel) and click on image.<br>
+              Services: <span class="k-bd">1-5</span><br>
+              Tuning: <span class="k-bd">Q</span> <span class="k-bd">W</span> <span class="k-bd">E</span> <span class="k-bd">R</span><br>
+              Parts: <span class="k-bd">A</span> <span class="k-bd">S</span>
+          </div>
+          <div class="guide-item">
+              <strong>4. GROUP TOOL (G)</strong>
+              Rapidly copy Title/Subtitle/Order to existing images.<br>
+              1. Click 'GROUP TOOL'.<br>
+              2. Select Source Image (Green Overlay).<br>
+              3. Click Target Thumbnails to apply.
+          </div>
+          <div class="guide-item">
+              <strong>5. SAVE</strong>
+              Click 'SAVE TO CLOUD' to publish.
           </div>
       </div>
     </div>
 
     <div class="sidebar-scroll">
       
-      <!-- 1. SOURCE (Simplified Input) -->
+      <!-- 1. SOURCE -->
       <div>
-        <div class="section-header">1. IMAGE SOURCE</div>
-        <div class="input-group">
-             <input type="text" id="addUrlInput" class="info-input" placeholder="Paste Image URL or Base64 here..." onkeydown="handleUrlInput(event)">
+        <div class="section-header">1. SOURCE</div>
+        <div class="input-group" style="display:flex; gap:6px; margin-bottom:8px;">
+             <textarea id="addUrlInput" class="batch-input" placeholder="Paste Image URL..."></textarea>
+             <!-- UPDATED BUTTON: Standardized height, color, border, and SVG Icon -->
+             <button onclick="document.getElementById('fileInput').click()" id="uploadBtn" style="background:#141414; border:1px solid #2a2a2a; color:#fff; border-radius:6px; width:40px; height:34px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+             </button>
+             <input type="file" id="fileInput" accept="image/*" hidden>
+        </div>
+        
+        <div class="queue-container">
+            <div id="queueList" class="queue-list"></div>
         </div>
       </div>
 
-      <!-- 2. PROJECT INFO (Manual Metadata) -->
+      <!-- 2. PROJECT INFO -->
       <div>
-        <div class="section-header">2. METADATA (MANUAL)</div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <div class="section-header" style="margin:0">2. METADATA</div>
+            <button id="lockBtn" class="lock-toggle" onclick="toggleLock()" title="Click to Unlock/Edit">🔓</button>
+        </div>
         <div id="projectInfoContainer" style="display:flex; flex-direction:column; gap:10px;">
+            <div>
+                <span class="input-label">ORDER / SEQUENCE ID</span>
+                <input type="text" id="projOrder" class="info-input" placeholder="Optional: Group or Sort ID (e.g. 101)">
+            </div>
+
             <div>
                 <span class="input-label">PROJECT TITLE</span>
                 <input type="text" id="projTitle" class="info-input" placeholder="e.g. McLaren 720S">
             </div>
             <div>
-                <span class="input-label">TAGS (AUTO-GENERATED)</span>
+                <span class="input-label">TAGS (AUTO)</span>
                 <div style="display:flex; gap:6px;">
                     <input type="text" id="projSubtitle" class="info-input" placeholder="Generated..." style="color:#e0e0e0;">
                     <button id="refreshTagsBtn" class="tool-btn" style="width:30px; padding:0; flex-shrink:0;" title="Reset to Auto-Tags" onclick="resetTagsToAuto()">↻</button>
@@ -285,6 +450,20 @@
         </div>
       </div>
       
+      <!-- 3. CLOUD GALLERY (THUMBNAILS) -->
+      <div>
+          <div class="section-header">CLOUD GALLERY <span id="galleryCount" style="font-size:9px; color:#666; margin-left:auto">0</span></div>
+          
+          <button id="quickGroupBtn" class="tool-btn" style="width:100%; flex-direction:row; margin-bottom:8px; padding:8px;" onclick="toggleQuickGroup()" data-type="quickgroup">
+              <span style="pointer-events:none">⚡ GROUP TOOL</span> 
+              <span class="hk" style="position:static; margin-left:auto; opacity:0.5;">G</span>
+          </button>
+
+          <div id="galleryGrid" class="gallery-grid">
+              <!-- Thumbnails populated from Firestore -->
+          </div>
+      </div>
+
     </div>
   </div>
 
@@ -292,7 +471,7 @@
   <!-- CENTER: CANVAS -->
   <div class="canvas-area">
     <div class="upload-prompt" id="prompt">
-      <h1 id="promptText" style="font-size:40px; opacity:0.1; letter-spacing:4px;">START HERE</h1>
+      <h1 id="promptText" style="font-size:40px; opacity:0.1; letter-spacing:4px;">DROP ZONE</h1>
     </div>
     
     <div class="img-wrap" id="imgWrap" style="display:none">
@@ -357,21 +536,70 @@
     <!-- FOOTER ACTIONS -->
     <div class="sidebar-footer">
         <div class="output-bar">
-            <span id="editStatusText">Ready for URL input.</span>
+            <span id="editStatusText">New Entry Mode</span>
         </div>
         
-        <button id="bakeBtn" class="copy-btn" onclick="copyJson()">COPY TAGS JSON</button>
+        <button id="bakeBtn" class="bake-btn" onclick="bakeEntry()">SAVE TO CLOUD</button>
+        <button id="cancelBtn" class="cancel-btn" onclick="cancelEdit()" style="display:none">CANCEL EDIT</button>
+        <button id="deleteEntryBtn" class="delete-btn" onclick="window.deleteEntry()" style="display:none">DELETE ENTRY</button>
     </div>
   </div>
 
 <!-- LOGIC -->
 <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+  import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+  import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+  // --- CONFIG ---
+  const firebaseConfig = {
+    apiKey: "AIzaSyDmsposy-HZm_Nbfz6UlQfgQscG3jsidy8",
+    authDomain: "rapid-tagger-wikd-edition.firebaseapp.com",
+    projectId: "rapid-tagger-wikd-edition",
+    storageBucket: "rapid-tagger-wikd-edition.firebasestorage.app",
+    messagingSenderId: "127611552314",
+    appId: "1:127611552314:web:169fe01257a451eab2ab03"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const appId = 'wikd-tagger';
+  const COL_NAME = 'wikd_gallery';
+
+  // --- AUTH ---
+  let currentUser = null;
+  const statusDot = document.getElementById('statusDot');
+
+  const initAuth = async () => {
+    try {
+      if(!auth.currentUser) await signInAnonymously(auth);
+      currentUser = auth.currentUser;
+      statusDot.className = 'status-dot online';
+      setupListener(); 
+    } catch(e) { 
+        console.error("Auth failed", e);
+        statusDot.className = 'status-dot offline';
+    }
+  };
+  window.initAuth = initAuth;
+  initAuth();
+
   // --- STATE ---
   let activeTool = null;
   let currentTags = [];
-  let currentImage = { url: '' };
+  let masterList = [];
+  let urlQueue = [];
+  let currentItem = null;
+  let debounceTimer;
+  let isLocked = false;
+  let editingId = null;
   let loadRequestId = 0; 
-  let isImageLoaded = false;
+  let deleteConfirmTimer = null;
+  
+  // Quick Group State
+  let quickGroupState = 'idle'; // 'idle', 'pick_source', 'apply_target'
+  let quickGroupSource = null; // { title: '', subtitle: '', id: '' }
 
   const TAG_NAMES = {
       'ppf': 'PPF', 'ceramic': 'Ceramic Coating', 'vinyl': 'Vinyl Wrap', 'tint': 'Window Tint', 'detail': 'Detailing',
@@ -388,10 +616,21 @@
     clickLayer: document.getElementById('clickLayer'),
     markerContainer: document.getElementById('markerContainer'),
     addUrlInput: document.getElementById('addUrlInput'),
+    queueList: document.getElementById('queueList'),
+    galleryGrid: document.getElementById('galleryGrid'),
+    galleryCount: document.getElementById('galleryCount'),
     projTitle: document.getElementById('projTitle'),
     projSubtitle: document.getElementById('projSubtitle'),
-    bakeBtn: document.getElementById('bakeBtn'), 
+    projOrder: document.getElementById('projOrder'),
+    lockBtn: document.getElementById('lockBtn'),
+    projInfo: document.getElementById('projectInfoContainer'),
+    fileInput: document.getElementById('fileInput'),
+    uploadBtn: document.getElementById('uploadBtn'),
+    bakeBtn: document.getElementById('bakeBtn'),
+    cancelBtn: document.getElementById('cancelBtn'),
+    deleteEntryBtn: document.getElementById('deleteEntryBtn'),
     editStatusText: document.getElementById('editStatusText'),
+    quickGroupBtn: document.getElementById('quickGroupBtn'),
     quickGuide: document.getElementById('quickGuide')
   };
 
@@ -400,7 +639,17 @@
       els.quickGuide.classList.toggle('open');
   };
 
-  // --- IMAGE LOADER (Simplified) ---
+  // --- COLOR GENERATOR (TITLE + SUBTITLE) ---
+  const stringToColor = (str) => {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      const c = (hash & 0x00ffffff).toString(16).toUpperCase();
+      return '#' + '00000'.substring(0, 6 - c.length) + c;
+  };
+
+  // --- DETACHED PRELOADER V5.1 (CORS Fallback) ---
   function setMainImage(src) {
       if (!src) return;
 
@@ -410,107 +659,508 @@
       els.imgWrap.style.display = 'none';
       els.prompt.style.display = 'block';
       els.promptText.textContent = "LOADING...";
-      isImageLoaded = false;
       
-      // 2. Load Image 
+      // 2. Memory Load (Try Safe First)
       const loader = new Image();
+      loader.crossOrigin = "anonymous"; 
       
-      loader.onload = () => {
+      const success = (imgObj) => {
           if (loadRequestId !== myId) return; 
+          els.img.removeAttribute('src'); 
+          // If this success came from fallback, remove crossOrigin from DOM element
+          if(imgObj.crossOrigin !== "anonymous") els.img.removeAttribute('crossorigin');
+          else els.img.setAttribute('crossorigin', 'anonymous');
+
           els.img.src = src; 
           els.imgWrap.style.display = 'block';
           els.prompt.style.display = 'none';
-          els.promptText.textContent = "START HERE";
-          isImageLoaded = true;
-          els.editStatusText.textContent = "Image Loaded. Start Tagging.";
-          
-          // Reset tags on new image load
-          currentTags = [];
-          renderMarkers();
-          
-          // Try to generate title from URL (handles base64 too, checking first few chars)
-          try {
-              const urlObj = new URL(src.startsWith('data:') ? 'http://a.com/' + (src.substring(0, 100).match(/data:[^;]*/) || ['base64_image'])[0] : src);
-              const pathSegments = urlObj.pathname.split('/');
-              let suggestedName = pathSegments.pop() || pathSegments.pop() || 'Untitled';
-              suggestedName = suggestedName.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ").replace(/\b\w/g, l => l.toUpperCase());
-              els.projTitle.value = suggestedName;
-          } catch(e) {
-              els.projTitle.value = "Untitled Project";
-          }
+          els.promptText.textContent = "DROP ZONE";
       };
 
-      loader.onerror = () => {
+      const fail = () => {
           if (loadRequestId !== myId) return;
-          els.promptText.textContent = "LOAD ERROR (Check URL)";
-          els.editStatusText.textContent = "Image failed to load.";
-          currentImage.url = '';
+          console.warn("Standard load failed, trying permissive mode...");
+          // Fallback: No CORS attribute. Will display but might taint canvas (ok for markers)
+          const fallback = new Image();
+          fallback.referrerPolicy = "no-referrer";
+          fallback.onload = () => success(fallback);
+          fallback.onerror = () => {
+              if (loadRequestId !== myId) return;
+              els.promptText.textContent = "LOAD ERROR";
+          };
+          fallback.src = src;
       };
 
+      loader.onload = () => success(loader);
+      loader.onerror = fail;
       loader.src = src;
-      currentImage.url = src;
   }
 
-  // --- MANUAL URL INPUT ---
-  window.handleUrlInput = (e) => {
-      if (e.key === 'Enter') {
-          e.preventDefault();
-          const url = els.addUrlInput.value.trim();
-          if (url) {
-              setMainImage(url);
-          }
+  // --- FIRESTORE & GALLERY LOGIC ---
+  function setupListener() {
+      onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', COL_NAME), (snapshot) => {
+          masterList = [];
+          snapshot.forEach((doc) => masterList.push({ dbId: doc.id, ...doc.data() }));
+          
+          // --- SORTING LOGIC: GROUP BY PROJECT ---
+          const groups = {};
+          
+          masterList.forEach(item => {
+              // Create Key from Title + Subtitle
+              const t = (item.title || "").trim().toLowerCase();
+              const s = (item.subtitle || "").trim().toLowerCase();
+              const key = t + "::" + s;
+              
+              if (!groups[key]) groups[key] = { items: [], maxDate: 0 };
+              groups[key].items.push(item);
+              
+              // Track newest item in group
+              const d = new Date(item.createdAt).getTime();
+              if(d > groups[key].maxDate) groups[key].maxDate = d;
+          });
+
+          // Sort Groups by their newest content (Last Active)
+          const sortedKeys = Object.keys(groups).sort((a, b) => groups[b].maxDate - groups[a].maxDate);
+          
+          // Rebuild Master List from Sorted Groups
+          masterList = [];
+          sortedKeys.forEach(k => {
+              // Sort items within group (Newest First)
+              groups[k].items.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+              masterList.push(...groups[k].items);
+          });
+          
+          renderGallery();
+      });
+  }
+
+  function renderGallery() {
+      els.galleryCount.textContent = masterList.length;
+      els.galleryGrid.innerHTML = '';
+      
+      masterList.forEach(item => {
+          const div = document.createElement('div');
+          
+          // Determine Classes
+          let classes = `gallery-item`;
+          if(item.dbId === editingId) classes += ' editing';
+          if(quickGroupSource && item.dbId === quickGroupSource.id) classes += ' source-selected';
+          
+          div.className = classes;
+          
+          // Generate color from Title + Subtitle to match main site
+          const t = (item.title || "").trim().toLowerCase();
+          const s = (item.subtitle || "").trim().toLowerCase();
+          const colorKey = t + "::" + s; // Using separator to ensure distinct keys
+          div.style.borderColor = stringToColor(colorKey || 'default');
+          
+          // NEW: Smart Click Handler based on Mode
+          div.onclick = () => {
+              if (quickGroupState === 'idle') {
+                  loadForEdit(item.dbId);
+              } else if (quickGroupState === 'pick_source') {
+                  pickSourceGroup(item);
+              } else if (quickGroupState === 'apply_target') {
+                  applyGroupToTarget(item);
+              }
+          };
+          div.title = `${item.title} (${item.tags?.length || 0} tags)`;
+
+          const img = document.createElement('img');
+          // Check both fields for the URL
+          const src = item.imageUrl || item.cdnUrl;
+          img.src = src;
+          img.loading = "lazy"; 
+          // Do not set crossOrigin here to allow CDNs to load without headers
+          
+          div.appendChild(img);
+          els.galleryGrid.appendChild(div);
+      });
+  }
+
+  // --- QUICK GROUP LOGIC ---
+  window.toggleQuickGroup = () => {
+      if (quickGroupState === 'idle') {
+          // ENTER MODE
+          quickGroupState = 'pick_source';
+          document.body.classList.add('mode-pick-source');
+          
+          els.quickGroupBtn.classList.add('active');
+          els.quickGroupBtn.textContent = "CANCEL GRP";
+          
+          els.editStatusText.textContent = "STEP 1: Click Source Image to copy Data";
+          els.editStatusText.style.color = "var(--c-success)";
+          
+      } else {
+          // EXIT MODE (Deactivate/Save)
+          quickGroupState = 'idle';
+          quickGroupSource = null;
+          document.body.classList.remove('mode-pick-source', 'mode-apply-group');
+          
+          els.quickGroupBtn.classList.remove('active');
+          els.quickGroupBtn.innerHTML = '<span style="pointer-events:none">⚡ GROUP TOOL</span> <span class="hk" style="position:static; margin-left:auto; opacity:0.5;">G</span>';
+          els.quickGroupBtn.style.color = "";
+          els.quickGroupBtn.style.background = "";
+          
+          els.editStatusText.textContent = "Quick Group Mode Exited";
+          els.editStatusText.style.color = "";
+          
+          // Re-render to clear highlights
+          renderGallery();
+      }
+  };
+
+  function pickSourceGroup(item) {
+      if (!item) return;
+      
+      quickGroupSource = {
+          id: item.dbId,
+          title: item.title,
+          subtitle: item.subtitle,
+          orderId: item.orderId
+      };
+      
+      // Advance State
+      quickGroupState = 'apply_target';
+      document.body.classList.remove('mode-pick-source');
+      document.body.classList.add('mode-apply-group');
+      
+      // Update Button to "Done" state
+      els.quickGroupBtn.textContent = "DONE";
+      els.quickGroupBtn.style.color = "#000";
+      els.quickGroupBtn.style.background = "var(--c-success)";
+      
+      els.editStatusText.textContent = `SOURCE: ${item.title}. Click others to Apply.`;
+      
+      renderGallery(); // Updates highlights
+  }
+
+  async function applyGroupToTarget(item) {
+      if (!quickGroupSource) return;
+      if (item.dbId === quickGroupSource.id) return; // Don't apply to self
+      
+      try {
+          await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', COL_NAME, item.dbId), {
+              title: quickGroupSource.title,
+              subtitle: quickGroupSource.subtitle,
+              orderId: quickGroupSource.orderId
+          });
+          
+          // Visual Feedback
+          els.editStatusText.textContent = `Updated: ${item.dbId.substr(0,4)}...`;
+          
+      } catch(e) {
+          console.error("Group update failed", e);
+          alert("Update failed");
       }
   }
 
-  // --- OUTPUT / EXPORT LOGIC (Replaces bakeEntry) ---
-  window.copyJson = () => {
-      if(!isImageLoaded) {
-          els.editStatusText.textContent = "Error: No Image Loaded.";
-          els.editStatusText.style.color = "var(--c-danger)";
-          setTimeout(() => { els.editStatusText.style.color = ""; els.editStatusText.textContent = "Ready for URL input."; }, 3000);
+  // --- EDIT LOGIC (FIXED) ---
+  window.loadForEdit = (id) => {
+      const item = masterList.find(i => i.dbId === id);
+      if(!item) return;
+
+      // 1. Reset Global State for new load
+      loadRequestId++; // Kill any pending queue loads
+      editingId = id;
+      
+      // 2. Update UI Inputs
+      els.projTitle.value = item.title || '';
+      els.projSubtitle.value = item.subtitle || '';
+      els.projOrder.value = item.orderId || '';
+      
+      // 3. LOCK UI by default to prevent accidental grouping changes
+      window.toggleLock(true);
+
+      // 4. Load Image (Check cdnUrl fallback)
+      const src = item.imageUrl || item.cdnUrl;
+      if (src && typeof src === 'string') {
+        currentItem = { data: src, name: item.title }; 
+        setMainImage(src);
+      } else {
+        currentItem = null;
+        els.promptText.textContent = "NO DATA";
+      }
+      
+      // 5. Set Tags
+      currentTags = item.tags || [];
+      renderMarkers();
+      
+      // 6. Update Buttons & Gallery Visuals
+      els.bakeBtn.textContent = "UPDATE ENTRY";
+      els.bakeBtn.classList.add('update-mode');
+      els.cancelBtn.style.display = 'block';
+      els.deleteEntryBtn.style.display = 'block'; // Show Delete Button
+      // Reset delete button state
+      els.deleteEntryBtn.innerText = "DELETE ENTRY";
+      els.deleteEntryBtn.style.background = "";
+      els.deleteEntryBtn.style.color = "";
+      els.deleteEntryBtn.dataset.confirm = "false";
+      
+      els.editStatusText.textContent = `Editing: ${item.title || 'Untitled'}`;
+      
+      renderGallery(); // Re-render to show selection border
+  };
+  
+  window.cancelEdit = () => {
+      editingId = null;
+      els.bakeBtn.textContent = "SAVE TO CLOUD";
+      els.bakeBtn.classList.remove('update-mode');
+      els.cancelBtn.style.display = 'none';
+      els.deleteEntryBtn.style.display = 'none'; // Hide Delete Button
+      els.editStatusText.textContent = "New Entry Mode";
+      
+      els.projTitle.value = '';
+      els.projSubtitle.value = '';
+      els.projOrder.value = '';
+      
+      // Unlock for new entry creation
+      window.toggleLock(false);
+
+      currentTags = [];
+      renderMarkers();
+      
+      if(urlQueue.length > 0) {
+          loadNext();
+      } else {
+          loadRequestId++; 
+          els.img.removeAttribute('src');
+          els.imgWrap.style.display = 'none';
+          els.prompt.style.display = 'block';
+          els.promptText.textContent = "DROP ZONE";
+          currentItem = null;
+      }
+      renderGallery();
+  };
+
+  // POPUP-FREE DELETE LOGIC (2-Step Tap)
+  window.deleteEntry = async () => {
+      if(!editingId) return;
+
+      const btn = els.deleteEntryBtn;
+      
+      // State 1: Ask for confirmation
+      if (btn.dataset.confirm !== "true") {
+          btn.dataset.confirm = "true";
+          btn.innerText = "⚠️ CONFIRM DELETE?";
+          btn.style.background = "#ef4444";
+          btn.style.color = "white";
+          
+          // Reset if not clicked within 3 seconds
+          clearTimeout(deleteConfirmTimer);
+          deleteConfirmTimer = setTimeout(() => {
+              btn.dataset.confirm = "false";
+              btn.innerText = "DELETE ENTRY";
+              btn.style.background = "";
+              btn.style.color = "";
+          }, 3000);
           return;
       }
       
-      // 1. Compile output object
-      const output = {
-          projectTitle: els.projTitle.value.trim(),
-          tagsSubtitle: els.projSubtitle.value.trim(),
-          imageUrl: currentImage.url,
-          markers: currentTags.map(t => ({
-              id: t.id,
-              type: t.type,
-              x: t.x, // 0-100%
-              y: t.y  // 0-100%
-          }))
+      // State 2: Execute
+      clearTimeout(deleteConfirmTimer);
+      btn.innerText = "DELETING...";
+      btn.disabled = true;
+      
+      try {
+          await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', COL_NAME, editingId));
+          // Success
+          els.editStatusText.textContent = "Entry Deleted";
+          els.editStatusText.style.color = "var(--c-success)";
+          setTimeout(() => { els.editStatusText.style.color = ""; els.editStatusText.textContent = "New Entry Mode"; }, 3000);
+          
+          editingId = null; 
+          cancelEdit();
+      } catch(e) {
+          console.error(e);
+          els.editStatusText.textContent = "Delete Failed";
+          els.editStatusText.style.color = "var(--c-danger)";
+          // Reset button
+          btn.innerText = "DELETE ENTRY";
+          btn.disabled = false;
+          btn.dataset.confirm = "false";
+          btn.style.background = "";
+      }
+  };
+
+  // --- SAVE / UPDATE ---
+  window.bakeEntry = async () => {
+      if(!currentItem) {
+          els.editStatusText.textContent = "Error: No Image";
+          els.editStatusText.style.color = "var(--c-danger)";
+          return;
+      }
+      
+      const entry = {
+          title: els.projTitle.value.trim(),
+          subtitle: els.projSubtitle.value.trim(),
+          orderId: els.projOrder.value.trim(),
+          tags: [...currentTags],
+          createdAt: new Date().toISOString(),
+          // Persist the URL regardless of where it came from
+          imageUrl: currentItem.data
       };
       
-      const jsonString = JSON.stringify(output, null, 2);
-      
-      // 2. Copy to clipboard
-      navigator.clipboard.writeText(jsonString).then(() => {
-          els.editStatusText.textContent = "JSON COPIED TO CLIPBOARD!";
-          els.editStatusText.style.color = "var(--c-success)";
-          setTimeout(() => { els.editStatusText.style.color = ""; els.editStatusText.textContent = "Ready for next export."; }, 3000);
-      }).catch(err => {
-          console.error('Copy failed', err);
-          // Fallback for clipboard access issues (especially in iframe)
-          const textarea = document.createElement('textarea');
-          textarea.value = jsonString;
-          document.body.appendChild(textarea);
-          textarea.select();
-          try {
-              document.execCommand('copy');
-              els.editStatusText.textContent = "JSON COPIED (Fallback)";
+      if(new Blob([JSON.stringify(entry)]).size > 1000000) {
+          els.editStatusText.textContent = "Error: File too big (>1MB)";
+          els.editStatusText.style.color = "var(--c-danger)";
+          return;
+      }
+
+      els.bakeBtn.disabled = true;
+      els.bakeBtn.innerText = "SAVING...";
+
+      try {
+          if (editingId) {
+              await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', COL_NAME, editingId), entry);
+              els.editStatusText.textContent = "Entry Updated Successfully";
               els.editStatusText.style.color = "var(--c-success)";
-              setTimeout(() => { els.editStatusText.style.color = ""; els.editStatusText.textContent = "Ready for next export."; }, 3000);
-          } catch (e) {
-              els.editStatusText.textContent = "Copy failed. Check console for JSON.";
-              els.editStatusText.style.color = "var(--c-danger)";
-              console.log("Generated JSON:", jsonString);
+              setTimeout(() => { els.editStatusText.style.color = ""; }, 3000);
+              
+              // Slight delay before reset to show success state
+              setTimeout(() => { 
+                  cancelEdit(); 
+                  els.bakeBtn.disabled = false; 
+              }, 500);
+          } else {
+              await addDoc(collection(db, 'artifacts', appId, 'public', 'data', COL_NAME), entry);
+              els.editStatusText.textContent = "New Entry Baked!";
+              els.editStatusText.style.color = "var(--c-success)";
+              setTimeout(() => { els.editStatusText.style.color = ""; els.editStatusText.textContent = "New Entry Mode"; }, 3000);
+              
+              // Only shift queue if we were processing the queue, not editing
+              if(!editingId && urlQueue.length > 0) urlQueue.shift();
+              
+              currentTags = [];
+              renderMarkers();
+              loadNext();
+              els.bakeBtn.innerText = "SAVE TO CLOUD";
+              els.bakeBtn.disabled = false;
           }
-          document.body.removeChild(textarea);
-      });
+      } catch(e) { 
+          els.editStatusText.textContent = "Save Failed: " + e.message;
+          els.editStatusText.style.color = "var(--c-danger)";
+          els.bakeBtn.innerText = editingId ? "UPDATE ENTRY" : "SAVE TO CLOUD";
+          els.bakeBtn.disabled = false;
+      }
   };
+
+
+  // --- COMPRESSION (1920px / 1MB) ---
+  const compressImage = async (file) => {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const MAX_WIDTH = 1920; 
+            let width = img.width;
+            let height = img.height;
+            if (width > MAX_WIDTH) {
+                height *= MAX_WIDTH / width;
+                width = MAX_WIDTH;
+            }
+            canvas.width = width;
+            canvas.height = height;
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            const MAX_BYTES = 1020000;
+            let quality = 0.95; 
+            let dataUrl = canvas.toDataURL('image/jpeg', quality);
+            
+            while (dataUrl.length > MAX_BYTES && quality > 0.1) {
+                let step = 0.05;
+                if (dataUrl.length > MAX_BYTES * 1.5) step = 0.15; 
+                quality -= step;
+                dataUrl = canvas.toDataURL('image/jpeg', Math.max(0.1, quality));
+            }
+            resolve(dataUrl);
+        };
+        img.onerror = reject;
+    });
+  };
+
+  // --- UPLOAD & QUEUE LOGIC ---
+  els.fileInput.addEventListener('change', async (e) => {
+      if(e.target.files?.[0]) {
+          const file = e.target.files[0];
+          els.uploadBtn.textContent = '...';
+          try {
+              const base64 = await compressImage(file);
+              urlQueue.unshift({ type: 'base64', data: base64, name: file.name });
+              renderQueueList();
+              if(!currentItem && !editingId) loadNext();
+          } catch(err) { console.error(err); alert("Image failed"); }
+          els.uploadBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>';
+          els.fileInput.value = '';
+      }
+  });
+
+  els.addUrlInput.addEventListener('input', (e) => {
+    if(!e.target.value.trim()) return;
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+        e.target.value.split(/[\n\r]+/).filter(l=>l.length>5).forEach(line => {
+            let cleanUrl = line.trim();
+            const name = cleanUrl.split('/').pop().split('?')[0] || 'Link';
+            urlQueue.push({ type: 'url', data: cleanUrl, name: name });
+        });
+        e.target.value = '';
+        renderQueueList();
+        if(!currentItem && !editingId) loadNext();
+    }, 400);
+  });
+
+  function renderQueueList() {
+      els.queueList.innerHTML = '';
+      urlQueue.forEach((item, i) => {
+          const div = document.createElement('div');
+          div.className = 'q-item';
+          div.innerHTML = `<div style="flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${item.name}</div><div class="q-del" onclick="removeFromQueue(${i})">×</div>`;
+          els.queueList.appendChild(div);
+      });
+  }
+
+  window.removeFromQueue = (i) => {
+      urlQueue.splice(i, 1);
+      if(i===0 && !editingId) { currentTags = []; renderMarkers(); loadNext(); }
+      else renderQueueList();
+  };
+
+  function loadNext() {
+      if(editingId) return; 
+      
+      if(!urlQueue.length) {
+          loadRequestId++; 
+          currentItem = null;
+          els.img.removeAttribute('src');
+          els.imgWrap.style.display = 'none';
+          els.prompt.style.display = 'block';
+          els.promptText.textContent = "DROP ZONE";
+          if(!isLocked) { els.projTitle.value=''; els.projSubtitle.value=''; els.projOrder.value=''; }
+          renderQueueList();
+          return;
+      }
+      
+      currentItem = urlQueue[0];
+      
+      if (!currentItem || !currentItem.data) {
+        urlQueue.shift(); 
+        loadNext(); 
+        return;
+      }
+      
+      setMainImage(currentItem.data);
+      
+      if(!isLocked) {
+          const title = currentItem.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ").replace(/\b\w/g, l => l.toUpperCase());
+          els.projTitle.value = title;
+          els.projSubtitle.value = "";
+          els.projOrder.value = "";
+      }
+      renderQueueList();
+  }
 
   // --- ACTIONS ---
   window.setTool = (id, type) => {
@@ -521,12 +1171,7 @@
   };
 
   els.clickLayer.addEventListener('mousedown', (e) => {
-      if (!activeTool) {
-          els.editStatusText.textContent = "Select a Tool first";
-          els.editStatusText.style.color = "var(--c-danger)";
-          setTimeout(() => { els.editStatusText.style.color = ""; els.editStatusText.textContent = isImageLoaded ? "Image Loaded. Start Tagging." : "Ready for URL input."; }, 3000);
-          return;
-      }
+      if (!activeTool) return alert("Select a Tool first");
       if (activeTool.id === 'delete') return;
       const rect = els.img.getBoundingClientRect();
       const tag = {
@@ -574,8 +1219,7 @@
           };
           els.markerContainer.appendChild(el);
       });
-      // Always update subtitle with current tags
-      els.projSubtitle.value = currentTags.map(t => TAG_NAMES[t.id] || t.id).join(', ');
+      if(!isLocked) els.projSubtitle.value = currentTags.map(t => TAG_NAMES[t.id] || t.id).join(', ');
   }
 
   window.resetTagsToAuto = () => {
@@ -584,27 +1228,29 @@
       els.projSubtitle.value = autoString;
   };
 
-  // --- UTILS (Simplified) ---
-  window.clearTags = () => { 
-      if(isImageLoaded && confirm("Clear all tags for the current image?")) { 
-          currentTags=[]; 
-          renderMarkers(); 
-      } else if (!isImageLoaded) {
-          els.editStatusText.textContent = "No image to clear tags from.";
-          els.editStatusText.style.color = "var(--c-danger)";
-          setTimeout(() => { els.editStatusText.style.color = ""; els.editStatusText.textContent = "Ready for URL input."; }, 3000);
+  // --- UTILS ---
+  window.toggleLock = (forceState) => {
+      if (typeof forceState === 'boolean') {
+          isLocked = forceState;
+      } else {
+          isLocked = !isLocked;
       }
+      els.lockBtn.textContent = isLocked ? '🔒' : '🔓';
+      els.lockBtn.classList.toggle('active', isLocked);
+      els.projInfo.classList.toggle('locked-ui', isLocked);
   };
+  
+  window.clearTags = () => { if(confirm("Clear tags?")) { currentTags=[]; renderMarkers(); }};
   
   // Shortcuts
   document.addEventListener('keydown', (e) => {
       if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
       const k = e.key.toLowerCase();
-      // Removed 'g' for quickgroup
-      const map = {'1':'ppf','2':'ceramic','3':'vinyl','4':'tint','5':'detail','q':'stage1','w':'stage2','e':'stage3','r':'wikd','a':'mclaren','s':'mclaren_catback','d':'delete','escape':'clear'};
+      const map = {'1':'ppf','2':'ceramic','3':'vinyl','4':'tint','5':'detail','q':'stage1','w':'stage2','e':'stage3','r':'wikd','a':'mclaren','s':'mclaren_catback','d':'delete','escape':'clear','g':'quickgroup'};
       if(map[k]) {
           if(map[k]==='clear') window.clearTags();
           else if(map[k]==='delete') window.setTool('delete', 'delete');
+          else if(map[k]==='quickgroup') window.toggleQuickGroup();
           else window.setTool(map[k], ['ppf','ceramic','vinyl','tint','detail'].includes(map[k])?'service':(['mclaren','mclaren_catback'].includes(map[k])?'ping':'nano'));
       }
   });
