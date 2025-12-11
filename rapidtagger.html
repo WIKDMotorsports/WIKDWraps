@@ -57,6 +57,7 @@
         border-bottom: 1px solid var(--border); 
         display: flex; justify-content: space-between; align-items: center; 
         background: #0f0f0f;
+        position: relative; /* For Guide Absolute Positioning */
     }
     
     .sidebar-scroll { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 24px; }
@@ -77,7 +78,7 @@
     .section-header::after { content:''; flex:1; height:1px; background: #222; }
 
     /* STATUS BADGE */
-    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #333; box-shadow: 0 0 5px rgba(0,0,0,0.5); transition: 0.3s; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #333; box-shadow: 0 0 5px rgba(0,0,0,0.5); transition: 0.3s; cursor: pointer; }
     .status-dot.online { background: var(--c-success); box-shadow: 0 0 8px var(--c-success); }
     .status-dot.offline { background: var(--c-danger); box-shadow: 0 0 8px var(--c-danger); }
 
@@ -86,7 +87,10 @@
     
     textarea.batch-input {
       width: 100%; background: #141414; border: 1px solid #2a2a2a; color: #fff;
-      padding: 10px 12px; font-family: monospace; height: 40px; resize: none; font-size: 12px; border-radius: 6px;
+      padding: 8px 10px; /* Reduced Padding */
+      font-family: monospace; 
+      height: 34px; /* Reduced Height */
+      resize: none; font-size: 12px; border-radius: 6px;
       transition: all 0.2s;
     }
     
@@ -123,6 +127,30 @@
         opacity: 0.3;
         pointer-events: none;
     }
+
+    /* GUIDE PANEL */
+    .guide-btn { background:none; border:none; color:#666; font-size:10px; font-weight:700; cursor:pointer; letter-spacing:1px; text-transform:uppercase; transition: color 0.2s; }
+    .guide-btn:hover { color: #fff; }
+    
+    .guide-panel {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: rgba(10,10,10,0.98);
+        border-bottom: 1px solid var(--accent);
+        padding: 16px;
+        z-index: 200;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+    }
+    .guide-panel.open { display: block; }
+    
+    .guide-item { margin-bottom: 12px; font-size: 11px; color: #888; line-height: 1.5; border-bottom: 1px solid #1a1a1a; padding-bottom: 8px; }
+    .guide-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .guide-item strong { color: #e0e0e0; display: block; margin-bottom: 2px; font-size: 12px; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.5px; }
+    .k-bd { display: inline-block; padding: 0 4px; background: #222; border: 1px solid #333; border-radius: 3px; color: var(--accent); font-family: monospace; font-size: 10px; margin: 0 2px; }
 
     /* QUEUE LIST */
     .queue-container {
@@ -341,10 +369,40 @@
   <div class="sidebar sidebar-left">
     <div class="sidebar-header">
       <div style="display:flex; align-items:center; gap:10px;">
-          <div id="statusDot" class="status-dot offline" title="Status"></div>
+          <div id="statusDot" class="status-dot offline" title="Click to Reconnect" onclick="initAuth()"></div>
           <h2 style="margin:0">RAPID TAGGER</h2>
       </div>
-      <button onclick="initAuth()" style="background:none; border:none; color:#444; font-size:10px; cursor:pointer;">RECONNECT</button>
+      <button onclick="toggleGuide()" class="guide-btn">QUICK GUIDE ▼</button>
+      
+      <!-- COMPREHENSIVE GUIDE PANEL -->
+      <div id="quickGuide" class="guide-panel">
+          <div class="guide-item">
+              <strong>1. ADD SOURCE</strong>
+              Paste Image URL or click <span class="k-bd">📷</span> to upload local files.
+          </div>
+          <div class="guide-item">
+              <strong>2. METADATA & GROUPING</strong>
+              Enter Project Title. Subtitle auto-fills. Use <span class="k-bd">🔒</span> to lock metadata when adding multiple images to the same project.
+          </div>
+          <div class="guide-item">
+              <strong>3. TAGGING SHORTCUTS</strong>
+              Select tool (Right Panel) and click on image.<br>
+              Services: <span class="k-bd">1-5</span><br>
+              Tuning: <span class="k-bd">Q</span> <span class="k-bd">W</span> <span class="k-bd">E</span> <span class="k-bd">R</span><br>
+              Parts: <span class="k-bd">A</span> <span class="k-bd">S</span>
+          </div>
+          <div class="guide-item">
+              <strong>4. GROUP TOOL (G)</strong>
+              Rapidly copy Title/Subtitle/Order to existing images.<br>
+              1. Click 'GROUP TOOL'.<br>
+              2. Select Source Image (Green Overlay).<br>
+              3. Click Target Thumbnails to apply.
+          </div>
+          <div class="guide-item">
+              <strong>5. SAVE</strong>
+              Click 'SAVE TO CLOUD' to publish.
+          </div>
+      </div>
     </div>
 
     <div class="sidebar-scroll">
@@ -354,7 +412,10 @@
         <div class="section-header">1. SOURCE</div>
         <div class="input-group" style="display:flex; gap:6px; margin-bottom:8px;">
              <textarea id="addUrlInput" class="batch-input" placeholder="Paste Image URL..."></textarea>
-             <button onclick="document.getElementById('fileInput').click()" id="uploadBtn" style="background:#222; border:1px solid #333; color:#fff; border-radius:6px; width:40px; cursor:pointer;">📷</button>
+             <!-- UPDATED BUTTON: Standardized height, color, border, and SVG Icon -->
+             <button onclick="document.getElementById('fileInput').click()" id="uploadBtn" style="background:#141414; border:1px solid #2a2a2a; color:#fff; border-radius:6px; width:40px; height:34px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+             </button>
              <input type="file" id="fileInput" accept="image/*" hidden>
         </div>
         
@@ -391,15 +452,6 @@
       
       <!-- 3. CLOUD GALLERY (THUMBNAILS) -->
       <div>
-          <details style="font-size:11px; color:#555; border:1px solid #222; border-radius:6px; margin-bottom:10px;">
-              <summary style="padding:8px; cursor:pointer;">Quick Guide</summary>
-              <div style="padding:8px; line-height:1.5;">
-                  1. Paste URL or Upload.<br>
-                  2. Add Tags -> BAKE.<br>
-                  3. <b>Click below</b> to Edit Existing.
-              </div>
-          </details>
-
           <div class="section-header">CLOUD GALLERY <span id="galleryCount" style="font-size:9px; color:#666; margin-left:auto">0</span></div>
           
           <button id="quickGroupBtn" class="tool-btn" style="width:100%; flex-direction:row; margin-bottom:8px; padding:8px;" onclick="toggleQuickGroup()" data-type="quickgroup">
@@ -487,7 +539,7 @@
             <span id="editStatusText">New Entry Mode</span>
         </div>
         
-        <button id="bakeBtn" class="bake-btn" onclick="bakeEntry()">BAKE TO DATABASE</button>
+        <button id="bakeBtn" class="bake-btn" onclick="bakeEntry()">SAVE TO CLOUD</button>
         <button id="cancelBtn" class="cancel-btn" onclick="cancelEdit()" style="display:none">CANCEL EDIT</button>
         <button id="deleteEntryBtn" class="delete-btn" onclick="window.deleteEntry()" style="display:none">DELETE ENTRY</button>
     </div>
@@ -578,7 +630,13 @@
     cancelBtn: document.getElementById('cancelBtn'),
     deleteEntryBtn: document.getElementById('deleteEntryBtn'),
     editStatusText: document.getElementById('editStatusText'),
-    quickGroupBtn: document.getElementById('quickGroupBtn')
+    quickGroupBtn: document.getElementById('quickGroupBtn'),
+    quickGuide: document.getElementById('quickGuide')
+  };
+
+  // --- GUIDE TOGGLE ---
+  window.toggleGuide = () => {
+      els.quickGuide.classList.toggle('open');
   };
 
   // --- COLOR GENERATOR (TITLE + SUBTITLE) ---
@@ -846,7 +904,7 @@
   
   window.cancelEdit = () => {
       editingId = null;
-      els.bakeBtn.textContent = "BAKE TO DATABASE";
+      els.bakeBtn.textContent = "SAVE TO CLOUD";
       els.bakeBtn.classList.remove('update-mode');
       els.cancelBtn.style.display = 'none';
       els.deleteEntryBtn.style.display = 'none'; // Hide Delete Button
@@ -976,13 +1034,13 @@
               currentTags = [];
               renderMarkers();
               loadNext();
-              els.bakeBtn.innerText = "BAKE TO DATABASE";
+              els.bakeBtn.innerText = "SAVE TO CLOUD";
               els.bakeBtn.disabled = false;
           }
       } catch(e) { 
           els.editStatusText.textContent = "Save Failed: " + e.message;
           els.editStatusText.style.color = "var(--c-danger)";
-          els.bakeBtn.innerText = editingId ? "UPDATE ENTRY" : "BAKE TO DATABASE";
+          els.bakeBtn.innerText = editingId ? "UPDATE ENTRY" : "SAVE TO CLOUD";
           els.bakeBtn.disabled = false;
       }
   };
@@ -1034,7 +1092,7 @@
               renderQueueList();
               if(!currentItem && !editingId) loadNext();
           } catch(err) { console.error(err); alert("Image failed"); }
-          els.uploadBtn.textContent = '📷';
+          els.uploadBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>';
           els.fileInput.value = '';
       }
   });
