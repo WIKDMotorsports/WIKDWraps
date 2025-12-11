@@ -119,6 +119,10 @@
     .locked-ui .input-label {
         color: #ffa500;
     }
+    .locked-ui #refreshTagsBtn {
+        opacity: 0.3;
+        pointer-events: none;
+    }
 
     /* QUEUE LIST */
     .queue-container {
@@ -170,6 +174,38 @@
         z-index: 5; 
         transform: scale(0.95);
     }
+
+    /* QUICK GROUP MODES */
+    /* 1. Picking Source */
+    body.mode-pick-source .gallery-item { cursor: crosshair !important; opacity: 0.5; }
+    body.mode-pick-source .gallery-item:hover { opacity: 1; transform: scale(1.1); box-shadow: 0 0 0 2px var(--accent); }
+    
+    /* 2. Applying Target */
+    body.mode-apply-group .gallery-item { cursor: copy !important; }
+    body.mode-apply-group .gallery-item:hover { filter: brightness(1.3); }
+    
+    /* GREEN OVERLAY FOR SOURCE */
+    .gallery-item.source-selected {
+        opacity: 1 !important;
+        z-index: 20;
+        transform: scale(0.95);
+    }
+    .gallery-item.source-selected::after {
+        content: 'SOURCE';
+        position: absolute;
+        inset: 0;
+        background-color: rgba(0, 230, 118, 0.65); /* Strong Green Overlay */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 800;
+        font-family: 'Rajdhani', sans-serif;
+        letter-spacing: 1px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        pointer-events: none;
+        border: 2px solid #fff;
+    }
     
     /* TOOL GRID */
     .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -188,6 +224,7 @@
     .tool-btn[data-type="service"].active { color: var(--c-service); }
     .tool-btn[data-type="nano"].active { color: var(--c-nano); }
     .tool-btn[data-type="ping"].active { color: var(--c-ping); }
+    .tool-btn[data-type="quickgroup"].active { color: var(--c-success); border-color: var(--c-success); background: rgba(0, 230, 118, 0.1); }
     
     .tool-btn[data-type="delete"]:hover { border-color: var(--c-danger); color: var(--c-danger); }
     .tool-btn[data-type="delete"].active { background: var(--c-danger); color: #fff; border-color: var(--c-danger); }
@@ -243,6 +280,9 @@
       pointer-events: auto; cursor: grab; z-index: 20; display: flex; align-items: center; justify-content: center;
       font-size: 10px; font-weight: bold; text-shadow: 0 1px 2px #000; transition: transform 0.1s;
     }
+    .marker:hover {
+        z-index: 1000 !important; /* Bring to front on hover */
+    }
     .marker[data-type="service"] { border-radius: 50%; border: 2px solid #fff; background: rgba(0,0,0,0.5); }
     .marker[data-type="service"]::after { content:''; width: 6px; height: 6px; background: currentColor; border-radius: 50%; }
     .marker[data-type="nano"] { width: 30px; height: 26px; }
@@ -250,6 +290,35 @@
     .marker[data-type="ping"]::after { content:''; width: 6px; height: 6px; background: currentColor; }
     
     .marker svg { width: 100%; height: 100%; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.8)); }
+
+    /* CUSTOM TOOLTIP LABEL */
+    .marker-label {
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-5px);
+        background: rgba(0, 0, 0, 0.85);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-family: 'Inter', sans-serif;
+        font-weight: 700;
+        white-space: nowrap;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.1s ease, transform 0.1s ease;
+        z-index: 100;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .marker:hover .marker-label {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-10px);
+    }
 
     /* OUTPUT & EXTRAS */
     .output-bar {
@@ -312,7 +381,10 @@
             </div>
             <div>
                 <span class="input-label">TAGS (AUTO)</span>
-                <input type="text" id="projSubtitle" class="info-input" placeholder="Generated..." style="color:#e0e0e0;">
+                <div style="display:flex; gap:6px;">
+                    <input type="text" id="projSubtitle" class="info-input" placeholder="Generated..." style="color:#e0e0e0;">
+                    <button id="refreshTagsBtn" class="tool-btn" style="width:30px; padding:0; flex-shrink:0;" title="Reset to Auto-Tags" onclick="resetTagsToAuto()">↻</button>
+                </div>
             </div>
         </div>
       </div>
@@ -329,6 +401,12 @@
           </details>
 
           <div class="section-header">CLOUD GALLERY <span id="galleryCount" style="font-size:9px; color:#666; margin-left:auto">0</span></div>
+          
+          <button id="quickGroupBtn" class="tool-btn" style="width:100%; flex-direction:row; margin-bottom:8px; padding:8px;" onclick="toggleQuickGroup()" data-type="quickgroup">
+              <span style="pointer-events:none">⚡ GROUP TOOL</span> 
+              <span class="hk" style="position:static; margin-left:auto; opacity:0.5;">G</span>
+          </button>
+
           <div id="galleryGrid" class="gallery-grid">
               <!-- Thumbnails populated from Firestore -->
           </div>
@@ -411,7 +489,7 @@
         
         <button id="bakeBtn" class="bake-btn" onclick="bakeEntry()">BAKE TO DATABASE</button>
         <button id="cancelBtn" class="cancel-btn" onclick="cancelEdit()" style="display:none">CANCEL EDIT</button>
-        <button id="deleteEntryBtn" class="delete-btn" onclick="window.deleteEntry()" style="display:none">TRASH ENTRY</button>
+        <button id="deleteEntryBtn" class="delete-btn" onclick="window.deleteEntry()" style="display:none">DELETE ENTRY</button>
     </div>
   </div>
 
@@ -466,6 +544,10 @@
   let editingId = null;
   let loadRequestId = 0; 
   let deleteConfirmTimer = null;
+  
+  // Quick Group State
+  let quickGroupState = 'idle'; // 'idle', 'pick_source', 'apply_target'
+  let quickGroupSource = null; // { title: '', subtitle: '', id: '' }
 
   const TAG_NAMES = {
       'ppf': 'PPF', 'ceramic': 'Ceramic Coating', 'vinyl': 'Vinyl Wrap', 'tint': 'Window Tint', 'detail': 'Detailing',
@@ -495,7 +577,8 @@
     bakeBtn: document.getElementById('bakeBtn'),
     cancelBtn: document.getElementById('cancelBtn'),
     deleteEntryBtn: document.getElementById('deleteEntryBtn'),
-    editStatusText: document.getElementById('editStatusText')
+    editStatusText: document.getElementById('editStatusText'),
+    quickGroupBtn: document.getElementById('quickGroupBtn')
   };
 
   // --- COLOR GENERATOR (TITLE + SUBTITLE) ---
@@ -599,8 +682,13 @@
       
       masterList.forEach(item => {
           const div = document.createElement('div');
-          // Add 'editing' class if this is the active item
-          div.className = `gallery-item ${item.dbId === editingId ? 'editing' : ''}`;
+          
+          // Determine Classes
+          let classes = `gallery-item`;
+          if(item.dbId === editingId) classes += ' editing';
+          if(quickGroupSource && item.dbId === quickGroupSource.id) classes += ' source-selected';
+          
+          div.className = classes;
           
           // Generate color from Title + Subtitle to match main site
           const t = (item.title || "").trim().toLowerCase();
@@ -608,7 +696,16 @@
           const colorKey = t + "::" + s; // Using separator to ensure distinct keys
           div.style.borderColor = stringToColor(colorKey || 'default');
           
-          div.onclick = () => loadForEdit(item.dbId);
+          // NEW: Smart Click Handler based on Mode
+          div.onclick = () => {
+              if (quickGroupState === 'idle') {
+                  loadForEdit(item.dbId);
+              } else if (quickGroupState === 'pick_source') {
+                  pickSourceGroup(item);
+              } else if (quickGroupState === 'apply_target') {
+                  applyGroupToTarget(item);
+              }
+          };
           div.title = `${item.title} (${item.tags?.length || 0} tags)`;
 
           const img = document.createElement('img');
@@ -621,6 +718,83 @@
           div.appendChild(img);
           els.galleryGrid.appendChild(div);
       });
+  }
+
+  // --- QUICK GROUP LOGIC ---
+  window.toggleQuickGroup = () => {
+      if (quickGroupState === 'idle') {
+          // ENTER MODE
+          quickGroupState = 'pick_source';
+          document.body.classList.add('mode-pick-source');
+          
+          els.quickGroupBtn.classList.add('active');
+          els.quickGroupBtn.textContent = "CANCEL GRP";
+          
+          els.editStatusText.textContent = "STEP 1: Click Source Image to copy Data";
+          els.editStatusText.style.color = "var(--c-success)";
+          
+      } else {
+          // EXIT MODE (Deactivate/Save)
+          quickGroupState = 'idle';
+          quickGroupSource = null;
+          document.body.classList.remove('mode-pick-source', 'mode-apply-group');
+          
+          els.quickGroupBtn.classList.remove('active');
+          els.quickGroupBtn.innerHTML = '<span style="pointer-events:none">⚡ GROUP TOOL</span> <span class="hk" style="position:static; margin-left:auto; opacity:0.5;">G</span>';
+          els.quickGroupBtn.style.color = "";
+          els.quickGroupBtn.style.background = "";
+          
+          els.editStatusText.textContent = "Quick Group Mode Exited";
+          els.editStatusText.style.color = "";
+          
+          // Re-render to clear highlights
+          renderGallery();
+      }
+  };
+
+  function pickSourceGroup(item) {
+      if (!item) return;
+      
+      quickGroupSource = {
+          id: item.dbId,
+          title: item.title,
+          subtitle: item.subtitle,
+          orderId: item.orderId
+      };
+      
+      // Advance State
+      quickGroupState = 'apply_target';
+      document.body.classList.remove('mode-pick-source');
+      document.body.classList.add('mode-apply-group');
+      
+      // Update Button to "Done" state
+      els.quickGroupBtn.textContent = "DONE";
+      els.quickGroupBtn.style.color = "#000";
+      els.quickGroupBtn.style.background = "var(--c-success)";
+      
+      els.editStatusText.textContent = `SOURCE: ${item.title}. Click others to Apply.`;
+      
+      renderGallery(); // Updates highlights
+  }
+
+  async function applyGroupToTarget(item) {
+      if (!quickGroupSource) return;
+      if (item.dbId === quickGroupSource.id) return; // Don't apply to self
+      
+      try {
+          await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', COL_NAME, item.dbId), {
+              title: quickGroupSource.title,
+              subtitle: quickGroupSource.subtitle,
+              orderId: quickGroupSource.orderId
+          });
+          
+          // Visual Feedback
+          els.editStatusText.textContent = `Updated: ${item.dbId.substr(0,4)}...`;
+          
+      } catch(e) {
+          console.error("Group update failed", e);
+          alert("Update failed");
+      }
   }
 
   // --- EDIT LOGIC (FIXED) ---
@@ -660,7 +834,7 @@
       els.cancelBtn.style.display = 'block';
       els.deleteEntryBtn.style.display = 'block'; // Show Delete Button
       // Reset delete button state
-      els.deleteEntryBtn.innerText = "TRASH ENTRY";
+      els.deleteEntryBtn.innerText = "DELETE ENTRY";
       els.deleteEntryBtn.style.background = "";
       els.deleteEntryBtn.style.color = "";
       els.deleteEntryBtn.dataset.confirm = "false";
@@ -718,7 +892,7 @@
           clearTimeout(deleteConfirmTimer);
           deleteConfirmTimer = setTimeout(() => {
               btn.dataset.confirm = "false";
-              btn.innerText = "TRASH ENTRY";
+              btn.innerText = "DELETE ENTRY";
               btn.style.background = "";
               btn.style.color = "";
           }, 3000);
@@ -744,7 +918,7 @@
           els.editStatusText.textContent = "Delete Failed";
           els.editStatusText.style.color = "var(--c-danger)";
           // Reset button
-          btn.innerText = "TRASH ENTRY";
+          btn.innerText = "DELETE ENTRY";
           btn.disabled = false;
           btn.dataset.confirm = "false";
           btn.style.background = "";
@@ -964,6 +1138,12 @@
              el.innerHTML = `<svg viewBox="0 0 30 26" fill="none"><path d="M15 2 L27 24 L3 24 Z" fill="rgba(20,20,20,0.4)" stroke="rgba(255,255,255,0.9)" stroke-width="2"/><path d="M15 13 L19 19 L11 19 Z" fill="${t.id==='stage2'?'#FDE047':t.id==='stage3'?'#f97316':t.id==='wikd'?'#FF3B30':'#fff'}"/></svg>`;
           }
           
+          // ADD CUSTOM LABEL ELEMENT
+          const label = document.createElement('div');
+          label.className = 'marker-label';
+          label.textContent = TAG_NAMES[t.id] || t.id;
+          el.appendChild(label);
+          
           el.onmousedown = (e) => {
               if(activeTool?.id === 'delete') {
                   e.stopPropagation(); currentTags.splice(i,1); renderMarkers();
@@ -984,6 +1164,12 @@
       if(!isLocked) els.projSubtitle.value = currentTags.map(t => TAG_NAMES[t.id] || t.id).join(', ');
   }
 
+  window.resetTagsToAuto = () => {
+      // Only useful if we have tags
+      const autoString = currentTags.map(t => TAG_NAMES[t.id] || t.id).join(', ');
+      els.projSubtitle.value = autoString;
+  };
+
   // --- UTILS ---
   window.toggleLock = (forceState) => {
       if (typeof forceState === 'boolean') {
@@ -1002,10 +1188,11 @@
   document.addEventListener('keydown', (e) => {
       if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
       const k = e.key.toLowerCase();
-      const map = {'1':'ppf','2':'ceramic','3':'vinyl','4':'tint','5':'detail','q':'stage1','w':'stage2','e':'stage3','r':'wikd','a':'mclaren','s':'mclaren_catback','d':'delete','escape':'clear'};
+      const map = {'1':'ppf','2':'ceramic','3':'vinyl','4':'tint','5':'detail','q':'stage1','w':'stage2','e':'stage3','r':'wikd','a':'mclaren','s':'mclaren_catback','d':'delete','escape':'clear','g':'quickgroup'};
       if(map[k]) {
           if(map[k]==='clear') window.clearTags();
           else if(map[k]==='delete') window.setTool('delete', 'delete');
+          else if(map[k]==='quickgroup') window.toggleQuickGroup();
           else window.setTool(map[k], ['ppf','ceramic','vinyl','tint','detail'].includes(map[k])?'service':(['mclaren','mclaren_catback'].includes(map[k])?'ping':'nano'));
       }
   });
