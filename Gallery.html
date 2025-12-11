@@ -711,15 +711,15 @@
               data: {
                  labels: CURVE_CACHE[canvasId].map(d => d.rpm),
                  datasets: [
-                      { label: 'HP', data: [], borderColor: tune.color, backgroundColor: 'transparent', fill: true, borderWidth: tune.strokeWidth, pointRadius: 0, tension: 0.4, yAxisID: 'y' },
-                      { label: 'TQ', data: [], borderColor: 'rgba(255, 165, 0, 0.5)', borderWidth: 1, borderDash: [2, 2], pointRadius: 0, tension: 0.4, yAxisID: 'y' }
+                       { label: 'HP', data: [], borderColor: tune.color, backgroundColor: 'transparent', fill: true, borderWidth: tune.strokeWidth, pointRadius: 0, tension: 0.4, yAxisID: 'y' },
+                       { label: 'TQ', data: [], borderColor: 'rgba(255, 165, 0, 0.5)', borderWidth: 1, borderDash: [2, 2], pointRadius: 0, tension: 0.4, yAxisID: 'y' }
                   ]
               },
               options: {
-                 responsive: true, maintainAspectRatio: false,
-                 plugins: { legend: { display: false }, tooltip: { enabled: false } },
-                 scales: { x: { display: false }, y: { display: false, min: 0, max: 1400 } },
-                 animation: false
+                  responsive: true, maintainAspectRatio: false,
+                  plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                  scales: { x: { display: false }, y: { display: false, min: 0, max: 1400 } },
+                  animation: false
               }
           });
       };
@@ -792,14 +792,16 @@
                     };
                 }
                 
-                // Add Image to Group
-                if(data.cdnUrl) {
-                    groupedData[key].images.push(data.cdnUrl);
+                // Add Image to Group (Supports both 'imageUrl' from DB and 'cdnUrl' legacy)
+                const imgSource = data.imageUrl || data.cdnUrl;
+
+                if(imgSource) {
+                    groupedData[key].images.push(imgSource);
                     
                     // Add Hotspot Logic
                     if(data.tags && data.tags.length > 0) {
                         groupedData[key].hotspots.push({
-                            cdnUrl: data.cdnUrl,
+                            cdnUrl: imgSource, // Normalize to this property for logic consistency
                             tags: data.tags
                         });
                     }
@@ -892,29 +894,29 @@
 
               if (isStandaloneCandidate) {
                   if (seenTitles.has(title)) return;
-                 seenTitles.add(title);
-                 
-                 const imagesHtml = images.map((imgUrl, idx) => {
-                     const globalIndex = flatGalleryImages.length;
-                     flatGalleryImages.push({ src: imgUrl, title: title, subtitle: subtitle, hotspots: project.hotspots });
+                  seenTitles.add(title);
+                  
+                  const imagesHtml = images.map((imgUrl, idx) => {
+                      const globalIndex = flatGalleryImages.length;
+                      flatGalleryImages.push({ src: imgUrl, title: title, subtitle: subtitle, hotspots: project.hotspots });
 
-                     return `<div class="gallery-item" onclick="openLightbox(${globalIndex})">
-                                 <div class="skeleton-loader"></div>
-                                 <img data-src="${imgUrl}" class="gallery-img">
-                             </div>`;
-                 }).join('');
+                      return `<div class="gallery-item" onclick="openLightbox(${globalIndex})">
+                                      <div class="skeleton-loader"></div>
+                                      <img data-src="${imgUrl}" class="gallery-img">
+                                  </div>`;
+                  }).join('');
 
-                 finalProjectHTML.push(`
-                     <section class="project-section">
-                         <div class="project-header">
-                             <div><h2 class="text-3xl md:text-5xl text-white font-heading mb-1">${title}</h2><p class="text-muted text-lg tracking-wide">${subtitle}</p></div>
-                         </div>
-                         <div class="ticker-view relative">
-                             <button class="nav-arrow nav-arrow-left" aria-label="Previous Slide"><i data-lucide="chevron-left"></i></button>
-                             <div class="ticker-track">${imagesHtml}</div>
-                             <button class="nav-arrow nav-arrow-right" aria-label="Next Slide"><i data-lucide="chevron-right"></i></button>
-                         </div>
-                     </section>`);
+                  finalProjectHTML.push(`
+                      <section class="project-section">
+                          <div class="project-header">
+                              <div><h2 class="text-3xl md:text-5xl text-white font-heading mb-1">${title}</h2><p class="text-muted text-lg tracking-wide">${subtitle}</p></div>
+                          </div>
+                          <div class="ticker-view relative">
+                              <button class="nav-arrow nav-arrow-left" aria-label="Previous Slide"><i data-lucide="chevron-left"></i></button>
+                              <div class="ticker-track">${imagesHtml}</div>
+                              <button class="nav-arrow nav-arrow-right" aria-label="Next Slide"><i data-lucide="chevron-right"></i></button>
+                          </div>
+                      </section>`);
               }
           });
 
@@ -981,7 +983,7 @@
           setTimeout(updateHotspotOverlayDimensions, 50);
           lightboxImg.onload = updateHotspotOverlayDimensions;
           if (!document.getElementById('lightbox-cta-container').classList.contains('visible')) {
-             setTimeout(() => { document.getElementById('lightbox-cta-container').classList.add('visible'); }, 100);
+              setTimeout(() => { document.getElementById('lightbox-cta-container').classList.add('visible'); }, 100);
           }
       }
 
@@ -1005,7 +1007,12 @@
           let tagsToRender = [];
           if (Array.isArray(imageData.hotspots)) {
               const currentFilename = getCleanFilename(imageData.src);
+              
               const match = imageData.hotspots.find(h => {
+                  // PRIORITY 1: Exact match (Handles Base64 or Full URL matches)
+                  if(h.cdnUrl === imageData.src) return true;
+                  
+                  // PRIORITY 2: Fallback to filename matching (Legacy)
                   const hotspotFilename = getCleanFilename(h.cdnUrl);
                   return currentFilename === hotspotFilename;
               });
