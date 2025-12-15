@@ -235,21 +235,16 @@
         .car-composite-wrapper::before {
             content: "";
             position: absolute;
-            /* Standard Center Positioning */
             top: 50%;
             left: 50%;
-            
-            /* Use full viewport width */
-            width: 100vw;
-            /* Tall height to allow fade */
-            height: 300%; 
-            
-            /* Center and squash vertically */
-            transform: translate(-50%, -50%) scaleY(0.7);
-            
-            /* Use ELLIPSE to decouple horizontal stretch from vertical radius */
-            background: radial-gradient(ellipse at center, rgba(255, 59, 48, 0.15) 0%, rgba(0,0,0,0) 70%);
-            
+            /* Scale X axis to widen aspect ratio, Scale Y to shrink height */
+            transform: translate(-50%, -50%) scaleX(1.5) scaleY(0.7);
+            /* Adjusted size to prevent clipping - wider and much taller */
+            width: 150%;
+            height: 300%;
+            /* Subtle red glow fading to transparent */
+            /* EXAGGERATED SUBTLETY: Decreased opacity to 0.1 and extended falloff to 90% */
+            background: radial-gradient(circle, rgba(255, 59, 48, 0.1) 0%, rgba(0,0,0,0) 90%);
             z-index: -1; /* Behind the car image */
             pointer-events: none;
             mix-blend-mode: screen;
