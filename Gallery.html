@@ -490,7 +490,17 @@
             
             if (Object.keys(projectsMap).length > 0 || shopLifeList.length > 0) {
                 galleryContainer.innerHTML = ''; 
-                const contentBlock = generateAllGalleryHTML(Object.values(projectsMap), shopLifeList);
+                
+                // --- MODIFICATION: ENFORCE MCLAREN FIRST ---
+                let projectsArray = Object.values(projectsMap);
+                const mclarenIndex = projectsArray.findIndex(p => p.title.toLowerCase().includes('mclaren 720s'));
+                
+                if (mclarenIndex > -1) {
+                    const mclarenProject = projectsArray.splice(mclarenIndex, 1)[0];
+                    projectsArray.unshift(mclarenProject);
+                }
+                
+                const contentBlock = generateAllGalleryHTML(projectsArray, shopLifeList);
                 galleryContainer.appendChild(contentBlock);
                 contentBlock.querySelectorAll('.project-section').forEach(section => initManualCarousel(section));
                 startLazyLoading(contentBlock);
@@ -631,14 +641,15 @@
               if(!data) return;
 
               if (type === 'service') {
-                 const iconAttrs = JSON.stringify({ variationThumbColour: data.color, variationName: "Two Tone", variationNumber: 2, numberOfGroups: 2, backgroundIsGroup: false, strokeWidth: 1, defaultColours: { "group-1": data.color, "group-2": data.color, "background": "#141414" } });
-                 htmlContent = `<div class="tt-header"><animated-icons src="https://animatedicons.co/get-icon?name=${data.iconName}&style=minimalistic&token=${data.iconToken}" trigger="loop" attributes='${iconAttrs.replace(/'/g, "&apos;")}' height="38" width="38"></animated-icons><div class="tt-title"><h4>${data.title}</h4><span>${data.desc}</span></div></div><div class="tt-stats"><div class="stat-item"><div class="stat-face front"><span class="stat-val">${data.stat1.val}</span><span class="stat-label">${data.stat1.label}</span></div><div class="stat-face back"><span class="stat-val">${data.stat1.altVal}</span><span class="stat-label">${data.stat1.altLabel}</span></div></div><div class="stat-item"><div class="stat-face front"><span class="stat-val">${data.stat2.val}</span><span class="stat-label">${data.stat2.label}</span></div><div class="stat-face back"><span class="stat-val">${data.stat2.altVal}</span><span class="stat-label">${data.stat2.altLabel}</span></div></div></div><a href="${data.url}" target="_blank" class="btn-learn">View Service Details</a>`;
+                  const iconAttrs = JSON.stringify({ variationThumbColour: data.color, variationName: "Two Tone", variationNumber: 2, numberOfGroups: 2, backgroundIsGroup: false, strokeWidth: 1, defaultColours: { "group-1": data.color, "group-2": data.color, "background": "#141414" } });
+                  htmlContent = `<div class="tt-header"><animated-icons src="https://animatedicons.co/get-icon?name=${data.iconName}&style=minimalistic&token=${data.iconToken}" trigger="loop" attributes='${iconAttrs.replace(/'/g, "&apos;")}' height="38" width="38"></animated-icons><div class="tt-title"><h4>${data.title}</h4><span>${data.desc}</span></div></div><div class="tt-stats"><div class="stat-item"><div class="stat-face front"><span class="stat-val">${data.stat1.val}</span><span class="stat-label">${data.stat1.label}</span></div><div class="stat-face back"><span class="stat-val">${data.stat1.altVal}</span><span class="stat-label">${data.stat1.altLabel}</span></div></div><div class="stat-item"><div class="stat-face front"><span class="stat-val">${data.stat2.val}</span><span class="stat-label">${data.stat2.label}</span></div><div class="stat-face back"><span class="stat-val">${data.stat2.altVal}</span><span class="stat-label">${data.stat2.altLabel}</span></div></div></div><a href="${data.url}" target="_blank" class="btn-learn">View Service Details</a>`;
               } else if (type === 'nano') {
-                 const iconAttrs = JSON.stringify({ variationThumbColour: data.color, variationName: "Two Tone", variationNumber: 2, numberOfGroups: 2, backgroundIsGroup: false, strokeWidth: 2, defaultColours: { "group-1": "#EAEAEA", "group-2": data.color, "background": "#141414" } });
-                 chartId = `nano-chart-${id}`;
-                 htmlContent = `<div class="tt-header"><animated-icons src="https://animatedicons.co/get-icon?name=${data.iconName}&style=minimalistic&token=${data.iconToken}" trigger="loop" attributes='${iconAttrs.replace(/'/g, "&apos;")}' height="32" width="32"></animated-icons><div class="tt-title"><h4>${data.label}</h4><span>${data.desc}</span></div><div class="nano-chart-wrap"><canvas id="${chartId}" width="100" height="40"></canvas></div></div><div class="tt-stats"><a href="https://www.wikdmotorsports.com/pages/tuning" target="_blank" class="stat-item"><div class="stat-face front"><span class="stat-val">${data.stat1.val}</span><span class="stat-label">${data.stat1.label}</span></div><div class="stat-face back"><span class="stat-val">${data.stat1.altVal}</span><span class="stat-label">${data.stat1.altLabel}</span></div></a><a href="https://www.wikdmotorsports.com/pages/tuning" target="_blank" class="stat-item"><div class="stat-face front"><span class="stat-val">${data.stat2.val}</span><span class="stat-label">${data.stat2.label}</span></div><div class="stat-face back"><span class="stat-val">${data.stat2.altVal}</span><span class="stat-label">${data.stat2.altLabel}</span></div></a></div><div class="tune-bar-wrap"><div class="tune-bar-fill"></div></div><a href="https://www.wikdmotorsports.com/pages/tuning" target="_blank" class="btn-learn" style="margin-top:12px;">View Tuning Packages</a>`;
+                  const iconAttrs = JSON.stringify({ variationThumbColour: data.color, variationName: "Two Tone", variationNumber: 2, numberOfGroups: 2, backgroundIsGroup: false, strokeWidth: 2, defaultColours: { "group-1": "#EAEAEA", "group-2": data.color, "background": "#141414" } });
+                  chartId = `nano-chart-${id}`;
+                  htmlContent = `<div class="tt-header"><animated-icons src="https://animatedicons.co/get-icon?name=${data.iconName}&style=minimalistic&token=${data.iconToken}" trigger="loop" attributes='${iconAttrs.replace(/'/g, "&apos;")}' height="32" width="32"></animated-icons><div class="tt-title"><h4>${data.label}</h4><span>${data.desc}</span></div><div class="nano-chart-wrap"><canvas id="${chartId}" width="100" height="40"></canvas></div></div><div class="tt-stats"><a href="https://www.wikdmotorsports.com/pages/tuning" target="_blank" class="stat-item"><div class="stat-face front"><span class="stat-val">${data.stat1.val}</span><span class="stat-label">${data.stat1.label}</span></div><div class="stat-face back"><span class="stat-val">${data.stat1.altVal}</span><span class="stat-label">${data.stat1.altLabel}</span></div></a><a href="https://www.wikdmotorsports.com/pages/tuning" target="_blank" class="stat-item"><div class="stat-face front"><span class="stat-val">${data.stat2.val}</span><span class="stat-label">${data.stat2.label}</span></div><div class="stat-face back"><span class="stat-val">${data.stat2.altVal}</span><span class="stat-label">${data.stat2.altLabel}</span></div></a></div><div class="tune-bar-wrap"><div class="tune-bar-fill"></div></div><a href="https://www.wikdmotorsports.com/pages/tuning" target="_blank" class="btn-learn" style="margin-top:12px;">View Tuning Packages</a>`;
               } else if (type === 'ping') {
-                 htmlContent = `<div class="ping-iframe-layer"><iframe src="${data.embedUrl}" allowfullscreen></iframe></div><div class="ping-content-layer"><div class="ping-header-text"><h4>${data.label}</h4><span>${data.desc}</span></div><a href="${data.url}" target="_blank" class="btn-learn">View Product</a></div>`;
+                  // Load immediately so it runs in background (while hidden) and is ready upon hover
+                  htmlContent = `<div class="ping-iframe-layer"><iframe src="${data.embedUrl}" allowfullscreen></iframe></div><div class="ping-content-layer"><div class="ping-header-text"><h4>${data.label}</h4><span>${data.desc}</span></div><a href="${data.url}" target="_blank" class="btn-learn">View Product</a></div>`;
               }
 
               const hotspot = document.createElement("div");
@@ -760,16 +771,16 @@
              leftBtn.classList.toggle('disabled', currentTranslate >= 0);
              rightBtn.classList.toggle('disabled', currentTranslate <= maxTranslate + 5);
           };
-         leftBtn.addEventListener('click', (e) => { e.stopPropagation(); currentIndex--; updateTrack(); });
-         rightBtn.addEventListener('click', (e) => { e.stopPropagation(); currentIndex++; updateTrack(); });
-         view.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; isDragging = true; }, { passive: true });
-         view.addEventListener('touchend', (e) => { 
+          leftBtn.addEventListener('click', (e) => { e.stopPropagation(); currentIndex--; updateTrack(); });
+          rightBtn.addEventListener('click', (e) => { e.stopPropagation(); currentIndex++; updateTrack(); });
+          view.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; isDragging = true; }, { passive: true });
+          view.addEventListener('touchend', (e) => { 
               if (!isDragging) return; 
               if (Math.abs(startX - e.changedTouches[0].clientX) > 50) startX - e.changedTouches[0].clientX > 0 ? rightBtn.click() : leftBtn.click();
              isDragging = false; 
           }, { passive: true });
-         window.addEventListener('resize', updateTrack);
-         setTimeout(updateTrack, 100);
+          window.addEventListener('resize', updateTrack);
+          setTimeout(updateTrack, 100);
       }
 
       function startLazyLoading(rootElement = document) {
@@ -781,9 +792,9 @@
                      if (src) { img.src = src; img.onload = () => { img.classList.add('loaded'); const l = img.previousElementSibling; if (l) l.remove(); }; img.removeAttribute('data-src'); }
                      observer.unobserve(img);
                   }
-              });
+             });
           }, { rootMargin: '0px 0px 300px 0px' });
-         images.forEach(img => imageObserver.observe(img));
+          images.forEach(img => imageObserver.observe(img));
       }
 
       initGallery();
