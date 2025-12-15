@@ -209,8 +209,8 @@
             /* Scale X axis to widen aspect ratio, Scale Y to shrink height */
             transform: translate(-50%, -50%) scaleX(1.5) scaleY(0.7);
             /* Adjusted size to prevent clipping - wider and much taller */
-            width: 150%;
-            height: 300%;
+            width: 250%;
+            height: 500%;
             /* Subtle red glow fading to transparent */
             /* EXAGGERATED SUBTLETY: Decreased opacity to 0.1 and extended falloff to 90% */
             background: radial-gradient(circle, rgba(255, 59, 48, 0.1) 0%, rgba(0,0,0,0) 90%);
@@ -945,7 +945,7 @@
 
 
     <!-- Page Hero -->
-    <header class="page-hero">
+    <header class="page-hero" style="z-index: 50; position: relative;">
         <div class="page-hero-content">
             <span class="text-red-600 font-bold tracking-widest uppercase text-sm mb-2 block font-heading">World Class Protection</span>
             <h1 class="h1 mb-4">Our Services</h1>
@@ -959,7 +959,7 @@
         <div class="mobile-scaled-container">
             
             <!-- Service 1: PPF (Replaced with Sequence) -->
-            <div class="service-row">
+            <div class="service-row" style="position: relative; z-index: 40;">
                 <div class="composite-container">
                     <!-- Added car-composite-wrapper with glow-blue class -->
                     <div class="car-composite-wrapper glow-blue">
@@ -1005,7 +1005,7 @@
             </div>
 
             <!-- Service 2: Ceramic Coatings (Replaced with Video Overlay) -->
-            <div class="service-row reverse">
+            <div class="service-row reverse" style="position: relative; z-index: 30;">
                 <div class="composite-container">
                     <div class="car-composite-wrapper">
                         <!-- Base Image -->
@@ -1047,7 +1047,7 @@
             </div>
 
             <!-- Service 3: Vinyl Wraps (Replaced with Color Changing Truck) -->
-            <div class="service-row">
+            <div class="service-row" style="position: relative; z-index: 20;">
                 <div class="composite-container">
                     <div class="glow-wrapper" id="dynamic-glow-wrapper">
                         <div class="sequence-container" id="truck-sequence">
@@ -1097,7 +1097,7 @@
             </div>
 
             <!-- Service 4: Window Tint (Replaced with Tint Opacity Overlay) -->
-            <div class="service-row reverse">
+            <div class="service-row reverse" style="position: relative; z-index: 10;">
                 <div class="composite-container">
                     <div class="car-composite-wrapper">
                         <!-- Base Car -->
@@ -1141,7 +1141,7 @@
         </div>
     </main>
 
-    <footer class="wikd-footer">
+    <footer class="wikd-footer relative z-50">
         <div class="wikd-footer-container">
             <div class="wikd-footer-grid">
                 <!-- Brand Column -->

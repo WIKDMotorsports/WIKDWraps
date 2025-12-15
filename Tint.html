@@ -240,8 +240,8 @@
             /* Scale X axis to widen aspect ratio, Scale Y to shrink height */
             transform: translate(-50%, -50%) scaleX(1.5) scaleY(0.7);
             /* Adjusted size to prevent clipping - wider and much taller */
-            width: 150%;
-            height: 300%;
+            width: 250%;
+            height: 500%;
             /* Subtle red glow fading to transparent */
             /* EXAGGERATED SUBTLETY: Decreased opacity to 0.1 and extended falloff to 90% */
             background: radial-gradient(circle, rgba(255, 59, 48, 0.1) 0%, rgba(0,0,0,0) 90%);
@@ -952,7 +952,7 @@
         </section>
 
         <!-- Benefits Grid (Using requested animated icons) -->
-        <section class="content-section bg-[var(--color-surface)]" style="position: relative; z-index: 20;">
+        <section class="content-section bg-[var(--color-surface)] relative z-10">
             <div class="mobile-scaled-container">
                 <div class="text-center mb-10">
                     <h2 class="h2">The WIKD Standard</h2>
@@ -1048,8 +1048,8 @@
         </section>
 
         <!-- Final CTA -->
-        <!-- CORRECTED: Removed overflow-hidden, Added z-index 10 and overflow: visible -->
-        <section class="py-20 relative" style="z-index: 10; overflow: visible;">
+        <!-- CORRECTED: Removed overflow-hidden, removed z-index 10 (now z-0) for stacking, overflow: visible -->
+        <section class="py-20 relative" style="overflow: visible;">
             <div class="mobile-scaled-container text-center relative z-10">
                 
                 <!-- Car Composite Image/Video Section -->
@@ -1075,7 +1075,7 @@
         </section>
     </main>
 
-    <footer class="wikd-footer">
+    <footer class="wikd-footer relative z-10">
         <div class="wikd-footer-container">
             <div class="wikd-footer-grid">
                 <!-- Brand Column -->
