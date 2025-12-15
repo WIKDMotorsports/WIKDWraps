@@ -25,7 +25,11 @@
         }
 
         /* Base styles */
-        html { scroll-behavior: smooth; }
+        html { 
+            scroll-behavior: smooth; 
+            /* FIX 1: Ensure HTML background matches body to hide sub-pixel rendering gaps */
+            background-color: var(--color-background);
+        }
         body {
             background-color: var(--color-background) !important;
             color: var(--color-text) !important;
@@ -142,20 +146,26 @@
                              url('https://wikdwraps.com/cdn/shop/files/Black_Lamborghini_Urus_Interior_Detail.jpg?v=1744062916');
             background-size: cover;
             background-position: center;
+            background-repeat: no-repeat; /* FIX 2: Prevent tiling artifacts */
             position: relative;
             display: flex;
             align-items: flex-end;
             padding-bottom: 4rem;
+            margin-bottom: -1px; /* FIX 3: Negative margin to overlap next section and hide 1px gap */
         }
         .page-hero-content {
             width: 92%;
             max-width: 1200px;
             margin: 0 auto;
+            position: relative;
+            z-index: 10;
         }
 
         /* --- CONTENT SECTIONS --- */
         .content-section {
             padding: 5rem 0;
+            position: relative; /* FIX 4: Ensure z-index works if needed */
+            z-index: 5; 
         }
         
         /* Grid for Features/Benefits */
@@ -1411,7 +1421,7 @@
             <div class="mobile-scaled-container text-center relative z-10">
                 
                 <!-- Car Composite Image/Video Section -->
-                   <div style="display: flex; justify-content: center; margin-bottom: 2rem;">
+                    <div style="display: flex; justify-content: center; margin-bottom: 2rem;">
                         <!-- Wrapper for Glow Effect -->
                         <div class="car-composite-wrapper">
                             <!-- WIDGET HTML STRUCTURE -->
@@ -1445,8 +1455,8 @@
                                 <div id="cwLoader" class="cw-loader">Loading...</div>
                             </div>
                         </div>
-                   </div>
-                   <!-- End Car Composite Section -->
+                    </div>
+                    <!-- End Car Composite Section -->
 
                 <h2 class="h2 mb-6">Keep It WIKD.</h2>
                 <p class="p-muted max-w-2xl mx-auto mb-8">
@@ -1539,7 +1549,7 @@
             async function initWidget() {
                 // Handle video loading
                 if(video.readyState < 3) {
-                     await new Promise(r => video.addEventListener('canplay', r, {once:true}));
+                      await new Promise(r => video.addEventListener('canplay', r, {once:true}));
                 }
                 
                 // Hide loader
