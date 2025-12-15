@@ -25,7 +25,12 @@
         }
 
         /* Base styles */
-        html { scroll-behavior: smooth; }
+        /* ADDED: background-color to html to mask sub-pixel gaps */
+        html { 
+            scroll-behavior: smooth; 
+            background-color: var(--color-background);
+        }
+        
         body {
             background-color: var(--color-background) !important;
             color: var(--color-text) !important;
@@ -141,6 +146,9 @@
                               url('https://wikdwraps.com/cdn/shop/files/Clean_Ryft_Black_McLaren_720s_HRE_Wheels_WIKD_Exhaust.jpg?v=1744062478');
             background-size: cover;
             background-position: center;
+            /* ADDED: no-repeat and negative margin to fix sub-pixel gap */
+            background-repeat: no-repeat;
+            margin-bottom: -1px;
             position: relative;
             display: flex;
             align-items: flex-end;
