@@ -515,26 +515,20 @@
         }
 
         /* ADDED: Subtle Red Radial Gradient Behind the car */
-        /* CORRECTED LOGIC: Use 100vw width but standard centering and gradient */
         .car-composite-wrapper::before {
             content: "";
             position: absolute;
-            /* Standard Center Positioning */
-            top: 50%; 
+            top: 50%;
             left: 50%;
-            
-            /* IMPORTANT: We want full screen width (100vw). 
-               We maintain the original vertical scale behavior (300% height + scaleY 0.7).
-               Using 'ellipse' instead of 'circle' prevents the width from blowing up the height. */
-            width: 100vw;
-            height: 300%; 
-            
-            transform: translate(-50%, -50%) scaleY(0.7); 
-            
-            /* Use ELLIPSE to decouple horizontal stretch from vertical radius */
-            background: radial-gradient(ellipse at center, rgba(255, 59, 48, 0.15) 0%, rgba(0,0,0,0) 70%);
-            
-            z-index: -1; 
+            /* Scale X axis to widen aspect ratio, Scale Y to shrink height */
+            transform: translate(-50%, -50%) scaleX(1.5) scaleY(0.7);
+            /* Adjusted size to prevent clipping - wider and much taller */
+            width: 250%;
+            height: 500%;
+            /* Subtle red glow fading to transparent */
+            /* EXAGGERATED SUBTLETY: Decreased opacity to 0.1 and extended falloff to 90% */
+            background: radial-gradient(circle, rgba(255, 59, 48, 0.1) 0%, rgba(0,0,0,0) 90%);
+            z-index: -1; /* Behind the car image */
             pointer-events: none;
             mix-blend-mode: screen;
         }
@@ -1712,7 +1706,7 @@
 </section>
 
 <!-- LOCATIONS SECTION -->
-<section id="locations-section" class="py-20" style="background-color: var(--color-surface);">
+<section id="locations-section" class="py-20 relative z-10" style="background-color: var(--color-surface);">
     <div class="mobile-scaled-container">
         <div class="text-center mb-10">
             <h2 class="h2">Your Nearest WIKD Locations</h2>
@@ -1792,7 +1786,7 @@
 </section>
 
 <!-- FINAL CTA -->
-<section id="final-cta-section" class="py-20" style="background-color: var(--color-background);">
+<section id="final-cta-section" class="py-20" style="background-color: var(--color-background); overflow: visible;">
     <!-- Updated container to mobile-scaled-container for alignment -->
     <div class="mobile-scaled-container text-center">
         
@@ -1827,7 +1821,7 @@
  <textarea id="address-clipboard-helper" style="position: absolute; left: -9999px;"></textarea>
 </main>
 
-<footer class="wikd-footer">
+<footer class="wikd-footer relative z-10">
     <div class="wikd-footer-container">
         <div class="wikd-footer-grid">
             <!-- Brand Column -->
