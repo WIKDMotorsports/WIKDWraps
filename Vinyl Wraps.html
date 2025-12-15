@@ -1261,5 +1261,20 @@
         });
     </script>
 
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var links = document.querySelectorAll('a');
+        links.forEach(function(link) {
+            var href = link.getAttribute('href');
+            // If it is an internal anchor link (starts with #), leave it alone (it stays in iframe)
+            if (href && href.startsWith('#')) {
+                return;
+            }
+            // For all other links, force them to open in the parent window
+            link.setAttribute('target', '_top');
+        });
+    });
+</script>
 </body>
 </html>
