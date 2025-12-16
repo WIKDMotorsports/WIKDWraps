@@ -425,7 +425,7 @@
            transform: rotate(180deg);
        }
 
-       .qr-tooltip {
+       .location-qr-tooltip {
            position: absolute;
            bottom: 100%;
            left: 50%;
@@ -444,13 +444,13 @@
            pointer-events: none;
            width: max-content;
        }
-       .qr-tooltip.active {
+       .location-qr-tooltip.active {
            opacity: 1;
            visibility: visible;
            transform: translateX(-50%) translateY(0);
            pointer-events: auto;
        }
-       .qr-tooltip::before {
+       .location-qr-tooltip::before {
            content: '';
            position: absolute;
            top: 100%;
@@ -460,7 +460,7 @@
            border-style: solid;
            border-color: var(--color-border) transparent transparent transparent;
        }
-       .qr-tooltip::after {
+       .location-qr-tooltip::after {
            content: '';
            position: absolute;
            top: 100%;
@@ -1006,7 +1006,8 @@
     }
 
     /* PROTECT QR CANVAS SIZE */
-    .qr-tooltip canvas {
+    .qr-tooltip canvas,
+    .location-qr-tooltip canvas {
         width: 120px !important;
         height: 120px !important;
     }
@@ -2097,7 +2098,7 @@
                                     </animated-icons>
                                     <span class="lava-text text-sm uppercase leading-none">GIVE US A RING</span>
                                 </a>
-                                <div id="qr-tooltip-${idPrefix}" class="qr-tooltip">
+                                <div id="qr-tooltip-${idPrefix}" class="location-qr-tooltip">
                                     <canvas width="150" height="150"></canvas>
                                     <p class="mt-1 text-xs text-gray-300">Scan to call us!</p>
                                 </div>
