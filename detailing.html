@@ -413,6 +413,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
+
 <style>
     :root {
         --color-background: #0A0A0A;
@@ -654,6 +655,13 @@
         visibility: hidden;
         transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
         pointer-events: none;
+        width: max-content; /* ADDED FIX */
+    }
+
+    /* PROTECT QR CANVAS SIZE */
+    .qr-tooltip canvas {
+        width: 120px !important;
+        height: 120px !important;
     }
 
     .group\/call:hover .qr-tooltip {
@@ -714,6 +722,7 @@
         pointer-events: none;
     }
 </style>
+
 <!-- Navigation Bar -->
 <nav class="fixed top-0 w-full z-50 bg-transparent h-16">
     <div class="max-w-[1400px] mx-auto px-4 h-full">
