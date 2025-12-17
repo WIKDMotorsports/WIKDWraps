@@ -9,10 +9,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
     <script src="https://animatedicons.co/scripts/embed-animated-icons.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 
     <title>WIKDWRAPS</title>
 
@@ -40,6 +41,8 @@
             font-family: var(--font-body) !important;
             overflow-x: hidden; /* Prevent horizontal scroll */
             position: relative;
+            margin: 0;
+            padding: 0;
         }
         
         /* --- NOISE TEXTURE OVERLAY --- */
@@ -1036,19 +1039,52 @@
         border-color: transparent transparent var(--color-border) transparent;
     }
 
-    /* MOBILE MENU */
+    /* --- MOBILE MENU STYLES (UPDATED FIX) --- */
     #mobile-menu {
-        transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
-        max-height: 0;
-        opacity: 0;
-        overflow: hidden;
+        position: absolute;
+        top: 100%; /* Anchors exactly to the bottom of the nav bar */
+        left: 0;
+        width: 100%;
         background-color: #000;
         border-bottom: 1px solid #222;
+        
+        /* Animation States */
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden; /* Important: keeps it hidden when closed */
+        visibility: hidden; /* Accessibility fix for closed state */
+        
+        transition: 
+            max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+            opacity 0.4s ease,
+            visibility 0.4s step-end; /* Defers visibility hidden until end of transition */
     }
 
     #mobile-menu.open {
-        max-height: 100vh;
+        visibility: visible;
+        max-height: calc(100vh - 64px); /* Fills screen minus header height */
         opacity: 1;
+        overflow-y: auto; /* Allows scrolling if menu is tall or phone is landscape */
+        transition: 
+            max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+            opacity 0.4s ease,
+            visibility 0s; /* Makes visibility immediate on open */
+    }
+
+    /* Submenu Animation */
+    .mobile-submenu {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-in-out;
+        background-color: #0A0A0A;
+    }
+    
+    .mobile-submenu.active {
+        max-height: 800px; /* Large enough to fit content */
+    }
+
+    .rotate-180-mobile {
+        transform: rotate(180deg);
     }
 
     .logo-text {
@@ -1079,7 +1115,7 @@
 
 <!-- Navigation Bar -->
 <nav class="fixed top-0 w-full z-50 bg-transparent h-16">
-    <div class="max-w-[1400px] mx-auto px-4 h-full">
+    <div class="max-w-[1400px] mx-auto px-4 h-full relative z-50 bg-transparent">
         <div class="flex justify-between items-center h-full">
 
             <!-- Logo -->
@@ -1237,10 +1273,17 @@
                 </div>
             </div>
 
-            <!-- Mobile Actions -->
+            <!-- Mobile Actions (Updated with Animated Icon) -->
             <div class="flex items-center gap-4 lg:hidden">
-                <a href="tel:469-625-1127" class="text-white hover:text-[#FF3B30] transition-colors">
-                    <i data-lucide="phone" class="w-5 h-5"></i>
+                <a href="tel:469-625-1127" class="flex items-center justify-center">
+                    <div style="width: 24px; height: 24px;">
+                        <animated-icons
+                            src="https://animatedicons.co/get-icon?name=Calling%20V3&style=minimalistic&token=66ff3706-138c-41fa-a993-dee03566e48c"
+                            trigger="loop"
+                            attributes='{"variationThumbColour":"#FF3B30","variationName":"Dark","variationNumber":4,"numberOfGroups":2,"strokeWidth":1.5,"background":"#000000","defaultColours":{"group-1":"#FF3B30","group-2":"#EAEAEA","background":"#000000"}}'
+                            height="24" width="24">
+                        </animated-icons>
+                    </div>
                 </a>
                 <a href="https://wikdwraps.com/pages/estimate-configurator" class="text-white hover:text-[#FF3B30] transition-colors">
                     <i data-lucide="file-text" class="w-5 h-5"></i>
@@ -1252,18 +1295,62 @@
         </div>
     </div>
 
-    <!-- Mobile Menu -->
-    <div id="mobile-menu" class="lg:hidden mt-[64px]">
+    <!-- Mobile Menu (Fixed Position + Accordion) -->
+    <div id="mobile-menu" class="lg:hidden">
         <div class="px-4 py-4 space-y-2 bg-black border-b border-[#333]">
-            <div class="space-y-1">
-                <div class="text-[10px] text-[#555] font-bold uppercase tracking-widest font-heading px-3 mb-1">Services</div>
-                <a href="https://wikdwraps.com/pages/paint-protection-film" class="block px-3 py-2 text-sm text-[#CCC] hover:text-white hover:bg-[#111]">Paint Protection</a>
-                <a href="https://wikdwraps.com/pages/ceramic-coatings" class="block px-3 py-2 text-sm text-[#CCC] hover:text-white hover:bg-[#111]">Ceramic Coatings</a>
-                <a href="https://wikdwraps.com/pages/vinyl-wraps" class="block px-3 py-2 text-sm text-[#CCC] hover:text-white hover:bg-[#111]">Vinyl Wraps</a>
-                <a href="https://wikdwraps.com/pages/window-tint" class="block px-3 py-2 text-sm text-[#CCC] hover:text-white hover:bg-[#111]">Window Tint</a>
-                <a href="https://wikdwraps.com/pages/detailing" class="block px-3 py-2 text-sm text-[#CCC] hover:text-white hover:bg-[#111]">Detailing</a>
+            
+            <!-- Services Accordion -->
+            <div class="border-b border-[#222]">
+                <button class="w-full flex justify-between items-center px-3 py-3 text-sm text-[#CCC] focus:outline-none mobile-accordion-trigger">
+                    <span class="font-bold font-heading">SERVICES</span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 transition-transform duration-300"></i>
+                </button>
+                <div class="mobile-submenu">
+                    <div class="pb-3 pl-2">
+                        <a href="https://wikdwraps.com/pages/our-services" class="block px-3 py-2 text-sm text-[#888] hover:text-white border-l border-[#333] hover:border-[#FF3B30]">View All Services</a>
+                        
+                        <div class="px-3 py-1 text-xs text-[#555] font-bold uppercase tracking-wider mt-2">Protect</div>
+                        <a href="https://wikdwraps.com/pages/paint-protection-film" class="block px-3 py-2 text-sm text-[#888] hover:text-white border-l border-[#333] hover:border-[#FF3B30]">Paint Protection Film</a>
+                        <a href="https://wikdwraps.com/pages/ceramic-coatings" class="block px-3 py-2 text-sm text-[#888] hover:text-white border-l border-[#333] hover:border-[#FF3B30]">Ceramic Coatings</a>
+                        <a href="https://wikdwraps.com/pages/window-tint" class="block px-3 py-2 text-sm text-[#888] hover:text-white border-l border-[#333] hover:border-[#FF3B30]">Window Tint</a>
+
+                        <div class="px-3 py-1 text-xs text-[#555] font-bold uppercase tracking-wider mt-2">Customize</div>
+                        <a href="https://wikdwraps.com/pages/vinyl-wraps" class="block px-3 py-2 text-sm text-[#888] hover:text-white border-l border-[#333] hover:border-[#FF3B30]">Vinyl Wraps</a>
+
+                        <div class="px-3 py-1 text-xs text-[#555] font-bold uppercase tracking-wider mt-2">Maintain</div>
+                        <a href="https://wikdwraps.com/pages/detailing" class="block px-3 py-2 text-sm text-[#888] hover:text-white border-l border-[#333] hover:border-[#FF3B30]">Detailing</a>
+                        <a href="https://wikdwraps.com/pages/maintenance-plans" class="block px-3 py-2 text-sm text-[#888] hover:text-white border-l border-[#333] hover:border-[#FF3B30]">Maintenance Plans</a>
+                        
+                         <div class="px-3 py-1 text-xs text-[#555] font-bold uppercase tracking-wider mt-2">Tools</div>
+                         <a href="https://wikdwraps.com/pages/estimate-configurator" class="block px-3 py-2 text-sm text-[#888] hover:text-white border-l border-[#333] hover:border-[#FF3B30]">Estimate Configurator</a>
+                    </div>
+                </div>
             </div>
-            <div class="pt-2">
+
+            <!-- Gallery Link -->
+            <a href="https://wikdwraps.com/pages/gallery" class="block px-3 py-3 text-sm text-[#CCC] border-b border-[#222] font-bold font-heading">GALLERY</a>
+
+            <!-- Company Accordion -->
+            <div class="border-b border-[#222]">
+                <button class="w-full flex justify-between items-center px-3 py-3 text-sm text-[#CCC] focus:outline-none mobile-accordion-trigger">
+                    <span class="font-bold font-heading">COMPANY</span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 transition-transform duration-300"></i>
+                </button>
+                <div class="mobile-submenu">
+                    <div class="pb-3 pl-2">
+                        <a href="https://wikdwraps.com/pages/about-us-1" class="block px-3 py-2 text-sm text-[#888] hover:text-white border-l border-[#333] hover:border-[#FF3B30]">About Us</a>
+                        <a href="https://wikdwraps.com/pages/contact" class="block px-3 py-2 text-sm text-[#888] hover:text-white border-l border-[#333] hover:border-[#FF3B30]">Contact</a>
+                        <a href="https://wikdwraps.com/pages/careers" class="block px-3 py-2 text-sm text-[#888] hover:text-white border-l border-[#333] hover:border-[#FF3B30]">Careers</a>
+                        <a href="https://wikdwraps.com/pages/dealers" class="block px-3 py-2 text-sm text-[#888] hover:text-white border-l border-[#333] hover:border-[#FF3B30]">Dealers</a>
+                        
+                        <div class="px-3 py-1 text-xs text-[#555] font-bold uppercase tracking-wider mt-2">Ecosystem</div>
+                        <a href="https://www.wikdmotorsports.com/" class="block px-3 py-2 text-sm text-[#888] hover:text-white border-l border-[#333] hover:border-[#FF3B30]">WIKD Motorsports</a>
+                        <a href="https://boltmotorsports.com/" class="block px-3 py-2 text-sm text-[#888] hover:text-white border-l border-[#333] hover:border-[#FF3B30]">Bolt Motorsports</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-4 pb-4">
                 <a href="https://wikdwraps.com/pages/estimate-configurator" class="block w-full text-center bg-white text-black font-bold uppercase tracking-wider py-3 text-sm" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 12px 100%, 0 80%);">Instant Quote</a>
             </div>
         </div>
@@ -1283,13 +1370,37 @@
                 if (isOpen) {
                     mobileMenu.classList.remove('open');
                     mobileMenuBtn.innerHTML = '<i data-lucide="menu" class="w-7 h-7"></i>';
+                    document.body.style.overflow = ''; // Restore scrolling
                 } else {
                     mobileMenu.classList.add('open');
                     mobileMenuBtn.innerHTML = '<i data-lucide="x" class="w-7 h-7"></i>';
+                    // document.body.style.overflow = 'hidden'; // Optional: Lock background scrolling
                 }
                 lucide.createIcons();
             });
         }
+
+        // Mobile Accordion Logic
+        const accordions = document.querySelectorAll('.mobile-accordion-trigger');
+        accordions.forEach(acc => {
+            acc.addEventListener('click', function() {
+                // Toggle active class on submenu
+                const panel = this.nextElementSibling;
+                const icon = this.querySelector('svg');
+                
+                if (panel.classList.contains('active')) {
+                    panel.classList.remove('active');
+                    icon.classList.remove('rotate-180-mobile');
+                } else {
+                    // Close other accordions (optional behavior)
+                    document.querySelectorAll('.mobile-submenu').forEach(p => p.classList.remove('active'));
+                    document.querySelectorAll('.mobile-accordion-trigger svg').forEach(i => i.classList.remove('rotate-180-mobile'));
+
+                    panel.classList.add('active');
+                    icon.classList.add('rotate-180-mobile');
+                }
+            });
+        });
 
         // QR Code Logic
         const phone = "469-625-1127";
@@ -1515,7 +1626,7 @@
                 <h1>Paint Protection Solutions From The Best Name In Custom Performance</h1>
                 
                 <div class="cta-buttons">
-                    <a href="#services-section" class="btn btn-primary">
+                    <a href="https://wikdwraps.com/pages/our-services" class="btn btn-primary">
                         <span>Explore Services</span>
                     </a>
                     <a href="https://wikdwraps.com/pages/estimate-configurator" class="btn btn-secondary">
