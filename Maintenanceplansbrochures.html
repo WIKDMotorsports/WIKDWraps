@@ -312,6 +312,8 @@
             display: inline-block; /* Shrink to wrap image */
             width: auto;
             max-width: 100%;
+            /* Moved negative margin here so video overlay moves with image */
+            margin-top: -10px;
         }
         
         .card-composite-image img { 
@@ -321,8 +323,6 @@
             object-fit: contain;
             position: relative;
             z-index: 1;
-            /* Negative margin to pull up against the invisible top padding */
-            margin-top: -10px;
         }
         
         /* Video overlay stretches to match the IMG container exactly */
