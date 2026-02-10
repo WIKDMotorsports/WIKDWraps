@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html class="js" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The WIKD Standard | Value Proposition</title>
+    
+    <!-- External Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+    <script src="https://animatedicons.co/scripts/embed-animated-icons.js"></script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --color-background: #0A0A0A;
+            --color-text: #EAEAEA;
+            --color-text-muted: #888888;
+            --color-primary: #FF3B30;
+            --color-surface: #141414;
+            --color-border: #2A2A2A;
+            --font-heading: 'Rajdhani', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            
+            /* Layout Constraint */
+            --max-layout-width: 750px;
+        }
+
+        /* --- BASE STYLES --- */
+        html { 
+            scroll-behavior: smooth; 
+            background-color: #000; /* Outer background */
+        }
+        
+        body {
+            background-color: var(--color-background) !important;
+            color: var(--color-text) !important;
+            font-family: var(--font-body) !important;
+            overflow-x: hidden;
+            position: relative;
+            margin: 0;
+            padding: 0;
+            max-width: var(--max-layout-width);
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            min-height: 100vh;
+        }
+        
+        /* --- NOISE TEXTURE OVERLAY --- */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9999; opacity: 0.08;
+            background-size: 100px 100px;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* --- TYPOGRAPHY --- */
+        .font-heading { font-family: var(--font-heading); }
+        .font-body { font-family: var(--font-body); }
+        
+        h1, h2, h3, .h1, .h2, .h3 {
+            font-family: var(--font-heading) !important;
+            font-weight: 700 !important;
+            line-height: 1.1 !important;
+            text-transform: uppercase !important;
+            color: white !important;
+        }
+        .h1 { font-size: clamp(2.5rem, 6vw, 4rem); }
+        .h2 { font-size: clamp(2rem, 5vw, 3rem); }
+        .h3 { font-size: clamp(1.5rem, 4vw, 2.25rem); }
+        
+        p, .p, .rte, .rte p { 
+            font-family: var(--font-body) !important; 
+            color: var(--color-text) !important; 
+            line-height: 1.6 !important;
+        }
+        .p-muted { font-family: var(--font-body); color: var(--color-text-muted) !important; line-height: 1.6;}
+
+        /* --- HERO --- */
+        .page-hero {
+            height: 55vh;
+            max-height: 1000px; 
+            width: 100%;
+            background-image: linear-gradient(to bottom, rgba(0,0,0,0.2), var(--color-background)), 
+                             url('https://wikdwraps.com/cdn/shop/files/wikd417.webp?v=1741981024&width=750');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+            display: flex;
+            align-items: center; 
+            padding-bottom: 0; 
+            margin-bottom: 0;
+        }
+        .page-hero-content {
+            width: 92%; max-width: 1200px; margin: 0 auto;
+            position: relative; z-index: 10;
+        }
+
+        /* --- MAIN CONTAINER --- */
+        main {
+            margin-top: -12rem; 
+            position: relative;
+            z-index: 20; 
+        }
+
+        /* --- CONTENT SECTIONS --- */
+        .content-section {
+            padding: 0 0 1rem 0;
+            position: relative; z-index: 5;
+        }
+        .mobile-scaled-container { width: 92%; max-width: 1200px; margin: 0 auto; }
+
+        /* Features Grid */
+        .features-row {
+            display: grid; grid-template-columns: 1fr; gap: 1rem; align-items: stretch; margin-bottom: 1rem;
+        }
+        @media (min-width: 992px) {
+            .features-row { grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+        }
+
+        /* Unified Card Style - CENTERED */
+        .wikd-card {
+            border: 1px solid var(--color-border);
+            padding: 1.5rem;
+            height: 100%;
+            background: var(--color-surface);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+            transition: border-color 0.3s ease, transform 0.3s ease;
+            display: flex; flex-direction: column; 
+            align-items: center; /* CENTERED */
+            text-align: center; /* CENTERED */
+            justify-content: flex-start;
+        }
+        .wikd-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-5px);
+        }
+
+        /* Value Prop Grid */
+        .value-grid {
+            display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 0; 
+        }
+
+        /* Value Card Structure */
+        .value-card {
+            border: 1px solid var(--color-border);
+            background: var(--color-surface);
+            padding: 0;
+            display: flex; 
+            flex-direction: column; 
+            transition: all 0.3s ease;
+            position: relative; z-index: 1;
+            overflow: hidden;
+            min-height: 220px; 
+        }
+
+        @media (min-width: 768px) {
+            .value-card {
+                flex-direction: row; 
+                align-items: stretch;
+            }
+        }
+
+        /* --- HEADER (TITLE) --- */
+        .prop-header {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .prop-name {
+            font-family: var(--font-heading); 
+            font-size: 1.75rem; 
+            font-weight: 800;
+            text-transform: uppercase;
+            color: white !important; /* FORCED WHITE */
+            text-align: left;
+            letter-spacing: 0.05em;
+            line-height: 1;
+            margin-bottom: 0.25rem;
+            background: transparent !important; /* FORCED NO BACKGROUND */
+            padding: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            -webkit-background-clip: unset !important;
+            -webkit-text-fill-color: white !important;
+        }
+
+        /* --- IMAGE COLUMN (LEFT) --- */
+        .value-card-image-container {
+            width: 100%;
+            height: 250px; 
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: transparent; 
+            border: none; 
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+        }
+        
+        /* Mobile Overlay (Bottom up) */
+        .value-card-image-container::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; width: 100%; height: 60%;
+            background: linear-gradient(to top, var(--color-surface) 0%, transparent 100%);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        @media (min-width: 768px) {
+            .value-card-image-container {
+                width: 45%; 
+                height: auto; 
+                min-height: 100%;
+            }
+            /* Desktop Overlay (Right to Left - Blends image into content) */
+            .value-card-image-container::after {
+                top: 0; bottom: 0; right: 0; left: auto; width: 50%; height: 100%;
+                /* Solid surface color at the right edge (0% of gradient direction to left), transparent at left */
+                background: linear-gradient(to left, var(--color-surface) 0%, transparent 100%);
+            }
+        }
+        
+        .value-card-image-container > img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0; left: 0;
+            opacity: 1; /* RESTORED TO FULL OPACITY */
+            transition: opacity 0.3s ease;
+        }
+        .value-card:hover .value-card-image-container > img {
+            transform: scale(1.05);
+            transition: transform 6s ease;
+        }
+
+        /* --- CONTENT COLUMN (RIGHT) --- */
+        .value-card-content {
+            width: 100%;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; 
+            position: relative;
+            z-index: 10; 
+        }
+        @media (min-width: 768px) {
+            .value-card-content {
+                width: 55%;
+                padding: 3rem 2rem 2rem 0.5rem; 
+                align-items: flex-start; 
+            }
+        }
+        
+        /* Elite Card - INVERTED GRADIENTS */
+        .value-card.elite-gradient {
+            border: none !important; position: relative;
+            background: radial-gradient(circle at 30% 50%, #1a1a1a 0%, #0a0a0a 100%);
+        }
+        
+        .value-card.elite-gradient::before {
+            content: ""; position: absolute; inset: 0; padding: 1px;
+            /* Inverted Gradient Direction for Border (Positive 90deg) */
+            background: linear-gradient(90deg, #8b0000, #d80000, #ff2a00, #d80000, #8b0000);
+            background-size: 300%;
+            animation: lavaFlow 4s ease-in-out infinite;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            pointer-events: none; z-index: 20;
+        }
+        
+        @keyframes lavaFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .value-card.popular {
+            border: 1px solid var(--color-primary);
+            /* Inverted Background Direction */
+            background: linear-gradient(270deg, rgba(255, 59, 48, 0.05) 0%, var(--color-surface) 100%);
+        }
+        
+        .value-card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5); }
+
+        .prop-features { list-style: none; padding: 0; margin: 0; text-align: left; margin-top: 1rem; }
+        .prop-feature-item { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 0.5rem; font-size: 0.95rem; color: var(--color-text); }
+        .check-icon { color: var(--color-primary); flex-shrink: 0; margin-top: 0.2rem; }
+
+    </style>
+</head>
+<body class="gradient">
+
+    <!-- Page Hero -->
+    <header class="page-hero">
+        <div class="page-hero-content">
+            <span class="text-red-600 font-bold tracking-widest uppercase text-sm mb-2 block font-heading">The WIKD Ecosystem</span>
+            <h1 class="h1 mb-4">Engineering<br>Meets Aesthetics</h1>
+            <p class="p-muted max-w-2xl">
+                We aren't just a wrap shop. Born from high-performance motorsports, we bring race-team precision to vehicle protection. Experience the only facility where 1000HP engineering meets concours-level detailing.
+            </p>
+        </div>
+    </header>
+
+    <main>
+        <!-- Pillars Section -->
+        <section class="content-section">
+            <div class="mobile-scaled-container">
+                <!-- 3-Column Benefits Row -->
+                <div class="features-row">
+                    <!-- ICON 1: Motorsports - Trophy (Pedigree) -->
+                    <div class="wikd-card">
+                        <div class="mb-4 flex justify-center">
+                            <animated-icons
+                                src="https://animatedicons.co/get-icon?name=Trophy&style=minimalistic&token=153ce80d-3f45-4dc6-b13a-40ea011dbbfe"
+                                trigger="loop"
+                                attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#EAEAEA","group-2":"#FF3B30","background":"#141414"}}'
+                                height="80"
+                                width="80"
+                            ></animated-icons>
+                        </div>
+                        <h3 class="text-xl font-heading text-white leading-tight mb-2">Motorsports<br>Pedigree</h3>
+                        <p class="text-sm p-muted">
+                            Founded by the team behind WIKD & BOLT Motorsports. We understand disassembly, sensors, and aerodynamics better than anyone else.
+                        </p>
+                    </div>
+
+                    <!-- ICON 2: Materials - Chemist (Materials) -->
+                    <div class="wikd-card">
+                        <div class="mb-4 flex justify-center">
+                            <animated-icons
+                                src="https://animatedicons.co/get-icon?name=Chemist&style=minimalistic&token=153ce80d-3f45-4dc6-b13a-40ea011dbbfe"
+                                trigger="loop"
+                                attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#EAEAEA","group-2":"#FF3B30","background":"#141414"}}'
+                                height="80"
+                                width="80"
+                            ></animated-icons>
+                        </div>
+                        <h3 class="text-xl font-heading text-white leading-tight mb-2">Uncompromised<br>Materials</h3>
+                        <p class="text-sm p-muted">
+                            Strategic partnerships with STEK, CQUARTZ, and others ensure we don't just apply product; we engineer protection solutions.
+                        </p>
+                    </div>
+
+                    <!-- ICON 3: Facility - Headquarter (Facility) -->
+                    <div class="wikd-card">
+                        <div class="mb-4 flex justify-center">
+                            <animated-icons
+                                src="https://animatedicons.co/get-icon?name=Headquarter&style=minimalistic&token=e6c4684d-6600-4f4c-a642-244d2bf9b606"
+                                trigger="loop"
+                                attributes='{"variationThumbColour":"#FF3B30","variationName":"Two Tone","variationNumber":2,"numberOfGroups":2,"backgroundIsGroup":false,"strokeWidth":1,"defaultColours":{"group-1":"#EAEAEA","group-2":"#FF3B30","background":"#141414"}}'
+                                height="80"
+                                width="80"
+                            ></animated-icons>
+                        </div>
+                        <h3 class="text-xl font-heading text-white leading-tight mb-2">Secure<br>Facility</h3>
+                        <p class="text-sm p-muted">
+                            A renovated 15,000 SF historic warehouse engineered for dust control, lighting precision, and absolute vehicle security.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Value Propositions (Repurposed Pricing Cards) -->
+        <section class="content-section" id="value-props">
+            <div class="mobile-scaled-container">
+                
+                <div class="value-grid">
+                    <!-- Prop 1: The Standard -->
+                    <div class="value-card popular">
+                        
+                        <!-- Header -->
+                        <div class="prop-header">
+                            <h3 class="prop-name">The Standard</h3>
+                        </div>
+
+                        <!-- Left Side: Image -->
+                        <div class="value-card-image-container">
+                            <img src="https://wikdwraps.com/cdn/shop/files/Satin_PPF_Wrapped_Black_and_Green_Lamborghini_Huracan_STO_Freshly_Detailed.jpg?v=1743435243" alt="Mechanic work">
+                        </div>
+                        
+                        <!-- Right Side: Content -->
+                        <div class="value-card-content">
+                            <p class="text-lg text-white font-bold mb-2 font-heading">We don't just clean cars. We curate them.</p>
+                            <p class="p-muted text-sm mb-4">Most shops focus on volume. We focus on the intricate details that define a build. From paint correction to the final ceramic cure, our standard is perfection.</p>
+                            <ul class="prop-features">
+                                <li class="prop-feature-item">
+                                    <svg class="check-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                    <span>Mechanical disassembly expertise</span>
+                                </li>
+                                <li class="prop-feature-item">
+                                    <svg class="check-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                    <span>Certified installation technicians</span>
+                                </li>
+                                <li class="prop-feature-item">
+                                    <svg class="check-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                    <span>In-house fabrication capabilities</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Prop 2: The Ecosystem -->
+                    <div class="value-card elite-gradient">
+                        
+                        <!-- Header -->
+                        <div class="prop-header">
+                            <h3 class="prop-name">The Ecosystem</h3>
+                        </div>
+                        
+                        <!-- Left Side: Image -->
+                        <div class="value-card-image-container">
+                             <img src="https://wikdwraps.com/cdn/shop/files/Satin_Black_and_Green_Lamborghini_Huracan_STO.jpg?v=1744144821" alt="Lamborghini STO">
+                        </div>
+
+                        <!-- Right Side: Content -->
+                        <div class="value-card-content">
+                            <p class="text-lg text-white font-bold mb-2 font-heading">Power. Performance. Protection.</p>
+                            <p class="p-muted text-sm mb-4">Why split your build between three shops? Through WIKD & BOLT Motorsports, we handle the engine, the suspension, and the aesthetic. One partner for the life of your vehicle.</p>
+                            <ul class="prop-features">
+                                <li class="prop-feature-item">
+                                    <svg class="check-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                    <span>Performance tuning & styling under one roof</span>
+                                </li>
+                                <li class="prop-feature-item">
+                                    <svg class="check-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                    <span>Seamless project management</span>
+                                </li>
+                                <li class="prop-feature-item">
+                                    <svg class="check-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                    <span>1200+ HP build experience</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 text-center">
+                    <p class="text-xs text-[var(--color-text-muted)] italic">
+                        Experience the difference. Visit us in downtown McKinney.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+
+            // IFrame Link Handling
+             var links = document.querySelectorAll('a');
+            links.forEach(function(link) {
+                var href = link.getAttribute('href');
+                if (href && href.startsWith('#')) return;
+                link.setAttribute('target', '_top');
+            });
+        });
+    </script>
+</body>
+</html>
