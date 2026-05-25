@@ -12,6 +12,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+    <script src="https://animatedicons.co/scripts/embed-animated-icons.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
 
     <style>
         :root {
@@ -120,8 +123,16 @@
                     <a href="https://wikdwraps.com/pages/estimate-configurator" class="btn btn-primary w-full text-center py-3">
                         <span>Build My Protection Plan</span>
                     </a>
-                    <a href="tel:844-232-9453" class="btn w-full text-center py-3">
-                        <span>Call Now</span>
+                    <a href="tel:844-232-9453" id="call-now-btn" class="btn w-full text-center py-3 flex items-center justify-center gap-2">
+                        <div style="width: 24px; height: 24px; pointer-events: none;">
+                            <animated-icons
+                                src="https://animatedicons.co/get-icon?name=Calling%20V3&style=minimalistic&token=66ff3706-138c-41fa-a993-dee03566e48c"
+                                trigger="loop"
+                                attributes='{"variationThumbColour":"#FF3B30","variationName":"Dark","variationNumber":4,"numberOfGroups":2,"strokeWidth":1.5,"background":"#000000","defaultColours":{"group-1":"#FF3B30","group-2":"#EAEAEA","background":"#000000"}}'
+                                height="24" width="24">
+                            </animated-icons>
+                        </div>
+                        <span id="call-now-text">Call Now</span>
                     </a>
                     <a href="https://wikdwraps.com/" class="btn w-full text-center py-3">
                         <span>Explore Paint Protection</span>
@@ -134,5 +145,106 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const pbwHours = {
+                'Sun': { open: null, close: null, closedText: 'Closed' },
+                'Mon': { open: 8.5, close: 17 },
+                'Tue': { open: 8.5, close: 17 },
+                'Wed': { open: 8.5, close: 17 },
+                'Thu': { open: 8.5, close: 17 },
+                'Fri': { open: 8.5, close: 17 },
+                'Sat': { open: null, close: null, closedText: 'Closed' }
+            };
+            const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+            function formatTime(hourFloat) {
+                if (hourFloat === null) return 'Closed';
+                const hours = Math.floor(hourFloat);
+                const minutes = Math.round((hourFloat - hours) * 60);
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                const displayHours = hours % 12 || 12;
+                const displayMinutes = minutes < 10 ? '0' + minutes : minutes;
+                return `${displayHours}:${displayMinutes} ${ampm}`;
+            }
+
+            function getBusinessStatus() {
+                const now = new Date();
+                const BUSINESS_TIMEZONE = 'America/Chicago';
+
+                const formatter = new Intl.DateTimeFormat('en-US', {
+                    timeZone: BUSINESS_TIMEZONE,
+                    weekday: 'short',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    hour12: false
+                });
+
+                const parts = formatter.formatToParts(now);
+                const partMap = {};
+                parts.forEach(p => partMap[p.type] = p.value);
+
+                const dayStr = partMap['weekday'];
+                let dayIndex = DAYS.indexOf(dayStr);
+
+                if (dayIndex === -1) {
+                    dayIndex = now.getDay();
+                }
+
+                const hour = parseInt(partMap['hour'], 10);
+                const minute = parseInt(partMap['minute'], 10);
+
+                const currentDay = DAYS[dayIndex];
+                const currentHourFloat = hour + minute / 60;
+
+                const todayHours = pbwHours[currentDay];
+                const isOpen = todayHours.open !== null &&
+                               currentHourFloat >= todayHours.open &&
+                               currentHourFloat < todayHours.close;
+
+                if (isOpen) {
+                    return { isOpen: true, statusText: 'OPEN' };
+                }
+
+                for (let i = 0; i < 7; i++) {
+                    const checkDayIndex = (dayIndex + i) % 7;
+                    const checkDay = DAYS[checkDayIndex];
+                    const dayHoursData = pbwHours[checkDay];
+
+                    if (dayHoursData.open !== null) {
+                        if (i === 0) {
+                            if (currentHourFloat < dayHoursData.open) {
+                                return { isOpen: false, nextOpenTime: formatTime(dayHoursData.open), nextOpenDay: 'TODAY' };
+                            }
+                        } else {
+                            return { isOpen: false, nextOpenTime: formatTime(dayHoursData.open), nextOpenDay: checkDay.toUpperCase() };
+                        }
+                    }
+                }
+
+                return { isOpen: false, statusText: 'CLOSED FOR WEEK' };
+            }
+
+            function updateCallButton() {
+                const status = getBusinessStatus();
+                const btnText = document.getElementById('call-now-text');
+                if (btnText) {
+                    if (status.isOpen) {
+                        btnText.textContent = 'CALL NOW';
+                    } else {
+                        if (status.nextOpenDay) {
+                            btnText.textContent = `OPENS ${status.nextOpenDay} at ${status.nextOpenTime}`;
+                        } else {
+                            btnText.textContent = 'CALL NOW';
+                        }
+                    }
+                }
+            }
+
+            updateCallButton();
+            setInterval(updateCallButton, 60000);
+        });
+    </script>
 </body>
 </html>
