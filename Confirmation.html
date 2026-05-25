@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html class="js" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#000000">
+    
+    <title>WIKDWRAPS - Exclusive Offer</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --color-background: #000000;
+            --color-text: #EAEAEA;
+            --color-primary: #FF3B30; 
+            --color-border: #2A2A2A;
+            --font-heading: 'Rajdhani', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --viper-base: url('https://cdn.shopify.com/s/files/1/0671/4635/0805/files/Viperbase.png?v=1764628922');
+        }
+
+        html, body { 
+            background-color: var(--color-background) !important; 
+            color: var(--color-text) !important; 
+            font-family: var(--font-body) !important; 
+            margin: 0; padding: 0; height: 100%; width: 100%; 
+        }
+
+        body::before {
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 1; opacity: 0.07; background-size: 100px 100px;
+            filter: contrast(150%) brightness(500%) grayscale(100%);
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+        
+        .font-heading { font-family: var(--font-heading); }
+        h1, .h1 { font-family: var(--font-heading) !important; font-weight: 700 !important; line-height: 1.1 !important; text-transform: uppercase !important; color: white !important; margin: 0; }
+        .h1 { font-size: clamp(2rem, 6vw, 3.5rem); }
+        
+        .btn { display: inline-block; padding: 14px 32px; font-family: var(--font-heading) !important; font-size: 18px; font-weight: 600; text-transform: uppercase; color: var(--color-text) !important; background-color: transparent; border: 2px solid var(--color-border); position: relative; overflow: hidden; transition: color 0.4s ease-in-out, border-color 0.4s ease-in-out; clip-path: polygon(0 0, 100% 0, 100% 100%, 10px 100%, 0 85%); text-decoration: none; cursor: pointer; }
+        .btn span { position: relative; z-index: 2; }
+        .btn::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; transform: translateX(-101%); transition: transform 0.5s cubic-bezier(0.7, 0, 0.3, 1); }
+        .btn:hover { color: white !important; border-color: var(--color-primary); }
+        .btn:hover::before { transform: translateX(0); }
+        .btn.btn-primary { border-color: var(--color-primary); }
+        .btn.btn-primary::before { background-color: var(--color-primary); }
+
+        #main-container { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            display: flex; justify-content: center; align-items: center; 
+            padding: 1rem; overflow-y: auto; z-index: 10;
+        }
+
+        .card-wrapper { 
+            position: relative; width: 100%; max-width: 480px; aspect-ratio: 2 / 3; 
+            min-height: 600px; margin: auto;
+        }
+
+        .card-shape-layer { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(5, 5, 5, 0.98); 
+            clip-path: polygon(0 0, 100% 0, 100% 95%, 92% 100%, 0 100%); 
+            z-index: 1; box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 1); 
+        }
+        
+        .card-shape-layer::before { 
+            content: ""; position: absolute; inset: 0; padding: 2px; 
+            background: linear-gradient(90deg, #8b0000, #d80000, #ff2a00, #d80000, #8b0000); 
+            background-size: 300%; animation: lavaFlow 4s ease-in-out infinite; 
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); 
+            -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; 
+        }
+        @keyframes lavaFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        .card-content-layer { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            z-index: 10; display: flex; flex-direction: column; align-items: center; 
+            justify-content: center; padding: 3rem 2.5rem; gap: 2rem;
+        }
+        
+        .viper-layer-base { width: 100%; height: auto; object-fit: contain; z-index: 10; }
+        .viper-layer-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 20; pointer-events: none; mix-blend-mode: plus-lighter; -webkit-mask-image: var(--viper-base); mask-image: var(--viper-base); -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; }
+        video::-webkit-media-controls { display: none !important; }
+    </style>
+</head>
+<body>
+    <div id="main-container">
+        <div class="card-wrapper">
+            <div class="card-shape-layer"></div>
+            <div class="card-content-layer">
+                
+                <!-- EXACT 25% VIPER / 75% TITLE SPLIT -->
+                <div class="flex items-center w-full">
+                    <div class="w-1/4 pr-3">
+                        <div class="relative w-full aspect-square flex items-center justify-center">
+                            <img src="https://cdn.shopify.com/s/files/1/0671/4635/0805/files/Viperbase.png?v=1764628922" class="viper-layer-base" alt="Viper">
+                            <video src="https://cdn.shopify.com/videos/c/o/v/6ebb6044ab1543899ca1b33c599e5445.mp4" autoplay loop muted playsinline webkit-playsinline disablePictureInPicture class="viper-layer-overlay"></video>
+                        </div>
+                    </div>
+                    <div class="w-3/4 pl-1 text-left">
+                        <h1 class="h1">
+                            DISCOUNT<br>
+                            <span class="text-[var(--color-primary)]">CONFIRMED</span>
+                        </h1>
+                    </div>
+                </div>
+
+                <!-- TEXT CONTENT -->
+                <p class="text-gray-300 text-sm md:text-base leading-relaxed w-full text-center px-2">
+                    Your exclusive 10% off show offer for PPF and Ceramic Coating is active. Choose your next step below to apply your discount to a service.
+                </p>
+
+                <!-- LINKS -->
+                <div class="flex flex-col gap-4 w-full">
+                    <a href="https://wikdwraps.com/pages/our-services" class="btn btn-primary w-full text-center py-3">
+                        <span>Explore Our Services</span>
+                    </a>
+                    <a href="https://wikdwraps.com/pages/estimate-configurator" class="btn w-full text-center py-3">
+                        <span>Apply to Estimate</span>
+                    </a>
+                    <a href="https://wikdwraps.com/" class="btn w-full text-center py-3" style="border-color: #1a1a1a;">
+                        <span class="text-gray-500">Visit Homepage</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</body>
+</html>
