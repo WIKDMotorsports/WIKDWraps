@@ -1836,7 +1836,11 @@
         <div class="wikd-footer-grid">
             <!-- Brand Column -->
             <div class="wikd-footer-brand">
-                <img src="https://wikdwraps.com/cdn/shop/files/output-onlinepngtools_3.png?v=1737407428&width=300" alt="WIKD Wraps" class="wikd-footer-logo">
+                <a href="https://wikdwraps.com/" class="flex items-center" style="text-decoration: none;">
+                    <span class="logo-text text-2xl tracking-tight text-white hover:text-[#FF3B30] transition-colors" style="font-family: var(--font-heading, 'Rajdhani', sans-serif); font-weight: 800; text-transform: uppercase; line-height: 1; font-size: 1.5rem; letter-spacing: -0.025em; color: white;">
+                        WIKD<span class="font-semibold text-[#666]" style="font-weight: 600; color: #666;">WRAPS</span>
+                    </span>
+                </a>
                 <p class="wikd-footer-tagline">Uncompromised Protection. WIKD Craftsmanship.</p>
                 <div class="wikd-footer-social">
 
@@ -1880,9 +1884,7 @@
                 © 2025 <a href="/">WIKD Wraps</a>. All rights reserved.
             </div>
             <div class="wikd-footer-legal">
-                <a href="https://wikdwraps.com/pages/privacy-policy">Privacy Policy</a>
-                <a href="https://wikdwraps.com/pages/refund-policy">Refund Policy</a>
-                <a href="https://wikdwraps.com/pages/terms-of-service">Terms of Service</a>
+                <a href="https://wikdwraps.com/pages/policies-legal">Legal &amp; Policies</a>
             </div>
         </div>
     </div>
