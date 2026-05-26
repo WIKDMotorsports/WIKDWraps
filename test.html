@@ -192,7 +192,7 @@
                             </div>
                             
                             <!-- This is the actual link that triggers the SMS -->
-                            <a id="final-open-sms-btn" href="#" class="btn btn-primary w-full text-center py-4"><span>I GOT IT - OPEN SMS</span></a>
+                            <button id="final-open-sms-btn" class="btn btn-primary w-full text-center py-4"><span>I GOT IT - OPEN SMS</span></button>
                         </div>
                         
                     </div>
@@ -266,8 +266,10 @@
             var smsBody = displayCode; 
             
             // 5. Build Referral URL
-            var baseUrl = window.location.origin + window.location.pathname.replace(/\/ref:[A-Z0-9]+/i, '');
-            var referralUrl = baseUrl.replace(/\/$/, '') + '/ref:' + newToken;
+            // Rebuild base URL dynamically from the Top Level URL
+            var urlBase = topUrl.split('?')[0].split('#')[0];
+            var cleanBaseUrl = urlBase.replace(/\/ref:[A-Z0-9]+/i, '').replace(/\/$/, '');
+            var referralUrl = cleanBaseUrl + '/ref:' + newToken;
 
             // Expose pipeline data
             window._WIKD_REFERRAL = { 
@@ -314,12 +316,22 @@
             // ── EXACT SMS URI STANDARD (WITH OS FIX) ───────────────────────────────
             function buildSMSDeepLink(smsBody) {
                 var phoneNumber = '4692498400';
-                
-                if (/Android/i.test(navigator.userAgent)) {
-                    ui.finalOpenSmsBtn.href = `sms:${phoneNumber};body=${encodeURIComponent(smsBody)}`;
-                } else {
-                    ui.finalOpenSmsBtn.href = `sms:${phoneNumber}?body=${encodeURIComponent(smsBody)}`;
+                var encodedBody = encodeURIComponent(smsBody);
+                var smsUrl = '';
+
+                // iPhone / iOS
+                if (/iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) {
+                    smsUrl = 'sms:' + phoneNumber + '?&body=' + encodedBody;
                 }
+                // Android / Fallback
+                else {
+                    smsUrl = 'sms:' + phoneNumber + '?body=' + encodedBody;
+                }
+
+                ui.finalOpenSmsBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.location.href = smsUrl;
+                });
             }
 
             // ── STEP 1 TO STEP 2 UI TRANSITION ─────────────────────────────────────
