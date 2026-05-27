@@ -21,7 +21,7 @@
             --color-background: #000000;
             --color-text: #EAEAEA;
             --color-text-muted: #888888;
-            --color-primary: #00C853;
+            --color-primary: #FF3B30;
             --color-surface: #0A0A0A;
             --color-border: #2A2A2A;
             --font-heading: 'Rajdhani', sans-serif;
@@ -192,7 +192,7 @@
                             </div>
                             
                             <!-- This is the actual link that triggers the SMS -->
-                            <button id="final-open-sms-btn" class="btn btn-primary w-full text-center py-4" style="position: relative; z-index: 100; cursor: pointer; pointer-events: auto; display: block; background-color: #00C853 !important; border-color: #00C853 !important; color: white !important;" ontouchstart=""><span>I GOT IT - OPEN SMS</span></button>
+                            <button id="final-open-sms-btn" class="btn btn-primary w-full text-center py-4"><span>I GOT IT - OPEN SMS</span></button>
                         </div>
                         
                     </div>
@@ -338,8 +338,6 @@
                         var tempAnchor = document.createElement('a');
                         tempAnchor.style.display = 'none';
                         tempAnchor.href = smsUrl;
-                        // iOS Safari sometimes requires target="_blank" or no target to properly trigger the prompt outside an iframe.
-                        // Let's omit target="_top" since we are not in an iframe anymore, avoiding security contexts.
                         document.body.appendChild(tempAnchor);
                         tempAnchor.click();
                         setTimeout(function() {
