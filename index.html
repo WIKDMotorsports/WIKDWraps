@@ -1597,6 +1597,20 @@
         }
 
         @media (max-width: 768px) {
+            .hero-content {
+                height: 100%;
+                justify-content: flex-start;
+                padding-top: 15vh; /* Push title up but leave some space from top */
+                padding-bottom: 5vh;
+            }
+            .hero-text-wrapper {
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+            }
+            .cta-buttons {
+                margin-top: auto; /* Push buttons to the bottom */
+            }
             .mobile-text {
                 display: inline;
             }
@@ -1640,7 +1654,10 @@
     <section class="hero">
         <!-- New Background Container for Time Reactive Module -->
         <div id="hero-bg-container" class="hero-bg-wrapper">
-             <img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Freshly_Detailed_Ryft_McLaren_720s_on_HRE_Wheels_with_WIKD_Exhaust.jpg?v=1744062350" class="fade-image active" alt="Hero Background">
+             <picture>
+                 <source media="(max-width: 768px)" srcset="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_7141.jpg?v=1779221958">
+                 <img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Freshly_Detailed_Ryft_McLaren_720s_on_HRE_Wheels_with_WIKD_Exhaust.jpg?v=1744062350" class="fade-image active" alt="Hero Background">
+             </picture>
         </div>
         
         <!-- Overlay to ensure text readability -->
