@@ -1028,7 +1028,6 @@
                 const contentBlock = generateAllGalleryHTML(projectsArray, shopLifeList);
                 galleryContainer.appendChild(contentBlock);
                 contentBlock.querySelectorAll('.project-section').forEach(section => initManualCarousel(section));
-                startLazyLoading(contentBlock);
                 lucide.createIcons();
             } else {
                 galleryContainer.innerHTML = '<div style="color:#666; text-align:center; padding: 40px; font-family:sans-serif;">GALLERY EMPTY<br><span style="font-size:12px">Use the Tagging Tool to add images to the Cloud.</span></div>';
@@ -1078,7 +1077,7 @@
 
                   return `<div class="gallery-item" onclick="openLightbox(${globalIndex})">
                                   <div class="skeleton-loader"></div>
-                                  <img data-src="${imgUrl}" class="gallery-img">
+                                  <img src="${imgUrl}" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded'); const l = this.previousElementSibling; if(l) l.remove(); window.dispatchEvent(new Event('resize'));">
                               </div>`;
               }).join('');
 
@@ -1104,7 +1103,7 @@
                  const globalIndex = flatGalleryImages.length;
                  // Pass "Shop Life" as title for Lightbox context
                  flatGalleryImages.push({ src: item.src, title: title, subtitle: subtitle, hotspots: item.hotspots });
-                 return `<div class="gallery-item" onclick="openLightbox(${globalIndex})"><div class="skeleton-loader"></div><img data-src="${item.src}" class="gallery-img"></div>`;
+                 return `<div class="gallery-item" onclick="openLightbox(${globalIndex})"><div class="skeleton-loader"></div><img src="${item.src}" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded'); const l = this.previousElementSibling; if(l) l.remove(); window.dispatchEvent(new Event('resize'));"></div>`;
               }).join('');
 
               finalProjectHTML.push(`
@@ -1314,19 +1313,6 @@
           setTimeout(updateTrack, 100);
       }
 
-      function startLazyLoading(rootElement = document) {
-          const images = rootElement.querySelectorAll('.gallery-img');
-          const imageObserver = new IntersectionObserver((entries, observer) => {
-             entries.forEach(entry => {
-                  if (entry.isIntersecting) {
-                     const img = entry.target; const src = img.getAttribute('data-src');
-                                          if (src) { img.src = src; img.onload = () => { img.classList.add('loaded'); const l = img.previousElementSibling; if (l) l.remove(); window.dispatchEvent(new Event('resize')); }; img.removeAttribute('data-src'); }
-                     observer.unobserve(img);
-                  }
-             });
-          }, { rootMargin: '0px 0px 300px 0px' });
-          images.forEach(img => imageObserver.observe(img));
-      }
 
       initGallery();
     </script>
