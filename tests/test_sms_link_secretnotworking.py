@@ -22,9 +22,9 @@ def run(playwright):
 
     # Verify the button exists and is a button tag
     element = page.locator('#final-open-sms-btn')
-    assert element.evaluate("e => e.tagName") == "BUTTON"
+    assert element.evaluate("e => e.tagName") == "A"
 
-    print("secretnotworking.html SMS button is correctly rendered as a BUTTON tag and is clickable.")
+    print("secretnotworking.html SMS button is correctly rendered as a A tag and is clickable.")
 
     browser.close()
 

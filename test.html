@@ -192,7 +192,7 @@
                             </div>
                             
                             <!-- This is the actual link that triggers the SMS -->
-                            <button id="final-open-sms-btn" class="btn btn-primary w-full text-center py-4"><span>I GOT IT - OPEN SMS</span></button>
+                            <a id="final-open-sms-btn" href="#" target="_top" class="btn btn-primary w-full text-center py-4" style="position: relative; z-index: 100; cursor: pointer; pointer-events: auto; display: block;" ontouchstart=""><span>I GOT IT - OPEN SMS</span></a>
                         </div>
                         
                     </div>
@@ -328,9 +328,21 @@
                     smsUrl = 'sms:' + phoneNumber + '?body=' + encodedBody;
                 }
 
+                // Use native anchor href instead of click listener for best iOS cross-origin iframe support
+                ui.finalOpenSmsBtn.href = smsUrl;
+
+                // For Shopify environments that intercept anchor clicks, we still add a fallback listener
                 ui.finalOpenSmsBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    window.location.href = smsUrl;
+                    // Do NOT e.preventDefault() so the native href triggers first
+                    setTimeout(function() {
+                        try {
+                            if (window.top !== window.self) {
+                                window.top.location.href = smsUrl;
+                            }
+                        } catch(err) {
+                            window.location.assign(smsUrl);
+                        }
+                    }, 100);
                 });
             }
 
