@@ -21,7 +21,7 @@
             --color-background: #000000;
             --color-text: #EAEAEA;
             --color-text-muted: #888888;
-            --color-primary: #FF3B30; 
+            --color-primary: #00C853;
             --color-surface: #0A0A0A;
             --color-border: #2A2A2A;
             --font-heading: 'Rajdhani', sans-serif;
@@ -192,7 +192,7 @@
                             </div>
                             
                             <!-- This is the actual link that triggers the SMS -->
-                            <a id="final-open-sms-btn" href="#" target="_top" class="btn btn-primary w-full text-center py-4" style="position: relative; z-index: 100; cursor: pointer; pointer-events: auto; display: block;" ontouchstart=""><span>I GOT IT - OPEN SMS</span></a>
+                            <button id="final-open-sms-btn" class="btn btn-primary w-full text-center py-4" style="position: relative; z-index: 100; cursor: pointer; pointer-events: auto; display: block; background-color: #00C853 !important; border-color: #00C853 !important; color: white !important;" ontouchstart=""><span>I GOT IT - OPEN SMS</span></button>
                         </div>
                         
                     </div>
@@ -328,21 +328,26 @@
                     smsUrl = 'sms:' + phoneNumber + '?body=' + encodedBody;
                 }
 
-                // Use native anchor href instead of click listener for best iOS cross-origin iframe support
-                ui.finalOpenSmsBtn.href = smsUrl;
-
-                // For Shopify environments that intercept anchor clicks, we still add a fallback listener
                 ui.finalOpenSmsBtn.addEventListener('click', function(e) {
-                    // Do NOT e.preventDefault() so the native href triggers first
-                    setTimeout(function() {
-                        try {
-                            if (window.top !== window.self) {
-                                window.top.location.href = smsUrl;
-                            }
-                        } catch(err) {
-                            window.location.assign(smsUrl);
-                        }
-                    }, 100);
+                    e.preventDefault();
+
+                    // Since it's directly in Shopify Liquid (not iframed), but might be intercepted by Shopify's theme scripts,
+                    // we create a hidden, temporary anchor tag outside the normal flow and click it.
+                    // This bypasses both Shopify global link interceptors and iOS Safari restrictions on window.location assignment.
+                    try {
+                        var tempAnchor = document.createElement('a');
+                        tempAnchor.style.display = 'none';
+                        tempAnchor.href = smsUrl;
+                        // iOS Safari sometimes requires target="_blank" or no target to properly trigger the prompt outside an iframe.
+                        // Let's omit target="_top" since we are not in an iframe anymore, avoiding security contexts.
+                        document.body.appendChild(tempAnchor);
+                        tempAnchor.click();
+                        setTimeout(function() {
+                            document.body.removeChild(tempAnchor);
+                        }, 100);
+                    } catch(err) {
+                        window.location.assign(smsUrl);
+                    }
                 });
             }
 
