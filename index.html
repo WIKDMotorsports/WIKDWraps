@@ -605,7 +605,7 @@
         display: grid;
         grid-template-columns: 2fr 1fr 1fr; /* Balanced 3-column layout */
         gap: 3rem;
-        margin-bottom: 2rem;
+        margin-bottom: 3rem;
     }
 
     .wikd-footer-brand {
@@ -687,7 +687,7 @@
 
     .wikd-footer-bottom {
         border-top: 1px solid var(--color-border, #2A2A2A);
-        padding-top: 1rem;
+        padding-top: 2rem;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -1528,7 +1528,7 @@
             flex-direction: column;
             justify-content: center;
             
-            padding-top: 1rem;
+            padding-top: 3rem;
             padding-bottom: 3rem;
             
             position: relative;
@@ -1562,7 +1562,7 @@
             font-size: 4rem;
             font-weight: 900;
             line-height: 1.1;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
             text-transform: uppercase;
             letter-spacing: -1px;
         }
@@ -1597,6 +1597,20 @@
         }
 
         @media (max-width: 768px) {
+            .hero-content {
+                height: 100%;
+                justify-content: flex-start;
+                padding-top: 15vh; /* Push title up but leave some space from top */
+                padding-bottom: 5vh;
+            }
+            .hero-text-wrapper {
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+            }
+            .cta-buttons {
+                margin-top: auto; /* Push buttons to the bottom */
+            }
             .mobile-text {
                 display: inline;
             }
@@ -1605,13 +1619,13 @@
             }
 
             .hero {
-                min-height: 100vh;
+                min-height: max(70vh, 500px);
             }
 
             .badge {
                 font-size: 0.75rem;
                 padding: 0.5rem 1rem;
-                margin-bottom: 2rem;
+                margin-bottom: 1rem;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;

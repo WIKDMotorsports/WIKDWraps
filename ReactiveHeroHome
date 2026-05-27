@@ -1471,6 +1471,20 @@
         }
 
         @media (max-width: 768px) {
+            .hero-content {
+                height: 100%;
+                justify-content: flex-start;
+                padding-top: 15vh; /* Push title up but leave some space from top */
+                padding-bottom: 5vh;
+            }
+            .hero-text-wrapper {
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+            }
+            .cta-buttons {
+                margin-top: auto; /* Push buttons to the bottom */
+            }
             .hero {
                 min-height: max(85vh, 600px);
             }
