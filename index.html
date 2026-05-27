@@ -355,7 +355,7 @@
 
       /* Applied Styles to Hero */
         .hero h1 {
-            font-size: clamp(2.5rem, 6vw, 4rem) !important;
+            font-size: clamp(1.8rem, 6vw, 4rem) !important;
         }
         .hero .badge {
             background-color: var(--color-primary) !important;
@@ -1590,17 +1590,24 @@
 
         @media (max-width: 768px) {
             .hero {
-                min-height: max(85vh, 600px);
+                min-height: max(70vh, 500px);
+            }
 
+            .badge {
+                font-size: 0.8rem;
+                padding: 0.5rem 1rem;
+                margin-bottom: 1rem;
             }
 
             .hero h1 {
-                font-size: 2.5rem;
+                font-size: 1.8rem !important;
+                margin-bottom: 1.5rem;
             }
 
             .cta-buttons {
                 grid-template-columns: 1fr;
                 grid-template-rows: auto auto auto;
+                gap: 0.75rem;
             }
 
             .hero .btn:nth-child(3) {
