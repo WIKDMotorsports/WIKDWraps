@@ -33,7 +33,6 @@
             padding: 0;
         }
 
-        /* Noise overlay */
         body::before {
             content: "";
             position: fixed;
@@ -71,9 +70,7 @@
             line-height: 1.6;
         }
 
-        .hero-accent {
-            color: var(--color-primary);
-        }
+        .hero-accent { color: var(--color-primary); }
 
         /* ---- CONTAINER ---- */
         .container {
@@ -109,13 +106,8 @@
             transition: transform 0.3s ease;
         }
 
-        .policy-item.is-open {
-            border-color: #3a3a3a;
-        }
-
-        .policy-item.is-open::before {
-            transform: scaleY(1);
-        }
+        .policy-item.is-open { border-color: #3a3a3a; }
+        .policy-item.is-open::before { transform: scaleY(1); }
 
         .policy-trigger {
             width: 100%;
@@ -131,9 +123,7 @@
             transition: background-color 0.2s ease;
         }
 
-        .policy-trigger:hover {
-            background-color: #1a1a1a;
-        }
+        .policy-trigger:hover { background-color: #1a1a1a; }
 
         .policy-trigger-left {
             display: flex;
@@ -151,9 +141,7 @@
             opacity: 0.7;
         }
 
-        .policy-item.is-open .policy-number {
-            opacity: 1;
-        }
+        .policy-item.is-open .policy-number { opacity: 1; }
 
         .policy-title {
             font-family: var(--font-heading);
@@ -166,9 +154,7 @@
         }
 
         .policy-item.is-open .policy-title,
-        .policy-trigger:hover .policy-title {
-            color: white;
-        }
+        .policy-trigger:hover .policy-title { color: white; }
 
         .policy-icon {
             width: 32px;
@@ -210,49 +196,153 @@
             transition: max-height 0.45s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .policy-item.is-open .policy-body {
-            max-height: 2000px;
-        }
+        .policy-item.is-open .policy-body { max-height: 6000px; }
 
         .policy-content {
             padding: 0 2rem 2.5rem 2rem;
-            padding-left: calc(2rem + 28px + 1.25rem); /* align with title */
             border-top: 1px solid var(--color-border);
         }
 
-        .policy-placeholder {
-            margin-top: 2rem;
-            padding: 2rem;
-            border: 1px dashed #2a2a2a;
-            background: rgba(255,59,48,0.02);
+        /* ---- POLICY BODY TYPOGRAPHY ---- */
+        .policy-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            padding: 1.25rem 0 1.5rem;
+            border-bottom: 1px solid var(--color-border);
+            margin-bottom: 2rem;
+        }
+
+        .policy-meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .policy-meta-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #444;
+        }
+
+        .policy-meta-value {
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+        }
+
+        .policy-meta-value a {
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+
+        .policy-section {
+            margin-bottom: 2rem;
+        }
+
+        .policy-section-title {
+            font-family: var(--font-heading);
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: white;
+            margin: 0 0 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #1e1e1e;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .policy-section-title::before {
+            content: '';
+            display: inline-block;
+            width: 3px;
+            height: 14px;
+            background: var(--color-primary);
+            flex-shrink: 0;
+        }
+
+        .policy-body-text {
+            font-size: 0.875rem;
+            color: #999;
+            line-height: 1.75;
+            margin: 0 0 0.75rem;
+        }
+
+        .policy-body-text:last-child { margin-bottom: 0; }
+
+        .policy-list-items {
+            list-style: none;
+            padding: 0;
+            margin: 0.5rem 0 0.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .policy-list-items li {
+            font-size: 0.875rem;
+            color: #888;
+            line-height: 1.6;
+            padding-left: 1.1rem;
             position: relative;
         }
 
-        .policy-placeholder::before {
-            content: 'POLICY TEXT';
+        .policy-list-items li::before {
+            content: '—';
             position: absolute;
-            top: -10px;
-            left: 1rem;
-            background: var(--color-surface);
-            padding: 0 0.5rem;
-            font-family: var(--font-heading);
+            left: 0;
+            color: #3a3a3a;
+            font-size: 0.8rem;
+        }
+
+        .policy-highlight {
+            background: rgba(255,59,48,0.04);
+            border: 1px solid rgba(255,59,48,0.12);
+            border-left: 2px solid var(--color-primary);
+            padding: 1rem 1.25rem;
+            margin: 1rem 0;
+            font-size: 0.85rem;
+            color: #aaa;
+            line-height: 1.65;
+        }
+
+        .policy-contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .policy-contact-card {
+            background: #111;
+            border: 1px solid var(--color-border);
+            padding: 1rem 1.25rem;
+        }
+
+        .policy-contact-card .label {
             font-size: 0.65rem;
             font-weight: 700;
-            letter-spacing: 0.15em;
-            color: #333;
+            letter-spacing: 0.12em;
             text-transform: uppercase;
+            color: #444;
+            margin-bottom: 0.35rem;
         }
 
-        .policy-placeholder p {
-            font-family: var(--font-body);
-            color: #3a3a3a;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            margin: 0;
-            font-style: italic;
+        .policy-contact-card .value {
+            font-size: 0.875rem;
+            color: var(--color-text-muted);
         }
 
-        /* ---- FOOTER STYLES ---- */
+        .policy-contact-card .value a {
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+
+        /* ---- FOOTER ---- */
         .wikd-footer {
             background-color: var(--color-surface);
             border-top: 1px solid var(--color-border);
@@ -269,9 +359,7 @@
         }
 
         .wikd-footer-brand { display: flex; flex-direction: column; gap: 1rem; }
-        .wikd-footer-logo { width: 180px; height: auto; }
         .wikd-footer-tagline { color: var(--color-text-muted); font-size: 0.95rem; line-height: 1.6; max-width: 300px; }
-
         .wikd-footer-social { display: flex; gap: 1rem; margin-top: 1rem; }
 
         .wikd-footer-social-link {
@@ -310,30 +398,11 @@
 
         .wikd-footer-copyright { color: var(--color-text-muted); font-size: 0.875rem; }
         .wikd-footer-copyright a { color: var(--color-primary); text-decoration: none; font-weight: 600; }
-
         .wikd-footer-legal { display: flex; gap: 1.5rem; flex-wrap: wrap; }
-
-        .wikd-footer-legal a {
-            color: var(--color-text-muted); text-decoration: none; font-size: 0.875rem;
-            transition: color 0.3s ease;
-        }
-
+        .wikd-footer-legal a { color: var(--color-text-muted); text-decoration: none; font-size: 0.875rem; transition: color 0.3s ease; }
         .wikd-footer-legal a:hover { color: var(--color-primary); }
 
-        @media (max-width: 768px) {
-            .wikd-footer-grid { grid-template-columns: 1fr 1fr; }
-            .wikd-footer-brand { grid-column: 1 / -1; }
-            .policy-content { padding-left: 2rem; }
-            .wikd-footer-bottom { flex-direction: column; text-align: center; }
-        }
-
-        @media (max-width: 480px) {
-            .wikd-footer-grid { grid-template-columns: 1fr; }
-            .policy-trigger { padding: 1.25rem 1.25rem; }
-            .policy-content { padding: 0 1.25rem 2rem; }
-        }
-
-        /* Nav bar (minimal version) */
+        /* ---- NAV ---- */
         nav {
             position: fixed;
             top: 0; width: 100%;
@@ -368,23 +437,32 @@
         }
 
         .nav-back:hover { color: var(--color-primary); }
+
+        @media (max-width: 768px) {
+            .wikd-footer-grid { grid-template-columns: 1fr 1fr; }
+            .wikd-footer-brand { grid-column: 1 / -1; }
+            .policy-content { padding: 0 1.25rem 2rem; }
+            .wikd-footer-bottom { flex-direction: column; text-align: center; }
+        }
+
+        @media (max-width: 480px) {
+            .wikd-footer-grid { grid-template-columns: 1fr; }
+            .policy-trigger { padding: 1.25rem; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- Nav -->
     <nav>
         <a href="https://wikdwraps.com/" class="nav-logo">WIKD<span>WRAPS</span></a>
         <a href="https://wikdwraps.com/" class="nav-back">← Back to site</a>
     </nav>
 
-    <!-- Hero -->
     <header class="page-hero">
         <h1>Legal <span class="hero-accent">&</span> Policies</h1>
         <p>Our commitment to transparency. Select a section below to review the full policy.</p>
     </header>
 
-    <!-- Policies -->
     <main>
         <div class="container">
             <div class="policy-list">
@@ -402,278 +480,179 @@
                     </button>
                     <div class="policy-body">
                         <div class="policy-content">
-                            <div class="policy-placeholder">
-                                <p>Refund Policy
-Last Updated: 5/18/2026
-Company: WIKD Wraps, LLC
-Location: 417 Metro Park Dr, McKinney, TX 75071
-Phone: (844) 232-9453
-Email: sales@wikdwraps.com
-This Refund Policy explains how refunds, cancellations, deposits, payment disputes, returns, warranty-related claims, and service concerns are handled by WIKD Wraps, LLC (“WIKD Wraps,” “Company,” “we,” “us,” or “our”).
-By booking an appointment, submitting a vehicle for service, placing an order, purchasing products or services, paying a deposit, or otherwise doing business with WIKD Wraps, you agree to this Refund Policy and any applicable service agreement, estimate, invoice, repair order, warranty document, or written authorization.
-This policy is intended to supplement, not replace, any signed service agreement, invoice, repair order, manufacturer warranty, or written authorization. If there is a conflict between this Refund Policy and a signed service agreement or repair order for a specific vehicle, the signed service agreement or repair order will control for that specific service.
-
-
-
-
-
-1. Accepted Payment Methods
-At this time, WIKD Wraps is currently unable to accept credit or debit cards.
-We currently accept the following payment methods:
-
-Cash;
-Wire transfer;
-Zelle;
-Venmo;
-Certified checks;
-Precious metals or collectible time pieces, if you really want to talk about it.
-All payments must clear before a vehicle, product, or order may be released, unless otherwise agreed in writing by WIKD Wraps.
-WIKD Wraps reserves the right to refuse, limit, or require additional verification for any payment method. Returned payments, failed transfers, reversed payments, insufficient funds, incorrect recipient information, or delayed payment issues may result in additional fees, vehicle storage fees, order delays, cancellation, or collection activity where permitted by law.
-
-
-
-
-
-2. Sales Tax and Fees
-Sales tax, processing fees, transfer fees, storage fees, administrative fees, shipping fees, disposal fees, special-order fees, restocking fees, or other applicable charges may apply where required or permitted by law.
-Any estimate, instant estimate, quote, or advertised price may not include all taxes, fees, upgrades, additional labor, or other charges unless expressly stated in writing.
-
-
-
-
-
-3. General Service Refund Policy
-Because WIKD Wraps provides custom vehicle services, including paint protection film, window tint, vinyl wrap, ceramic coating, paint correction, detailing, and other labor-intensive services, refunds are limited.
-WIKD Wraps stands behind the quality of its workmanship. If installation quality is determined by WIKD Wraps to fall outside its internal quality control metrics or reasonable industry standards, WIKD Wraps may offer complimentary repairs, corrections, adjustments, or replacements at its discretion.
-However, WIKD Wraps does not offer a separate or formal Company warranty unless expressly provided in a written agreement signed by an authorized representative of WIKD Wraps. Product warranties, if available, are provided by the product manufacturer and are subject to the manufacturer’s own terms, conditions, compliance rules, registration requirements, maintenance intervals, exclusions, and claim approval process.
-Refunds are only considered after:
-
-The Client timely reports a valid service concern within the inspection and rework request period described in this Refund Policy;
-The Client attends the complimentary two-week follow-up appointment or submits a timely written rework request within fourteen (14) calendar days after the scheduled follow-up appointment;
-The Client allows WIKD Wraps a reasonable opportunity to inspect the vehicle;
-WIKD Wraps is given a reasonable opportunity to correct, repair, adjust, replace, or otherwise address the concern; and
-The Client remains dissatisfied with the outcome after WIKD Wraps has attempted the available remedy.
-Even after these steps, refunds are not automatic. WIKD Wraps reserves the right to determine, in its discretion, whether a refund, partial refund, material-only refund, store credit, additional correction, paid repair, no-cost repair, replacement, or denial is appropriate based on the circumstances.
-If a refund is approved, the refund may be limited to material costs only. Labor costs are non-refundable if the installation or service meets WIKD Wraps’ quality control metrics or reasonable industry standards.
-Refunds are not guaranteed and are reviewed on a case-by-case basis.
-
-
-
-
-
-4. No Refunds for Subjective Dissatisfaction or Normal Conditions
-Refunds shall not be granted for:
-
-Normal degradation, wear, aging, or use over time;
-Subjective aesthetic concerns unrelated to a material defect or workmanship issue;
-Post-installation dissatisfaction unrelated to material or workmanship defects;
-Client preference changes after approval of the work;
-Buyer’s remorse;
-Failure to follow aftercare, curing, washing, inspection, or maintenance instructions;
-Damage caused by improper washing, harsh chemicals, automatic car washes, pressure washing, neglect, misuse, accidents, road debris, impact, environmental exposure, or third-party work;
-Conditions caused by pre-existing vehicle defects, prior repairs, repaint, contamination, aftermarket parts, loose trim, damaged paint, or hidden vehicle issues;
-Issues arising from client-requested installation methods performed contrary to WIKD Wraps’ recommendation.
-
-
-
-
-
-
-5. Inspection Requirement and Complimentary Two-Week Follow-Up
-If the Client has a quality concern related to paint protection film, vinyl wrap, window tint, ceramic coating, paint correction, detailing, or another service, the Client must notify WIKD Wraps in writing within the applicable inspection and rework request period described below, unless a different period is stated in a signed agreement or applicable manufacturer product warranty.
-A complimentary two-week follow-up appointment will be offered to the Client on the day of service completion and vehicle pick-up. This follow-up is intended to allow WIKD Wraps to inspect the completed work, review any curing-related concerns, identify any installation-quality issues, and determine whether any correction, repair, adjustment, or replacement is appropriate.
-If the Client fails to attend the complimentary two-week follow-up appointment, fails to schedule or reschedule the follow-up within a reasonable time, or fails to submit a written rework request within fourteen (14) calendar days after the scheduled follow-up appointment, WIKD Wraps will not consider a refund request related to installation quality or service outcome.
-Failure to attend the follow-up appointment or submit a timely written rework request may also limit or void eligibility for complimentary installation-quality corrections, repairs, adjustments, or replacements.
-Remote inspection through photo and video submission may be considered at WIKD Wraps’ discretion, but WIKD Wraps may require an in-person inspection before approving any correction, repair, replacement, refund, or manufacturer product warranty claim assistance.
-
-
-
-
-
-6. Paint Protection Film, Vinyl Wrap, and Window Tint Refunds
-Paint protection film, vinyl wrap, and window tint installations are custom services performed specifically for the Client’s vehicle. Once installed, film and tint materials generally cannot be reused, resold, or returned.
-Refunds for paint protection film, vinyl wrap, or window tint are only considered after WIKD Wraps has been given a reasonable opportunity to inspect and attempt a correction, repair, adjustment, replacement, or other available remedy, and the Client remains dissatisfied with the outcome.
-The Client acknowledges that film and tint materials are manufactured in standardized roll widths, thicknesses, adhesive formulations, and performance characteristics. Certain vehicle panels may require seams, relief cuts, multi-piece installation, exposed edges, bulk installation, patterned installation, or other installation methods based on panel size, curvature, complexity, material limitations, and vehicle design.
-The following are not considered automatic grounds for refund:
-
-Minor dust, debris, texture, moisture, haze, or bubbles during normal curing;
-Normal film curing behavior;
-Edges, seams, relief cuts, pattern limitations, or multi-piece installations that are reasonably necessary;
-Material shrinkage, adhesive stress, or tension-related concerns caused by panel complexity or client-requested installation methods;
-Damage from road debris, impact, accidents, improper washing, chemicals, environmental exposure, off-road use, track use, racing, or general wear and tear;
-Subjective dissatisfaction unrelated to material defects or installation quality.
-If a manufacturer defect is identified and confirmed in writing by the film or tint manufacturer, the defective material may be replaced according to manufacturer warranty terms. Labor charges may remain the Client’s responsibility unless expressly covered by the manufacturer or agreed in writing by WIKD Wraps. Product warranty decisions are controlled by the manufacturer, not WIKD Wraps.
-
-
-
-
-
-7. Ceramic Coating Refunds
-Ceramic coating performance and longevity depend on proper preparation, curing, maintenance, washing methods, environmental exposure, chemical exposure, storage conditions, and compliance with manufacturer instructions.
-Ceramic coatings are not permanent, maintenance-free, scratch-proof, rock-chip-proof, water-spot-proof, or immune to improper care.
-Refunds shall not be granted for coating failure, reduced hydrophobic behavior, water spotting, staining, contamination, or performance issues caused by improper care, unauthorized chemicals, neglect, environmental exposure, failure to maintain the coating, or failure to follow manufacturer-prescribed maintenance protocols.
-If a ceramic coating concern is submitted, the Client must provide proof of proper maintenance if requested. Repairs or reapplications due to improper care shall be performed at the Client’s expense.
-
-
-
-
-
-8. Detailing, Paint Correction, and Maintenance Service Refunds
-Detailing, paint correction, and maintenance services are labor-based services. Results vary depending on the vehicle’s condition, paint thickness, paint hardness, prior repairs, defect depth, age, contamination, staining, odor source, material type, and selected service level.
-WIKD Wraps does not guarantee that every scratch, swirl mark, stain, odor, etching mark, oxidation, water spot, contamination, or defect can be fully removed.
-Refunds shall not be granted because a defect, stain, odor, scratch, swirl, or imperfection could not be fully removed when full removal was not safely possible or was outside the selected scope of work.
-Maintenance plan discounts, priority booking, or prepaid services may be subject to separate terms. No-shows, late cancellations, or failure to reschedule with proper notice may result in forfeiture of prepaid services or assessment of a rescheduling fee.
-
-
-
-
-
-9. Repairs, Removals, Adhesive Removal, and Reinstallation
-Film, tint, vinyl, adhesive, badge, decal, or coating removal may reveal or cause damage, especially on vehicles with prior repaint, poor bodywork, aged paint, clear coat failure, adhesive promoter use, prior installations by other shops, long-term sun exposure, or unknown installation methods.
-Adhesive residue removal may be billed separately to the Client.
-WIKD Wraps reserves the right to refuse refunds, free replacements, or installation-quality warranty claims related to adhesive residue, removal complications, or damage caused by pre-existing vehicle conditions, prior installations, non-factory paint, or work performed by another shop.
-Vehicles with films, wraps, tint, coatings, badges, or adhesive installed by other shops may carry additional removal and repair risk. Additional charges may apply.&nbsp;(edited)&nbsp;
-
-
-[1:57 PM]
-10. Disassembly Labor and Seamless Installation Requests
-Some services may require or benefit from disassembly, including removal of trim, mirrors, badges, lights, spoilers, bumpers, handles, interior panels, or other components.
-Unless expressly included in writing, disassembly and reassembly labor is not included in standard pricing and may be billed separately.
-Refunds shall not be granted for delays, additional labor, reinstallation inconsistencies, clip failure, brittle component failure, or issues arising from aged parts, aftermarket parts, hidden damage, prior repairs, or client-requested disassembly unless caused by WIKD Wraps’ proven negligence.
-If the Client requests a seamless installation or a one-piece installation that WIKD Wraps advises against, the Client accepts the risk of tension-related issues, edge lift, adhesive stress, distortion, reduced durability, and related aesthetic concerns. Such issues are not considered automatic grounds for refund.
-
-
-
-
-
-11. Deposits, Cancellations, and Rescheduling
-A deposit may be required for appointments exceeding $1,000.00, custom work, special-order materials, large installations, or appointments requiring significant shop time.
-Unless otherwise agreed in writing:
-
-Deposits are applied toward the final invoice total;
-Cancellations within forty-eight (48) hours of the scheduled appointment may forfeit the deposit;
-Rescheduling must be requested at least forty-eight (48) hours in advance to apply the deposit toward a new appointment;
-No-shows may result in forfeiture of the deposit or prepaid service amount;
-Special-order, custom-order, made-to-order, or vehicle-specific materials may be non-refundable once ordered.
-WIKD Wraps may reschedule appointments due to weather, power outages, material delays, supply chain disruptions, staffing issues, vehicle readiness issues, equipment issues, or other circumstances outside the Company’s reasonable control.
-
-
-
-
-
-12. Completion, Pick-Up, and Vehicle Storage
-Payment is due in full upon completion of services unless otherwise agreed in writing.
-Vehicles must be picked up within three (3) business days after notice of completion unless prior arrangements are made with WIKD Wraps.
-Vehicles left at the shop for more than three (3) business days after completion without prior arrangement may incur a storage fee of $20.00 per day.
-A vehicle may be considered abandoned if the Client fails to respond to communication attempts after thirty (30) days. WIKD Wraps reserves the right to pursue any remedies permitted by law, including collection, lien rights, legal action, storage fees, and recovery of outstanding balances.
-
-
-
-
-
-13. Chargebacks, Payment Disputes, and Refusal of Payment
-The Client agrees that chargebacks, payment disputes, payment reversals, or refusal of payment are not authorized methods of resolving service concerns, except in cases of proven fraud committed directly by WIKD Wraps.
-Any service concern must be submitted through the inspection and dispute process described in this Refund Policy or in the applicable service agreement. WIKD Wraps’ offer to inspect, correct, repair, adjust, or replace work that falls outside its quality control metrics or reasonable industry standards does not create a separate Company warranty unless expressly stated in writing.
-If a chargeback, payment dispute, reversal, or refusal of payment is initiated after services are performed, WIKD Wraps may, at its discretion:
-
-Submit signed agreements, invoices, repair orders, photographs, inspection records, communications, and documentation of offered remediation as evidence;
-Demand immediate payment in full for all outstanding or disputed balances;
-Assess an administrative chargeback handling fee of up to $250.00, where permitted by law;
-Pursue recovery of disputed amounts, administrative fees, damages, collection costs, court costs, and attorneys’ fees where permitted by law.
-The Client acknowledges that payment processor or financial institution dispute rights do not automatically eliminate the Client’s contractual obligations to WIKD Wraps.
-
-
-
-
-
-14. Product, Merchandise, and Retail Item Returns
-This section applies to products, merchandise, aftercare items, tools, accessories, apparel, branded merchandise, parts, or other retail items sold by WIKD Wraps, if applicable.
-All sales on WIKD Wraps branded merchandise, special-order items, custom items, made-to-order items, clearance items, opened chemical products, used tools, installed materials, cut film, cut tint, cut vinyl, and vehicle-specific materials are final unless otherwise required by law or approved in writing by WIKD Wraps.
-Returns may require prior written approval and a Returned Goods Authorization (“RGA”) number. No return will be accepted without an approved RGA number.
-To request a return, email sales@wikdwraps.com and include:
-
-Order number or invoice number;
-Item name or part number;
-Name;
-Email address;
-Phone number;
-Shipping address, if applicable;
-Reason for return;
-Photos, if applicable.
-A sales invoice must accompany all approved returns. Items must be returned in original packaging, unused, unopened, undamaged, and in resalable condition.
-No refunds will be granted for electrical items, special orders, installed items, opened chemicals, cut materials, custom materials, or items older than ten (10) days unless otherwise approved in writing.
-
-
-
-
-
-15. Restocking Fees and Shipping
-A twenty percent (20%) restocking fee may apply to approved non-defective product returns.
-Shipping charges are non-refundable. If an item was sold with free shipping and is returned for convenience, the original shipping cost may be deducted from the refund, in addition to any applicable restocking fee.
-Return shipping is the responsibility of the Client unless otherwise approved in writing by WIKD Wraps.
-If a shipment is refused by the recipient, returned to sender due to an address issue, or returned because of client error, all associated fees may be deducted from any return credit or refund.
-
-
-
-
-
-16. Order Changes, Cancellations, Backorders, and Preorders
-Order changes or cancellations may be requested, but they are not guaranteed. Orders may be processed quickly, and changes may not be possible once an order has been picked, packed, shipped, cut, ordered, customized, or scheduled for installation.
-Backorder and preorder items may be subject to cancellation fees, supplier restrictions, manufacturer delays, or non-refundable deposit requirements.
-WIKD Wraps reserves the right to accept, decline, cancel, or modify any order for any reason, including product availability, supplier issues, pricing errors, fraud concerns, discontinued items, or incorrect website information.
-
-
-
-
-
-17. Typographical Errors and Pricing Errors
-In the event a product, service, package, instant estimate, or website listing contains an incorrect price, inaccurate description, typographical error, supplier error, configurator error, or other mistake, WIKD Wraps reserves the right to refuse or cancel any order, estimate, appointment, or transaction placed for the affected item or service.
-If payment has already been made and the order or service is canceled due to an error, WIKD Wraps will refund the amount paid for the canceled item or service, subject to any applicable third-party processing timelines, banking delays, or payment method limitations.
-
-
-
-
-
-18. Refund Processing
-Approved refunds will generally be issued using the original payment method when possible. If the original method is unavailable, impractical, or no longer accepted by WIKD Wraps, refunds may be issued by another method approved by WIKD Wraps.
-Refund timing may vary depending on payment method, bank processing, transfer timelines, accounting review, documentation requirements, and any third-party provider involved.
-WIKD Wraps is not responsible for delays caused by banks, payment apps, payment processors, wire services, or other third parties.
-
-
-
-
-
-19. How to Submit a Refund, Product Warranty, or Service Concern
-All refund, manufacturer product warranty, return, or service concern requests must be submitted in writing to:
-sales@wikdwraps.com
-Please include:
-
-Your full name;
-Phone number;
-Email address;
-Vehicle year, make, and model;
-Invoice or repair order number, if available;
-Date of service or purchase;
-Description of the concern;
-Photos or videos of the issue;
-Maintenance records, if applicable;
-Any relevant manufacturer warranty information.
-WIKD Wraps will review submitted claims and respond in writing within a reasonable period. Product warranty-related claims may require manufacturer review and are subject to manufacturer approval, compliance rules, maintenance requirements, exclusions, and timelines. Timing may vary based on inspection needs, manufacturer review, missing information, or scheduling availability.
-
-
-
-
-
-20. Final Authority to Determine Refund Eligibility
-WIKD Wraps reserves the right to determine, in its reasonable discretion, whether a concern qualifies for correction, repair, adjustment, replacement, store credit, partial refund, material-only refund, no-cost repair, paid repair, manufacturer product warranty assistance, or denial.
-No employee, contractor, installer, salesperson, or representative may alter this Refund Policy unless the change is made in writing by an authorized representative of WIKD Wraps.
-
-
-
-
-
-21. Legal Review Notice
-If you have entered into a signed service agreement, repair order, invoice, written authorization, or other written contract with WIKD Wraps, this Refund Policy does not supersede, replace, amend, or modify that agreement. In the event of any conflict between this Refund Policy and a signed agreement, the signed agreement shall control for the specific service, transaction, or vehicle covered by that agreement.&nbsp;(edited)&nbsp;</p>
+                            <div class="policy-meta">
+                                <div class="policy-meta-item">
+                                    <span class="policy-meta-label">Last Updated</span>
+                                    <span class="policy-meta-value">May 18, 2026</span>
+                                </div>
+                                <div class="policy-meta-item">
+                                    <span class="policy-meta-label">Company</span>
+                                    <span class="policy-meta-value">WIKD Wraps, LLC</span>
+                                </div>
+                                <div class="policy-meta-item">
+                                    <span class="policy-meta-label">Contact</span>
+                                    <span class="policy-meta-value"><a href="mailto:sales@wikdwraps.com">sales@wikdwraps.com</a></span>
+                                </div>
+                                <div class="policy-meta-item">
+                                    <span class="policy-meta-label">Phone</span>
+                                    <span class="policy-meta-value">(844) 232-9453</span>
+                                </div>
+                            </div>
+
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">1. Accepted Payment Methods</h3>
+                                <p class="policy-body-text">WIKD Wraps is currently unable to accept credit or debit cards. We accept the following:</p>
+                                <ul class="policy-list-items">
+                                    <li>Cash</li>
+                                    <li>Wire transfer</li>
+                                    <li>Zelle</li>
+                                    <li>Venmo</li>
+                                    <li>Certified checks</li>
+                                    <li>Precious metals or collectible timepieces (by arrangement)</li>
+                                </ul>
+                                <p class="policy-body-text">All payments must clear before a vehicle, product, or order may be released, unless otherwise agreed in writing.</p>
+                            </div>
+
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">2. Sales Tax and Fees</h3>
+                                <p class="policy-body-text">Sales tax, processing fees, storage fees, administrative fees, shipping fees, restocking fees, and other applicable charges may apply. Any estimate or advertised price may not include all taxes and fees unless expressly stated in writing.</p>
+                            </div>
+
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">3. General Service Refund Policy</h3>
+                                <p class="policy-body-text">Because WIKD Wraps provides custom vehicle services — including paint protection film, window tint, vinyl wrap, ceramic coating, paint correction, and detailing — refunds are limited.</p>
+                                <p class="policy-body-text">WIKD Wraps stands behind the quality of its workmanship. If installation quality is determined by WIKD Wraps to fall outside its internal quality control metrics or reasonable industry standards, WIKD Wraps may offer complimentary repairs, corrections, adjustments, or replacements at its discretion.</p>
+                                <div class="policy-highlight">WIKD Wraps does not offer a separate or formal Company warranty unless expressly provided in a written agreement signed by an authorized representative of WIKD Wraps. Product warranties, if available, are provided by the product manufacturer and are subject to the manufacturer's own terms, conditions, compliance rules, registration requirements, maintenance intervals, exclusions, and claim approval process.</div>
+                                <p class="policy-body-text">Refunds are only considered after all of the following conditions are met:</p>
+                                <ul class="policy-list-items">
+                                    <li>The client timely reports a valid service concern within the inspection and rework request period</li>
+                                    <li>The client attends the complimentary two-week follow-up or submits a written rework request within 14 calendar days after the scheduled follow-up appointment</li>
+                                    <li>The client allows WIKD Wraps a reasonable opportunity to inspect the vehicle</li>
+                                    <li>WIKD Wraps is given a reasonable opportunity to correct, repair, adjust, replace, or otherwise address the concern</li>
+                                    <li>The client remains dissatisfied with the outcome after WIKD Wraps has attempted the available remedy</li>
+                                </ul>
+                                <div class="policy-highlight">Even after these steps, refunds are not automatic. WIKD Wraps reserves the right to determine, in its discretion, whether a refund, partial refund, material-only refund, store credit, additional correction, paid repair, no-cost repair, replacement, or denial is appropriate based on the circumstances. If a refund is approved, the refund may be limited to material costs only. Labor costs are non-refundable if the installation or service meets WIKD Wraps' quality control metrics or reasonable industry standards.</div>
+                            </div>
+
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">4. No Refunds for Subjective Dissatisfaction</h3>
+                                <p class="policy-body-text">Refunds will not be granted for:</p>
+                                <ul class="policy-list-items">
+                                    <li>Normal wear, aging, or degradation over time</li>
+                                    <li>Subjective aesthetic concerns unrelated to defects</li>
+                                    <li>Preference changes after approval of the work</li>
+                                    <li>Buyer's remorse</li>
+                                    <li>Failure to follow aftercare or maintenance instructions</li>
+                                    <li>Damage from improper washing, harsh chemicals, road debris, accidents, or third-party work</li>
+                                    <li>Issues from pre-existing vehicle defects, prior repairs, or hidden vehicle conditions</li>
+                                </ul>
+                            </div>
+
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">5. Inspection & Two-Week Follow-Up</h3>
+                                <p class="policy-body-text">A complimentary two-week follow-up appointment will be offered at vehicle pick-up. This allows WIKD Wraps to inspect the completed work, review curing concerns, and address any installation-quality issues.</p>
+                                <div class="policy-highlight">If the client fails to attend the follow-up or submit a written rework request within 14 calendar days after the scheduled follow-up, WIKD Wraps will not consider a refund request related to installation quality or service outcome.</div>
+                            </div>
+
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">6. PPF, Vinyl Wrap & Window Tint</h3>
+                                <p class="policy-body-text">These are custom services performed for your specific vehicle. Once installed, materials generally cannot be reused or returned. The following are not automatic grounds for refund:</p>
+                                <ul class="policy-list-items">
+                                    <li>Minor dust, debris, or bubbles during normal curing</li>
+                                    <li>Seams, relief cuts, or multi-piece installations required by panel design</li>
+                                    <li>Material shrinkage or tension related to panel complexity</li>
+                                    <li>Damage from road debris, accidents, improper washing, or general wear</li>
+                                    <li>Subjective dissatisfaction unrelated to defects</li>
+                                </ul>
+                            </div>
+
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">7. Ceramic Coating Refunds</h3>
+                                <p class="policy-body-text">Ceramic coatings are not permanent, scratch-proof, or maintenance-free. Refunds will not be granted for coating failure caused by improper care, unauthorized chemicals, or failure to follow manufacturer maintenance protocols.</p>
+                            </div>
+
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">8. Detailing & Paint Correction</h3>
+                                <p class="policy-body-text">Results vary based on vehicle condition, paint type, defect depth, and selected service level. WIKD Wraps does not guarantee full removal of every scratch, stain, or imperfection. Refunds will not be granted because a defect could not be fully removed when full removal was not safely achievable.</p>
+                            </div>
+
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">9. Repairs, Removals, Adhesive Removal & Reinstallation</h3>
+                                <p class="policy-body-text">Film, tint, vinyl, adhesive, badge, decal, or coating removal may reveal or cause damage, especially on vehicles with prior repaint, poor bodywork, aged paint, clear coat failure, adhesive promoter use, prior installations by other shops, long-term sun exposure, or unknown installation methods.</p>
+                                <p class="policy-body-text">Adhesive residue removal may be billed separately to the client.</p>
+                                <p class="policy-body-text">WIKD Wraps reserves the right to refuse refunds, free replacements, or installation-quality warranty claims related to adhesive residue, removal complications, or damage caused by pre-existing vehicle conditions, prior installations, non-factory paint, or work performed by another shop.</p>
+                                <p class="policy-body-text">Vehicles with films, wraps, tint, coatings, badges, or adhesive installed by other shops may carry additional removal and repair risk. Additional charges may apply.</p>
+                            </div>
+
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">10. Disassembly Labor</h3>
+                                <p class="policy-body-text">Unless expressly included in writing, disassembly and reassembly labor is not included in standard pricing. Refunds will not be granted for clip failure, brittle component failure, or issues from aged or aftermarket parts unless caused by proven negligence by WIKD Wraps.</p>
+                            </div>
+
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">11. Deposits, Cancellations & Rescheduling</h3>
+                                <p class="policy-body-text">A deposit may be required for appointments exceeding $1,000, custom work, or special-order materials. Unless otherwise agreed in writing:</p>
+                                <ul class="policy-list-items">
+                                    <li>Deposits are applied toward the final invoice</li>
+                                    <li>Cancellations within 48 hours of the appointment may forfeit the deposit</li>
+                                    <li>Rescheduling must be requested at least 48 hours in advance</li>
+                                    <li>No-shows may result in forfeiture of the deposit</li>
+                                    <li>Special-order or vehicle-specific materials may be non-refundable once ordered</li>
+                                </ul>
+                            </div>
+
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">12. Vehicle Pick-Up & Storage</h3>
+                                <p class="policy-body-text">Vehicles must be picked up within 3 business days after completion notice. Vehicles left beyond this period without prior arrangement may incur a storage fee of <strong style="color: #ccc;">$20.00/day</strong>. Vehicles may be considered abandoned after 30 days of no contact.</p>
+                            </div>
+
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">13. Chargebacks, Payment Disputes & Refusal of Payment</h3>
+                                <div class="policy-highlight">The client agrees that chargebacks, payment disputes, payment reversals, or refusal of payment are not authorized methods of resolving service concerns, except in cases of proven fraud committed directly by WIKD Wraps. Any service concern must be submitted through the inspection and dispute process described in this Refund Policy or in the applicable service agreement.</div>
+                                <p class="policy-body-text">If a chargeback, payment dispute, reversal, or refusal of payment is initiated after services are performed, WIKD Wraps may, at its discretion:</p>
+                                <ul class="policy-list-items">
+                                    <li>Submit signed agreements, invoices, repair orders, photographs, inspection records, communications, and documentation of offered remediation as evidence</li>
+                                    <li>Demand immediate payment in full for all outstanding or disputed balances</li>
+                                    <li>Assess an administrative chargeback handling fee of up to $250.00, where permitted by law</li>
+                                    <li>Pursue recovery of disputed amounts, administrative fees, damages, collection costs, court costs, and attorneys' fees where permitted by law</li>
+                                </ul>
+                                <p class="policy-body-text">The client acknowledges that payment processor or financial institution dispute rights do not automatically eliminate the client's contractual obligations to WIKD Wraps.</p>
+                            </div>
+
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">14. Product & Retail Returns</h3>
+                                <p class="policy-body-text">All sales on branded merchandise, special-order items, opened chemicals, installed materials, cut film, and vehicle-specific materials are final unless otherwise required by law. Returns require a Returned Goods Authorization (RGA) number. To request a return, email <a href="mailto:sales@wikdwraps.com" style="color: var(--color-primary);">sales@wikdwraps.com</a> with your order number, item name, and reason for return.</p>
+                            </div>
+
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">15. Restocking Fees & Shipping</h3>
+                                <p class="policy-body-text">A 20% restocking fee may apply to approved non-defective returns. Shipping charges are non-refundable. Return shipping is the client's responsibility unless otherwise approved in writing.</p>
+                            </div>
+
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">16–17. Order Changes & Pricing Errors</h3>
+                                <p class="policy-body-text">Order changes are not guaranteed once processing has begun. WIKD Wraps reserves the right to cancel any order due to pricing errors, product availability issues, or website errors, and will refund any amount paid for a canceled order.</p>
+                            </div>
+
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">18. Refund Processing</h3>
+                                <p class="policy-body-text">Approved refunds will be issued via the original payment method when possible. WIKD Wraps is not responsible for delays caused by banks, payment apps, or other third-party providers.</p>
+                            </div>
+
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">19. How to Submit a Claim</h3>
+                                <p class="policy-body-text">All refund, warranty, return, or service concern requests must be submitted in writing to <a href="mailto:sales@wikdwraps.com" style="color: var(--color-primary);">sales@wikdwraps.com</a>. Include your full name, phone number, vehicle info, invoice number, date of service, description of concern, and any relevant photos or videos.</p>
+                            </div>
+
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">20. Final Authority to Determine Refund Eligibility</h3>
+                                <p class="policy-body-text">WIKD Wraps reserves the right to determine, in its reasonable discretion, whether a concern qualifies for correction, repair, adjustment, replacement, store credit, partial refund, material-only refund, no-cost repair, paid repair, manufacturer product warranty assistance, or denial.</p>
+                                <p class="policy-body-text">No employee, contractor, installer, salesperson, or representative may alter this Refund Policy unless the change is made in writing by an authorized representative of WIKD Wraps.</p>
+                            </div>
+
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">21. Legal Review Notice</h3>
+                                <p class="policy-body-text">If you have entered into a signed service agreement, repair order, invoice, written authorization, or other written contract with WIKD Wraps, this Refund Policy does not supersede, replace, amend, or modify that agreement. In the event of any conflict between this Refund Policy and a signed agreement, the signed agreement shall control for the specific service, transaction, or vehicle covered by that agreement.</p>
                             </div>
                         </div>
                     </div>
@@ -692,102 +671,93 @@ If you have entered into a signed service agreement, repair order, invoice, writ
                     </button>
                     <div class="policy-body">
                         <div class="policy-content">
-                            <div class="policy-placeholder">
-                                <p>Last updated: May 26, 2026
+                            <div class="policy-meta">
+                                <div class="policy-meta-item">
+                                    <span class="policy-meta-label">Last Updated</span>
+                                    <span class="policy-meta-value">May 26, 2026</span>
+                                </div>
+                                <div class="policy-meta-item">
+                                    <span class="policy-meta-label">Platform</span>
+                                    <span class="policy-meta-value">Powered by Shopify</span>
+                                </div>
+                            </div>
 
-WIKDWRAPS operates this store and website, including all related information, content, features, tools, products and services, in order to provide you, the customer, with a curated shopping experience (the "Services"). WIKDWRAPS is powered by Shopify, which enables us to provide the Services to you. This Privacy Policy describes how we collect, use, and disclose your personal information when you visit, use, or make a purchase or other transaction using the Services or otherwise communicate with us. If there is a conflict between our Terms of Service and this Privacy Policy, this Privacy Policy controls with respect to the collection, processing, and disclosure of your personal information.
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">Overview</h3>
+                                <p class="policy-body-text">WIKDWRAPS operates this store and website to provide you with a curated shopping experience. This Privacy Policy describes how we collect, use, and disclose your personal information when you visit, use, or make a purchase through our services.</p>
+                            </div>
 
-Please read this Privacy Policy carefully. By using and accessing any of the Services, you acknowledge that you have read this Privacy Policy and understand the collection, use, and disclosure of your information as described in this Privacy Policy.
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">Personal Information We Collect</h3>
+                                <ul class="policy-list-items">
+                                    <li>Contact details: name, address, billing/shipping address, phone, email</li>
+                                    <li>Financial information: payment card data, transaction details, payment confirmation</li>
+                                    <li>Account information: username, password, preferences, settings</li>
+                                    <li>Transaction information: items viewed, cart contents, purchase and return history</li>
+                                    <li>Communications: customer support inquiries and messages</li>
+                                    <li>Device information: browser, IP address, unique identifiers</li>
+                                    <li>Usage information: how and when you interact with our services</li>
+                                </ul>
+                            </div>
 
-Personal Information We Collect or Process
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">How We Collect Information</h3>
+                                <ul class="policy-list-items">
+                                    <li>Directly from you when you create an account, visit the site, or contact us</li>
+                                    <li>Automatically through cookies and similar technologies</li>
+                                    <li>From service providers who process data on our behalf</li>
+                                    <li>From partners or other third parties</li>
+                                </ul>
+                            </div>
 
-When we use the term "personal information," we are referring to information that identifies or can reasonably be linked to you or another person. Personal information does not include information that is collected anonymously or that has been de-identified, so that it cannot identify or be reasonably linked to you. We may collect or process the following categories of personal information, including inferences drawn from this personal information, depending on how you interact with the Services, where you live, and as permitted or required by applicable law:
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">How We Use Your Information</h3>
+                                <ul class="policy-list-items">
+                                    <li><strong style="color: #ccc;">Services:</strong> Process payments, fulfill orders, manage your account, arrange shipping, enable returns</li>
+                                    <li><strong style="color: #ccc;">Marketing:</strong> Send promotional emails, text messages, and show online advertisements</li>
+                                    <li><strong style="color: #ccc;">Security:</strong> Authenticate accounts, detect fraud, protect public safety</li>
+                                    <li><strong style="color: #ccc;">Communications:</strong> Provide customer support and maintain our business relationship</li>
+                                    <li><strong style="color: #ccc;">Legal:</strong> Comply with applicable law and respond to valid legal processes</li>
+                                </ul>
+                            </div>
 
-Contact details including your name, address, billing address, shipping address, phone number, and email address.
-Financial information including credit card, debit card, and financial account numbers, payment card information, financial account information, transaction details, form of payment, payment confirmation and other payment details.
-Account information including your username, password, security questions, preferences and settings.
-Transaction information including the items you view, put in your cart, add to your wishlist, or purchase, return, exchange or cancel and your past transactions.
-Communications with us including the information you include in communications with us, for example, when sending a customer support inquiry.
-Device information including information about your device, browser, or network connection, your IP address, and other unique identifiers.
-Usage information including information regarding your interaction with the Services, including how and when you interact with or navigate the Services.
-Personal Information Sources
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">Disclosure of Information</h3>
+                                <p class="policy-body-text">We may share your information with Shopify and vendors for IT, payments, analytics, support, and fulfillment; with marketing partners for targeted advertising; with affiliates; and in connection with a merger, legal obligation, or to enforce our policies.</p>
+                            </div>
 
-We may collect personal information from the following sources:
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">Shopify Relationship</h3>
+                                <p class="policy-body-text">Our services are hosted by Shopify, which processes personal information to provide and improve services. To learn more or exercise your privacy rights related to Shopify's processing, visit the <a href="https://privacy.shopify.com/en" style="color: var(--color-primary);" target="_blank">Shopify Privacy Portal</a>.</p>
+                            </div>
 
-Directly from you including when you create an account, visit or use the Services, communicate with us, or otherwise provide us with your personal information;
-Automatically through the Services including from your device when you use our products or services or visit our websites, and through the use of cookies and similar technologies;
-From our service providers including when we engage them to enable certain technology and when they collect or process your personal information on our behalf;
-From our partners or other third parties.
-How We Use Your Personal Information
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">Your Rights</h3>
+                                <p class="policy-body-text">Depending on where you live, you may have the right to:</p>
+                                <ul class="policy-list-items">
+                                    <li>Access personal information we hold about you</li>
+                                    <li>Request deletion of your personal information</li>
+                                    <li>Correct inaccurate personal information</li>
+                                    <li>Receive a portable copy of your data</li>
+                                    <li>Opt out of the sale or sharing of your data for targeted advertising</li>
+                                    <li>Opt out of promotional emails via the unsubscribe link in any email</li>
+                                </ul>
+                                <p class="policy-body-text">To exercise these rights, contact us at <a href="mailto:sales@wikdwraps.com" style="color: var(--color-primary);">sales@wikdwraps.com</a>. We will not discriminate against you for exercising any of these rights.</p>
+                            </div>
 
-Depending on how you interact with us or which of the Services you use, we may use personal information for the following purposes:
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">Children's Data</h3>
+                                <p class="policy-body-text">Our services are not intended for children. We do not knowingly collect personal information about anyone under the age of majority. Contact us to request deletion of a child's data.</p>
+                            </div>
 
-Provide, Tailor, and Improve the Services. We use your personal information to provide you with the Services, including to perform our contract with you, to process your payments, to fulfill your orders, to remember your preferences and items you are interested in, to send notifications to you related to your account, to process purchases, returns, exchanges or other transactions, to create, maintain and otherwise manage your account, to arrange for shipping, to facilitate any returns and exchanges, to enable you to post reviews, and to create a customized shopping experience for you, such as recommending products related to your purchases. This may include using your personal information to better tailor and improve the Services.
-Marketing and Advertising. We use your personal information for marketing and promotional purposes, such as to send marketing, advertising and promotional communications by email, text message or postal mail, and to show you online advertisements for products or services on the Services or other websites, including based on items you previously have purchased or added to your cart and other activity on the Services.
-Security and Fraud Prevention. We use your personal information to authenticate your account, to provide a secure payment and shopping experience, detect, investigate or take action regarding possible fraudulent, illegal, unsafe, or malicious activity, protect public safety, and to secure our services. If you choose to use the Services and register an account, you are responsible for keeping your account credentials safe. We highly recommend that you do not share your username, password or other access details with anyone else.
-Communicating with You. We use your personal information to provide you with customer support, to be responsive to you, to provide effective services to you and to maintain our business relationship with you.
-Legal Reasons. We use your personal information to comply with applicable law or respond to valid legal process, including requests from law enforcement or government agencies, to investigate or participate in civil discovery, potential or actual litigation, or other adversarial legal proceedings, and to enforce or investigate potential violations of our terms or policies.
-How We Disclose Personal Information
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">Security & Retention</h3>
+                                <p class="policy-body-text">No security measures are perfect or impenetrable. We retain personal information as long as necessary to provide services, comply with legal obligations, resolve disputes, and enforce policies.</p>
+                            </div>
 
-In certain circumstances, we may disclose your personal information to third parties for legitimate purposes subject to this Privacy Policy. Such circumstances may include:
-
-With Shopify, vendors and other third parties who perform services on our behalf (e.g. IT management, payment processing, data analytics, customer support, cloud storage, fulfillment and shipping).
-With business and marketing partners to provide marketing services and advertise to you. For example, we use Shopify to support personalized advertising with third-party services based on your online activity with different merchants and websites. Our business and marketing partners will use your information in accordance with their own privacy notices. Depending on where you reside, you may have a right to direct us not to share information about you to show you targeted advertisements and marketing based on your online activity with different merchants and websites. You can exercise your rights to opt-out of those uses here .
-When you direct, request us or otherwise consent to our disclosure of certain information to third parties, such as to ship you products or through your use of social media widgets or login integrations.
-With our affiliates or otherwise within our corporate group.
-In connection with a business transaction such as a merger or bankruptcy, to comply with any applicable legal obligations (including to respond to subpoenas, search warrants and similar requests), to enforce any applicable terms of service or policies, and to protect or defend the Services, our rights, and the rights of our users or others.
-Relationship with Shopify
-
-The Services are hosted by Shopify, which collects and processes personal information about your access to and use of the Services in order to provide and improve the Services for you. Information you submit to the Services will be transmitted to and shared with Shopify as well as third parties that may be located in countries other than where you reside, in order to provide and improve the Services for you. In addition, to help protect, grow, and improve our business, we use certain Shopify enhanced features that incorporate data and information obtained from your interactions with our Store, along with other merchants and with Shopify. To provide these enhanced features, Shopify may make use of personal information collected about your interactions with our store, along with other merchants, and with Shopify. In these circumstances, Shopify is responsible for the processing of your personal information, including for responding to your requests to exercise your rights over use of your personal information for these purposes. To learn more about how Shopify uses your personal information and any rights you may have, you can visit the Shopify Consumer Privacy Policy . Depending on where you live, you may exercise certain rights with respect to your personal information here Shopify Privacy Portal Link.
-
-Third Party Websites and Links
-
-The Services may provide links to websites or other online platforms operated by third parties. If you follow links to sites not affiliated or controlled by us, you should review their privacy and security policies and other terms and conditions. We do not guarantee and are not responsible for the privacy or security of such sites, including the accuracy, completeness, or reliability of information found on these sites. Information you provide on public or semi-public venues, including information you share on third-party social networking platforms may also be viewable by other users of the Services and/or users of those third-party platforms without limitation as to its use by us or by a third party. Our inclusion of such links does not, by itself, imply any endorsement of the content on such platforms or of their owners or operators, except as disclosed on the Services.
-
-Children's Data
-
-The Services are not intended to be used by children, and we do not knowingly collect any personal information about children under the age of majority in your jurisdiction. If you are the parent or guardian of a child who has provided us with their personal information, you may contact us using the contact details set out below to request that it be deleted.As of the Effective Date of this Privacy Policy, we do not have actual knowledge that we "share" or "sell" (as those terms are defined in applicable law) personal information of individuals under 16 years of age.
-
-Security and Retention of Your Information
-
-Please be aware that no security measures are perfect or impenetrable, and we cannot guarantee "perfect security." In addition, any information you send to us may not be secure while in transit. We recommend that you do not use unsecure channels to communicate sensitive or confidential information to us.
-
-How long we retain your personal information depends on different factors, such as whether we need the information to maintain your account, to provide you with Services, comply with legal obligations, resolve disputes or enforce other applicable contracts and policies.
-
-Your Rights and Choices
-
-Depending on where you live, you may have some or all of the rights listed below in relation to your personal information. However, these rights are not absolute, may apply only in certain circumstances and, in certain cases, we may decline your request as permitted by law.
-
-Right to Access / Know. You may have a right to request access to personal information that we hold about you.
-Right to Delete. You may have a right to request that we delete personal information we maintain about you.
-Right to Correct. You may have a right to request that we correct inaccurate personal information we maintain about you.
-Right of Portability. You may have a right to receive a copy of the personal information we hold about you and to request that we transfer it to a third party, in certain circumstances and with certain exceptions.
-Right to Opt out of Sale or Sharing for Targeted Advertising. Depending on where you reside, you may have a right to opt out of the "sale" or "share" of your personal information or to opt out of the processing of your personal information for purposes considered to be "targeted advertising", as defined in applicable privacy laws. You can exercise your rights to opt-out of those uses here. Please note that if you visit our website with the Global Privacy Control opt-out preference signal enabled, depending on where you are, we will automatically treat this as a request to opt-out for the device and browser that you use to visit the website. If we are able to associate the device sending the signal to a Shopify account, we will apply the opt out request to the account as well. To learn more about Global Privacy Control, you can visit https://globalprivacycontrol.org/. Other than the Global Privacy Control, we do not recognize other "Do Not Track" signals that may be sent from your web browser or device.
-Managing Communication Preferences. We may send you promotional emails, and you may opt out of receiving these at any time by using the unsubscribe option displayed in our emails to you. If you opt out, we may still send you non-promotional emails, such as those about your account or orders that you have made.
-
-
-
-You may exercise any of these rights where indicated on the Services or by contacting us using the contact details provided below. To learn more about how Shopify uses your personal information and any rights you may have, including rights related to data processed by Shopify, you can visit https://privacy.shopify.com/en.
-
-We will not discriminate against you for exercising any of these rights. We may need to verify your identity before we can process your requests, as permitted or required under applicable law. In accordance with applicable laws, you may designate an authorized agent to make requests on your behalf to exercise your rights. Before accepting such a request from an agent, we will require that the agent provide proof you have authorized them to act on your behalf, and we may need you to verify your identity directly with us. We will respond to your request in a timely manner as required under applicable law.
-
-Complaints
-
-If you have complaints about how we process your personal information, please contact us using the contact details provided below. Depending on where you live, you may have the right to appeal our decision by contacting us using the contact details set out below, or lodge your complaint with your local data protection authority.
-
-International Transfers
-
-Please note that we may transfer, store and process your personal information outside the country you live in.
-
-If we transfer your personal information out of the European Economic Area or the United Kingdom, we will rely on recognized transfer mechanisms like the European Commission's Standard Contractual Clauses, or any equivalent contracts issued by the relevant competent authority of the UK, as relevant, unless the data transfer is to a country that has been determined to provide an adequate level of protection.
-
-Changes to This Privacy Policy
-
-We may update this Privacy Policy from time to time, including to reflect changes to our practices or for other operational, legal, or regulatory reasons. We will post the revised Privacy Policy on this website, update the "Last updated" date and provide notice as required by applicable law.
-
-Contact
-
-Should you have any questions about our privacy practices or this Privacy Policy, or if you would like to exercise any of the rights available to you, please call or email us at support@boltmotorsports.com or contact us at 501 East Lamar Street, McKinney, TX, 75069, US</p>
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">Changes to This Policy</h3>
+                                <p class="policy-body-text">We may update this Privacy Policy at any time. The revised policy will be posted on this website with an updated "Last updated" date.</p>
                             </div>
                         </div>
                     </div>
@@ -806,214 +776,78 @@ Should you have any questions about our privacy practices or this Privacy Policy
                     </button>
                     <div class="policy-body">
                         <div class="policy-content">
-                            <div class="policy-placeholder">
-                                <p>Terms and Conditions
-These terms and conditions outline the rules and regulations for the use of the WIKD Wraps website.
-By accessing this website, we assume you accept these terms and conditions. Do not continue to use the WIKD Wraps website if you do not agree to all of the terms and conditions stated on this page.
-The following terminology applies to these Terms and Conditions, Privacy Statement, Disclaimer Notice, and all Agreements: “Client,” “You,” and “Your” refers to you, the person accessing this website and complying with the Company’s terms and conditions. “The Company,” “Ourselves,” “We,” “Our,” and “Us” refers to WIKD Wraps, LLC. “Party,” “Parties,” or “Us” refers to both the Client and ourselves.
-All terms refer to the offer, acceptance, and consideration of payment necessary to undertake the process of assisting the Client in the most appropriate manner for the express purpose of meeting the Client’s needs with respect to the Company’s stated services, in accordance with and subject to the prevailing laws of the United States. Any use of the above terminology or other words in the singular, plural, capitalization, and/or he/she/they are taken as interchangeable and therefore as referring to the same.
-
-
-
-
-
-Website Use
-By using this website, you agree to use it only for lawful purposes and in a manner that does not infringe upon the rights of, restrict, or inhibit anyone else’s use and enjoyment of the website.
-You agree not to use this website to:
-
-Submit false, misleading, or fraudulent information;
-Interfere with the operation, security, or functionality of the website;
-Attempt to gain unauthorized access to any portion of the website, server, payment system, booking system, or related systems;
-Upload or transmit viruses, malware, harmful code, automated scraping tools, or other disruptive technologies;
-Copy, reproduce, or misuse website content, photos, videos, pricing, service descriptions, or branding without written permission.
-WIKD Wraps reserves the right to restrict or terminate access to the website for any user who violates these Terms and Conditions or uses the website in a manner that may harm the Company, its clients, or third parties.
-
-
-
-
-
-License
-Unless otherwise stated, WIKD Wraps and/or its licensors own the intellectual property rights for all material on the WIKD Wraps website. All intellectual property rights are reserved. You may access this material from the WIKD Wraps website for your own personal use, subject to the restrictions set in these terms and conditions.
-You must not:
-
-Republish material from WIKD Wraps;
-Sell, rent, or sub-license material from WIKD Wraps;
-Reproduce, duplicate, or copy material from WIKD Wraps;
-Redistribute content from WIKD Wraps;
-Use WIKD Wraps photos, videos, logos, designs, service descriptions, or written materials for another business without written permission.
-This Agreement shall begin on the date hereof.
-
-
-
-
-
-Service Information, Quotes, Instant Estimates, and Online Requests
-The WIKD Wraps website may contain information about services including, but not limited to, paint protection film installation, window tint installation, vinyl wrap installation, ceramic coating installation, paint correction, detailing, maintenance services, and related automotive appearance services.
-Website descriptions, package information, pricing ranges, photos, videos, estimated timelines, and service explanations are provided for general informational purposes only. They do not guarantee final pricing, service availability, installation method, completion date, product performance, warranty coverage, or specific results.
-The online instant estimate configurator is designed solely as a tool to provide general pricing information and preliminary service estimates. Instant estimates generated through the website are not definitive quotes, binding offers, or final invoices.
-Actual pricing may vary from vehicle to vehicle and client to client depending on factors including, but not limited to, the current condition of the vehicle, correction labor requested or necessary, selected coverage options, scope complexity, material upgrades or material choice, disassembly labor as needed, special requests, shop labor requirements, and the addition of any applicable sales taxes, processing fees, or other charges.
-Any quote, estimate, instant estimate, or appointment request submitted through the website is not final until reviewed and confirmed by WIKD Wraps. Final pricing and service scope may depend on vehicle condition, vehicle size, selected materials, prior repairs, existing film or tint, contamination, paint condition, custom requests, material availability, and other job-specific factors.
-WIKD Wraps reserves the right to correct website errors, update pricing, modify service descriptions, decline requested work, require an in-person inspection, or revise estimates before accepting or completing any service.
-
-
-
-
-
-Service Agreements, Refunds, and Warranties
-Vehicle services performed by WIKD Wraps may be subject to separate service agreements, invoices, repair orders, refund policies, warranty policies, manufacturer warranty documents, maintenance instructions, and written authorizations.
-By booking or purchasing services from WIKD Wraps, you may be required to agree to additional terms specific to the service being performed. These may include terms related to deposits, cancellations, inspections, installation limitations, curing periods, maintenance requirements, warranty exclusions, vehicle pick-up, storage, payment disputes, and refunds.
-If there is a conflict between these website Terms and Conditions and a signed service agreement, invoice, repair order, or written authorization for a specific vehicle service, the signed service agreement, invoice, repair order, or written authorization shall control for that specific service.
-
-
-
-
-
-Vehicle Photos, Videos, and Marketing Use
-WIKD Wraps may photograph or video vehicles before, during, and after service for documentation, quality control, training, portfolio, marketing, advertising, website, and social media purposes.
-By submitting a vehicle for service or providing photos or videos to WIKD Wraps, you authorize WIKD Wraps to use images and videos of the vehicle for business and promotional purposes unless you notify WIKD Wraps in writing that you do not consent.
-WIKD Wraps will make reasonable efforts not to display sensitive personal information, personal documents, license plates, or identifying customer information when using vehicle media for marketing purposes.
-
-
-
-
-
-Comments and User Content
-Parts of this website may offer an opportunity for users to post and exchange opinions, comments, reviews, testimonials, photos, videos, or information in certain areas of the website or through linked platforms.
-WIKD Wraps does not filter, edit, publish, or review Comments prior to their presence on the website. Comments do not reflect the views and opinions of WIKD Wraps, its agents, employees, or affiliates. Comments reflect the views and opinions of the person who posts them.
-To the extent permitted by applicable laws, WIKD Wraps shall not be liable for Comments or for any liability, damages, or expenses caused and/or suffered as a result of any use, posting, or appearance of Comments on this website.
-WIKD Wraps reserves the right to monitor all Comments and to remove any Comments that may be considered inappropriate, offensive, misleading, defamatory, unlawful, or in breach of these Terms and Conditions.
-You warrant and represent that:
-
-You are entitled to post the Comments on our website and have all necessary licenses and consents to do so;
-The Comments do not invade any intellectual property right, including without limitation copyright, patent, or trademark of any third party;
-The Comments do not contain defamatory, libelous, offensive, indecent, unlawful, or privacy-invading material;
-The Comments will not be used to solicit or promote business, commercial activities, or unlawful activity.
-You hereby grant WIKD Wraps a non-exclusive license to use, reproduce, edit, and authorize others to use, reproduce, and edit any of your Comments in any and all forms, formats, or media.
-
-
-
-
-
-Hyperlinking to Our Content
-The following organizations may link to our website without prior written approval:
-
-Government agencies;
-Search engines;
-News organizations;
-Online directory distributors may link to our website in the same manner as they hyperlink to the websites of other listed businesses; and
-System-wide accredited businesses, except soliciting non-profit organizations, charity shopping malls, and charity fundraising groups, which may not hyperlink to our website.
-These organizations may link to our home page, publications, or other website information so long as the link:
-(a) is not in any way deceptive;
-(b) does not falsely imply sponsorship, endorsement, or approval of the linking party and its products or services; and
-(c) fits within the context of the linking party’s site.
-We may consider and approve other link requests from the following types of organizations:
-
-Commonly known consumer and/or business information sources;
-Dot-com community sites;
-Associations or other groups representing charities;
-Online directory distributors;
-Internet portals;
-Accounting, law, and consulting firms;
-Educational institutions and trade associations.
-We will approve link requests from these organizations if we decide that:
-(a) the link would not make us or our accredited businesses look unfavorable;
-(b) the organization does not have any negative records with us;
-(c) the benefit to us from the visibility of the hyperlink compensates the absence of WIKD Wraps; and
-(d) the link is in the context of general resource information.
-These organizations may link to our home page so long as the link:
-(a) is not in any way deceptive;
-(b) does not falsely imply sponsorship, endorsement, or approval of the linking party and its products or services; and
-(c) fits within the context and format of content on the linking party’s site.
-If you are one of the organizations listed above and are interested in linking to our website, you must inform us by sending an email to WIKD Wraps. Please include your name, your organization name, contact information, the URL of your site, a list of any URLs from which you intend to link to our website, and a list of the URLs on our site to which you would like to link. Please allow 2–3 weeks for a response.
-Approved organizations may hyperlink to our website as follows:
-
-By use of our corporate name;
-By use of the uniform resource locator being linked to;
-By use of any other description of our website that makes sense within the context and format of content on the linking party’s site.
-No use of WIKD Wraps’ logo, artwork, photos, videos, branding, or other media will be allowed for linking absent a trademark license agreement or written permission.
-
-
-
-
-
-iFrames
-Without prior approval and written permission, you may not create frames around our webpages that alter in any way the visual presentation or appearance of our website.
-
-
-
-
-
-Content Liability
-We shall not be held responsible for any content that appears on your website. You agree to protect and defend us against all claims arising on or from your website. No link should appear on any website that may be interpreted as libelous, obscene, criminal, misleading, or which infringes, violates, or advocates the infringement or violation of any third-party rights.
-[1:22 PM]
-Third-Party Links, Products, and Services
-Our website may contain links to third-party websites, payment processors, financing providers, manufacturers, warranty portals, map services, social media platforms, scheduling tools, review platforms, or other external resources.
-These links are provided for convenience only. WIKD Wraps does not control and is not responsible for the content, policies, security, accuracy, availability, pricing, claims, warranties, or practices of third-party websites or services.
-Use of third-party websites or services is at your own risk and may be subject to those third parties’ own terms and privacy policies.
-
-
-
-
-
-Your Privacy
-Please read our Privacy Policy.
-
-
-
-
-
-Reservation of Rights
-We reserve the right to request that you remove all links or any particular link to our website. You agree to immediately remove all links to our website upon request.
-We also reserve the right to amend these Terms and Conditions and our linking policy at any time. By continuously linking to our website, you agree to be bound to and follow these linking terms and conditions.
-
-
-
-
-
-Removal of Links from Our Website
-If you find any link on our website that is offensive for any reason, you are free to contact and inform us at any time. We will consider requests to remove links, but we are not obligated to do so or to respond directly.
-We do not ensure that the information on this website is correct, complete, or accurate. We do not promise to ensure that the website remains available or that the material on the website is kept up to date.
-
-
-
-
-
-Disclaimer
-To the maximum extent permitted by applicable law, we exclude all representations, warranties, and conditions relating to our website and the use of this website.
-Nothing in this disclaimer will:
-
-Limit or exclude our or your liability for death or personal injury;
-Limit or exclude our or your liability for fraud or fraudulent misrepresentation;
-Limit any of our or your liabilities in any way that is not permitted under applicable law; or
-Exclude any of our or your liabilities that may not be excluded under applicable law.
-The limitations and prohibitions of liability set in this section and elsewhere in this disclaimer:
-(a) are subject to the preceding paragraph; and
-(b) govern all liabilities arising under the disclaimer, including liabilities arising in contract, in tort, and for breach of statutory duty.
-As long as the website and the information and services on the website are provided free of charge, we will not be liable for any loss or damage of any nature arising from use of the website.
-Website content is provided for general informational purposes only and should not be relied upon as a guarantee of final pricing, service outcome, warranty approval, product performance, legal compliance, or vehicle-specific results.
-
-
-
-
-
-Governing Law and Venue
-By using this website or purchasing through our website, you agree that the laws of the State of Texas shall control and that all legal proceedings shall occur in the proper venue in Collin County, Texas, unless otherwise required by applicable law or agreed in a separate written agreement.
-
-Discounts, Promotions, and Bundle Offers
-&nbsp;WIKD Wraps may offer discounts, promotional offers, event-specific specials, website offers, or bundle discounts from time to time. These offers may be subject to additional terms, expiration dates, service eligibility requirements, vehicle eligibility requirements, product availability, scheduling availability, minimum purchase requirements, or other restrictions.
-Bundle discounts may be available when multiple qualifying services are purchased together. Bundle discounts may be stacked with other eligible bundle discounts unless otherwise stated.
-Promotional discounts, event-specific offers, coupon codes, limited-time offers, and website specials may not be stacked or combined with other promotional discounts unless expressly approved in writing by WIKD Wraps.
-WIKD Wraps reserves the right to modify, limit, refuse, or cancel any discount, promotion, bundle offer, or website special if the offer is expired, unavailable, used incorrectly, the result of an error, or inconsistent with the intended terms of the offer.
-
-
-
-Contact Information
-Questions about these Terms and Conditions may be directed to:
-WIKD Wraps, LLC
-417 Metro Park Dr
-McKinney, TX 75071
-(844) 232-9453
-sales@wikdwraps.com</p>
+                            <div class="policy-meta">
+                                <div class="policy-meta-item">
+                                    <span class="policy-meta-label">Governing Law</span>
+                                    <span class="policy-meta-value">State of Texas</span>
+                                </div>
+                                <div class="policy-meta-item">
+                                    <span class="policy-meta-label">Venue</span>
+                                    <span class="policy-meta-value">Collin County, TX</span>
+                                </div>
+                            </div>
+
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">Website Use</h3>
+                                <p class="policy-body-text">By using this website, you agree to use it only for lawful purposes. You must not:</p>
+                                <ul class="policy-list-items">
+                                    <li>Submit false, misleading, or fraudulent information</li>
+                                    <li>Interfere with the operation, security, or functionality of the website</li>
+                                    <li>Attempt to gain unauthorized access to any system or payment portal</li>
+                                    <li>Upload viruses, malware, or automated scraping tools</li>
+                                    <li>Copy or misuse website content, photos, pricing, or branding without written permission</li>
+                                </ul>
+                            </div>
+
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">Intellectual Property</h3>
+                                <p class="policy-body-text">Unless otherwise stated, WIKD Wraps owns all intellectual property on this website. You may not republish, sell, reproduce, redistribute, or use WIKD Wraps photos, videos, logos, or written materials for another business without written permission.</p>
+                            </div>
+
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">Quotes, Estimates & Service Information</h3>
+                                <p class="policy-body-text">Website descriptions, pricing ranges, and photos are for general informational purposes only. The online instant estimate configurator provides general pricing only — it is not a binding offer or final invoice.</p>
+                                <div class="policy-highlight">Actual pricing may vary based on vehicle condition, scope complexity, material choice, disassembly labor, and other job-specific factors. All quotes must be confirmed by WIKD Wraps before they are final.</div>
+                            </div>
+
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">Service Agreements & Warranties</h3>
+                                <p class="policy-body-text">Vehicle services may be subject to separate service agreements, refund policies, and warranty terms. If there is a conflict between these Terms and a signed service agreement for a specific vehicle, the signed agreement controls.</p>
+                            </div>
+
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">Vehicle Photos & Marketing Use</h3>
+                                <p class="policy-body-text">By submitting a vehicle for service, you authorize WIKD Wraps to use images and videos of the vehicle for business and promotional purposes. Notify us in writing if you do not consent. We will make reasonable efforts to exclude sensitive personal information from marketing media.</p>
+                            </div>
+
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">Comments & User Content</h3>
+                                <p class="policy-body-text">WIKD Wraps does not filter or review user comments prior to posting. Comments reflect the views of their authors, not WIKD Wraps. We reserve the right to remove comments that are inappropriate, offensive, or in breach of these Terms. By posting, you grant WIKD Wraps a non-exclusive license to use and reproduce your content in any form or media.</p>
+                            </div>
+
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">Third-Party Links</h3>
+                                <p class="policy-body-text">Links to third-party websites are provided for convenience only. WIKD Wraps is not responsible for the content, accuracy, or practices of external sites. Use of third-party services is at your own risk.</p>
+                            </div>
+
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">Disclaimer</h3>
+                                <p class="policy-body-text">To the maximum extent permitted by applicable law, we exclude all representations, warranties, and conditions relating to our website. Website content is for general informational purposes only and should not be relied upon as a guarantee of final pricing, service outcome, warranty approval, or product performance.</p>
+                            </div>
+
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">Discounts & Promotions</h3>
+                                <p class="policy-body-text">Bundle discounts may be stacked with other eligible bundle discounts. Promotional discounts, coupon codes, and limited-time offers may not be combined with other promotions unless expressly approved in writing. WIKD Wraps reserves the right to modify or cancel any offer at any time.</p>
+                            </div>
+
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">Governing Law</h3>
+                                <p class="policy-body-text">By using this website, you agree that the laws of the State of Texas shall govern and that all legal proceedings shall occur in Collin County, Texas, unless otherwise required by applicable law.</p>
+                            </div>
+
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">Questions</h3>
+                                <p class="policy-body-text">Direct questions about these Terms to <a href="mailto:sales@wikdwraps.com" style="color: var(--color-primary);">sales@wikdwraps.com</a> or call (844) 232-9453.</p>
                             </div>
                         </div>
                     </div>
@@ -1032,24 +866,30 @@ sales@wikdwraps.com</p>
                     </button>
                     <div class="policy-body">
                         <div class="policy-content">
-                            <div class="policy-placeholder">
-                                <p>You will receive your order in the time allotted depending on your shipping choice, or sooner. Please note, the shipping time does not include processing time, which may take up to 3 business days.
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">Processing Time</h3>
+                                <p class="policy-body-text">After payment is authorized and verified, orders may take up to 2 business days to process. Shipping time shown at checkout does not include processing time. Business days exclude weekends and holidays. Orders placed after 12:00 PM CST on Fridays begin processing the following Monday.</p>
+                            </div>
 
-After your payment is authorized and verified, it can still take up to 2 business days to process your order through our warehouses.
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">Carriers & Methods</h3>
+                                <p class="policy-body-text">We use all major carriers including UPS, USPS, and FedEx. We reserve the right to ship with a different method or carrier than selected if it results in faster delivery or if the selected service is unavailable. Your tracking number will reflect the actual shipping service used.</p>
+                                <p class="policy-body-text">All branded merchandise (apparel and accessories) ships via USPS for domestic orders — First Class or Priority based on weight.</p>
+                            </div>
 
-Business days do not include weekends or Holidays. Orders placed on Friday's after 12:00PM CST will begin processing the following Monday.
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">Expedited Shipping</h3>
+                                <p class="policy-body-text">Faster-than-standard shipping may not be available for all items. If expedited shipping is unavailable, a refund for the difference between standard and accelerated rates will be issued to your original payment method and you will be notified.</p>
+                            </div>
 
-We reserve the right to ship with a different method than selected if it gets the item to you faster or the shipping service is unavailable for your item. If you selected ground service, regardless of the carrier, we may use a different carrier than what you selected. Your tracking number will reflect the service we have shipped with. &nbsp;
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">Address Changes</h3>
+                                <p class="policy-body-text">Address changes are allowed on a case-by-case basis within 14 days of the original order placement. Contact our support team to check eligibility.</p>
+                            </div>
 
-Faster than standard shipping may not be available for your item. In these cases, a refund for the difference in standard and accelerated shipping will be issued back to your payment method and you will be notified.&nbsp;
-
-Shipping time is calculated in the shopping cart. Remember, this does not include processing time and may not be available for your item. If you have firm deadlines and require items urgently, please contact our live support representatives or email sales@wikdwraps.com
-
-We use all major Carriers, including UPS, USPS and FedEx.
-
-Address Changes are only allowed on a case-by-case basis and within 14 days of the original order placement. Please reach out to our support team to see if your order is eligible for address change.
-
-ALL Branded Merchandise such as apparel and accessories ship via USPS for domestic orders (First class or Priority based on weight).</p>
+                            <div class="policy-section">
+                                <h3 class="policy-section-title">Urgent Orders</h3>
+                                <p class="policy-body-text">If you have firm deadlines or require items urgently, contact us before ordering at <a href="mailto:sales@wikdwraps.com" style="color: var(--color-primary);">sales@wikdwraps.com</a> or (844) 232-9453.</p>
                             </div>
                         </div>
                     </div>
@@ -1068,14 +908,23 @@ ALL Branded Merchandise such as apparel and accessories ship via USPS for domest
                     </button>
                     <div class="policy-body">
                         <div class="policy-content">
-                            <div class="policy-placeholder">
-                                <p>Trade name: WIKD Wraps
-
-Phone number: (844) 232-9453
-
-Email: sales@wikdwraps.com
-
-Physical address: 417 Metro Park Dr, McKinney, TX 75071</p>
+                            <div class="policy-contact-grid">
+                                <div class="policy-contact-card">
+                                    <div class="label">Trade Name</div>
+                                    <div class="value">WIKD Wraps, LLC</div>
+                                </div>
+                                <div class="policy-contact-card">
+                                    <div class="label">Phone</div>
+                                    <div class="value"><a href="tel:8442329453">(844) 232-9453</a></div>
+                                </div>
+                                <div class="policy-contact-card">
+                                    <div class="label">Email</div>
+                                    <div class="value"><a href="mailto:sales@wikdwraps.com">sales@wikdwraps.com</a></div>
+                                </div>
+                                <div class="policy-contact-card">
+                                    <div class="label">Address</div>
+                                    <div class="value">417 Metro Park Dr<br>McKinney, TX 75071</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1085,16 +934,15 @@ Physical address: 417 Metro Park Dr, McKinney, TX 75071</p>
         </div>
     </main>
 
-    <!-- Footer -->
     <footer class="wikd-footer">
         <div class="wikd-footer-container">
             <div class="wikd-footer-grid">
                 <div class="wikd-footer-brand">
                     <a href="https://wikdwraps.com/" class="flex items-center" style="text-decoration: none;">
-                    <span class="logo-text text-2xl tracking-tight text-white hover:text-[#FF3B30] transition-colors" style="font-family: var(--font-heading, 'Rajdhani', sans-serif); font-weight: 800; text-transform: uppercase; line-height: 1; font-size: 1.5rem; letter-spacing: -0.025em; color: white;">
-                        WIKD<span class="font-semibold text-[#666]" style="font-weight: 600; color: #666;">WRAPS</span>
-                    </span>
-                </a>
+                        <span style="font-family: var(--font-heading, 'Rajdhani', sans-serif); font-weight: 800; text-transform: uppercase; line-height: 1; font-size: 1.5rem; letter-spacing: -0.025em; color: white;">
+                            WIKD<span style="font-weight: 600; color: #666;">WRAPS</span>
+                        </span>
+                    </a>
                     <p class="wikd-footer-tagline">Uncompromised Protection. WIKD Craftsmanship.</p>
                     <div class="wikd-footer-social">
                         <a href="https://www.instagram.com/wikdwraps" target="_blank" rel="noopener" class="wikd-footer-social-link" aria-label="Instagram">
@@ -1127,8 +975,8 @@ Physical address: 417 Metro Park Dr, McKinney, TX 75071</p>
                     © 2025 <a href="/">WIKD Wraps</a>. All rights reserved.
                 </div>
                 <div class="wikd-footer-legal">
-                <a href="https://wikdwraps.com/pages/policies-legal">Legal &amp; Policies</a>
-            </div>
+                    <a href="https://wikdwraps.com/pages/policies-legal">Legal &amp; Policies</a>
+                </div>
             </div>
         </div>
     </footer>
@@ -1138,7 +986,6 @@ Physical address: 417 Metro Park Dr, McKinney, TX 75071</p>
             const item = document.getElementById(id);
             const isOpen = item.classList.contains('is-open');
             const trigger = item.querySelector('.policy-trigger');
-
             item.classList.toggle('is-open', !isOpen);
             trigger.setAttribute('aria-expanded', String(!isOpen));
         }
