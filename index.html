@@ -355,7 +355,7 @@
 
       /* Applied Styles to Hero */
         .hero h1 {
-            font-size: clamp(2.5rem, 6vw, 4rem) !important;
+            font-size: clamp(1.8rem, 6vw, 4rem) !important;
         }
         .hero .badge {
             background-color: var(--color-primary) !important;
@@ -1588,23 +1588,49 @@
             transform: translateX(5px);
         }
 
-        @media (max-width: 768px) {
-            .hero {
-                min-height: max(85vh, 600px);
+        .mobile-text {
+            display: none;
+        }
 
+        .desktop-text {
+            display: inline;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-text {
+                display: inline;
+            }
+            .desktop-text {
+                display: none;
+            }
+
+            .hero {
+                min-height: max(70vh, 500px);
+            }
+
+            .badge {
+                font-size: 0.75rem;
+                padding: 0.5rem 1rem;
+                margin-bottom: 1rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 100%;
             }
 
             .hero h1 {
-                font-size: 2.5rem;
+                font-size: 1.8rem !important;
+                margin-bottom: 1.5rem;
             }
 
             .cta-buttons {
-                grid-template-columns: 1fr;
-                grid-template-rows: auto auto auto;
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: auto auto;
+                gap: 0.75rem;
             }
 
             .hero .btn:nth-child(3) {
-                grid-column: 1;
+                grid-column: 1 / -1;
             }
         }
     </style>
@@ -1622,15 +1648,18 @@
 
         <div class="hero-content">
             <div class="hero-text-wrapper">
-                <div class="badge">TOP PPF &amp; COATING SPECIALISTS IN MCKINNEY TX</div>
+                <div class="badge">
+                    <span class="desktop-text">TOP PPF &amp; COATING SPECIALISTS IN MCKINNEY TX</span>
+                    <span class="mobile-text">MCKINNEY'S TOP PPF &amp; COATING SPECIALISTS</span>
+                </div>
                 <h1>Paint Protection Solutions From The Best Name In Custom Performance</h1>
                 
                 <div class="cta-buttons">
                     <a href="https://wikdwraps.com/pages/our-services" class="btn btn-primary">
-                        <span>Explore Services</span>
+                        <span><span class="desktop-text">Explore Services</span><span class="mobile-text">Services</span></span>
                     </a>
                     <a href="https://wikdwraps.com/pages/estimate-configurator" class="btn btn-secondary">
-                        <span>Instant Quote Tool</span>
+                        <span><span class="desktop-text">Instant Quote Tool</span><span class="mobile-text">Quote</span></span>
                     </a>
                     <a href="https://wikdwraps.com/pages/contact" class="btn btn-tertiary">
                     <span>Reserve Your Spot</span>
