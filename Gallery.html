@@ -225,11 +225,13 @@
       .nav-arrow-left { left: 1rem; }
       .nav-arrow-right { right: 1rem; }
       .nav-arrow:disabled, .nav-arrow.disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
-      .gallery-item { flex: 0 0 calc(66.66% - 1rem); position: relative; aspect-ratio: 16/9; border-radius: 2px; overflow: hidden; border: 1px solid var(--color-border); background: var(--color-surface); transition: border-color 0.3s ease, transform 0.3s ease; }
+      .gallery-item { flex: 0 0 auto; position: relative; height: 250px; border-radius: 2px; overflow: hidden; border: 1px solid var(--color-border); background: var(--color-surface); transition: border-color 0.3s ease, transform 0.3s ease; }
+      @media (min-width: 768px) { .gallery-item { height: 350px; } }
+      @media (min-width: 1024px) { .gallery-item { height: 450px; } }
       .gallery-item:hover { cursor: pointer; border-color: var(--color-primary); }
-      @media (min-width: 768px) { .gallery-item { flex: 0 0 calc(38% - 1rem); } }
-      @media (min-width: 1024px) { .gallery-item { flex: 0 0 calc(26% - 1rem); } }
-      .gallery-img { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.6s ease-out, transform 0.6s ease; transform: scale(1.02); display: block; }
+      .gallery-img { height: 100%; width: auto; object-fit: cover; opacity: 0; transition: opacity 0.6s ease-out, transform 0.6s ease; transform: scale(1.02); display: block; }
+      /* Ensure fallback width while loading so carousel doesn't collapse entirely */
+      .gallery-item:not(:has(.gallery-img.loaded)) { aspect-ratio: 16/9; }
       .gallery-img.loaded { opacity: 1; transform: scale(1); }
       .gallery-item:hover .gallery-img { transform: scale(1.05); }
       .skeleton-loader { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(90deg, #111 25%, #1a1a1a 50%, #111 75%); background-size: 200% 100%; animation: shimmer 2s infinite; z-index: -1; }
@@ -1278,18 +1280,24 @@
           const rightBtn = section.querySelector('.nav-arrow-right');
           if(!track || !leftBtn || !rightBtn || !view) return;
           let currentIndex = 0; let startX = 0; let currentTranslate = 0; let isDragging = false;
-          const updateTrack = () => {
-              const firstItem = track.querySelector('.gallery-item');
-              if (!firstItem) return;
-              const stepSize = firstItem.getBoundingClientRect().width + parseFloat(getComputedStyle(track).gap || 0);
-              const totalItems = track.children.length;
+                    const updateTrack = () => {
+              const items = track.querySelectorAll('.gallery-item');
+              if (!items.length) return;
+              const totalItems = items.length;
+              currentIndex = Math.max(0, Math.min(currentIndex, totalItems - 1));
+              const currentItem = items[currentIndex];
+
               const viewWidth = view.offsetWidth;
               const trackWidth = track.scrollWidth;
               const maxTranslate = -(trackWidth - viewWidth);
-             currentIndex = Math.max(0, Math.min(currentIndex, totalItems - 1));
-             currentTranslate = -(currentIndex * stepSize);
-              if (trackWidth > viewWidth && currentTranslate < maxTranslate) currentTranslate = maxTranslate;
-              else if (trackWidth <= viewWidth) currentTranslate = 0;
+
+              // Calculate offset up to the current item, minus track's padding/margin if any
+              let targetTranslate = -currentItem.offsetLeft;
+
+              if (trackWidth > viewWidth && targetTranslate < maxTranslate) targetTranslate = maxTranslate;
+              else if (trackWidth <= viewWidth) targetTranslate = 0;
+
+             currentTranslate = targetTranslate;
              track.style.transform = `translateX(${currentTranslate}px)`;
              leftBtn.classList.toggle('disabled', currentTranslate >= 0);
              rightBtn.classList.toggle('disabled', currentTranslate <= maxTranslate + 5);
@@ -1312,7 +1320,7 @@
              entries.forEach(entry => {
                   if (entry.isIntersecting) {
                      const img = entry.target; const src = img.getAttribute('data-src');
-                     if (src) { img.src = src; img.onload = () => { img.classList.add('loaded'); const l = img.previousElementSibling; if (l) l.remove(); }; img.removeAttribute('data-src'); }
+                                          if (src) { img.src = src; img.onload = () => { img.classList.add('loaded'); const l = img.previousElementSibling; if (l) l.remove(); window.dispatchEvent(new Event('resize')); }; img.removeAttribute('data-src'); }
                      observer.unobserve(img);
                   }
              });
