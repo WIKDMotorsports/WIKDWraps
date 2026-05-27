@@ -447,6 +447,17 @@
                     <button id="refreshTagsBtn" class="tool-btn" style="width:30px; padding:0; flex-shrink:0;" title="Reset to Auto-Tags" onclick="resetTagsToAuto()">↻</button>
                 </div>
             </div>
+            <div>
+                <span class="input-label">SHOW ON HOMEPAGE</span>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <label style="color:var(--text-muted); font-size:12px; display:flex; align-items:center; gap:4px; cursor:pointer;">
+                        <input type="radio" name="showOnHome" value="true"> Yes
+                    </label>
+                    <label style="color:var(--text-muted); font-size:12px; display:flex; align-items:center; gap:4px; cursor:pointer;">
+                        <input type="radio" name="showOnHome" value="false" checked> No
+                    </label>
+                </div>
+            </div>
         </div>
       </div>
       
@@ -817,7 +828,8 @@
           id: item.dbId,
           title: item.title,
           subtitle: item.subtitle,
-          orderId: item.orderId
+          orderId: item.orderId,
+          showOnHome: item.showOnHome || false
       };
       
       // Advance State
@@ -843,7 +855,8 @@
           await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', COL_NAME, item.dbId), {
               title: quickGroupSource.title,
               subtitle: quickGroupSource.subtitle,
-              orderId: quickGroupSource.orderId
+              orderId: quickGroupSource.orderId,
+              showOnHome: quickGroupSource.showOnHome
           });
           
           // Visual Feedback
@@ -868,6 +881,11 @@
       els.projTitle.value = item.title || '';
       els.projSubtitle.value = item.subtitle || '';
       els.projOrder.value = item.orderId || '';
+      if (item.showOnHome === true) {
+          document.querySelector('input[name="showOnHome"][value="true"]').checked = true;
+      } else {
+          document.querySelector('input[name="showOnHome"][value="false"]').checked = true;
+      }
       
       // 3. LOCK UI by default to prevent accidental grouping changes
       window.toggleLock(true);
@@ -913,6 +931,7 @@
       els.projTitle.value = '';
       els.projSubtitle.value = '';
       els.projOrder.value = '';
+      document.querySelector('input[name="showOnHome"][value="false"]').checked = true;
       
       // Unlock for new entry creation
       window.toggleLock(false);
@@ -995,6 +1014,7 @@
           title: els.projTitle.value.trim(),
           subtitle: els.projSubtitle.value.trim(),
           orderId: els.projOrder.value.trim(),
+          showOnHome: document.querySelector('input[name="showOnHome"]:checked').value === 'true',
           tags: [...currentTags],
           createdAt: new Date().toISOString(),
           // Persist the URL regardless of where it came from
@@ -1138,7 +1158,10 @@
           els.imgWrap.style.display = 'none';
           els.prompt.style.display = 'block';
           els.promptText.textContent = "DROP ZONE";
-          if(!isLocked) { els.projTitle.value=''; els.projSubtitle.value=''; els.projOrder.value=''; }
+          if(!isLocked) {
+              els.projTitle.value=''; els.projSubtitle.value=''; els.projOrder.value='';
+              document.querySelector('input[name="showOnHome"][value="false"]').checked = true;
+          }
           renderQueueList();
           return;
       }
@@ -1158,6 +1181,7 @@
           els.projTitle.value = title;
           els.projSubtitle.value = "";
           els.projOrder.value = "";
+          document.querySelector('input[name="showOnHome"][value="false"]').checked = true;
       }
       renderQueueList();
   }
