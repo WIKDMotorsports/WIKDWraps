@@ -1466,15 +1466,10 @@
         /* Hero Section */
         .hero {
             min-height: max(100vh, 650px);
-
             width: 100vw; /* Full viewport width */
-            
-            /* REMOVED: Static Background Image */
-            /* background-image: ... */
-            
             position: relative;
             display: flex;
-            align-items: center;
+            flex-direction: column; /* Allows internal content to stretch */
             overflow: hidden; /* Ensure images don't spill */
         }
 
@@ -1486,6 +1481,12 @@
             width: 100%;
             height: 100%;
             z-index: 0;
+        }
+
+        .hero-bg-wrapper picture {
+            display: block;
+            width: 100%;
+            height: 100%;
         }
 
         .fade-image {
@@ -1518,24 +1519,21 @@
 
         /* Hero Content - Uses standardized container logic */
         .hero-content {
-            /* Standard container logic matching .mobile-scaled-container and .wikd-footer-container */
+            /* Standard container logic matching .mobile-scaled-container */
             width: 92%;
             max-width: 1200px;
             margin: 0 auto;
-            
-            /* Flexbox to handle vertical centering if needed, but primarily for structure */
             display: flex;
             flex-direction: column;
             justify-content: center;
-            
             padding-top: 3rem;
             padding-bottom: 3rem;
-            
             position: relative;
             z-index: 2; /* Sit above overlay and images */
+            flex-grow: 1; /* Fills available height */
         }
         
-        /* Inner wrapper to restrict text width for readability while keeping container centered */
+        /* Inner wrapper to restrict text width for readability */
         .hero-text-wrapper {
              max-width: 100%;
         }
@@ -1597,15 +1595,27 @@
         }
 
         @media (max-width: 768px) {
-            .mobile-text {
-                display: inline;
-            }
-            .desktop-text {
-                display: none;
-            }
-
             .hero {
-                min-height: max(70vh, 500px);
+                /* Bulletproof full screen height for modern mobile browsers */
+                min-height: 100dvh; 
+            }
+            .hero-content {
+                /* ASPECT RATIO PROTECTION: Never allows top padding to drop below 110px (clearing the nav) */
+                padding-top: max(110px, 15dvh); 
+                padding-bottom: max(40px, 8dvh);
+                justify-content: flex-start;
+            }
+            .hero-text-wrapper {
+                display: flex;
+                flex-direction: column;
+                flex-grow: 1; /* Stretches dynamically so margin-top: auto works perfectly */
+            }
+            .cta-buttons {
+                margin-top: auto; /* Pushes buttons strictly to the bottom */
+                padding-top: 2rem; /* Guarantees space between text and buttons if screen is weirdly short */
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: auto auto;
+                gap: 0.75rem;
             }
 
             .badge {
@@ -1623,14 +1633,14 @@
                 margin-bottom: 1.5rem;
             }
 
-            .cta-buttons {
-                grid-template-columns: 1fr 1fr;
-                grid-template-rows: auto auto;
-                gap: 0.75rem;
-            }
-
             .hero .btn:nth-child(3) {
                 grid-column: 1 / -1;
+            }
+            .mobile-text {
+                display: inline;
+            }
+            .desktop-text {
+                display: none;
             }
         }
     </style>
@@ -1640,7 +1650,12 @@
     <section class="hero">
         <!-- New Background Container for Time Reactive Module -->
         <div id="hero-bg-container" class="hero-bg-wrapper">
-             <img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Freshly_Detailed_Ryft_McLaren_720s_on_HRE_Wheels_with_WIKD_Exhaust.jpg?v=1744062350" class="fade-image active" alt="Hero Background">
+             <picture>
+                 <!-- Specific image swap for mobile (< 768px) -->
+                 <source media="(max-width: 768px)" srcset="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/IMG_7141.jpg?v=1779221958">
+                 <!-- Default desktop image -->
+                 <img src="https://cdn.shopify.com/s/files/1/0648/4826/5421/files/Freshly_Detailed_Ryft_McLaren_720s_on_HRE_Wheels_with_WIKD_Exhaust.jpg?v=1744062350" class="fade-image active" alt="Hero Background">
+             </picture>
         </div>
         
         <!-- Overlay to ensure text readability -->
@@ -1967,7 +1982,7 @@
                  Your car deserves nothing less than perfection.
          </h2>
             <p class="p-muted max-w-2xl mx-auto mt-4 mb-8">
-               Trust a shop that shares your passion and refuses to cut corners. Experience precision, craftsmanship, and care as if your vehicle were our own.
+                Trust a shop that shares your passion and refuses to cut corners. Experience precision, craftsmanship, and care as if your vehicle were our own.
             </p>
            <a href="https://wikdwraps.com/pages/contact" class="btn btn-primary">
              <span>Get Started</span>
