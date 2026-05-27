@@ -1465,8 +1465,8 @@
 
         /* Hero Section */
         .hero {
-            height: 100vh;
-            min-height: 100vh;
+            min-height: max(100vh, 650px);
+
             width: 100vw; /* Full viewport width */
             
             /* REMOVED: Static Background Image */
@@ -1590,8 +1590,8 @@
 
         @media (max-width: 768px) {
             .hero {
-                height: 85vh;
-                min-height: 85vh;
+                min-height: max(85vh, 600px);
+
             }
 
             .hero h1 {
