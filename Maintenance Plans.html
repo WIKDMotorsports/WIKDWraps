@@ -153,13 +153,6 @@
             padding-bottom: 4rem;
             margin-bottom: -1px; /* FIX 3: Negative margin to overlap next section and hide 1px gap */
         }
-
-        @media (max-width: 768px) {
-            .page-hero-content {
-                padding-top: max(110px, 15dvh) !important;
-                padding-bottom: max(40px, 8dvh) !important;
-            }
-        }
         .page-hero-content {
             width: 92%;
             max-width: 1200px;
@@ -167,6 +160,13 @@
             position: relative;
             z-index: 10;
         }
+        @media (max-width: 768px) {
+            .page-hero-content {
+                padding-top: max(110px, 15dvh) !important;
+                padding-bottom: max(40px, 8dvh) !important;
+            }
+        }
+
 
         /* --- CONTENT SECTIONS --- */
         .content-section {
