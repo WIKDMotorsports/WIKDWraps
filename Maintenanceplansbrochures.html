@@ -101,6 +101,12 @@
             padding-bottom: 0; 
             margin-bottom: 0;
         }
+        @media (max-width: 768px) {
+            .page-hero {
+                padding-top: max(110px, 15dvh) !important;
+                padding-bottom: max(40px, 8dvh) !important;
+            }
+        }
         .page-hero-content {
             width: 92%; max-width: 1200px; margin: 0 auto;
             position: relative; z-index: 10;
