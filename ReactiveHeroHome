@@ -2247,8 +2247,8 @@
         const msHours = { 'Sun': { open: null, close: null, closedText: 'Closed' }, 'Mon': { open: 8.5, close: 16.5 }, 'Tue': { open: 8.5, close: 16.5 }, 'Wed': { open: 8.5, close: 16.5 }, 'Thu': { open: 8.5, close: 16.5 }, 'Fri': { open: 8.5, close: 16.5 }, 'Sat': { open: null, close: null, closedText: 'Closed' } };
 
         initializeLocationCard({
-            idPrefix: 'pbw', phone: '844-232-9453', address: '501 E Lamar St, McKinney, TX 75069',
-            directionsLink: 'https://maps.google.com/?daddr=501%20E%20Lamar%20St%2C%20McKinney%2C%20TX%2075069', hours: pbwHours,
+            idPrefix: 'pbw', phone: '844-232-9453', address: '417 Metro Park Dr, McKinney, TX 75071',
+            directionsLink: 'https://maps.google.com/?daddr=417%20Metro%20Park%20Dr%2C%20McKinney%2C%20TX%2075071', hours: pbwHours,
             showOpenStatus: true
         });
         initializeLocationCard({
