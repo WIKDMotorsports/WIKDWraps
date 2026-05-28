@@ -34,12 +34,15 @@
         /* Base styles for preview components */
         html {
             scroll-behavior: smooth;
+            overflow-x: hidden; /* STRICT FIX: Prevent horizontal scroll */
+            width: 100%;
         }
         body {
             background-color: var(--color-background) !important;
             color: var(--color-text) !important;
             font-family: var(--font-body) !important;
-            overflow-x: hidden; /* Prevent horizontal scroll */
+            overflow-x: hidden; /* STRICT FIX: Prevent horizontal scroll */
+            width: 100%;
             position: relative;
             margin: 0;
             padding: 0;
@@ -1465,11 +1468,12 @@
 
         /* Hero Section */
         .hero {
+            /* Full viewport height with fallback */
             min-height: max(100vh, 650px);
-            width: 100vw; /* Full viewport width */
+            width: 100%; /* FIX: Prevents horizontal scrolling caused by 100vw */
             position: relative;
             display: flex;
-            flex-direction: column; /* Allows internal content to stretch */
+            flex-direction: column; /* RESTORED: Allows internal content to stretch */
             overflow: hidden; /* Ensure images don't spill */
         }
 
@@ -1530,7 +1534,7 @@
             padding-bottom: 3rem;
             position: relative;
             z-index: 2; /* Sit above overlay and images */
-            flex-grow: 1; /* Fills available height */
+            flex-grow: 1; /* RESTORED: Fills available height */
         }
         
         /* Inner wrapper to restrict text width for readability */
@@ -1571,6 +1575,7 @@
             grid-template-rows: auto auto;
             gap: 1.5rem;
             width: fit-content;
+            max-width: 100%; /* Safety to prevent overflow */
         }
 
         .hero .btn:nth-child(3) {
@@ -1600,7 +1605,7 @@
                 min-height: 100dvh; 
             }
             .hero-content {
-                /* ASPECT RATIO PROTECTION: Never allows top padding to drop below 110px (clearing the nav) */
+                /* RESTORED ASPECT RATIO PROTECTION: Never allows top padding to drop below 110px (clearing the nav) */
                 padding-top: max(110px, 15dvh); 
                 padding-bottom: max(40px, 8dvh);
                 justify-content: flex-start;
@@ -1608,7 +1613,7 @@
             .hero-text-wrapper {
                 display: flex;
                 flex-direction: column;
-                flex-grow: 1; /* Stretches dynamically so margin-top: auto works perfectly */
+                flex-grow: 1; /* RESTORED: Stretches dynamically so margin-top: auto works perfectly */
             }
             .cta-buttons {
                 margin-top: auto; /* Pushes buttons strictly to the bottom */
@@ -1616,6 +1621,7 @@
                 grid-template-columns: 1fr 1fr;
                 grid-template-rows: auto auto;
                 gap: 0.75rem;
+                width: 100%; /* Ensure it spans properly without overflowing */
             }
 
             .badge {
@@ -1641,6 +1647,15 @@
             }
             .desktop-text {
                 display: none;
+            }
+            
+            /* Overriding btn padding on small mobile to ensure no overflow */
+            .hero .btn {
+                padding: 12px 16px;
+                font-size: 16px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
             }
         }
     </style>
