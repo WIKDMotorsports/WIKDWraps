@@ -17,6 +17,14 @@
     <title>WIKDWRAPS</title>
 
     <style>
+        /* Hide play button on iOS low power mode for background videos */
+        video::-webkit-media-controls,
+        video::-webkit-media-controls-start-playback-button,
+        video::-webkit-media-controls-overlay-play-button {
+            display: none !important;
+            -webkit-appearance: none !important;
+        }
+
       :root {
             --color-background: #0A0A0A;
             --color-text: #EAEAEA;
