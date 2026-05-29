@@ -1663,7 +1663,11 @@
             async function initWidget() {
                 // Handle video loading
                 if(video.readyState < 3) {
-                      await new Promise(r => video.addEventListener('canplay', r, {once:true}));
+                    await Promise.race([
+                        new Promise(r => video.addEventListener('canplay', r, {once:true})),
+                        new Promise(r => video.addEventListener('error', r, {once:true})),
+                        new Promise(r => setTimeout(r, 3000))
+                    ]);
                 }
                 
                 // Hide loader
