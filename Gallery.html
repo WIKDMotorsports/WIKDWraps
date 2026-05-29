@@ -238,7 +238,17 @@
       @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
       /* --- LIGHTBOX (MODIFIED) --- */
-      #lightbox { position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.95); backdrop-filter: blur(15px); display: block; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+      #lightbox { position: fixed; inset: 0; z-index: 10000; display: block; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+
+      @media (min-width: 1024px) {
+        #lightbox { background: rgba(0,0,0,0.95); backdrop-filter: blur(15px); }
+      }
+      @media (max-width: 1023px) {
+        #lightbox { background: #000; }
+      }
+
+      .gallery-frozen { visibility: hidden; pointer-events: none; }
+
       #lightbox.active { opacity: 1; pointer-events: all; }
       .lightbox-content-aligner { position: relative; width: 100%; max-width: 1400px; height: 100%; margin: 0 auto; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: max(1rem, env(safe-area-inset-top)) 0.5rem max(1rem, env(safe-area-inset-bottom)) 0.5rem; box-sizing: border-box; }
       .lightbox-content { position: relative; width: 100%; flex: 1; min-height: 0; display: flex; justify-content: center; align-items: center; overflow: visible; }
@@ -1045,15 +1055,19 @@
         
         try {
             if(!auth.currentUser) await signInAnonymously(auth);
-            const colRef = collection(db, 'artifacts', appId, 'public', 'data', COL_NAME);
-            const snapshot = await getDocs(colRef);
-            
             const projectsMap = {};
             const shopLifeList = [];
             
-            // Process Docs
-            const rawDocs = [];
-            snapshot.forEach(doc => rawDocs.push({ ...doc.data(), _id: doc.id }));
+            let rawDocs = [];
+            const cachedData = sessionStorage.getItem('wikd_gallery_data');
+            if (cachedData) {
+                rawDocs = JSON.parse(cachedData);
+            } else {
+                const colRef = collection(db, 'artifacts', appId, 'public', 'data', COL_NAME);
+                const snapshot = await getDocs(colRef);
+                snapshot.forEach(doc => rawDocs.push({ ...doc.data(), _id: doc.id }));
+                sessionStorage.setItem('wikd_gallery_data', JSON.stringify(rawDocs));
+            }
             
             // Sort in memory (Newest first)
             rawDocs.sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
@@ -1109,7 +1123,36 @@
                 
                 const contentBlock = generateAllGalleryHTML(projectsArray, shopLifeList);
                 galleryContainer.appendChild(contentBlock);
-                contentBlock.querySelectorAll('.project-section').forEach(section => initManualCarousel(section));
+
+                // IntersectionObserver for lazy loading sections
+                const observerOptions = {
+                    root: null,
+                    rootMargin: "400px 0px 400px 0px",
+                    threshold: 0
+                };
+
+                const sectionObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const section = entry.target;
+                            if (section.dataset.loaded !== 'true') {
+                                injectSectionImages(section);
+                                section.dataset.loaded = 'true';
+                            }
+                        } else {
+                            // Optional: unload far sections
+                            const section = entry.target;
+                            if (section.dataset.loaded === 'true') {
+                                // For now, let's keep it simple and just load on demand.
+                            }
+                        }
+                    });
+                }, observerOptions);
+
+                contentBlock.querySelectorAll('.project-section').forEach(section => {
+                    sectionObserver.observe(section);
+                });
+
                 lucide.createIcons();
             } else {
                 galleryContainer.innerHTML = '<div style="color:#666; text-align:center; padding: 40px; font-family:sans-serif;">GALLERY EMPTY<br><span style="font-size:12px">Use the Tagging Tool to add images to the Cloud.</span></div>';
@@ -1139,7 +1182,15 @@
       let globalZIndex = 30000;
       let chartInstancesGlobal = {};
 
-      window.openLightbox = (globalIndex) => { currentImageIndex = globalIndex; showImage(currentImageIndex); document.getElementById('lightbox').classList.add('active'); };
+      window.openLightbox = (globalIndex) => {
+          currentImageIndex = globalIndex;
+          showImage(currentImageIndex);
+          document.getElementById('lightbox').classList.add('active');
+          if (window.innerWidth < 1024) {
+              const gc = document.getElementById('gallery-container');
+              if (gc) gc.classList.add('gallery-frozen');
+          }
+      };
       window.navigateLightbox = (direction) => { const newIndex = currentImageIndex + direction; if (newIndex >= 0 && newIndex < flatGalleryImages.length) { currentImageIndex = newIndex; showImage(currentImageIndex); } };
 
       function generateAllGalleryHTML(projects, shopLifeItems) {
@@ -1153,13 +1204,14 @@
               const subtitle = project.subtitle;
               const images = project.images;
               
-              const imagesHtml = images.map((imgUrl) => {
+              const imagesHtml = images.map((imgUrl, idx) => {
                   const globalIndex = flatGalleryImages.length;
                   flatGalleryImages.push({ src: imgUrl, title: title, subtitle: subtitle, hotspots: project.hotspots });
 
+                  // We inject an empty skeleton. The data-src holds the real image.
                   return `<div class="gallery-item" onclick="openLightbox(${globalIndex})">
                                   <div class="skeleton-loader"></div>
-                                  <img src="${imgUrl}" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded'); const l = this.previousElementSibling; if(l) l.remove(); window.dispatchEvent(new Event('resize'));">
+                                  <img data-src="${imgUrl}" data-index="${idx}" class="gallery-img unloaded-img" width="800" height="450" decoding="async">
                               </div>`;
               }).join('');
 
@@ -1181,11 +1233,14 @@
               const title = 'SHOP LIFE & RECENT WORKS';
               const subtitle = 'Behind the Scenes and Quick Snaps';
               
-              const imagesHtml = shopLifeItems.map(item => {
+              const imagesHtml = shopLifeItems.map((item, idx) => {
                  const globalIndex = flatGalleryImages.length;
                  // Pass "Shop Life" as title for Lightbox context
                  flatGalleryImages.push({ src: item.src, title: title, subtitle: subtitle, hotspots: item.hotspots });
-                 return `<div class="gallery-item" onclick="openLightbox(${globalIndex})"><div class="skeleton-loader"></div><img src="${item.src}" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded'); const l = this.previousElementSibling; if(l) l.remove(); window.dispatchEvent(new Event('resize'));"></div>`;
+                 return `<div class="gallery-item" onclick="openLightbox(${globalIndex})">
+                                 <div class="skeleton-loader"></div>
+                                 <img data-src="${item.src}" data-index="${idx}" class="gallery-img unloaded-img" width="800" height="450" decoding="async">
+                             </div>`;
               }).join('');
 
               finalProjectHTML.push(`
@@ -1197,6 +1252,22 @@
           tempDiv.innerHTML = finalProjectHTML.join('');
           return tempDiv;
       }
+      function injectSectionImages(section) {
+          const imgs = section.querySelectorAll('.unloaded-img');
+          imgs.forEach((img, idx) => {
+              const isEager = idx < 6;
+              img.loading = isEager ? 'eager' : 'lazy';
+              img.onload = function() {
+                  this.classList.add('loaded');
+                  this.classList.remove('unloaded-img');
+                  const l = this.previousElementSibling;
+                  if(l && l.classList.contains('skeleton-loader')) l.remove();
+              };
+              img.src = img.dataset.src;
+          });
+          initManualCarousel(section);
+      }
+
 
       // --- LIGHTBOX LOGIC ---
       const lightbox = document.getElementById('lightbox');
@@ -1205,8 +1276,21 @@
       const lightboxPrevBtn = document.getElementById('lightbox-prev');
       const lightboxNextBtn = document.getElementById('lightbox-next');
       
-      document.querySelector('.lightbox-close').addEventListener('click', () => { lightbox.classList.remove('active'); document.getElementById('lightbox-cta-container').classList.remove('visible'); closeAllTooltips(); });
-      document.addEventListener('keydown', (e) => { if(!lightbox.classList.contains('active')) return; if (e.key === 'ArrowLeft') window.navigateLightbox(-1); if (e.key === 'ArrowRight') window.navigateLightbox(1); if (e.key === 'Escape') lightbox.classList.remove('active'); });
+      const closeLightboxHandler = () => {
+          lightbox.classList.remove('active');
+          document.getElementById('lightbox-cta-container').classList.remove('visible');
+          closeAllTooltips();
+          const gc = document.getElementById('gallery-container');
+          if (gc) gc.classList.remove('gallery-frozen');
+      };
+
+      document.querySelector('.lightbox-close').addEventListener('click', closeLightboxHandler);
+      document.addEventListener('keydown', (e) => {
+          if(!lightbox.classList.contains('active')) return;
+          if (e.key === 'ArrowLeft') window.navigateLightbox(-1);
+          if (e.key === 'ArrowRight') window.navigateLightbox(1);
+          if (e.key === 'Escape') closeLightboxHandler();
+      });
       document.addEventListener('click', (e) => { if (!e.target.closest('.tune-hotspot') && !e.target.closest('.tune-tooltip')) closeAllTooltips(); });
 
       function closeAllTooltips() { document.querySelectorAll('.tune-tooltip.visible').forEach(tt => { tt.classList.remove('visible'); tt.classList.remove('locked'); tt.classList.remove('flip'); const bar = tt.querySelector(".tune-bar-fill"); if(bar) bar.style.width = "0%"; }); }
@@ -1393,6 +1477,15 @@
           }, { passive: true });
           window.addEventListener('resize', updateTrack);
           setTimeout(updateTrack, 100);
+
+          const firstImg = track.querySelector('.gallery-img');
+          if (firstImg) {
+              if (firstImg.complete) {
+                  updateTrack();
+              } else {
+                  firstImg.addEventListener('load', updateTrack, { once: true });
+              }
+          }
       }
 
 
