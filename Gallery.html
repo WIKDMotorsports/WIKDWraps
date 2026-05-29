@@ -240,6 +240,15 @@
       /* --- LIGHTBOX (MODIFIED) --- */
       #lightbox { position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,1); display: block; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
       #lightbox.active { opacity: 1; pointer-events: all; }
+      @media (max-width: 768px) {
+          body.lightbox-active nav,
+          body.lightbox-active main,
+          body.lightbox-active footer,
+          body.lightbox-active #wikd-preloader {
+              visibility: hidden !important;
+              pointer-events: none !important;
+          }
+      }
       .lightbox-content-aligner { position: relative; width: 100%; max-width: 1400px; height: 100%; margin: 0 auto; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: max(1rem, env(safe-area-inset-top)) 0.5rem max(1rem, env(safe-area-inset-bottom)) 0.5rem; box-sizing: border-box; }
       .lightbox-content { position: relative; width: 100%; flex: 1; min-height: 0; display: flex; justify-content: center; align-items: center; overflow: visible; }
       #lightbox-img { width: 100%; height: 100%; object-fit: contain; max-width: none; max-height: none; border: none; box-shadow: 0 0 50px rgba(0,0,0,0.8); transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); user-select: none; -webkit-user-drag: none; }
@@ -1164,7 +1173,7 @@
       let globalZIndex = 30000;
       let chartInstancesGlobal = {};
 
-      window.openLightbox = (globalIndex) => { currentImageIndex = globalIndex; showImage(currentImageIndex); document.getElementById('lightbox').classList.add('active'); };
+      window.openLightbox = (globalIndex) => { currentImageIndex = globalIndex; showImage(currentImageIndex); document.getElementById('lightbox').classList.add('active'); document.body.classList.add('lightbox-active'); };
       window.navigateLightbox = (direction) => { const newIndex = currentImageIndex + direction; if (newIndex >= 0 && newIndex < flatGalleryImages.length) { currentImageIndex = newIndex; showImage(currentImageIndex); } };
 
       function generateAllGalleryHTML(projects, shopLifeItems) {
@@ -1230,8 +1239,8 @@
       const lightboxPrevBtn = document.getElementById('lightbox-prev');
       const lightboxNextBtn = document.getElementById('lightbox-next');
       
-      document.querySelector('.lightbox-close').addEventListener('click', () => { lightbox.classList.remove('active'); document.getElementById('lightbox-cta-container').classList.remove('visible'); closeAllTooltips(); });
-      document.addEventListener('keydown', (e) => { if(!lightbox.classList.contains('active')) return; if (e.key === 'ArrowLeft') window.navigateLightbox(-1); if (e.key === 'ArrowRight') window.navigateLightbox(1); if (e.key === 'Escape') lightbox.classList.remove('active'); });
+      document.querySelector('.lightbox-close').addEventListener('click', () => { lightbox.classList.remove('active'); document.body.classList.remove('lightbox-active'); document.getElementById('lightbox-cta-container').classList.remove('visible'); closeAllTooltips(); });
+      document.addEventListener('keydown', (e) => { if(!lightbox.classList.contains('active')) return; if (e.key === 'ArrowLeft') window.navigateLightbox(-1); if (e.key === 'ArrowRight') window.navigateLightbox(1); if (e.key === 'Escape') { lightbox.classList.remove('active'); document.body.classList.remove('lightbox-active'); } });
       document.addEventListener('click', (e) => { if (!e.target.closest('.tune-hotspot') && !e.target.closest('.tune-tooltip')) closeAllTooltips(); });
 
       function closeAllTooltips() { document.querySelectorAll('.tune-tooltip.visible').forEach(tt => { tt.classList.remove('visible'); tt.classList.remove('locked'); tt.classList.remove('flip'); const bar = tt.querySelector(".tune-bar-fill"); if(bar) bar.style.width = "0%"; }); }
