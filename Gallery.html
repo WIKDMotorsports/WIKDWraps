@@ -1109,7 +1109,32 @@
                 
                 const contentBlock = generateAllGalleryHTML(projectsArray, shopLifeList);
                 galleryContainer.appendChild(contentBlock);
-                contentBlock.querySelectorAll('.project-section').forEach(section => initManualCarousel(section));
+
+                // Initialize IntersectionObserver for row-based lazy loading
+                const observerOptions = {
+                    root: null,
+                    rootMargin: '600px 0px',
+                    threshold: 0
+                };
+
+                const lazyLoadObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const section = entry.target;
+                            const lazyImages = section.querySelectorAll('img[data-src]');
+                            lazyImages.forEach(img => {
+                                img.src = img.getAttribute('data-src');
+                                img.removeAttribute('data-src');
+                            });
+                            observer.unobserve(section);
+                        }
+                    });
+                }, observerOptions);
+
+                contentBlock.querySelectorAll('.project-section').forEach(section => {
+                    initManualCarousel(section);
+                    lazyLoadObserver.observe(section);
+                });
                 lucide.createIcons();
             } else {
                 galleryContainer.innerHTML = '<div style="color:#666; text-align:center; padding: 40px; font-family:sans-serif;">GALLERY EMPTY<br><span style="font-size:12px">Use the Tagging Tool to add images to the Cloud.</span></div>';
@@ -1159,7 +1184,7 @@
 
                   return `<div class="gallery-item" onclick="openLightbox(${globalIndex})">
                                   <div class="skeleton-loader"></div>
-                                  <img src="${imgUrl}" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded'); const l = this.previousElementSibling; if(l) l.remove(); window.dispatchEvent(new Event('resize'));">
+                                  <img data-src="${imgUrl}" class="gallery-img" decoding="async" onload="this.classList.add('loaded'); const l = this.previousElementSibling; if(l) l.remove(); window.dispatchEvent(new Event('resize'));">
                               </div>`;
               }).join('');
 
@@ -1185,7 +1210,7 @@
                  const globalIndex = flatGalleryImages.length;
                  // Pass "Shop Life" as title for Lightbox context
                  flatGalleryImages.push({ src: item.src, title: title, subtitle: subtitle, hotspots: item.hotspots });
-                 return `<div class="gallery-item" onclick="openLightbox(${globalIndex})"><div class="skeleton-loader"></div><img src="${item.src}" class="gallery-img" loading="lazy" decoding="async" onload="this.classList.add('loaded'); const l = this.previousElementSibling; if(l) l.remove(); window.dispatchEvent(new Event('resize'));"></div>`;
+                 return `<div class="gallery-item" onclick="openLightbox(${globalIndex})"><div class="skeleton-loader"></div><img data-src="${item.src}" class="gallery-img" decoding="async" onload="this.classList.add('loaded'); const l = this.previousElementSibling; if(l) l.remove(); window.dispatchEvent(new Event('resize'));"></div>`;
               }).join('');
 
               finalProjectHTML.push(`
