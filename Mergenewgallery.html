@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WIKDWRAPS Homepage Gallery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --color-background: #0A0A0A;
+            --color-text: #EAEAEA;
+            --color-text-muted: #888888;
+            --color-primary: #FF3B30;
+            --color-surface: #141414;
+            --color-border: #2A2A2A;
+            --font-heading: 'Rajdhani', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        body {
+            background-color: var(--color-background) !important;
+            color: var(--color-text) !important;
+            font-family: var(--font-body) !important;
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* --- NOISE TEXTURE OVERLAY --- */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.08;
+            background-size: 100px 100px;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* --- TYPOGRAPHY MATCHING --- */
+        h1, h2, h3, .h1, .h2, .h3 {
+            font-family: var(--font-heading) !important;
+            font-weight: 700 !important;
+            line-height: 1.2 !important;
+            text-transform: uppercase !important;
+            color: white !important;
+        }
+
+        p, .p-muted {
+            font-family: var(--font-body) !important;
+            color: var(--color-text-muted) !important;
+            line-height: 1.6 !important;
+        }
+
+        /* --- WIKD GALLERY CARD STYLES --- */
+        @keyframes lavaFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .gallery-card-wrapper { 
+            max-width: 380px; 
+            width: 100%; 
+            perspective: 1000px; 
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .gallery-card {
+            display: block; 
+            position: relative; 
+            aspect-ratio: 1 / 1;
+            border-radius: 0px; /* Sharp corners */
+            border: 1px solid var(--color-border);
+            text-decoration: none; 
+            isolation: isolate;
+            transform-style: preserve-3d;
+            background: #111;
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.5s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.4s ease;
+            will-change: transform;
+        }
+
+        .gallery-card-bg {
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            object-fit: cover; 
+            filter: grayscale(100%);
+            transform: translateZ(0px) scale(1.001);
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), filter 0.5s ease;
+            pointer-events: none;
+        }
+
+        .gallery-card:hover .gallery-card-bg {
+            filter: grayscale(0%);
+            transform: translateZ(25px) scale(1.01); 
+        }
+
+        .gallery-card-overlay {
+            height: 100%; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.2) 100%);
+            position: relative; 
+            z-index: 5; 
+            transform: translateZ(50px);
+            transform-style: preserve-3d; 
+            padding: 24px;
+            pointer-events: none;
+        }
+
+        .gallery-card-title {
+            font-family: var(--font-heading) !important;
+            font-size: 1.5rem !important; 
+            font-weight: 800 !important; /* Premium thick headers */
+            color: white !important; 
+            margin: 0; 
+            line-height: 1.2 !important;
+            text-shadow: 0px 2px 10px rgba(0, 0, 0, 0.9); 
+            transition: color 0.3s ease;
+            text-transform: uppercase !important;
+        }
+
+        .gallery-card:hover .gallery-card-title {
+            background: linear-gradient(90deg, #b30000, #ff1a00, #ffaa00, #ff1a00, #b30000);
+            background-size: 300%; 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent;
+            animation: lavaFlow 4s ease-in-out infinite; 
+            text-shadow: none;
+            filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.7));
+        }
+
+        /* Dynamic Border Frame Outline */
+        .gallery-card::before {
+            content: ""; 
+            position: absolute; 
+            inset: -2px; 
+            border-radius: 0px; 
+            padding: 2px;
+            background: linear-gradient(90deg, #b30000, #ff1a00, #ffaa00, #ff1a00, #b30000);
+            background-size: 300%; 
+            animation: lavaFlow 4s ease-in-out infinite;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor; 
+            mask-composite: exclude;
+            z-index: 6; 
+            pointer-events: none; 
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            transform: translateZ(1px);
+        }
+
+        .gallery-card:hover::before { 
+            opacity: 1; 
+        }
+        
+        .gallery-card:hover { 
+            box-shadow: 0 20px 45px rgba(255, 59, 48, 0.45); 
+            border-color: transparent;
+        }
+
+        .section-title {
+            font-family: var(--font-heading) !important;
+            font-size: clamp(2rem, 5vw, 3rem) !important;
+            font-weight: 800 !important;
+            text-transform: uppercase !important;
+            color: white !important;
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: var(--color-primary);
+        }
+
+        /* Loading Spinner */
+        .loader {
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid var(--color-primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <section class="w-full max-w-[1200px] mx-auto px-4 py-20 relative z-10">
+        <div class="text-center">
+            <h2 class="section-title">FEATURED WORK</h2>
+        </div>
+
+        <!-- Gallery Grid Container -->
+        <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center mt-12 min-h-[380px]">
+            <!-- Loader displays until Firebase populates -->
+            <div class="col-span-full flex flex-col items-center justify-center text-center mt-10">
+                <div class="loader"></div>
+                <p class="text-[#666] font-['Rajdhani'] mt-4 uppercase tracking-widest text-sm font-bold">Syncing With Cloud...</p>
+            </div>
+        </div>
+    </section>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- FIREBASE CONFIG ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyDmsposy-HZm_Nbfz6UlQfgQscG3jsidy8",
+            authDomain: "rapid-tagger-wikd-edition.firebaseapp.com",
+            projectId: "rapid-tagger-wikd-edition",
+            storageBucket: "rapid-tagger-wikd-edition.firebasestorage.app",
+            messagingSenderId: "127611552314",
+            appId: "1:127611552314:web:169fe01257a451eab2ab03"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let availableItems = [];
+
+        // --- FETCH FIREBASE DATA ---
+        async function fetchGalleryData() {
+            try {
+                // Secure anonymous auth priority
+                await signInAnonymously(auth);
+
+                // Pull only flagged homepage content
+                const q = query(
+                    collection(db, 'artifacts', 'wikd-tagger', 'public', 'data', 'wikd_gallery'),
+                    where("showOnHome", "==", true)
+                );
+                
+                const snapshot = await getDocs(q);
+                availableItems = [];
+                
+                snapshot.forEach((doc) => {
+                    availableItems.push({ id: doc.id, ...doc.data() });
+                });
+
+                if(availableItems.length === 0) {
+                    document.getElementById('gallery-grid').innerHTML = `<p class="text-[#444] col-span-full uppercase font-['Rajdhani'] text-center">No homepage gallery items found.</p>`;
+                    return;
+                }
+
+                // Initial Render
+                cycleRandomGallery();
+
+                // Swap images automatically
+                setInterval(cycleRandomGallery, 8000);
+
+            } catch (error) {
+                console.error("Error fetching WIKD gallery:", error);
+                document.getElementById('gallery-grid').innerHTML = `<p class="text-red-500 col-span-full uppercase font-['Rajdhani'] text-center">Failed to connect to cloud database.</p>`;
+            }
+        }
+
+        // --- RANDOM SELECTION & CYCLE LOGIC ---
+        function cycleRandomGallery() {
+            if (availableItems.length === 0) return;
+
+            // Shuffle pool
+            const shuffled = [...availableItems].sort(() => 0.5 - Math.random());
+            
+            // Choose exactly 3
+            const selectedThree = shuffled.slice(0, 3);
+            
+            renderCards(selectedThree);
+        }
+
+        // --- RENDERING CARDS TO DOM ---
+        function renderCards(items) {
+            const grid = document.getElementById('gallery-grid');
+            grid.innerHTML = ''; // Clear existing cards
+
+            items.forEach((item, index) => {
+                const animationDelay = index * 0.15;
+
+                const cardHtml = `
+                    <div class="gallery-card-wrapper" style="animation-delay: ${animationDelay}s">
+                        <a href="https://wikdwraps.com/pages/gallery" target="_blank" rel="noopener noreferrer" class="gallery-card">
+                            <img src="${item.imageUrl}" alt="${item.title}" class="gallery-card-bg" loading="lazy" onerror="this.src='https://placehold.co/400x400/111/444?text=IMAGE+UNAVAILABLE'">
+                            
+                            <div class="gallery-card-overlay">
+                                <div class="flex-grow"></div>
+                                <div class="mt-4">
+                                    <h3 class="gallery-card-title">${item.title || 'WIKD BUILD'}</h3>
+                                    <p class="p-muted text-xs mt-1 leading-relaxed line-clamp-2" style="font-family: var(--font-body) !important; color: var(--color-text-muted) !important;">${item.subtitle || ''}</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                `;
+                
+                grid.insertAdjacentHTML('beforeend', cardHtml);
+            });
+
+            // Re-bind interactive tilt mechanics to fresh DOM instances
+            initTiltEffect();
+        }
+
+        // --- HIGH-FIDELITY TILT ENGINE ---
+        function initTiltEffect() {
+            const cards = document.querySelectorAll('.gallery-card');
+            
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left; // cursor X inside card
+                    const y = e.clientY - rect.top;  // cursor Y inside card
+                    
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    // Tilt angles (Rotates on opposites: X-mouse tilts Y-axis and vice versa)
+                    const rotateX = ((centerY - y) / centerY) * 12; // Max 12deg tilt
+                    const rotateY = ((x - centerX) / centerX) * 12; 
+                    
+                    // Inline fast transform update for tracking accuracy
+                    card.style.transition = 'transform 0.08s cubic-bezier(0.25, 1, 0.5, 1)';
+                    // Scale parent card to 1.06 to align perfectly with the background image scale
+                    card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.06)`;
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    // Smooth return home
+                    card.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
+                    card.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
+                });
+            });
+        }
+
+        // --- STARTUP ---
+        fetchGalleryData();
+    </script>
+</body>
+</html>
