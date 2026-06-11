@@ -271,17 +271,152 @@
       .lightbox-btn:hover { background-color: #D6342A !important; border-color: #D6342A !important; }
       #lightbox-cta-btn { min-width: 210px; justify-content: center; text-align: center; }
 
-      /* FOOTER */
-      .wikd-footer { background-color: #080808; border-top: 1px solid var(--color-border); padding: 5rem 0 2rem; position: relative; }
-      .wikd-footer-container { width: 92%; max-width: 1400px; margin: 0 auto; }
-      .wikd-footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; margin-bottom: 4rem; }
-      .wikd-footer-logo { width: 200px; height: auto; opacity: 0.9; }
-      .wikd-footer-links a { color: var(--color-text-muted); text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease; display: block; margin-bottom: 0.8rem; }
-      .wikd-footer-links a:hover { color: var(--color-primary); transform: translateX(5px); }
-      .wikd-footer-column h3 { font-family: var(--font-heading); font-size: 1.2rem; color: white; margin-bottom: 1.5rem; letter-spacing: 1px; border-left: 3px solid var(--color-primary); padding-left: 1rem; }
-      .wikd-footer-bottom { border-top: 1px solid var(--color-border); padding-top: 2rem; display: flex; justify-content: space-between; color: var(--color-text-muted); font-size: 0.85rem; }
-      @media (max-width: 992px) { .wikd-footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; margin-bottom: 4rem; } }
-      @media (max-width: 640px) { .wikd-footer-grid { grid-template-columns: 1fr; } .wikd-footer-bottom { flex-direction: column; gap: 1rem; text-align: center; } }
+      /* --- FOOTER STYLES --- */
+      .wikd-footer {
+          background-color: var(--color-surface, #141414);
+          border-top: 1px solid var(--color-border, #2A2A2A);
+          padding: 4rem 0 2rem;
+          font-family: var(--font-body, 'Inter', sans-serif);
+      }
+      .wikd-footer-container {
+          width: 92%;
+          max-width: 1200px;
+          margin: 0 auto;
+      }
+      .wikd-footer-grid {
+          display: grid;
+          grid-template-columns: 2fr 1fr 1fr; /* Balanced 3-column layout */
+          gap: 3rem;
+          margin-bottom: 3rem;
+      }
+      .wikd-footer-brand {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+      }
+      .wikd-footer-logo {
+          width: 180px;
+          height: auto;
+      }
+      .wikd-footer-tagline {
+          color: var(--color-text-muted, #888888);
+          font-size: 0.95rem;
+          line-height: 1.6;
+          max-width: 300px;
+      }
+      .wikd-footer-social {
+          display: flex;
+          gap: 1rem;
+          margin-top: 1rem;
+      }
+      .wikd-footer-social-link {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: var(--color-background, #0A0A0A);
+          border: 1px solid var(--color-border, #2A2A2A);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--color-text, #EAEAEA);
+          transition: all 0.3s ease;
+          text-decoration: none;
+          font-size: 1.2rem;
+      }
+      .wikd-footer-social-link:hover {
+          background: var(--color-primary, #FF3B30);
+          border-color: var(--color-primary, #FF3B30);
+          transform: translateY(-3px);
+      }
+      .wikd-footer-column h3 {
+          font-family: var(--font-heading, 'Rajdhani', sans-serif);
+          font-size: 1.1rem;
+          font-weight: 700;
+          color: white;
+          text-transform: uppercase;
+          margin-bottom: 1.25rem;
+          letter-spacing: 0.5px;
+      }
+      .wikd-footer-links {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem;
+      }
+      .wikd-footer-links a {
+          color: var(--color-text-muted, #888888);
+          text-decoration: none;
+          font-size: 0.95rem;
+          transition: all 0.3s ease;
+          display: inline-block;
+      }
+      .wikd-footer-links a:hover {
+          color: var(--color-primary, #FF3B30);
+          transform: translateX(5px);
+      }
+      .wikd-footer-bottom {
+          border-top: 1px solid var(--color-border, #2A2A2A);
+          padding-top: 2rem;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 1rem;
+      }
+      .wikd-footer-copyright {
+          color: var(--color-text-muted, #888888);
+          font-size: 0.875rem;
+      }
+      .wikd-footer-copyright a {
+          color: var(--color-primary, #FF3B30);
+          text-decoration: none;
+          font-weight: 600;
+          transition: opacity 0.3s ease;
+      }
+      .wikd-footer-copyright a:hover {
+          opacity: 0.8;
+      }
+      .wikd-footer-legal {
+          display: flex;
+          gap: 1.5rem;
+          flex-wrap: wrap;
+      }
+      .wikd-footer-legal a {
+          color: var(--color-text-muted, #888888);
+          text-decoration: none;
+          font-size: 0.875rem;
+          transition: color 0.3s ease;
+      }
+      .wikd-footer-legal a:hover {
+          color: var(--color-primary, #FF3B30);
+      }
+      @media (max-width: 992px) {
+          .wikd-footer-grid {
+              grid-template-columns: 1fr 1fr;
+              gap: 2.5rem;
+          }
+          .wikd-footer-brand {
+              grid-column: 1 / -1;
+          }
+      }
+      @media (max-width: 640px) {
+          .wikd-footer {
+              padding: 3rem 0 1.5rem;
+          }
+          .wikd-footer-grid {
+              grid-template-columns: 1fr;
+              gap: 2rem;
+          }
+          .wikd-footer-bottom {
+              flex-direction: column;
+              text-align: center;
+          }
+          .wikd-footer-legal {
+              justify-content: center;
+          }
+      }
     </style>
 </head>
 <body>
@@ -730,11 +865,11 @@
                                 Maintenance Plans
                             </a>
 
-                            <div class="menu-label mt-1">Tools</div>
-                            <a href="https://wikdwraps.com/pages/estimate-configurator" class="menu-tile">
-                                <i data-lucide="calculator" class="w-4 h-4"></i>
-                                Estimate Configurator
-                            </a>
+                             <div class="menu-label mt-1">Tools</div>
+                             <a href="https://wikdwraps.com/pages/estimate-configurator" class="menu-tile">
+                                 <i data-lucide="calculator" class="w-4 h-4"></i>
+                                 Estimate Configurator
+                             </a>
                         </div>
                     </div>
 
@@ -1001,24 +1136,62 @@
     <footer class="wikd-footer">
         <div class="wikd-footer-container">
             <div class="wikd-footer-grid">
+                <!-- Brand Column -->
                 <div class="wikd-footer-brand">
                     <a href="https://wikdwraps.com/" class="flex items-center" style="text-decoration: none;">
-                    <span class="logo-text text-2xl tracking-tight text-white hover:text-[#FF3B30] transition-colors" style="font-family: var(--font-heading, 'Rajdhani', sans-serif); font-weight: 800; text-transform: uppercase; line-height: 1; font-size: 1.5rem; letter-spacing: -0.025em; color: white;">
-                        WIKD<span class="font-semibold text-[#666]" style="font-weight: 600; color: #666;">WRAPS</span>
-                    </span>
-                </a>
-                    <p class="text-muted mt-4">Uncompromised Protection. WIKD Craftsmanship.</p>
-                </div>
-                <div class="wikd-footer-column">
-                    <h3>Services</h3>
-                    <div class="wikd-footer-links">
-                        <a href="#">Paint Protection Film</a>
-                        <a href="#">Ceramic Coatings</a>
+                        <span class="logo-text text-2xl tracking-tight text-white hover:text-[#FF3B30] transition-colors" style="font-family: var(--font-heading, 'Rajdhani', sans-serif); font-weight: 800; text-transform: uppercase; line-height: 1; font-size: 1.5rem; letter-spacing: -0.025em; color: white;">
+                            WIKD<span class="font-semibold text-[#666]" style="font-weight: 600; color: #666;">WRAPS</span>
+                        </span>
+                    </a>
+                    <p class="wikd-footer-tagline">Uncompromised Protection. WIKD Craftsmanship.</p>
+                    <div class="wikd-footer-social">
+                        <a href="https://www.instagram.com/wikdwraps" target="_blank" rel="noopener" class="wikd-footer-social-link" aria-label="Instagram">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zM12 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                        </a>
+                        <a href="https://www.tiktok.com/@wikdtuned" target="_blank" rel="noopener" class="wikd-footer-social-link" aria-label="TikTok">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 2.12-1.02 4.13-2.67 5.57-1.2 1.05-2.73 1.71-4.32 1.83-1.63.12-3.32-.13-4.76-.99-1.6-1.02-2.73-2.61-3.17-4.43-.53-2.14-.14-4.52 1.1-6.34 1.1-1.63 2.87-2.65 4.8-2.92 1.05-.15 2.13-.08 3.16.2v4.06c-1.39-.41-2.94-.13-4.08.76-1.01.76-1.57 2.01-1.46 3.28.1 1.25.86 2.41 1.98 2.99 1.14.59 2.54.6 3.7.07 1.09-.5 1.87-1.5 2.1-2.66.11-.53.11-1.08.11-1.62V.02h-2.27z"/></svg>
+                        </a>
+                        <a href="https://www.facebook.com/getwikd/" target="_blank" rel="noopener" class="wikd-footer-social-link" aria-label="Facebook">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
+                        </a>
                     </div>
                 </div>
+
+                <!-- Services Column -->
+                <div class="wikd-footer-column">
+                    <h3>Services</h3>
+                    <ul class="wikd-footer-links">
+                        <li><a href="https://wikdwraps.com/pages/paint-protection-film">Paint Protection Film</a></li>
+                        <li><a href="https://wikdwraps.com/pages/ceramic-coatings">Ceramic Coatings</a></li>
+                        <li><a href="https://wikdwraps.com/pages/vinyl-wraps">Vinyl Wraps</a></li>
+                        <li><a href="https://wikdwraps.com/pages/window-tint">Window Tint</a></li>
+                        <li><a href="https://wikdwraps.com/pages/detailing">Detailing</a></li>
+                        <li><a href="https://wikdwraps.com/pages/maintenance-plans">Maintenance Plans</a></li>
+                    </ul>
+                </div>
+
+                <!-- Company Column -->
+                <div class="wikd-footer-column">
+                    <h3>Company</h3>
+                    <ul class="wikd-footer-links">
+                        <li><a href="https://wikdwraps.com/pages/about-us-1">About Us</a></li>
+                        <li><a href="https://wikdwraps.com/pages/gallery">Gallery</a></li>
+                        <li><a href="https://wikdwraps.com/pages/contact">Contact</a></li>
+                        <li><a href="https://wikdwraps.com/pages/careers">Careers</a></li>
+                        <li><a href="https://wikdwraps.com/pages/dealers">Dealers</a></li>
+                        <li><a href="https://www.wikdmotorsports.com/" target="_blank">WIKD Motorsports</a></li>
+                    </ul>
+                </div>
             </div>
+
+            <!-- Bottom Bar -->
             <div class="wikd-footer-bottom">
-                <div>© 2025 WIKD Wraps. All rights reserved.</div>
+                <div class="wikd-footer-copyright">
+                    © 2025 <a href="/">WIKD Wraps</a>. All rights reserved.
+                </div>
+                <div class="wikd-footer-legal">
+                    <a href="https://wikdwraps.com/pages/policies-legal">Legal &amp; Policies</a>
+                </div>
             </div>
         </div>
     </footer>
